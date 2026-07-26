@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main>
+      <main id="main">
         <Hero />
         {/* Verde a sangre: corte limpio con las secciones marfil (sin puente) */}
         <Experiencia />

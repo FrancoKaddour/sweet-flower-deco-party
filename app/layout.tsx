@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { JsonLd } from "@/components/site/JsonLd";
 
 // Display grotesca con carácter — equivalente LIBRE al espíritu de "Snaskface".
 // Alternativa self-hosted con más punch: Clash Display (Fontshare). Ver docs/06 + ADR-012.
@@ -50,6 +51,9 @@ export const metadata: Metadata = {
     description:
       "Creamos la escenografía de tus mejores momentos. Decoración de eventos y workshops.",
   },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function RootLayout({
@@ -61,6 +65,14 @@ export default function RootLayout({
       className={`${bricolage.variable} ${hanken.variable} antialiased`}
     >
       <body className="min-h-dvh bg-bone text-ink">
+        {/* Skip-link: acceso rápido al contenido para usuarios de teclado */}
+        <a
+          href="#main"
+          className="sr-only rounded-[var(--radius-pill)] focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-ink focus:px-5 focus:py-2.5 focus:text-[length:var(--text-step--1)] focus:font-medium focus:uppercase focus:tracking-[0.1em] focus:text-bone"
+        >
+          Saltar al contenido
+        </a>
+        <JsonLd />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
