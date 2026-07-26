@@ -64,10 +64,11 @@
 
 ### ADR-011 — Origen de datos + CMS (DECIDIDA con spike ✅ · 2026-07-26)
 - **Contexto:** al construir el e-commerce desde 0 (ADR-007), los productos —y también eventos, testimonios, membresía y textos de secciones— necesitan una fuente de datos y un **panel para que el equipo cargue contenido** sin tocar código. Opciones: CMS headless (Payload / Sanity) vs. archivos versionados en `content/` (MDX/JSON) vs. base de datos propia con admin a medida.
-- **Decisión:** **Payload CMS 3, self-hosted DENTRO del mismo proyecto Next.js**, sobre **Postgres (Neon, vía Vercel Marketplace)** y con **Vercel Blob** para media.
-  - Da un panel `/admin` de nivel producción → el equipo carga productos/eventos/testimonios sin tocar código.
+- **Decisión:** **Payload CMS 3 como MOTOR headless, self-hosted DENTRO del mismo proyecto Next.js**, sobre **Postgres (Neon, vía Vercel Marketplace)** y con **Vercel Blob** para media. Encima, un **panel de administración 100% a medida** (`/panel`) que consume la API de Payload.
+  - **Por qué motor + panel propio (no el admin de Payload):** el equipo quiere una UI de administración con la identidad de la marca (Franco diseña, Gonzalo construye funcional). Pero para que "funcione perfecto" a nivel plataforma, lo **peligroso** —auth, permisos (RBAC), validación, migraciones, uploads— lo resuelve Payload (probado), no se programa a mano. La UI a medida se apoya en esa base sólida.
   - Colecciones modeladas como TypeScript (`collections/*`) → **el modelo de datos ES código versionado y tipado** (`payload-types.ts`), sin `any`, revisable por PR.
-  - Los Server Components leen por la **Local API** de Payload (sin salto HTTP) → rápido y tipado.
+  - Los Server Components y el panel leen por la **Local API** de Payload (sin salto HTTP) → rápido y tipado. El `/admin` nativo de Payload queda como herramienta interna de dev/superadmin.
+  - **Alcance del panel: centro de operaciones** (contenido + ventas/órdenes + CRM/comunidad + leads "a medida" + métricas). Detalle en `colaboracion/gonzalo/06_DASHBOARD_SPEC.md`.
 - **Salvedad / riesgo (importante):** Payload 3 se integra muy de cerca con Next; hay que **validar su compatibilidad con Next 16.2.11 en un spike de día 1** (ver `colaboracion/03_BACKLOG.md`, Tarea 0). Si hay fricción irresoluble, **fallback documentado**: (a) **Sanity** (headless hosted, desacoplado de la versión de Next) o (b) **Postgres + Drizzle + admin propio**.
 - **Consecuencia:** define el modelo de datos, el panel de carga, el origen del schema `Product`/`Event` de [`11_SEO_STRATEGY.md`](./11_SEO_STRATEGY.md) y toda la Fase 0 del plan de backend. Reemplaza la recomendación provisional de "archivos en `content/`" (que queda solo como fallback rápido para el prototipo).
 - **Estado:** ✅ Decidida (sujeta al resultado del spike de compatibilidad).
