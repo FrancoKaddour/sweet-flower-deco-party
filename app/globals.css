@@ -144,15 +144,45 @@ html.lenis body {
       color-mix(in srgb, var(--color-bone) 55%, transparent) 0%,
       transparent 30%
     ),
-    /* fundido arriba/abajo hacia el marfil (bien extendido para tapar los
-       bordes del collage, sobre todo en mobile donde la grilla es más corta) */
+    /* fundido arriba/abajo hacia el marfil. Banda de marfil SÓLIDO de 24px en
+       el tope y el pie (en px, no en %) para no dejar ningún sliver de imagen
+       en el borde exacto —la grilla inclinada en 3D asoma ~1px en las esquinas—
+       y recién después el fundido largo hacia transparente. */
     linear-gradient(
       to bottom,
-      var(--color-bone) 0%,
+      var(--color-bone) 0,
+      var(--color-bone) 24px,
       transparent 16%,
       transparent 84%,
+      var(--color-bone) calc(100% - 24px),
       var(--color-bone) 100%
     );
+}
+/* Mobile: en el viewport angosto la grilla inclinada asoma en los CUATRO lados
+   (los costados son "a sangre" por diseño, pensado para desktop). Enmarcamos el
+   collage con marfil en los cuatro bordes: banda sólida en px + fundido. */
+@media (max-width: 767px) {
+  .wk-fade {
+    background:
+      linear-gradient(
+        to right,
+        var(--color-bone) 0,
+        var(--color-bone) 14px,
+        transparent 14%,
+        transparent 86%,
+        var(--color-bone) calc(100% - 14px),
+        var(--color-bone) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--color-bone) 0,
+        var(--color-bone) 22px,
+        transparent 12%,
+        transparent 88%,
+        var(--color-bone) calc(100% - 22px),
+        var(--color-bone) 100%
+      );
+  }
 }
 
 /* ---- Colecciones: clip-path "caída" reveal (referencia CANCAN) ---- */
