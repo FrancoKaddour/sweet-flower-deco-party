@@ -36,10 +36,11 @@ export function CollectionCard({
     if (!el || !img) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      el.classList.add("in-view", "is-complete");
-      return;
-    }
+    if (reduce) return; // sin animación: la card ya es visible por defecto
+
+    // Recién ahora (con JS) "armamos" la card para ocultarla y animar la caída.
+    // Sin JS queda visible → mejor para SEO / accesibilidad / no-JS.
+    el.classList.add("armed");
 
     let started = false;
     let inView = false;

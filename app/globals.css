@@ -170,12 +170,15 @@ html.lenis body {
   height: 100%;
   object-fit: cover;
   display: block;
-  /* estado inicial: recortada a altura 0 (invisible) */
-  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
   transition:
     clip-path 2s cubic-bezier(0.645, 0.045, 0.355, 1),
     transform 0.7s var(--ease-out-expo);
   will-change: clip-path, transform;
+}
+/* Estado inicial recortado SOLO cuando JS "arma" la card (.armed). Sin JS, la
+   imagen queda visible por defecto (bien para SEO / no-JS / accesibilidad). */
+.clip-figure.armed img {
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
 }
 /* la caída: se despliega de arriba a abajo */
 .clip-figure.in-view img {
@@ -188,8 +191,11 @@ html.lenis body {
   inset: 0;
   z-index: 1;
   background: rgba(20, 17, 15, 0.34);
-  opacity: 0;
+  opacity: 1; /* visible por defecto (legibilidad sin JS) */
   transition: opacity 0.6s ease, background 0.6s ease;
+}
+.clip-figure.armed .clip-overlay {
+  opacity: 0;
 }
 .clip-figure.is-complete .clip-overlay {
   opacity: 1;
@@ -207,11 +213,14 @@ html.lenis body {
   text-align: center;
   padding: clamp(1.25rem, 2.5vw, 2.5rem);
   color: var(--color-bone);
-  opacity: 0;
-  transform: translateY(14px);
+  opacity: 1; /* visible por defecto (SEO / no-JS) */
   transition:
     opacity 0.75s ease 0.05s,
     transform 0.75s var(--ease-out-expo) 0.05s;
+}
+.clip-figure.armed .clip-content {
+  opacity: 0;
+  transform: translateY(14px);
 }
 .clip-figure.is-complete .clip-content {
   opacity: 1;

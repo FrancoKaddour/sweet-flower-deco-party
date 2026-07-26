@@ -78,9 +78,7 @@ export function RevealText({
     { scope: ref, dependencies: [children] },
   );
 
-  return createElement(
-    as,
-    { ref, className, style: { visibility: "hidden" } },
-    children,
-  );
+  // Sin visibility:hidden inline → el título es visible por defecto (LCP, SEO,
+  // no-JS). GSAP hace el mask-reveal como enhancement cuando corre.
+  return createElement(as, { ref, className }, children);
 }
