@@ -3,33 +3,11 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { MAIN_NAV, CONTACTO_LINKS, INFO_LINKS } from "@/content/site";
 
 // TODO(contenido): datos reales de contacto, redes y legales (ver docs).
 // Footer oscuro premium — mood editorial cálido para Sweet Flowers Deco Party.
-
-// Enlaces de navegación principal.
-const NAV = [
-  { label: "Inicio", href: "/" },
-  { label: "Productos", href: "/productos" },
-  { label: "Workshops", href: "/evento" },
-  { label: "Membresía", href: "/membresia" },
-  { label: "Historia", href: "#historia" },
-] as const;
-
-// Enlaces de contacto (href reales a completar).
-const CONTACTO = [
-  { label: "WhatsApp", href: "#" },
-  { label: "Email", href: "#" },
-  { label: "Instagram", href: "#" },
-] as const;
-
-// Enlaces informativos / legales.
-const INFO = [
-  { label: "Envíos", href: "#" },
-  { label: "Cambios", href: "#" },
-  { label: "Términos", href: "#" },
-  { label: "Privacidad", href: "#" },
-] as const;
+// Navegación y enlaces se centralizan en @/content/site.
 
 // Segmento del marquee: se renderiza 2 veces dentro del track para el loop infinito.
 function MarqueeSegment() {
@@ -114,7 +92,7 @@ export function Footer() {
             Navegación
           </h4>
           <ul className="space-y-2">
-            {NAV.map((item) => (
+            {MAIN_NAV.map((item) => (
               <li key={item.label}>
                 <Link
                   href={item.href}
@@ -133,7 +111,7 @@ export function Footer() {
             Contacto
           </h4>
           <ul className="space-y-2">
-            {CONTACTO.map((item) => (
+            {CONTACTO_LINKS.map((item) => (
               <li key={item.label}>
                 {/* TODO(contenido): href real de contacto */}
                 <a
@@ -153,7 +131,7 @@ export function Footer() {
             Info
           </h4>
           <ul className="space-y-2">
-            {INFO.map((item) => (
+            {INFO_LINKS.map((item) => (
               <li key={item.label}>
                 {/* TODO(contenido): páginas legales reales */}
                 <a

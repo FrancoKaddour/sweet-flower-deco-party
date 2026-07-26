@@ -4,15 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { gsap } from "@/lib/gsap";
 import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
+import { MAIN_NAV, CONTACTO_LINK } from "@/content/site";
 
-const NAV = [
-  { label: "Inicio", href: "/" },
-  { label: "Productos", href: "/productos" },
-  { label: "Workshops", href: "/evento" },
-  { label: "Membresía", href: "/membresia" },
-  { label: "Historia", href: "#historia" },
-  { label: "Contacto", href: "#contacto" },
-];
+// Menú del Header = navegación principal + Contacto al final.
+const NAV = [...MAIN_NAV, CONTACTO_LINK];
 
 /**
  * Header fijo con:
