@@ -9,10 +9,10 @@ Copiá, pegá, adaptá. Estas plantillas hacen que Claude Code / opencode trabaj
 Este es el prompt base. La clave: **contexto + pedir plan antes de código**.
 
 ```
-Vamos a trabajar en la <Tarea N: nombre> del backlog (colaboracion/03_BACKLOG.md).
+Vamos a trabajar en la <Tarea N: nombre> del backlog (colaboracion/gonzalo/03_BACKLOG.md).
 
 Antes de escribir NADA de código:
-1. Leé estos archivos: colaboracion/02_ARQUITECTURA_BACKEND.md, colaboracion/03_BACKLOG.md (la tarea N) y <otros docs que indique la tarea>.
+1. Leé estos archivos: colaboracion/gonzalo/02_ARQUITECTURA_BACKEND.md, colaboracion/gonzalo/03_BACKLOG.md (la tarea N) y <otros docs que indique la tarea>.
 2. Recordá que esta es una versión especial de Next.js: leé lo relevante en node_modules/next/dist/docs/ antes de proponer código de Next.
 3. Explicame tu PLAN: qué archivos vas a crear/tocar y por qué. En pasos chicos.
 
@@ -111,7 +111,7 @@ Cuanto más preciso, más rápido te destrabamos.
 Vamos a trabajar en la Tarea 2 del backlog: modelar la colección Products en Payload.
 
 Antes de escribir código:
-1. Leé colaboracion/02_ARQUITECTURA_BACKEND.md (§5, el borrador de colecciones) y
+1. Leé colaboracion/gonzalo/02_ARQUITECTURA_BACKEND.md (§5, el borrador de colecciones) y
    docs/16_DECISIONS.md (§C, el checklist de contenido: material, +15% por canal,
    stock, "a medida").
 2. Mirá components/sections/Destacados.tsx y Productos.tsx para ver qué datos de

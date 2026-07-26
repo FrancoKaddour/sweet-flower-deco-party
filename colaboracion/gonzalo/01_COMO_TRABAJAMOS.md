@@ -22,7 +22,7 @@ La IA es tu copiloto, no tu piloto automático. Sos vos quien decide y revisa.
 
 **Buenas prácticas:**
 
-- **Dale contexto al empezar.** Decile qué archivo/doc leer primero. Ejemplo: *"Leé `colaboracion/02_ARQUITECTURA_BACKEND.md` y `docs/16_DECISIONS.md` (ADR-011) antes de proponer nada."*
+- **Dale contexto al empezar.** Decile qué archivo/doc leer primero. Ejemplo: *"Leé `colaboracion/gonzalo/02_ARQUITECTURA_BACKEND.md` y `docs/16_DECISIONS.md` (ADR-011) antes de proponer nada."*
 - **Pedí un PLAN antes del código.** *"No escribas código todavía: primero explicame tu plan y qué archivos vas a tocar."* Revisás el plan, y recién ahí le decís "dale".
 - **Recordale la regla de Next.** *"Antes de escribir código de Next, leé la doc real en `node_modules/next/dist/docs/`."* (Esta versión de Next tiene cambios; la IA puede tener info vieja.)
 - **Pedile que trabaje en pasos chicos** y que te explique cada decisión.
@@ -31,7 +31,7 @@ La IA es tu copiloto, no tu piloto automático. Sos vos quien decide y revisa.
 
 Las **plantillas de prompts** listas para copiar están en [`04_PLANTILLAS_PROMPTS.md`](./04_PLANTILLAS_PROMPTS.md).
 
-> El repo tiene instrucciones que la IA lee sola: [`../AGENTS.md`](../AGENTS.md) y [`../docs/CLAUDE.md`](../docs/CLAUDE.md). No hace falta que las repitas siempre, pero conocelas.
+> El repo tiene instrucciones que la IA lee sola: [`../../AGENTS.md`](../../AGENTS.md) y [`../../docs/CLAUDE.md`](../../docs/CLAUDE.md). No hace falta que las repitas siempre, pero conocelas.
 
 ---
 

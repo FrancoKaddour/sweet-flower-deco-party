@@ -11,7 +11,7 @@ Bienvenido. En esta página dejás el proyecto corriendo en tu compu y entendés
 - **Franco** → diseño (front) + carga de contenido.
 - **Vos** → backend, funcionalidades y el panel de administración.
 
-El detalle del negocio está en [`../docs/00_PROJECT_HANDOFF.md`](../docs/00_PROJECT_HANDOFF.md) y [`../docs/01_BUSINESS.md`](../docs/01_BUSINESS.md). Leelos cuando quieras contexto; no son obligatorios para empezar.
+El detalle del negocio está en [`../../docs/00_PROJECT_HANDOFF.md`](../../docs/00_PROJECT_HANDOFF.md) y [`../../docs/01_BUSINESS.md`](../../docs/01_BUSINESS.md). Leelos cuando quieras contexto; no son obligatorios para empezar.
 
 ---
 
@@ -72,7 +72,10 @@ sweet-flowers-deco-party/
 ├─ content/          ← contenido/datos (hoy poco; va a crecer con tu trabajo)
 ├─ lib/              ← utilidades y lógica (acá va a vivir mucho de lo tuyo)
 ├─ docs/             ← la "Project Bible": negocio, marca, decisiones, estándares
-├─ colaboracion/     ← esta carpeta
+├─ colaboracion/     ← handoff del equipo
+│  ├─ franco/        ← track de Franco (diseño + contenido)
+│  ├─ gonzalo/       ← TU track (esta carpeta)
+│  └─ compartido/    ← reglas comunes a los dos
 └─ public/           ← imágenes y archivos estáticos
 ```
 
@@ -86,14 +89,14 @@ sweet-flowers-deco-party/
 
 Estas aplican SIEMPRE (a vos y a la IA). Están explicadas en detalle en [`01_COMO_TRABAJAMOS.md`](./01_COMO_TRABAJAMOS.md), pero conocelas desde ya:
 
-1. **Esta NO es la versión de Next.js que la IA "conoce de memoria".** Antes de escribir código de Next, hay que leer la guía real que viene en `node_modules/next/dist/docs/`. Es una regla del repo (está en [`../AGENTS.md`](../AGENTS.md)). En tus prompts, pedile a Claude: *"leé primero la doc relevante en node_modules/next/dist/docs antes de escribir código"*.
+1. **Esta NO es la versión de Next.js que la IA "conoce de memoria".** Antes de escribir código de Next, hay que leer la guía real que viene en `node_modules/next/dist/docs/`. Es una regla del repo (está en [`../../AGENTS.md`](../../AGENTS.md)). En tus prompts, pedile a Claude: *"leé primero la doc relevante en node_modules/next/dist/docs antes de escribir código"*.
 2. **TypeScript estricto, sin `any`.** Los tipos son tu red de seguridad.
 3. **Runtime Node, nunca `edge`.** No pongas `export const runtime = "edge"`.
 4. **Servicios externos (base de datos, pagos, emails) se conectan por el Marketplace de Vercel**, no cableando un proveedor a mano. Más sobre esto en la arquitectura.
 5. **Nada de secretos en el código.** Claves y tokens van en variables de entorno (`.env.local`, que NO se sube a Git).
 6. **Placeholders marcados** con `TODO(contenido):` y nunca inventar datos reales (precios, fechas, cupos).
 
-La versión completa de "cómo pensar y trabajar" está en [`../docs/CLAUDE.md`](../docs/CLAUDE.md).
+La versión completa de "cómo pensar y trabajar" está en [`../../docs/CLAUDE.md`](../../docs/CLAUDE.md).
 
 ---
 

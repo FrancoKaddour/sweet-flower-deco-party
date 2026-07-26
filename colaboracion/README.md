@@ -1,32 +1,40 @@
-# Colaboración — Backend & Funcionalidades
+# Colaboración — Sweet Flowers Deco Party
 
-> Carpeta de onboarding para **el equipo de backend** (vos 👋). Acá está **qué** vamos a construir, **cómo** lo vas a lograr y **cómo trabajamos** para que todo salga impecable y ambos podamos mostrarlo como un logro.
+Carpeta de **handoff del equipo**. Acá está definido **quién hace qué**, **cómo trabajamos** y **qué construimos**, para que Franco y Gonzalo se enfoquen a full sin pisarse y hagan un trabajo de nivel.
 
-Sos responsable del **backend / funcionalidades / panel de carga (dashboard)**. Franco se encarga del **diseño y de cargar el contenido**. Vos hacés que el sitio *funcione*; él hace que se *vea y se sienta* memorable. Se revisa el trabajo entre los dos antes de mergear.
-
-No importa que arranques sin saber de desarrollo web: la idea es que **aprendas construyendo**, con Claude Code / opencode como copiloto y esta carpeta como mapa.
+Objetivo: un sitio **memorable** que funcione perfecto y sea un **puente de crecimiento** para Flor. Nivel de un producto que cotiza USD 30k.
 
 ---
 
-## Orden de lectura (hacelo en este orden)
+## Empezá por acá
 
-1. **[00_EMPEZA_ACA.md](./00_EMPEZA_ACA.md)** — instalá, cloná, corré el proyecto. Tu primer día.
-2. **[01_COMO_TRABAJAMOS.md](./01_COMO_TRABAJAMOS.md)** — la metodología: Claude Code, Git, commits, cómo pedir ayuda, reglas no negociables.
-3. **[02_ARQUITECTURA_BACKEND.md](./02_ARQUITECTURA_BACKEND.md)** — qué vamos a construir y **por qué** (la decisión de ingeniería).
-4. **[03_BACKLOG.md](./03_BACKLOG.md)** — tu plan de trabajo por fases, tarea por tarea, con criterios y prompts.
-5. **[04_PLANTILLAS_PROMPTS.md](./04_PLANTILLAS_PROMPTS.md)** — plantillas para hablarle a Claude Code, reportar y pedir ayuda.
+1. **[HANDOFF.md](./HANDOFF.md)** — la división del trabajo: roles, quién es dueño de qué, límites de archivos, cómo colaboramos, y el plan de contenido. **Léanlo los dos.**
 
-> El resto del proyecto está documentado en [`../docs/`](../docs/) (la "Project Bible"). Ahí vive el negocio, la marca y las decisiones. No hace falta leerlo todo ahora; el backlog te dice qué doc leer para cada tarea.
+## Las dos pistas
+
+- **[franco/](./franco/)** → diseño, contenido, dirección y revisión.
+  Un día por página, cómo hacer cada una memorable, cómo revisar a Gonzalo, y el intake de contenido de Flor.
+- **[gonzalo/](./gonzalo/)** → backend, funcionalidades y el panel a medida.
+  Onboarding, metodología, skills/setup, arquitectura, spec del panel, base de datos y el backlog tarea por tarea.
+
+## Común a los dos
+
+- **[compartido/](./compartido/)** → reglas no negociables, convención de Git y glosario.
 
 ---
 
-## Reglas de oro (si te acordás solo de esto, ya vas bien)
+## El reparto en una línea
 
-1. **Contexto → diseño → código.** Nunca al revés. Entendé el *por qué* antes de escribir una línea.
-2. **Rama por tarea + Pull Request.** Nunca pushees directo a `main`. Franco revisa antes de mergear.
-3. **Commits chiquitos**, uno por actividad. No mezcles diez cosas en un commit.
-4. **Preguntá temprano.** Si estás trabado 30–40 min, avisá. No hay premio por sufrir en silencio.
-5. **Nada de datos inventados ni secretos en el código.** Placeholders con `TODO(contenido):`, claves en variables de entorno.
-6. **Si algo falló, decilo.** Reportar un problema a tiempo vale más que esconderlo.
+| | Franco | Gonzalo |
+|---|---|---|
+| **Hace** | diseño + contenido + dirección | backend + funcionalidades + panel |
+| **Dueño de** | look del sitio y del panel, tokens, contenido | modelo de datos, e-commerce, pagos, panel (lógica), DB |
+| **Además** | revisa y aprueba los PRs | abre PRs, propone arquitectura |
 
-Cualquier duda, escribile a Franco. Bienvenido al proyecto. 🌷
+## La decisión técnica base (ya tomada)
+
+E-commerce **propio desde cero** + **Mercado Pago**; **Payload como motor** (datos/auth/API) con un **panel `/panel` 100% a medida** encima; **Postgres (Neon)** + **Vercel Blob**, todo por el Marketplace de Vercel. El detalle y el porqué: [`gonzalo/02_ARQUITECTURA_BACKEND.md`](./gonzalo/02_ARQUITECTURA_BACKEND.md) y `docs/16_DECISIONS.md` (ADR-007, ADR-011, ADR-013).
+
+## La meta
+
+Dejar todo el **diseño + backend + panel** sólido y listo, de modo que **lo único que falte** para tener el sitio "de verdad" sea el **contenido real de Flor** (imágenes y textos). Cuando llegue, se carga por el panel o se integra al código con las mejores prácticas. 🌷
