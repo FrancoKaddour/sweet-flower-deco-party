@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 /**
  * Sección HISTORIA / SOBRE FLOR — relato editorial de la fundadora.
@@ -42,9 +43,7 @@ export function Historia() {
 
         {/* DERECHA — relato + firma */}
         <FadeUp y={100}>
-          <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-champagne">
-            Nuestra historia
-          </p>
+          <Eyebrow className="mb-5">Nuestra historia</Eyebrow>
           <h2 className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)]">
             {/* TODO(contenido): titular real */}
             Detrás de cada evento, Flor

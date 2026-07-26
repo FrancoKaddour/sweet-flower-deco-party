@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FadeUp } from "@/components/motion/FadeUp";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 // TODO(contenido): productos, precios y fotos reales (ver docs/16_DECISIONS.md → 02_PRODUCTOS).
 // Precios pendientes de la planilla maestra (con/sin recargo MP a definir — ADR-007).
@@ -28,9 +29,7 @@ export function Destacados() {
           className="mb-14 flex flex-col gap-6 md:mb-20 md:flex-row md:items-end md:justify-between"
         >
           <div>
-            <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-champagne">
-              La tienda
-            </p>
+            <Eyebrow className="mb-5">La tienda</Eyebrow>
             <h2 className="max-w-[16ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)]">
               {/* TODO(contenido): titular real */}
               Piezas que se llevan la fiesta

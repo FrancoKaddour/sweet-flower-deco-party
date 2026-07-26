@@ -1,9 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { RevealText } from "@/components/motion/RevealText";
+import { Button } from "@/components/ui/Button";
 
 // TODO(contenido): reemplazar por fotos reales de los workshops.
 // Ver docs/16_DECISIONS.md → checklist 03_EVENTOS (fotos/video de ediciones).
@@ -123,13 +123,10 @@ export function Workshops() {
             {TITULO}
           </RevealText>
 
-          <Link
-            href="/evento"
-            className="mt-8 inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-ink px-7 py-3.5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-bone transition-transform duration-[400ms] ease-[var(--ease-out-expo)] hover:-translate-y-0.5"
-          >
+          <Button href="/evento" className="mt-8">
             Conocé el workshop
             <span aria-hidden="true">↗</span>
-          </Link>
+          </Button>
         </div>
       </div>
     </section>

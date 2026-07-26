@@ -1,5 +1,7 @@
 import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
+import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 /**
  * Sección CONTACTO — cierre de conversión (CTA final).
@@ -16,10 +18,7 @@ export function Contacto() {
     >
       <div className="mx-auto max-w-[1400px] text-center">
         {/* Kicker */}
-        <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-champagne">
-          {/* TODO(contenido) */}
-          Hablemos
-        </p>
+        <Eyebrow className="mb-6">Hablemos</Eyebrow>
 
         {/* Statement gigante con mask-reveal palabra por palabra */}
         <RevealText
@@ -43,18 +42,11 @@ export function Contacto() {
         <FadeUp y={50}>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             {/* TODO(contenido): link real de WhatsApp */}
-            <a
-              href="#"
-              className="rounded-[var(--radius-pill)] bg-ink px-7 py-3.5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-bone transition-transform hover:-translate-y-0.5"
-            >
-              Escribinos por WhatsApp
-            </a>
-            <a
-              href="/productos"
-              className="rounded-[var(--radius-pill)] border border-ink/20 px-7 py-3.5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink transition-transform hover:-translate-y-0.5"
-            >
+            {/* TODO(contenido): link real de WhatsApp */}
+            <Button href="#">Escribinos por WhatsApp</Button>
+            <Button href="/productos" variant="outline">
               Ver catálogo
-            </a>
+            </Button>
           </div>
         </FadeUp>
 

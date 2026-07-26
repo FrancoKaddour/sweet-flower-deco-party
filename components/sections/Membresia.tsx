@@ -1,6 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
 import { FadeUp } from "@/components/motion/FadeUp";
+import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 // TODO(contenido): copy, precio y foto reales de la membresía (ver docs/16_DECISIONS.md).
 // Beneficios del "círculo Sweet Flowers": comunidad + prioridad + descuentos todo el año.
@@ -27,10 +28,8 @@ export function Membresia() {
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16 lg:gap-24">
         {/* IZQUIERDA — bloque editorial de texto */}
         <FadeUp y={100}>
-          <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-champagne">
-            {/* TODO(contenido) */}
-            Membresía
-          </p>
+          {/* TODO(contenido) */}
+          <Eyebrow>Membresía</Eyebrow>
 
           <h2 className="mt-5 max-w-[16ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone md:text-[length:var(--text-step-5)]">
             {/* TODO(contenido): titular real */}
@@ -64,13 +63,10 @@ export function Membresia() {
 
           {/* CTA + precio de referencia */}
           <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <Link
-              href="/membresia"
-              className="inline-flex items-center rounded-[var(--radius-pill)] bg-bone px-7 py-3.5 font-sans text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink transition-transform duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5"
-            >
-              {/* TODO(contenido) */}
+            {/* TODO(contenido) */}
+            <Button href="/membresia" variant="inverse">
               Quiero ser parte ↗
-            </Link>
+            </Button>
             <p className="font-sans text-[length:var(--text-step--1)] text-bone/60">
               {/* TODO(contenido): precio real */}
               Desde $ — por mes

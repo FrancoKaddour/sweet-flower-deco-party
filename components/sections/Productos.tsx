@@ -1,5 +1,6 @@
 import { RevealText } from "@/components/motion/RevealText";
 import { CollectionCard } from "@/components/motion/CollectionCard";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 // TODO(contenido): colecciones, textos y fotos reales (ver docs/16_DECISIONS.md → 02_PRODUCTOS).
 // Cada colección enlaza a su parte del ecommerce (/productos/[slug]).
@@ -37,9 +38,7 @@ export function Productos() {
       <div className="mx-auto max-w-[1400px]">
         {/* Encabezado (centrado) */}
         <div className="mb-16 text-center md:mb-20">
-          <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-champagne">
-            El catálogo
-          </p>
+          <Eyebrow className="mb-6">El catálogo</Eyebrow>
           <RevealText
             as="h2"
             onScroll

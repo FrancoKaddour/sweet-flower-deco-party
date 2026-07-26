@@ -1,4 +1,5 @@
 import { RevealText } from "@/components/motion/RevealText";
+import { Button } from "@/components/ui/Button";
 
 /**
  * Hero — centrado. Mask-reveal palabra por palabra al montar (patrón befesti, mood cálido).
@@ -30,18 +31,10 @@ export function Hero() {
 
       {/* CTAs */}
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <a
-          href="/productos"
-          className="inline-flex items-center rounded-[var(--radius-pill)] bg-ink px-7 py-3.5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-bone transition-transform duration-[400ms] ease-[var(--ease-out-expo)] hover:-translate-y-0.5"
-        >
-          Ver catálogo
-        </a>
-        <a
-          href="#workshops"
-          className="inline-flex items-center rounded-[var(--radius-pill)] border border-line px-7 py-3.5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink transition-colors duration-[400ms] hover:border-ink"
-        >
+        <Button href="/productos">Ver catálogo</Button>
+        <Button href="#workshops" variant="outline">
           Próxima edición
-        </a>
+        </Button>
       </div>
     </section>
   );

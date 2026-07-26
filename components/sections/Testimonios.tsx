@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 // TODO(contenido): testimonios REALES con permiso de publicación (nombre, ciudad,
 // edición). Ver docs/16_DECISIONS.md → 03_EVENTOS / pregunta 20 al cliente.
@@ -62,9 +63,7 @@ export function Testimonios() {
       <div className="mx-auto max-w-[1400px]">
         {/* Encabezado */}
         <FadeUp y={80} className="mb-14 text-center md:mb-20">
-          <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-champagne">
-            Testimonios
-          </p>
+          <Eyebrow className="mb-5">Testimonios</Eyebrow>
           <h2 className="mx-auto max-w-[18ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)]">
             {/* TODO(contenido): titular real */}
             Historias que quedan
