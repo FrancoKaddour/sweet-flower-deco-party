@@ -114,7 +114,7 @@ export function Servicio() {
   return (
     <section
       id="servicio"
-      className="relative w-full overflow-hidden bg-[#F4E9E4] py-[64px] text-ink md:py-[120px]"
+      className="relative w-full overflow-hidden bg-blush py-[64px] text-ink md:py-[120px]"
     >
       {/* 1) Encabezado + navegación del carrusel */}
       <div className="mx-auto flex max-w-[1400px] items-end justify-between gap-6 px-6 md:px-10">

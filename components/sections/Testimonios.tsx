@@ -57,7 +57,7 @@ export function Testimonios() {
   return (
     <section
       id="testimonios"
-      className="bg-[#efe7d6] px-6 py-24 text-ink md:px-10 md:py-32"
+      className="bg-sand px-6 py-24 text-ink md:px-10 md:py-32"
     >
       <div className="mx-auto max-w-[1400px]">
         {/* Encabezado */}

@@ -30,7 +30,7 @@ export function Principios() {
   return (
     <section
       id="principios"
-      className="relative w-full bg-[#E7EADF] py-[64px] text-ink md:pb-[80px] md:pt-[80px]"
+      className="relative w-full bg-sage py-[64px] text-ink md:pb-[80px] md:pt-[80px]"
     >
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
       {/* Título de la sección (anima al entrar) */}

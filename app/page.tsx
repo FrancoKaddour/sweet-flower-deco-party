@@ -13,12 +13,14 @@ import { Membresia } from "@/components/sections/Membresia";
 import { Historia } from "@/components/sections/Historia";
 import { Contacto } from "@/components/sections/Contacto";
 
-// Fondos de las secciones claras (para blendear esas transiciones). Los momentos
-// oscuros (Experiencia verde, Membresía bordó, Footer tinta) van con CORTE LIMPIO.
-const BONE = "#f7f3ec";
-const SAGE = "#e7eadf";
-const BLUSH = "#f4e9e4";
-const SAND = "#efe7d6";
+// Fondos de las secciones claras (para blendear esas transiciones). Referencian
+// los tokens de @theme (app/globals.css) → única fuente de verdad; ColorBridge
+// interpola en oklab con estos var(). Los momentos oscuros (Experiencia verde,
+// Membresía bordó, Footer tinta) van con CORTE LIMPIO.
+const BONE = "var(--color-bone)";
+const SAGE = "var(--color-sage)";
+const BLUSH = "var(--color-blush)";
+const SAND = "var(--color-sand)";
 
 export default function Home() {
   return (

@@ -63,7 +63,7 @@ export function Destacados() {
               href={`/productos/${p.slug}`}
               className="group block"
             >
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-[#efe8dc]">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-sand">
                 <Image
                   src={`https://picsum.photos/seed/sfdp-dest-${p.slug}/700/880`}
                   alt=""

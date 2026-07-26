@@ -11,12 +11,17 @@
   --color-ink: #14110f; /* tinta casi negra cálida — texto principal */
   --color-bone: #f7f3ec; /* base marfil / hueso */
   --color-cloud: #ffffff;
-  --color-blush: #e8c7c8; /* acento floral romántico */
   --color-botanical: #2c3b32; /* verde profundo — acento */
   --color-bordeaux: #5b2a3a; /* profundo — momentos oscuros */
   --color-champagne: #c6a15b; /* acento premium dorado */
   --color-muted: #736d64; /* texto atenuado (~ink 55%) */
   --color-line: #e4ddd1; /* líneas sutiles */
+
+  /* Superficies claras — fondos de sección que se blendean entre sí (ver
+     ColorBridge en app/page.tsx, que interpola en oklab entre estos tokens). */
+  --color-sage: #e7eadf; /* verde grisáceo muy claro (Principios) */
+  --color-blush: #f4e9e4; /* rosado marfil (Servicio) */
+  --color-sand: #efe7d6; /* arena cálida (Testimonios, placeholders) */
 
   /* Tipografía — equivalentes libres al pairing de snask.com (ver ADR-012).
      Display: Bricolage Grotesque (≈ Snaskface). Cuerpo: Hanken Grotesk (≈ Apercu). */
