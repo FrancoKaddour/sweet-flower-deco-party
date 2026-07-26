@@ -62,11 +62,26 @@
 - **Consecuencia:** define toda la **Fase 3** del [`15_ROADMAP.md`](./15_ROADMAP.md) (catálogo → PDP → carrito → checkout MP → webhooks → gestión de stock) y el schema `Product`/`Offer` de [`11_SEO_STRATEGY.md`](./11_SEO_STRATEGY.md). Requiere definir origen de datos de productos (CMS/headless o archivos `content/` versionados — ver ADR-011). Pendiente de accesos: credenciales de Mercado Pago (carpeta `00_ACCESOS`).
 - **Estado:** ✅ Decidida. Implementación en Fase 3.
 
-### ADR-011 — Origen de datos de productos (ABIERTA 🟠)
-- **Contexto:** al construir el e-commerce desde 0 (ADR-007), los productos necesitan una fuente de datos: un CMS headless (Sanity/Payload) vs. archivos versionados en `content/` (MDX/JSON) vs. una base de datos propia.
-- **Decisión:** **PENDIENTE**. Recomendación provisional: arrancar la Fase 1/2 con archivos en `content/products/*` (rápido, versionable, sin infra) y migrar a CMS/DB en Fase 3 según volumen y quién carga los productos.
-- **Consecuencia:** define el modelo de datos, el panel de carga y parte del schema `Product`.
-- **Estado:** 🟠 Abierta. No bloquea Fase 1.
+### ADR-011 — Origen de datos + CMS (DECIDIDA con spike ✅ · 2026-07-26)
+- **Contexto:** al construir el e-commerce desde 0 (ADR-007), los productos —y también eventos, testimonios, membresía y textos de secciones— necesitan una fuente de datos y un **panel para que el equipo cargue contenido** sin tocar código. Opciones: CMS headless (Payload / Sanity) vs. archivos versionados en `content/` (MDX/JSON) vs. base de datos propia con admin a medida.
+- **Decisión:** **Payload CMS 3, self-hosted DENTRO del mismo proyecto Next.js**, sobre **Postgres (Neon, vía Vercel Marketplace)** y con **Vercel Blob** para media.
+  - Da un panel `/admin` de nivel producción → el equipo carga productos/eventos/testimonios sin tocar código.
+  - Colecciones modeladas como TypeScript (`collections/*`) → **el modelo de datos ES código versionado y tipado** (`payload-types.ts`), sin `any`, revisable por PR.
+  - Los Server Components leen por la **Local API** de Payload (sin salto HTTP) → rápido y tipado.
+- **Salvedad / riesgo (importante):** Payload 3 se integra muy de cerca con Next; hay que **validar su compatibilidad con Next 16.2.11 en un spike de día 1** (ver `colaboracion/03_BACKLOG.md`, Tarea 0). Si hay fricción irresoluble, **fallback documentado**: (a) **Sanity** (headless hosted, desacoplado de la versión de Next) o (b) **Postgres + Drizzle + admin propio**.
+- **Consecuencia:** define el modelo de datos, el panel de carga, el origen del schema `Product`/`Event` de [`11_SEO_STRATEGY.md`](./11_SEO_STRATEGY.md) y toda la Fase 0 del plan de backend. Reemplaza la recomendación provisional de "archivos en `content/`" (que queda solo como fallback rápido para el prototipo).
+- **Estado:** ✅ Decidida (sujeta al resultado del spike de compatibilidad).
+
+### ADR-013 — Arquitectura de pagos y commerce (DECIDIDA ✅ · 2026-07-26)
+- **Contexto:** ADR-007 fija e-commerce propio con **Mercado Pago**. Falta definir *cómo* se estructura para que sea robusto, testeable y **cambiable de proveedor** sin reescribir la UI.
+- **Decisión:**
+  - **Patrón adapter**: una interfaz estable `lib/commerce/` (`CommerceProduct`, `Cart`, `createCheckout`, …) independiente del proveedor. Mercado Pago vive detrás, como implementación intercambiable.
+  - **Cobro**: **Checkout Pro** primero (redirect, sin manejar datos de tarjeta → menos carga PCI y menos código), evolución a **Bricks** (embebido) cuando la UX lo pida.
+  - **Webhooks** en un route handler **Node** (nunca `edge`): verificar firma → **idempotencia** (no procesar dos veces) → crear/confirmar `Order` en Payload → **descontar stock**.
+  - **Órdenes** como colección de Payload → se ven en el mismo panel que el resto del contenido.
+  - **A medida**: no es compra directa, es **flujo de presupuesto** (colección `Quotes`/`Leads` + formulario + email transaccional con **Resend**, vía Vercel Marketplace).
+- **Consecuencia:** define las Fases 2–4 del plan de backend (`colaboracion/03_BACKLOG.md`). Requiere credenciales de Mercado Pago (carpeta `00_ACCESOS`) para el entorno de test antes de producción.
+- **Estado:** ✅ Decidida. Implementación en Fase 3 del [`15_ROADMAP.md`](./15_ROADMAP.md).
 
 ### ADR-008 — Nombre del evento (ABIERTA 🔴)
 - **Contexto:** la 8va edición es el **18/09**. El nombre no está definido: "**8vo Workshop**" vs "**Sweet Flowers Event Summit**".
