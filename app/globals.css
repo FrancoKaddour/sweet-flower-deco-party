@@ -1,26 +1,286 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------
+   SWEET FLOWERS DECO PARTY — Design tokens (PROVISIONAL)
+   Fuente de verdad: docs/06_DESIGN_SYSTEM.md + docs/07_MOTION_SYSTEM.md
+   Reemplazar al recibir el manual de marca (ver ADR-006 / ADR-009).
+---------------------------------------------------------------- */
+
+@theme {
+  /* Color — paleta editorial cálida */
+  --color-ink: #14110f; /* tinta casi negra cálida — texto principal */
+  --color-bone: #f7f3ec; /* base marfil / hueso */
+  --color-cloud: #ffffff;
+  --color-blush: #e8c7c8; /* acento floral romántico */
+  --color-botanical: #2c3b32; /* verde profundo — acento */
+  --color-bordeaux: #5b2a3a; /* profundo — momentos oscuros */
+  --color-champagne: #c6a15b; /* acento premium dorado */
+  --color-muted: #736d64; /* texto atenuado (~ink 55%) */
+  --color-line: #e4ddd1; /* líneas sutiles */
+
+  /* Tipografía — equivalentes libres al pairing de snask.com (ver ADR-012).
+     Display: Bricolage Grotesque (≈ Snaskface). Cuerpo: Hanken Grotesk (≈ Apercu). */
+  --font-display: var(--font-bricolage), "Arial Black", sans-serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Escala tipográfica fluida (mobile → desktop) */
+  --text-step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.94rem);
+  --text-step-0: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+  --text-step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --text-step-2: clamp(1.44rem, 1.28rem + 0.8vw, 2rem);
+  --text-step-3: clamp(1.73rem, 1.46rem + 1.35vw, 2.66rem);
+  --text-step-4: clamp(2.07rem, 1.66rem + 2.05vw, 3.55rem);
+  --text-step-5: clamp(2.49rem, 1.86rem + 3.15vw, 4.74rem);
+  --text-step-6: clamp(2.99rem, 2.03rem + 4.8vw, 6.31rem);
+  --text-step-7: clamp(3.58rem, 2.1rem + 7.4vw, 8.42rem);
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Easing (motion) — ver docs/07_MOTION_SYSTEM.md */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --background: var(--color-bone);
+  --foreground: var(--color-ink);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Utilidades tipográficas de display */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* ---- Smooth scroll (Lenis) ---- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ---- Mask reveal (fallback + wrappers de SplitText) ---- */
+.reveal-word {
+  will-change: transform;
+}
+
+/* ---- Collage de workshops (patrón befesti adaptado al mood cálido) ---- */
+.wk-collage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden; /* las imágenes se cortan a los costados (a sangre) */
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* collage cargado hacia la derecha (sin blanco) */
+  perspective: 3000px; /* efecto 3D pero con menos deformación (mejor cobertura) */
+}
+.wk-grid {
+  position: relative;
+  flex: none;
+  width: min(2200px, 205vw); /* bien ancho → cubre aun inclinado, sin huecos */
+  margin-right: -4vw; /* corre el collage un poco hacia la derecha */
+  display: flex;
+  gap: 12px;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%; /* pivote central → cobertura pareja al inclinar */
+  /* Estado de reposo (fallback sin JS / reduced-motion); GSAP controla el tilt */
+  transform: rotate(-10deg) scale(1.35);
+}
+.wk-col {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+}
+/* offset alterno de columnas (como befesti) */
+.wk-col:nth-child(odd) {
+  transform: translateY(-22px);
+}
+.wk-col:nth-child(even) {
+  transform: translateY(22px);
+}
+.wk-col img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  display: block;
+  will-change: transform;
+  background: var(--color-line); /* placeholder mientras carga */
+}
+/* Sección clara: el collage se funde hacia el MARFIL en los bordes (arriba/abajo
+   para la transición entre secciones, y a la derecha como scrim para el texto en
+   tinta). Los costados izquierdos quedan cortados a sangre. */
+.wk-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    /* scrim del lado derecho (marfil) para sostener el texto oscuro */
+    linear-gradient(
+      to left,
+      color-mix(in srgb, var(--color-bone) 55%, transparent) 0%,
+      transparent 30%
+    ),
+    /* fundido arriba/abajo hacia el marfil (bien extendido para tapar los
+       bordes del collage, sobre todo en mobile donde la grilla es más corta) */
+    linear-gradient(
+      to bottom,
+      var(--color-bone) 0%,
+      transparent 16%,
+      transparent 84%,
+      var(--color-bone) 100%
+    );
+}
+
+/* ---- Colecciones: clip-path "caída" reveal (referencia CANCAN) ---- */
+.clip-figure {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 8 / 11; /* vertical, tipo galería */
+  overflow: hidden;
+  margin: 0;
+  border-radius: var(--radius-md);
+  background: transparent; /* sin caja vacía: mientras cae se funde con la sección */
+}
+.clip-figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* estado inicial: recortada a altura 0 (invisible) */
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+  transition:
+    clip-path 2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    transform 0.7s var(--ease-out-expo);
+  will-change: clip-path, transform;
+}
+/* la caída: se despliega de arriba a abajo */
+.clip-figure.in-view img {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* overlay para legibilidad del texto (aparece al terminar la caída) */
+.clip-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(20, 17, 15, 0.34);
+  opacity: 0;
+  transition: opacity 0.6s ease, background 0.6s ease;
+}
+.clip-figure.is-complete .clip-overlay {
+  opacity: 1;
+}
+
+/* contenido sobre la foto — aparece cuando la caída termina */
+.clip-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(1.25rem, 2.5vw, 2.5rem);
+  color: var(--color-bone);
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.75s ease 0.05s,
+    transform 0.75s var(--ease-out-expo) 0.05s;
+}
+.clip-figure.is-complete .clip-content {
+  opacity: 1;
+  transform: none;
+}
+.clip-index {
+  font-size: var(--text-step--1);
+  letter-spacing: 0.16em;
+  opacity: 0.8;
+  margin-bottom: 0.75rem;
+}
+.clip-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: var(--text-step-4);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+}
+.clip-desc {
+  margin: 0.75rem auto 0;
+  font-size: var(--text-step--1);
+  max-width: 26ch;
+  opacity: 0.92;
+}
+.clip-cta {
+  margin-top: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--text-step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-bone) 60%, transparent);
+  padding-bottom: 3px;
+}
+.clip-cta span {
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+/* hover (solo después de que cayó) */
+.clip-card:hover .clip-figure.is-complete img {
+  transform: scale(1.075);
+}
+.clip-card:hover .clip-figure.is-complete .clip-overlay {
+  background: rgba(20, 17, 15, 0.46);
+}
+.clip-card:hover .clip-cta span {
+  transform: translate(2px, -2px);
+}
+
+/* ---- Accesibilidad: foco visible por teclado ---- */
+:focus-visible {
+  outline: 2px solid var(--color-champagne);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* ---- Accesibilidad: respetar prefers-reduced-motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

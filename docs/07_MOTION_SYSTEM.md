@@ -512,6 +512,77 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ---
 
+## 9b. Receta (h) — Collage inclinado con tilt 3D (sección Workshops)
+
+> Efecto tipo befesti "NOT JUST IN THE FEED": un collage de fotos **inclinado** que
+> entra tilteado en 3D y se **endereza** al scrollear, con parallax continuo de columnas.
+> Implementado en [`components/sections/Workshops.tsx`](../components/sections/Workshops.tsx)
+> + clases `.wk-*` en [`app/globals.css`](../app/globals.css).
+
+**Anatomía**
+
+```
+<section> (bg tinta, min-h 256vh → doble recorrido)
+ ├─ .wk-collage  (absolute inset-0, overflow hidden, perspective: 3000px, flex justify-end)
+ │   ├─ .wk-grid (width 205vw, preserve-3d, transform-origin 50% 50%)  ← GSAP le controla el tilt
+ │   │   └─ .wk-col × 5  (flex-col; imgs aspect 2/3, radius 8px)        ← GSAP les controla el parallax
+ │   └─ .wk-fade (gradientes que funden los bordes a tinta + scrim del texto)
+ └─ contenedor de texto (z-3): título con mask-reveal + CTA, abajo-derecha
+```
+
+**Valores canónicos (afinados — no cambiar sin re-verificar cobertura)**
+
+| Parámetro | Valor | Por qué |
+|---|---|---|
+| `perspective` (en `.wk-collage`) | `3000px` | 3D con **poca** deformación → mejor cobertura. |
+| `transform-origin` (grid) | `50% 50%` | pivote **central** → la escala cubre parejo en todas las direcciones. |
+| Tilt `from` | `rotationX: 12, rotationY: 0, rotation: -14, scale: 1.7` | **`rotationY: 0` es clave**: cualquier rotación en Y destapa los costados. |
+| Tilt `to` | `rotationX: 0, rotationY: 0, rotation: -10, scale: 1.35` | reposo levemente rotado en Z (como befesti). |
+| Tilt `ease` | `"none"` | progresa lineal con el scroll → **acompaña todo el recorrido** (no muere temprano). |
+| Parallax columnas | `fromTo` `yPercent: ±30 → ∓30`, `ease: "none"` | movimiento continuo; pares/impares en sentidos opuestos. |
+| `scrub` (ambos) | `2.8` | inercia perezosa (valor real de befesti). |
+| Grid `width` | `min(2200px, 205vw)` | mucho más ancho que el viewport → cubre aun inclinado. |
+| Sección alto | `256vh` | doble recorrido de scroll. |
+
+```ts
+const trigger = { trigger: el, start: "clamp(top bottom)", end: "clamp(bottom top)", scrub: 2.8 } as const;
+
+// 1) Tilt 3D — ease "none" para acompañar TODO el scroll
+gsap.fromTo(gridEl,
+  { rotationX: 12, rotationY: 0, rotation: -14, scale: 1.7 },
+  { rotationX: 0, rotationY: 0, rotation: -10, scale: 1.35,
+    transformOrigin: "50% 50%", ease: "none", force3D: true, scrollTrigger: trigger });
+
+// 2) Parallax continuo por columna (sentidos opuestos)
+cols.forEach((col, i) => {
+  const dir = i % 2 === 0 ? 1 : -1;
+  gsap.fromTo(col.querySelectorAll("img"),
+    { yPercent: 30 * dir },
+    { yPercent: -30 * dir, ease: "none", scrollTrigger: trigger });
+});
+```
+
+**Cobertura (el problema difícil):** un plano inclinado en 3D **no cubre** un rectángulo en los bordes.
+Reglas que resuelven el "espacio negro":
+1. **`rotationY: 0`** — la rotación en Y es la que más destapa los costados. Evitarla; el drama 3D se logra con `rotationX` (inclinación) + rotación en Z + `scale` (zoom).
+2. **Escala alta al entrar** (`from.scale` > `to.scale`) — cuando más inclinado, más grande → sigue cubriendo.
+3. **Grid muy ancho** (205vw) + pivote central.
+4. Lo poco que quede se **funde a tinta** con `.wk-fade` (bordes) — como hace befesti de verdad: el fondo oscuro esconde el descubierto.
+
+**Truco de verificación (test de magenta):** para ver si un hueco es *fondo sin cubrir* o *imagen oscura*, pintá el fondo de la sección de magenta y ocultá el fade:
+```js
+document.querySelector('#workshops').style.background = 'magenta';
+document.querySelector('.wk-fade').style.display = 'none';
+```
+Si el hueco se vuelve magenta → es cobertura (subí `scale`/ancho, bajá `rotationY`). Si sigue oscuro → es una imagen oscura (se resuelve con fotos reales).
+
+**Legibilidad del texto:** título blanco (`text-bone`) con `text-shadow` + un scrim muy suave del lado derecho en `.wk-fade`. No hace falta una banda negra.
+
+> Nota: las imágenes actuales son placeholders (picsum). Con **fotos reales de los workshops**
+> el resultado mejora mucho y desaparece cualquier "parche oscuro" aleatorio.
+
+---
+
 ## 10. `prefers-reduced-motion` (OBLIGATORIO)
 
 **No es opcional.** Un porcentaje real de usuarios activa esto por vestíbulo/mareo. Ignorarlo es un fallo de accesibilidad, no un detalle estético. Ver [`08_UX_PRINCIPLES.md`](./08_UX_PRINCIPLES.md) → checklist de accesibilidad.

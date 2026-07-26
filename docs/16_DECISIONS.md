@@ -86,6 +86,15 @@
 - **Consecuencia:** define `metadataBase`, canonicals y el 301 ([`11_SEO_STRATEGY.md`](./11_SEO_STRATEGY.md) §1.6).
 - **Estado:** 🟠 Abierta. Necesaria para Fase 5.
 
+### ADR-012 — Tipografía (inspiración snask.com) (DECIDIDA con salvedad ✅ · 2026-07-25)
+- **Contexto:** el cliente pidió usar "las mismas tipografías" de [snask.com](https://snask.com). Inspección en vivo (estilos computados + `@font-face`): títulos con **Snaskface** (tipografía **propia/custom** de Snask, self-hosted, **no licenciable**), cuerpo con **Apercu** (Colophon Foundry, **comercial de pago**), y acentos **Lacrima Senza** + **Platform** (también **de pago**).
+- **Decisión:** **NO** se copian las fuentes de Snask (Snaskface es su identidad de marca y no está a la venta; el resto exige comprar licencia webfont). Se replica el **espíritu** (display grotesca con carácter + cuerpo grotesca limpia tipo Apercu) con equivalentes **gratuitos y de uso comercial**:
+  - **Display:** `Bricolage Grotesque` (Google Fonts) — ≈ Snaskface. Upgrade opcional con más punch: `Clash Display` (Fontshare, gratis, self-hosted).
+  - **Cuerpo:** `Hanken Grotesk` (Google Fonts) — muy cercana a Apercu.
+- **Implementación:** cableadas vía `next/font` en `app/layout.tsx`; tokens `--font-display` / `--font-sans` en `app/globals.css`. Cambiarlas es **un solo lugar**.
+- **Salvedad / tensión:** este pairing es más **bold/contemporáneo** que la dirección **editorial-romántica** documentada (Fraunces) en [`06_DESIGN_SYSTEM.md`](./06_DESIGN_SYSTEM.md). Reconciliar con el mood definitivo cuando llegue el **manual de marca** (ADR-009). Alternativa si se quiere lujo real: licenciar Apercu o usar una serif editorial premium.
+- **Estado:** ✅ Decidida para el boceto (Fase 1), sujeta a revisión con el manual de marca.
+
 ---
 
 ## C. Checklist de contenido pendiente (mapa de carpetas + 22 preguntas)

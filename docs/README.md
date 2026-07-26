@@ -37,6 +37,7 @@ Documentación fuente de verdad del proyecto. Todo el equipo (humano o IA) parte
 | 15 | [`15_ROADMAP.md`](./15_ROADMAP.md) | Fases del proyecto y entregables. |
 | 16 | [`16_DECISIONS.md`](./16_DECISIONS.md) | Registro de decisiones (ADR) y preguntas abiertas. |
 | 17 | [`17_REFERENCES.md`](./17_REFERENCES.md) | Referencias visuales y de interacción, con el porqué. |
+| 18 | [`18_WORKFLOW_AND_SKILLS.md`](./18_WORKFLOW_AND_SKILLS.md) | Cómo operamos como agencia: skills por rol y manejo de agentes. |
 
 ---
 
