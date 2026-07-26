@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { gsap } from "@/lib/gsap";
+import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
 
 const NAV = [
   { label: "Inicio", href: "/" },
@@ -24,6 +25,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false); // ya no está en el tope → fondo frosted
   const overlayRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null); // botón "Menú" que abre
+  const previousFocus = useRef<HTMLElement | null>(null); // foco previo a abrir
   const mounted = useRef(false);
 
   // 1) Color adaptativo: qué sección data-theme está bajo la línea del header.
@@ -73,6 +76,7 @@ export function Header() {
 
     if (open) {
       document.body.style.overflow = "hidden";
+      stopLenis(); // pausamos el scroll suave mientras el menú está abierto
       if (reduce) {
         gsap.set(el, { autoAlpha: 1 });
         gsap.set(links, { yPercent: 0, autoAlpha: 1 });
@@ -94,6 +98,7 @@ export function Header() {
       }
     } else {
       document.body.style.overflow = "";
+      startLenis(); // reanudamos el scroll suave al cerrar
       if (reduce) {
         gsap.set(el, { autoAlpha: 0 });
         gsap.set(links, { yPercent: 110, autoAlpha: 0 });
@@ -113,6 +118,29 @@ export function Header() {
     }
   }, [open]);
 
+  // 3) Gestión de foco: al abrir movemos el foco dentro del overlay y al
+  //    cerrar lo devolvemos al botón "Menú" que lo disparó.
+  //    No se ejecuta en el montaje inicial (mounted.current sigue en false).
+  useEffect(() => {
+    if (!mounted.current) return;
+    const el = overlayRef.current;
+    if (!el) return;
+
+    if (open) {
+      // Guardamos el elemento que tenía el foco (normalmente el botón "Menú").
+      previousFocus.current = document.activeElement as HTMLElement | null;
+      // Movemos el foco al primer elemento focusable del overlay.
+      const focusables = el.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled])',
+      );
+      focusables[0]?.focus();
+    } else {
+      // Al cerrar devolvemos el foco al botón que abrió el menú.
+      (previousFocus.current ?? menuButtonRef.current)?.focus();
+      previousFocus.current = null;
+    }
+  }, [open]);
+
   // Cerrar con Escape
   useEffect(() => {
     if (!open) return;
@@ -122,6 +150,35 @@ export function Header() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
+
+  // 4) Focus trap: mientras el menú está abierto, Tab/Shift+Tab ciclan solo
+  //    dentro del overlay (primer ↔ último elemento focusable).
+  const onOverlayKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== "Tab") return;
+    const el = overlayRef.current;
+    if (!el) return;
+    const focusables = Array.from(
+      el.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+    );
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+
+    if (e.shiftKey) {
+      // Shift+Tab desde el primero → saltar al último.
+      if (active === first || !el.contains(active)) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      // Tab desde el último → volver al primero.
+      if (active === last || !el.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  };
 
   return (
     <>
@@ -158,9 +215,13 @@ export function Header() {
             </Link>
 
             <button
+              ref={menuButtonRef}
               type="button"
               onClick={() => setOpen(true)}
               aria-label="Abrir menú"
+              aria-expanded={open}
+              aria-haspopup="dialog"
+              aria-controls="menu-overlay"
               className="group inline-flex items-center gap-2 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.14em]"
             >
               <span className="flex flex-col gap-[3px]">
@@ -173,13 +234,22 @@ export function Header() {
         </div>
       </header>
 
-      {/* Menú overlay full-screen */}
+      {/* Menú overlay full-screen.
+          Cuando está cerrado: aria-hidden + inert lo sacan del árbol de
+          accesibilidad y del orden de tabulación, y pointer-events:none evita
+          clicks fantasma. GSAP maneja la visibilidad (autoAlpha). */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-[60] flex flex-col bg-ink text-bone"
+        id="menu-overlay"
+        onKeyDown={onOverlayKeyDown}
+        className={`fixed inset-0 z-[60] flex flex-col bg-ink text-bone ${
+          open ? "pointer-events-auto" : "pointer-events-none"
+        }`}
         role="dialog"
         aria-modal="true"
         aria-label="Menú"
+        aria-hidden={!open}
+        inert={!open}
       >
         <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-6 md:px-10">
           <span className="font-display text-[length:var(--text-step-1)] leading-none tracking-tight">
