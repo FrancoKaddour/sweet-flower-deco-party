@@ -96,6 +96,9 @@ export function CollectionCard({
   return (
     <Link href={href} className="clip-card group block">
       <figure ref={figRef} className="clip-figure">
+        {/* <img> nativo a propósito: la "caída" clip-path está afinada sobre
+            .clip-figure img en globals.css y el wrapper de next/image pelearía
+            con ese layout. Migrar recién con las fotos reales. Ver audit. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={img} alt="" loading="eager" decoding="async" />
         <div className="clip-overlay" />

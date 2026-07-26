@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
 
 /**
@@ -17,21 +18,23 @@ export function Historia() {
         {/* IZQUIERDA — imagen retrato/ambiente con detalle superpuesto */}
         <FadeUp y={50}>
           <div className="relative">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              // TODO(contenido): retrato real de Flor en su taller/evento.
+            {/* TODO(contenido): retrato real de Flor en su taller/evento. */}
+            <Image
               src="https://picsum.photos/seed/sfdp-flor-1/800/1000"
               alt=""
-              loading="lazy"
-              className="aspect-[4/5] w-full rounded-[var(--radius-md)] object-cover"
+              width={800}
+              height={1000}
+              sizes="(max-width: 768px) 100vw, 45vw"
+              className="aspect-[4/5] h-auto w-full rounded-[var(--radius-md)] object-cover"
             />
             {/* Imagen chica superpuesta (oculta en mobile para no romper) */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              // TODO(contenido): detalle del oficio (manos, piezas, textura).
+            {/* TODO(contenido): detalle del oficio (manos, piezas, textura). */}
+            <Image
               src="https://picsum.photos/seed/sfdp-flor-2/500/500"
               alt=""
-              loading="lazy"
+              width={500}
+              height={500}
+              sizes="192px"
               className="absolute -bottom-8 -right-6 hidden aspect-square w-40 rounded-[var(--radius-md)] object-cover shadow-[0_24px_60px_-28px_rgba(20,17,15,0.4)] ring-8 ring-bone md:block lg:w-48"
             />
           </div>

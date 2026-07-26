@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { gsap, useGSAP, ScrollTrigger } from "@/lib/gsap";
 import { FadeUp } from "@/components/motion/FadeUp";
 
@@ -145,14 +146,13 @@ export function Experiencia() {
                   key={slide.seed}
                   className={`absolute ${slide.className}`}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={`https://picsum.photos/seed/sfdp-exp-${slide.seed}/${slide.w}/${slide.h}`}
                     alt=""
-                    loading="lazy"
                     width={slide.w}
                     height={slide.h}
-                    className="h-auto rounded-[var(--radius-sm)] object-cover"
+                    sizes={`${slide.w}px`}
+                    className="rounded-[var(--radius-sm)] object-cover"
                     style={{ width: slide.w, height: slide.h }}
                   />
                 </div>
@@ -166,13 +166,14 @@ export function Experiencia() {
       <div className="my-8 block md:hidden">
         <div className="flex snap-x gap-3 overflow-x-auto px-6">
           {MOBILE_SEEDS.map((seed) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               key={seed}
               src={`https://picsum.photos/seed/sfdp-exp-${seed}/600/800`}
               alt=""
               aria-hidden="true"
-              loading="lazy"
+              width={600}
+              height={800}
+              sizes="70vw"
               className="aspect-[3/4] w-[70vw] shrink-0 snap-start rounded-[var(--radius-sm)] object-cover"
             />
           ))}
@@ -183,13 +184,14 @@ export function Experiencia() {
       <div className="mx-auto mt-12 grid max-w-[1400px] grid-cols-1 items-end gap-8 px-6 md:mt-[72px] md:grid-cols-[minmax(0,1fr)_minmax(0,860px)] md:gap-12 md:px-10">
         {/* Imagen de apoyo (solo desktop) */}
         <div className="hidden md:block">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="https://picsum.photos/seed/sfdp-exp-6/500/640"
             alt=""
             aria-hidden="true"
-            loading="lazy"
-            className="aspect-[4/5] w-full max-w-[380px] rounded-[var(--radius-md)] object-cover"
+            width={500}
+            height={640}
+            sizes="380px"
+            className="aspect-[4/5] h-auto w-full max-w-[380px] rounded-[var(--radius-md)] object-cover"
           />
         </div>
         <FadeUp y={100} className="max-w-full text-left">

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
 
 // TODO(contenido): testimonios REALES con permiso de publicación (nombre, ciudad,
@@ -97,11 +98,11 @@ export function Testimonios() {
                 {t.quote}
               </blockquote>
               <figcaption className="mt-7 flex items-center gap-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={`https://picsum.photos/seed/sfdp-testi-${i + 1}/120/120`}
                   alt=""
-                  loading="lazy"
+                  width={48}
+                  height={48}
                   className="h-12 w-12 shrink-0 rounded-full object-cover"
                 />
                 <div className="min-w-0">

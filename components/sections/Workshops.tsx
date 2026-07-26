@@ -94,6 +94,10 @@ export function Workshops() {
           {COLUMNS.map((col, ci) => (
             <div className="wk-col" key={ci}>
               {col.map((n) => (
+                // <img> nativo a propósito: el collage es decorativo (42 imgs),
+                // GSAP anima estos <img> por selector y next/image dispararía 42
+                // pasadas del optimizador sobre placeholders. Migrar a next/image
+                // recién con las fotos reales (imports estáticos). Ver AGENTS/audit.
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={n}

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { FadeUp } from "@/components/motion/FadeUp";
 
@@ -79,12 +80,13 @@ export function Membresia() {
 
         {/* DERECHA — retrato vertical */}
         <FadeUp y={50}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="https://picsum.photos/seed/sfdp-memb-1/800/1000"
             alt=""
-            loading="lazy"
-            className="aspect-[4/5] w-full rounded-[var(--radius-md)] object-cover"
+            width={800}
+            height={1000}
+            sizes="(max-width: 768px) 100vw, 45vw"
+            className="aspect-[4/5] h-auto w-full rounded-[var(--radius-md)] object-cover"
           />
         </FadeUp>
       </div>

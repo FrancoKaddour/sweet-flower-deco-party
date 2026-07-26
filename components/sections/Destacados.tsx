@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { FadeUp } from "@/components/motion/FadeUp";
 
@@ -63,12 +64,12 @@ export function Destacados() {
               className="group block"
             >
               <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-[#efe8dc]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={`https://picsum.photos/seed/sfdp-dest-${p.slug}/700/880`}
                   alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-[800ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
+                  fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 400px"
+                  className="object-cover transition-transform duration-[800ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
                 />
                 {/* Badge de acción (aparece en hover) */}
                 <span className="absolute right-3 top-3 grid h-10 w-10 translate-y-1 place-items-center rounded-full bg-ink text-[length:var(--text-step-0)] text-bone opacity-0 transition-all duration-300 ease-[var(--ease-out-expo)] group-hover:translate-y-0 group-hover:opacity-100">

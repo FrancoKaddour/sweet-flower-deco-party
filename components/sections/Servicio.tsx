@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
 
 // TODO(contenido): copy, títulos y fotos reales (ver docs/16_DECISIONS.md → 03_SERVICIO).
@@ -193,12 +194,13 @@ export function Servicio() {
             key={slide.seed}
             className="group relative w-[80vw] shrink-0 snap-start overflow-hidden rounded-[var(--radius-md)] md:w-[40vw] lg:w-[30vw]"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={`https://picsum.photos/seed/${slide.seed}/600/800`}
               alt=""
-              loading="lazy"
+              width={600}
+              height={800}
               draggable={false}
+              sizes="(max-width: 768px) 80vw, (max-width: 1024px) 40vw, 30vw"
               className="pointer-events-none h-[338px] w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 lg:h-[458px]"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />

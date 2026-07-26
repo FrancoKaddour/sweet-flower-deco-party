@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
 
 // TODO(contenido): principios, textos y fotos reales (ver docs → 03_PRINCIPIOS).
@@ -55,12 +56,13 @@ export function Principios() {
                 </h3>
               </header>
               <figure className="m-0">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   className="h-[525px] max-h-[40vh] w-full rounded-[var(--radius-sm)] object-cover md:max-h-none md:w-[429px]"
                   src={p.img}
                   alt={p.titulo}
-                  loading="lazy"
+                  width={429}
+                  height={525}
+                  sizes="(max-width: 768px) 100vw, 429px"
                 />
               </figure>
               <p className="font-sans text-[length:var(--text-step-0)] leading-snug text-ink md:ml-2">
