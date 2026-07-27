@@ -84,11 +84,11 @@
 - **Consecuencia:** define las Fases 2–4 del plan de backend (`colaboracion/03_BACKLOG.md`). Requiere credenciales de Mercado Pago (carpeta `00_ACCESOS`) para el entorno de test antes de producción.
 - **Estado:** ✅ Decidida. Implementación en Fase 3 del [`15_ROADMAP.md`](./15_ROADMAP.md).
 
-### ADR-008 — Nombre del evento (ABIERTA 🔴)
-- **Contexto:** la 8va edición es el **18/09**. El nombre no está definido: "**8vo Workshop**" vs "**Sweet Flowers Event Summit**".
-- **Decisión:** **PENDIENTE**. Necesita definición de Flor.
-- **Consecuencia:** el nombre es la **keyword *brand* del evento**, el `Event.name` del schema ([`11_SEO_STRATEGY.md`](./11_SEO_STRATEGY.md)), el hashtag y el título de los posts de LinkedIn ([`14_LINKEDIN_STRATEGY.md`](./14_LINKEDIN_STRATEGY.md)). Implementación: usar una sola constante `EVENT_NAME` en el código para cambiarlo en un único lugar.
-- **Estado:** 🔴 Abierta. **Debe cerrarse antes de la campaña pre-evento.**
+### ADR-008 — Nombre del evento (DECIDIDA ✅ · 2026-07-26)
+- **Contexto:** la edición del **18/09**. Se dudaba entre "8vo Workshop" y "Sweet Flowers Event Summit".
+- **Decisión:** **"Sweet Flowers Event Summit"** (confirmado por Flor). **NO es un workshop**: es un **summit/evento** → el copy, el tono y el schema deben tratarlo como `Event`, no como `Course`/workshop.
+- **Consecuencia:** es la **keyword *brand* del evento**, el `Event.name` del schema ([`11_SEO_STRATEGY.md`](./11_SEO_STRATEGY.md)), el hashtag y el título de los posts de LinkedIn ([`14_LINKEDIN_STRATEGY.md`](./14_LINKEDIN_STRATEGY.md)). Implementación: constante `EVENT_NAME = "Sweet Flowers Event Summit"` en un único lugar. Datos del evento (cupo 80, entrada, qué incluye) en [`CONTENIDO_FLOR.md`](./CONTENIDO_FLOR.md) §10.
+- **Estado:** ✅ Decidida. Faltan datos de logística (fecha/hora/sede, precios exactos, disertantes) — ver checklist.
 
 ### ADR-009 — Paleta y tipografía definitivas (ABIERTA 🟠)
 - **Contexto:** los tokens actuales son provisionales (ADR-006).
