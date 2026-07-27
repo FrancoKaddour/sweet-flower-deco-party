@@ -101,7 +101,7 @@ Notas de arquitectura:
 - **`/evento` es un hub**, no una sola landing. Contiene la próxima edición, el archivo de ediciones, disertantes e inscripción. Esto permite crecer la autoridad (7 ediciones + disertantes) sin ahogar la landing principal de conversión.
 - **`disertantes` y `ediciones`** son colecciones dinámicas: cada perfil / edición es una pieza de SEO y de prueba social. TODO(contenido): confirmar si en la v1 se publican perfiles individuales o solo la grilla.
 - El **route group `(marca)`** agrupa páginas de tono editorial que comparten un layout más pausado; no cambia la URL (sigue siendo `/historia`, `/membresia`, `/contacto`).
-- **`/carrito`** queda condicionado a la decisión de checkout (ver §9). Si se opta por Tiendanube enlazado, esta ruta puede no existir en la v1.
+- **`/carrito`** es parte del flujo: el checkout es **propio con Mercado Pago** (decidido, ADR-007). La ruta existe en la v1.
 
 ---
 
@@ -132,7 +132,7 @@ Notas de arquitectura:
 | `/404` (not-found) | Recuperación elegante ante ruta inexistente | ⚙️ | P1 | No |
 
 \* La página de inscripción es indexable pero el **paso con datos personales** no debe cachearse ni indexarse.
-† La prioridad de `/carrito` depende de la decisión de checkout (§9). Si el checkout es externo (Tiendanube), esta ruta puede degradarse a P2 o eliminarse.
+† `/carrito` es **P0**: el checkout es propio con Mercado Pago (ADR-007).
 
 TODO(contenido): confirmar el listado real de **categorías/materiales** para fijar los slugs de `[categoria]`. Provisionales: `hierro`, `mdf`, `madera`, `fundas-y-telas`.
 
@@ -318,23 +318,13 @@ Diagrama de convivencia:
 
 ---
 
-## 9. Decisión abierta: el checkout
+## 9. El checkout (DECIDIDO ✅ — ADR-007)
 
-**El método de checkout está SIN DEFINIR.** Impacta directamente en la arquitectura (existencia de `/carrito`, `/api/*`, webhooks) y en la experiencia. Las tres opciones sobre la mesa:
+**Checkout propio con Mercado Pago.** Implica: `/carrito` propio + `app/api/*` (crear preferencia, **webhook** de pago con firma + idempotencia) + gestión de stock propia (en Payload). Control total de la experiencia de punta a punta.
 
-| Opción | Qué implica en la arquitectura | Pro | Contra |
-|---|---|---|---|
-| **A) Custom + Mercado Pago** | `/carrito` propio + `app/api/*` (crear preferencia, webhook de pago), gestión de stock propia | Control total de la experiencia (pasa la Quality Bar); marca coherente de punta a punta | Más desarrollo, más responsabilidad (stock, estados de pago, seguridad) |
-| **B) Tiendanube headless** | Consumir catálogo/stock vía API de Tiendanube; checkout delegado a su flujo | Reusa el back-office existente (stock, pagos, envíos ya resueltos) | Menos control del look del checkout; dependencia de su API/limitaciones |
-| **C) Enlace externo a Tiendanube** | El sitio es catálogo/marca; el botón "Comprar" lleva a la tienda actual en Tiendanube/ML | Mínimo desarrollo, rápido de lanzar | Rompe la inmersión; el usuario "sale" del sitio premium; peor experiencia y peor medición |
-
-**Esta decisión no se resuelve en este documento.** Queda registrada y se resuelve en [`16_DECISIONS.md`](./16_DECISIONS.md). Consecuencias arquitectónicas según lo que se elija:
-
-- Si **A** → mantener `/carrito`, `app/api/*`, webhooks Mercado Pago, y una capa de gestión de stock. Prioridad P0 real de `/carrito`.
-- Si **B** → `/carrito` puede existir pero delega el pago; se necesita capa de datos contra Tiendanube.
-- Si **C** → `/carrito` **no existe** en v1; los PDP tienen un CTA "Comprar en la tienda" (externo, con `rel` y tracking). La recomendación de este equipo es **evitar C** salvo para un lanzamiento mínimo, porque contradice la Quality Bar y la promesa premium.
-
-> Recomendación provisional (a validar en `16_DECISIONS.md`): empezar por **B o C como puente** para no bloquear el lanzamiento, con un plan claro de migrar a **A** cuando el volumen lo justifique. La arquitectura debe dejar la puerta abierta a **A** sin reescribir el catálogo.
+- Tienda Nube y Mercado Libre **quedaron descartados** (Flor ya no los usa; ver [`CONTENIDO_FLOR.md`](./CONTENIDO_FLOR.md)). No hay checkout externo ni "Comprar en la tienda".
+- Los productos **a medida** no tienen compra directa: su CTA abre un **flujo de presupuesto** (`/contacto` o formulario dedicado → colección de leads).
+- Arquitectura y tareas del backend: `colaboracion/gonzalo/` (02 arquitectura, 03 backlog).
 
 ---
 

@@ -64,7 +64,7 @@
 - Logo vectorial + tipografía/paleta del manual de marca aplicados (reemplazan tokens provisionales).
 - Fotos reales de Flor, productos y eventos, con `next/image` y `alt` reales.
 - Textos reales: historia, bio, descripciones de secciones, copys de CTA.
-- Listado maestro de productos con precios reales (contemplando **+15% por canal** Tiendanube/ML/Mercado Pago), stock y flag de "a medida".
+- Listado maestro de productos con precios reales (el precio de catálogo es **sin recargo**; con Mercado Pago se calcula `precio / (1 - 0.15)` ≈ **+18%**), stock y flag de "a medida".
 - Datos reales del evento: ediciones previas, testimonios, disertantes, sponsors.
 - Video (SweetDay + material bruto) integrado donde corresponda.
 
@@ -80,27 +80,28 @@
 
 ---
 
-## Fase 3 — E-commerce + inscripción al evento (BLOQUEADA POR DECISIÓN ⬜)
+## Fase 3 — E-commerce + inscripción al evento (DECIDIDA ✅, a construir ⬜)
 
-**Objetivo:** habilitar la transacción: comprar productos e inscribirse al evento.
+**Objetivo:** habilitar la transacción: comprar productos e inscribirse al Summit.
 
-**Entregables (según decisión de e-commerce — ver [`16_DECISIONS.md`](./16_DECISIONS.md)):**
-- **Opción A — Custom + Mercado Pago:** catálogo propio, carrito, checkout con Mercado Pago, webhooks de pago, gestión de stock.
-- **Opción B — Tiendanube headless:** fichas en nuestro sitio consumiendo API de Tiendanube, checkout en Tiendanube.
-- **Opción C — Enlace:** fichas informativas en el sitio con enlace a Tiendanube/ML (menor control de SEO/UX, menor esfuerzo).
-- Flujo de **inscripción al evento** (formulario + pago o enlace de pago), con confirmación.
+**Decisión (ADR-007/011/013):** e-commerce **propio desde 0 + Mercado Pago**, con **Payload** como motor y **panel a medida**. Tienda Nube/ML descartados (ver [`10_TECH_STACK.md`](./10_TECH_STACK.md) §14). El plan detallado tarea por tarea vive en `colaboracion/gonzalo/03_BACKLOG.md`.
+
+**Entregables:**
+- Catálogo propio, ficha (PDP), carrito, **checkout con Mercado Pago** (Checkout Pro → Bricks), **webhooks** de pago, gestión de stock.
+- Flujo de **inscripción al Summit** (formulario + pago), con confirmación.
+- Productos **a medida** → flujo de presupuesto (no compra directa).
 
 **Criterios de "hecho":**
 - [ ] Un usuario puede completar una compra / inscripción de punta a punta sin fricción.
 - [ ] Pagos verificados en entorno de test antes de producción.
-- [ ] Precios con el +15% correcto según canal.
+- [ ] Precio con Mercado Pago calculado como `precio / (1 - 0.15)` ≈ +18% (ver `CONTENIDO_FLOR.md` §4).
 - [ ] Estados de "sin stock" / "a medida" manejados correctamente.
 - [ ] Página de "gracias" y comunicación post-compra.
 
 **Dependencias:**
-- **Decisión de e-commerce cerrada** (bloqueante duro; define toda la arquitectura de esta fase).
-- Contenido real de productos (Fase 2).
-- Datos reales del evento y precio de inscripción.
+- Contenido real de productos con precios (Fase 2 / `CONTENIDO_FLOR.md` §17).
+- Datos reales del Summit y precio de inscripción.
+- Credenciales de Mercado Pago (test) — carpeta `00_ACCESOS`.
 
 ---
 

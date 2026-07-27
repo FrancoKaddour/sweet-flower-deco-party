@@ -227,7 +227,7 @@ export function Heading({ level, reveal = true, className, children }: HeadingPr
 ### 7.4 `Link` (interno/externo)
 - **Responsabilidad:** navegación. Usa `next/link` para rutas internas; `<a>` con `rel` para externas.
 - **Props clave:** `href`, `external?`, `variant?`.
-- **a11y/motion:** externos → `target="_blank" rel="noopener noreferrer"` + texto que indique salida cuando aplique (el CTA "Comprar en la tienda" abre Tiendanube, ver [`10_TECH_STACK.md`](./10_TECH_STACK.md)).
+- **a11y/motion:** externos → `target="_blank" rel="noopener noreferrer"` + texto que indique salida cuando aplique (ej.: redes). El **checkout es interno** (Mercado Pago), no un enlace externo — ver [`10_TECH_STACK.md`](./10_TECH_STACK.md) §14.
 
 ```tsx
 import NextLink from "next/link";

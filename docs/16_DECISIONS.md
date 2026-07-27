@@ -121,7 +121,7 @@
 
 | Carpeta | Contenido esperado | Estado | Bloquea |
 |---|---|---|---|
-| **00_ACCESOS** | Accesos/credenciales (dominio, Tiendanube/ML, Mercado Pago, redes, hosting de assets) | ⬜ | Fases 3, 5 |
+| **00_ACCESOS** | Accesos/credenciales (dominio, **Mercado Pago**, redes, hosting de assets). *Tienda Nube/ML descartados.* | ⬜ | Fases 3, 5 |
 | **01_MARCA** | **Logo vectorial** (SVG/AI), **manual de marca** (paleta, tipografía, usos), **fotos de Flor** | ⬜ | ADR-009, Fase 2 |
 | **02_PRODUCTOS** | **Listado maestro** (nombre, material, precio, +15% por canal, stock, a medida) + **fotos** de producto | ⬜ | Fase 2, schema Product |
 | **03_EVENTOS** | **Ediciones** (las 7 previas + 8va), **testimonios**, **sponsors** (logos + nombres), disertantes | ⬜ | Fase 2, schema Event, LinkedIn |
@@ -144,7 +144,7 @@
 | 7 | Listado maestro de productos | 02_PRODUCTOS, catálogo, sitemap |
 | 8 | Precios y política +15% por canal | Fichas, offers de schema, e-commerce |
 | 9 | Gestión de stock actual | ADR-007 (elección e-commerce) |
-| 10 | Canales de venta (Tiendanube/ML/MP) | ADR-007, 00_ACCESOS |
+| 10 | Canales de venta → **respondido:** solo Mercado Pago (Tienda Nube/ML descartados) | ADR-007, `CONTENIDO_FLOR.md` |
 | 11 | Fotos de productos disponibles | 02_PRODUCTOS, `alt` reales |
 | 12 | Nombre definitivo del evento | ADR-008, schema Event, LinkedIn |
 | 13 | Fecha/hora/lugar/modalidad del evento | Event schema, sección evento |

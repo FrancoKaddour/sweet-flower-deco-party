@@ -74,8 +74,8 @@ Objetivos medibles (se refinan en [`15_ROADMAP.md`](./15_ROADMAP.md) y [`11_SEO_
 
 **Sweet Flowers Deco Party** es una marca argentina liderada por **Flor** que opera sobre (al menos) **cuatro unidades de negocio**:
 
-1. **Productos de decoración** para eventos: estructuras y piezas en **hierro, MDF, madera, y fundas/telas**. Se venden a color, muchas desarmables, algunas pintables. Hoy con presencia en **Tiendanube** y **Mercado Libre**, cobros por **Mercado Pago** (con recargo del ~15%). Hay productos de stock y **a medida / a pedido**.
-2. **Eventos / formación:** un **Workshop / Summit** del rubro. La **8.ª edición** es el **18 de septiembre**. Hay **7 ediciones previas**, disertantes, sponsors y testimonios. Es el principal activo de autoridad de la marca.
+1. **Productos de decoración** para eventos: estructuras y piezas principalmente en **hierro** (campaña actual) + **fundas/telas**; MDF/madera casi no se trabajan (solo stock/promos). Se venden a color, muchas desarmables, algunas pintables. Cobros por **Mercado Pago** (recargo: precio de catálogo `/(1-0,15)` ≈ +18%). **Trabajan mayormente por pedido** (~20 días). *Tienda Nube y Mercado Libre: ya no se usan* (ver [`CONTENIDO_FLOR.md`](./CONTENIDO_FLOR.md)).
+2. **Eventos / formación:** el **Sweet Flowers Event Summit** (evento del rubro, **NO** un workshop). La próxima edición es el **18 de septiembre**. Hay **7 ediciones previas**, disertantes, sponsors y testimonios. Es el principal activo de autoridad de la marca.
 3. **Membresía:** acceso recurrente (contenido / beneficios / comunidad — a definir con el cliente).
 4. **Marca / comunidad:** la figura de Flor, la historia, y la comunidad de alumnas/clientas que sostiene todo lo anterior.
 
@@ -197,7 +197,7 @@ Ejes principales del sitio (nombres provisionales):
 - **Next.js (App Router) + TypeScript estricto + Tailwind CSS.**
 - **GSAP** (ScrollTrigger + SplitText, ambos gratuitos) + **Lenis** para smooth scroll.
 - **Deploy en Vercel.** Imágenes con `next/image`, fuentes con `next/font`.
-- **E-commerce:** decisión abierta (custom + Mercado Pago vs. integración Tiendanube headless vs. enlace a Tiendanube). Registrada en [`16_DECISIONS.md`](./16_DECISIONS.md).
+- **E-commerce:** DECIDIDO — **propio desde 0 + Mercado Pago**, con **Payload** como motor y **panel a medida** (ADR-007/011/013). Tienda Nube/ML descartados. Ver [`16_DECISIONS.md`](./16_DECISIONS.md).
 
 ---
 

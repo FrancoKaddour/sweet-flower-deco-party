@@ -302,59 +302,28 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 ---
 
-## 14. Decisión de e-commerce (ABIERTA)
+## 14. E-commerce (DECIDIDO ✅ — ver ADR-007)
 
-Hoy la marca ya opera con **Tiendanube + Mercado Libre + Mercado Pago** (recargo ~15%). Eso condiciona la elección: cualquier camino debe respetar la operación actual de stock, cobros y envíos.
+**E-commerce propio, construido desde 0 + Mercado Pago.** Catálogo, ficha (PDP), carrito y checkout viven dentro del sitio; el cobro es con **Mercado Pago** (Checkout Pro → Bricks) + **webhooks**. Los productos **a medida** van por **flujo de presupuesto**, no compra directa.
 
-### Opción A — Frontend custom + checkout con Mercado Pago (Checkout Pro / SDK)
+> **Tienda Nube y Mercado Libre quedaron descartados.** Flor confirmó que **ya no usa Tienda Nube** ni vende por ML (ver [`CONTENIDO_FLOR.md`](./CONTENIDO_FLOR.md) §2). No hay nada que integrar ni enlazar. Las opciones B (headless) y C (enlace) de versiones previas de este doc **ya no aplican**.
 
-Catálogo propio en Next; el carrito y el pago se resuelven con Mercado Pago directamente.
-
-| Pros | Cons |
-| --- | --- |
-| Control total de UX/motion en catálogo y checkout (cumple la *Quality Bar*). | Hay que construir/mantener gestión de stock, precios y envíos por afuera. |
-| Sin dependencia del theme/limitaciones de Tiendanube. | Duplica la operación actual (Flor ya gestiona en Tiendanube). |
-| Un solo dominio, un solo look & feel. | Más superficie de mantenimiento y responsabilidad legal/fiscal. |
-
-### Opción B — Tiendanube headless vía su API
-
-Frontend custom en Next que **lee productos/stock desde la API de Tiendanube** y delega el checkout/backoffice a Tiendanube.
-
-| Pros | Cons |
-| --- | --- |
-| Look & feel premium propio + backoffice ya conocido por la marca. | La API de Tiendanube tiene límites; sincronización y auth a resolver. |
-| Reutiliza stock, precios, envíos y pagos ya configurados. | El checkout puede salir del dominio (o requiere integración fina). |
-| Menos operación nueva para Flor. | Acoplamiento a la plataforma y a su roadmap. |
-
-### Opción C — Enlazar a la tienda Tiendanube existente
-
-El sitio premium es la plataforma de marca/eventos y **enlaza** al catálogo Tiendanube ya operativo para comprar.
-
-| Pros | Cons |
-| --- | --- |
-| Time-to-market mínimo, cero riesgo de checkout. | Ruptura de experiencia al saltar de dominio (rompe la inmersión editorial). |
-| Cero mantenimiento de e-commerce nuevo. | Poco control de UX/motion en la compra. |
-| Deja al equipo enfocado en marca/evento/membresía primero. | El catálogo no vive dentro del relato del sitio. |
-
-### Recomendación
-
-**Fase 1 (lanzamiento): Opción C** — enlazar a Tiendanube. Permite lanzar el sitio premium ya, sin bloquear por integración de pago, y mantiene intacta la operación actual. Mitigamos la ruptura de experiencia mostrando **fichas de producto propias y editoriales** dentro del sitio (con foto, material, medidas, si es desarmable/pintable) y un CTA claro "Comprar en la tienda" que abre Tiendanube.
-
-**Fase 2 (evolución): migrar a Opción B** — Tiendanube headless — para traer el catálogo dentro del relato y controlar la UX, reutilizando el backoffice que Flor ya domina. **Opción A** solo si la API de Tiendanube resulta insuficiente y el negocio justifica asumir la operación completa de checkout.
-
-> Esta decisión, su fecha y sus disparadores de revisión se registran en [`16_DECISIONS.md`](./16_DECISIONS.md). El `src/lib/commerce/` se diseña como **adapter** para que cambiar de C → B → A no toque los componentes de UI.
+- **Datos + panel:** Payload CMS como motor + panel a medida (ADR-011). Ver `colaboracion/gonzalo/02_ARQUITECTURA_BACKEND.md`.
+- **Recargo Mercado Pago:** el precio de catálogo va **sin recargo**; con MP se calcula `precio / (1 - 0.15)` ≈ **+18%** (ver `CONTENIDO_FLOR.md` §4).
+- **Adapter:** `lib/commerce/` como interfaz estable → el proveedor de pago es intercambiable sin tocar la UI (ADR-013).
 
 ```ts
-// src/lib/commerce/types.ts — contrato estable independiente del proveedor
+// lib/commerce/types.ts — contrato estable independiente del proveedor
 export interface CommerceProduct {
   id: string;
   slug: string;
   title: string;
-  priceARS: number | null;      // null mientras sea placeholder
+  priceARS: number | null;      // precio base (sin recargo); null mientras sea placeholder
   material: "hierro" | "mdf" | "madera" | "fundas-telas";
   isDismountable: boolean;
   isPaintable: boolean;
-  buyUrl: string;               // link a Tiendanube en Fase 1
+  stock: number;
+  isCustomOrder: boolean;       // true → flujo de presupuesto, no compra directa
 }
 ```
 

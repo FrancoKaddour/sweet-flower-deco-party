@@ -9,7 +9,7 @@
 ## 0. Estado del proyecto (leer siempre)
 
 - **Fase actual:** Documentación estratégica + **boceto/prototipo visual** (sin contenido real todavía).
-- **Contenido real:** SOLICITADO, aún **no entregado** (logo vectorial, manual de marca, fotos, textos, historia, listado de productos, datos de eventos, testimonios). Ver checklist en [`16_DECISIONS.md`](./16_DECISIONS.md).
+- **Contenido real:** **entrega parcial iniciada** (respuestas de Flor ordenadas en [`CONTENIDO_FLOR.md`](./CONTENIDO_FLOR.md)). Aún faltan: **imágenes (todas)**, historia, redes, listado de productos con precios, y datos finos del evento. Ver checklist en [`16_DECISIONS.md`](./16_DECISIONS.md) §C y la lista en `CONTENIDO_FLOR.md` §17.
 - **Regla mientras no haya contenido real:** todo texto, imagen, precio, nombre y dato es **placeholder**. Marcá SIEMPRE los placeholders con el prefijo `TODO(contenido):` en el código para poder encontrarlos y reemplazarlos después. Nunca inventes datos duros (precios, cupos, fechas) como si fueran reales.
 
 ---
@@ -94,7 +94,7 @@ Estándares no negociables:
 - Texto: `TODO(contenido): copy real de Flor`.
 - Imágenes: usar placeholders con proporción correcta y `TODO(contenido)` en el `alt`/comentario.
 - Datos duros (precios, cupos, fechas, nombres de disertantes): **nunca** inventar valores realistas. Usar etiquetas evidentes tipo `$ —` / `Edición 0X` / `[NOMBRE DISERTANTE]`.
-- Nombre del evento del 18/09: **sin definir** (pendiente respuesta del cliente). Usar la constante `EVENT_NAME` en un solo lugar para cambiarlo una vez.
+- Nombre del evento del 18/09: **"Sweet Flowers Event Summit"** (definido — ADR-008). Es un **summit/evento**, NO un workshop. Usar la constante `EVENT_NAME` en un solo lugar.
 
 ---
 

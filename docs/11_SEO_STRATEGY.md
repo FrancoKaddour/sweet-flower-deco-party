@@ -177,12 +177,12 @@ const organizationLd = {
   sameAs: [
     "TODO(contenido): URL Instagram",
     "TODO(contenido): URL LinkedIn",
-    "TODO(contenido): URL Tiendanube / Mercado Libre",
+    "TODO(contenido): otras redes (Flor pasa los @)",
   ],
 };
 ```
 
-**Product** (ficha de producto). `offers` refleja el precio; recordar la política de **+15% en canales Tiendanube/ML/Mercado Pago** — el precio publicado debe ser coherente con el canal:
+**Product** (ficha de producto). `offers` refleja el precio: el **precio base va sin recargo**; con Mercado Pago se calcula `precio / (1 - 0.15)` ≈ **+18%** (ver `CONTENIDO_FLOR.md` §4). El schema debe reflejar el precio publicado de forma coherente:
 
 ```ts
 const productLd = {
