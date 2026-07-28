@@ -308,6 +308,28 @@ html.lenis body {
   transform: translate(2px, -2px);
 }
 
+/* ---- Panel /panel: stagger de entrada sutil (fade + translateY) ----
+   Motion muy restringido (es admin, no storefront). Sólo un fade-in leve al
+   montar el contenido. Con prefers-reduced-motion NO hay desplazamiento. */
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.panel-enter {
+  animation: panel-enter 0.32s var(--ease-out-expo) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel-enter {
+    animation: none;
+  }
+}
+
 /* ---- Accesibilidad: foco visible por teclado ---- */
 :focus-visible {
   outline: 2px solid var(--color-champagne);

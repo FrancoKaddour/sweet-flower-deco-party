@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
@@ -28,7 +29,16 @@ export function startLenis() {
  * Ver docs/07_MOTION_SYSTEM.md §Lenis.
  */
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
+  // El panel de administración (/panel) NO usa smooth scroll: es una UI
+  // utilitaria (tablas, formularios) donde el scroll suave estorba. Detectamos
+  // la ruta y, si estamos en /panel, no inicializamos Lenis. La lógica de
+  // reduced-motion de abajo se mantiene intacta.
+  const pathname = usePathname();
+  const isPanel = pathname?.startsWith("/panel") ?? false;
+
   useEffect(() => {
+    if (isPanel) return;
+
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -52,7 +62,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       lenis.destroy();
       lenisInstance = null;
     };
-  }, []);
+  }, [isPanel]);
 
   return <>{children}</>;
 }
