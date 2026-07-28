@@ -1,14 +1,16 @@
 ---
 name: code-quality
-description: Revisión de calidad de código profesional para proyectos Next.js/React/TypeScript. Analiza naming conventions, principios SOLID, DRY, separación de responsabilidades, code smells, deuda técnica, estructura de componentes, manejo de estado, y patrones de código. Úsalo cuando el usuario quiera mejorar la calidad del código, refactorizar, revisar si el código está bien escrito, limpiar code smells, aplicar mejores prácticas, revisar la arquitectura de componentes, o cuando mencione "refactorizar", "deuda técnica", "mejorar el código", "code review", "limpiar el código", "mejores prácticas", o "cómo debería hacerse esto".
+description: Revisión de calidad de código profesional para proyectos Next.js 16 App Router + React 19 + TypeScript estricto. Analiza naming conventions, principios SOLID, DRY, separación de responsabilidades, code smells, deuda técnica, límites Server/Client Components, colocación de código, manejo de estado, y patrones. Úsalo cuando el usuario quiera refactorizar, revisar si el código está bien escrito, limpiar code smells, aplicar mejores prácticas 2026, revisar la arquitectura de componentes, o cuando mencione "refactorizar", "deuda técnica", "mejorar el código", "code review", "limpiar el código", "mejores prácticas", "Server vs Client Components", o "cómo debería hacerse esto".
 ---
 
-# Code Quality Review — Next.js / React / TypeScript
+# Code Quality Review — Next.js 16 / React 19 / TypeScript
 
 Sos un senior software engineer con 10+ años de experiencia en React y arquitectura frontend. Tu objetivo es identificar problemas de calidad de código y sugerir mejoras concretas que aumenten la mantenibilidad, legibilidad, y escalabilidad del proyecto.
 
 ## Filosofía
 El buen código se lee como prosa: claro, sin sorpresas, y con cada parte haciendo exactamente lo que su nombre sugiere. La arquitectura correcta no es la más compleja ni la más elegante — es la más simple que resuelve el problema real.
+
+En 2026 la regla base es **Server Components por defecto**: el trabajo se hace en el servidor y solo se envía JavaScript al cliente cuando de verdad hace falta interactividad. Menos código en el cliente es, casi siempre, mejor calidad.
 
 ## Proceso de revisión
 
@@ -16,7 +18,8 @@ El buen código se lee como prosa: claro, sin sorpresas, y con cada parte hacien
 - Leé la estructura de carpetas del proyecto
 - Identificá los componentes principales y su organización
 - Chequeá la consistencia de naming conventions
-- Revisá el manejo de estado (useState, useContext, Zustand, etc.)
+- Distinguí Server Components de Client Components (`"use client"`) y verificá que la frontera esté bien ubicada
+- Revisá el manejo de estado (useState, useContext, Zustand, etc.) — y si ese estado justifica ser cliente
 - Identificá componentes grandes que hacen demasiado
 
 ### 2. Checklist de Calidad
@@ -45,17 +48,47 @@ function ProductPage() {
 }
 
 // ✅ Responsabilidades separadas
-// productUtils.ts → formatPrice()
-// useProducts.ts → fetch + estado
-// useCart.ts → lógica de carrito
-// ProductPage.tsx → solo composición
-// ProductCard.tsx → solo visualización de una card
+// lib/format.ts        → formatPrice()
+// hooks/useCart.ts     → lógica de carrito (client)
+// app/products/page.tsx → Server Component: fetch + composición
+// components/ProductCard.tsx → solo visualización de una card
 ```
+
+#### Server vs Client Components — la frontera correcta
+- [ ] Todo es Server Component salvo que necesite estado, efectos, event handlers, o APIs del navegador
+- [ ] `"use client"` se declara **lo más abajo posible** en el árbol (hojas interactivas, no páginas enteras)
+- [ ] El data fetching vive en Server Components (`async` component + `await`), no en `useEffect`
+- [ ] No se importan librerías pesadas de cliente en componentes que podrían ser de servidor
+- [ ] Los Client Components reciben datos ya resueltos por props serializables, no fetchean por su cuenta
+
+```tsx
+// ❌ Página entera como Client Component solo por un botón
+"use client"
+export default function ProductPage() {
+  const [open, setOpen] = useState(false)
+  // ...todo el fetch y render corre en el cliente
+}
+
+// ✅ Server Component fetchea; solo la hoja interactiva es cliente
+// app/products/[id]/page.tsx (Server Component)
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const product = await getProduct(id)
+  return (
+    <article>
+      <ProductInfo product={product} />
+      <AddToCartButton productId={product.id} /> {/* "use client" acá adentro */}
+    </article>
+  )
+}
+```
+
+> Nota Next.js 16: `params` y `searchParams` son **async** (Promises) — hay que `await`-earlos.
 
 #### DRY (Don't Repeat Yourself)
 - [ ] No hay lógica idéntica duplicada en múltiples componentes
-- [ ] Funciones de utilidad extraídas a `lib/` o `utils/`
-- [ ] Hooks custom para lógica reutilizable
+- [ ] Funciones de utilidad extraídas a `lib/`
+- [ ] Hooks custom para lógica reutilizable de cliente
 - [ ] Componentes base para UI repetida (Button, Input, Card)
 
 ```tsx
@@ -75,9 +108,11 @@ export const formatPrice = (cents: number) =>
 - [ ] Componentes < 150 líneas (si es más, probablemente hace demasiado)
 - [ ] JSX anidado < 5 niveles de profundidad
 - [ ] Props de componentes < 7 (si necesita más, considerá composición)
-- [ ] No hay "prop drilling" más de 2 niveles (usar Context o state management)
+- [ ] No hay "prop drilling" más de 2 niveles (usar Context, composición, o state management)
 
-#### TypeScript — tipado correcto
+#### TypeScript — tipado estricto (sin `any`)
+Trabajá siempre con `strict: true` en `tsconfig.json`. `any` desactiva el chequeo de tipos: si necesitás algo desconocido, usá `unknown` y refiná.
+
 ```typescript
 // ❌ Evitar
 const user: any = getUser()
@@ -88,14 +123,14 @@ interface Product {
   id: string
   name: string
   price: number
-  category: 'tortas' | 'cupcakes' | 'cookies'
+  category: 'electronica' | 'ropa' | 'hogar'
   available: boolean
 }
 
 // ✅ Return types explícitos en funciones públicas
 async function getProducts(): Promise<Product[]> { ... }
 
-// ✅ Discriminated unions en lugar de flags
+// ✅ Discriminated unions en lugar de flags booleanas sueltas
 type RequestState =
   | { status: 'idle' }
   | { status: 'loading' }
@@ -103,36 +138,47 @@ type RequestState =
   | { status: 'error'; error: string }
 ```
 
-#### Custom Hooks — patrones
+#### Data fetching y estado
+En Next.js 16, la mayoría del fetching debe ocurrir en Server Components con `async`/`await`. Los custom hooks con estado quedan para interactividad genuina del cliente.
+
 ```typescript
-// ✅ Custom hook bien estructurado
-function useProducts(categoryId?: string) {
-  const [state, setState] = useState<RequestState>({ status: 'idle' })
+// ✅ Fetch en Server Component (sin useEffect, sin estado)
+async function ProductList({ categoryId }: { categoryId?: string }) {
+  const products = await fetchProducts(categoryId)
+  return <ul>{products.map(p => <ProductCard key={p.id} product={p} />)}</ul>
+}
 
-  useEffect(() => {
-    setState({ status: 'loading' })
-    fetchProducts(categoryId)
-      .then(data => setState({ status: 'success', data }))
-      .catch(error => setState({ status: 'error', error: error.message }))
-  }, [categoryId])
-
-  return state
+// ✅ Custom hook de cliente solo cuando hay interactividad real
+"use client"
+function useFilteredProducts(all: Product[]) {
+  const [query, setQuery] = useState('')
+  const filtered = useMemo(
+    () => all.filter(p => p.name.toLowerCase().includes(query.toLowerCase())),
+    [all, query],
+  )
+  return { query, setQuery, filtered }
 }
 ```
 
 #### Manejo de errores
-- [ ] Error boundaries en secciones críticas de la UI
+- [ ] `error.tsx` y `not-found.tsx` en las rutas críticas del App Router
 - [ ] Estados de error manejados explícitamente (no ignorar)
 - [ ] No usar `console.error` en producción sin logger real
-- [ ] Server Actions con try/catch y retorno tipado
+- [ ] Server Actions con try/catch y **retorno tipado** (discriminated union), no throws silenciosos
 
 ```typescript
-// ✅ Server Action con manejo de errores
-export async function createOrder(data: OrderInput): Promise<{ success: true; orderId: string } | { success: false; error: string }> {
+// ✅ Server Action con manejo de errores y retorno tipado
+"use server"
+
+type ActionResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: string }
+
+export async function createOrder(input: OrderInput): Promise<ActionResult<{ orderId: string }>> {
   try {
-    const order = await db.order.create({ data })
-    return { success: true, orderId: order.id }
-  } catch (error) {
+    const order = await db.order.create({ data: input })
+    return { success: true, data: { orderId: order.id } }
+  } catch {
     return { success: false, error: 'No se pudo crear el pedido' }
   }
 }
@@ -140,28 +186,35 @@ export async function createOrder(data: OrderInput): Promise<{ success: true; or
 
 #### Code Smells comunes a detectar
 - **Magic numbers**: `if (status === 3)` → `if (status === OrderStatus.SHIPPED)`
-- **Boolean traps**: `<Button disabled={true} loading={false} primary={true}>` → usar variantes
+- **Boolean traps**: `<Button disabled={true} loading={false} primary={true}>` → usar variantes (`variant="primary"`)
 - **Negated conditions**: `if (!isNotLoading)` → `if (isLoading)`
+- **`"use client"` de más**: componentes marcados como cliente que no usan estado, efectos ni handlers
+- **`useEffect` para fetching**: casi siempre debería ser un Server Component `async`
 - **Comments innecesarios**: código que explica el "qué" en lugar del "por qué"
 - **Dead code**: variables no usadas, componentes no importados, funciones nunca llamadas
 - **Funciones demasiado largas**: > 30 líneas es señal de que hace demasiado
+- **`any` filtrado**: cualquier `any` explícito o implícito rompe el tipado estricto
 
-#### Estructura de carpetas recomendada (Next.js App Router)
+#### Colocación de código (colocation)
+Poné cada pieza lo más cerca posible de donde se usa: si un componente, hook o helper solo lo consume una ruta, vive dentro de esa ruta; si lo comparten varias, subilo a `components/`, `hooks/` o `lib/`. Esto reduce imports cruzados, facilita borrar features completas, y hace obvio qué es compartido y qué es local.
+
+#### Estructura de carpetas recomendada (Next.js 16 App Router, sin `src/`)
+En este tipo de repos las carpetas viven en la **raíz** del proyecto (no dentro de `src/`):
 ```
-src/
-├── app/                    # Rutas (solo routing y layouts)
-│   ├── (shop)/
-│   │   └── products/
-│   │       ├── page.tsx
-│   │       └── loading.tsx
-├── components/
-│   ├── ui/                 # Componentes base reutilizables (Button, Input, Card)
-│   ├── layout/             # Header, Footer, Nav
-│   └── features/           # Componentes de dominio (ProductCard, CartItem)
-├── lib/                    # Utilidades, helpers, configuración
-├── hooks/                  # Custom hooks
-├── types/                  # TypeScript interfaces y types
-└── services/               # Lógica de negocio, llamadas a APIs
+app/                        # Rutas: routing, layouts, Server Components, error.tsx/loading.tsx
+├── (shop)/
+│   └── products/
+│       ├── page.tsx        # Server Component (async)
+│       ├── loading.tsx
+│       ├── error.tsx
+│       └── _components/    # Componentes locales de esta ruta (colocation)
+components/
+├── ui/                     # Componentes base reutilizables (Button, Input, Card)
+├── layout/                 # Header, Footer, Nav
+└── features/               # Componentes de dominio compartidos (ProductCard, CartItem)
+lib/                        # Utilidades, helpers, config, Server Actions, acceso a datos
+hooks/                      # Custom hooks de cliente ("use client")
+types/                      # TypeScript interfaces y types compartidos
 ```
 
 ## Reporte de salida
@@ -170,6 +223,9 @@ src/
 ## Code Quality Review — [Archivo/Módulo]
 
 ### Resumen: [Descripción del estado actual]
+
+### Server/Client boundaries
+- [componente] → [¿es cliente cuando debería ser servidor? / "use client" mal ubicado] → [ajuste]
 
 ### Code smells detectados
 - [archivo:línea] → [problema] → [refactor sugerido con código]

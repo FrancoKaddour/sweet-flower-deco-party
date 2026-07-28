@@ -32,6 +32,7 @@ Ordenada por tu [backlog](./03_BACKLOG.md). Usá la skill **antes de cerrar** la
 | **Al armar el login del panel** (Tarea 4, auth) | `auth-review` | Que las sesiones, rutas protegidas y roles estén bien. La puerta del panel no puede fallar. |
 | **Antes de tocar pagos y antes de producción** (Fase 3 y 6) | `security-audit` | Revisa vulnerabilidades: inputs, datos sensibles, configuración. Clave para el checkout. |
 | **Al blindar para producción** (Fase 6) | `owasp-hardening` | Protecciones concretas contra las 10 fallas más comunes (inyección, XSS, IDOR…). |
+| **Al testear flujos críticos** (Fase 3 checkout/webhook, Fase 6) | `testing` | Tests unitarios/integración con Vitest + Testing Library. Probar checkout, Server Actions y webhooks de pago (verificación de firma + idempotencia). |
 | **Antes de un deploy serio** (Fase 6) | `dependency-audit` | Busca paquetes con vulnerabilidades (CVE) o desactualizados. |
 | **Al configurar deploy / CI / envs** (Fase 1 en adelante) | `devops-audit` | Revisa el pipeline, variables de entorno, que no haya secretos colgados. |
 | **Cuando quieras saber qué pasa en producción** (Fase 5–6) | `monitoring-setup` | Errores, logs y alertas para enterarte si algo falla antes que el cliente. |

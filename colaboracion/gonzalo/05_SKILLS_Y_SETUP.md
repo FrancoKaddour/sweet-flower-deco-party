@@ -21,7 +21,7 @@ Después de instalar `gh` y `vercel`, logueate una vez: `gh auth login` y `verce
 
 ## 2. Skills / plugins de Claude Code
 
-**Las skills de backend ya vienen en el repo.** Al clonar, Claude Code detecta solas las ~13 skills que necesitás (viven en `.claude/skills/`): `architecture-review`, `api-design`, `backend-review`, `db-review`, `auth-review`, `security-audit`, `owasp-hardening`, `dependency-audit`, `devops-audit`, `monitoring-setup`, `performance-audit`, `code-quality`, `project-clean`. **No instalás nada** para tenerlas. Cuándo usar cada una: [`08_SKILLS_POR_TAREA.md`](./08_SKILLS_POR_TAREA.md).
+**Las skills de backend ya vienen en el repo.** Al clonar, Claude Code detecta solas las 14 skills que necesitás (viven en `.claude/skills/`): `architecture-review`, `api-design`, `backend-review`, `db-review`, `auth-review`, `security-audit`, `owasp-hardening`, `dependency-audit`, `devops-audit`, `monitoring-setup`, `performance-audit`, `code-quality`, `project-clean`, `testing`. Están actualizadas a **Next.js 16 / React 19 / Payload** (mid-2026). **No instalás nada** para tenerlas. Cuándo usar cada una: [`08_SKILLS_POR_TAREA.md`](./08_SKILLS_POR_TAREA.md).
 
 > **opencode** no lee `.claude/skills/` igual que Claude Code. Para tareas con criterio (revisar API/DB/seguridad), usá **Claude Code**. Detalle en [`08_SKILLS_POR_TAREA.md`](./08_SKILLS_POR_TAREA.md).
 
