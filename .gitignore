@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Skills del equipo (bundle para Gonzalo).
+# El git global (~/.config/git/ignore) ignora .claude/. Re-incluimos SOLO
+# .claude/skills/ (que se versiona para el equipo) y dejamos el resto de
+# .claude (settings personales) fuera del repo.
+!.claude/
+.claude/*
+!.claude/skills/

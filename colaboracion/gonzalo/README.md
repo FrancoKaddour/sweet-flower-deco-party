@@ -14,6 +14,7 @@ No importa que arranques sin saber de desarrollo web: vas a **aprender construye
 6. **[07_DB_IMPLEMENTACION.md](./07_DB_IMPLEMENTACION.md)** — la base de datos: tipo, entornos, migraciones, cómo no pisarnos.
 7. **[03_BACKLOG.md](./03_BACKLOG.md)** — tu plan de trabajo, tarea por tarea.
 8. **[04_PLANTILLAS_PROMPTS.md](./04_PLANTILLAS_PROMPTS.md)** — plantillas para hablarle a la IA, reportar y pedir ayuda.
+9. **[08_SKILLS_POR_TAREA.md](./08_SKILLS_POR_TAREA.md)** — chuleta: qué skill usar en cada tarea del backlog (ya vienen en el repo).
 
 ## Antes que nada
 

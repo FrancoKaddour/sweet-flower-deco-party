@@ -21,14 +21,18 @@ Después de instalar `gh` y `vercel`, logueate una vez: `gh auth login` y `verce
 
 ## 2. Skills / plugins de Claude Code
 
-Estas son las "skills" que te potencian para este proyecto. En Claude Code se agregan desde su sistema de **plugins/skills** (menú `/plugin` o el marketplace de plugins).
+**Las skills de backend ya vienen en el repo.** Al clonar, Claude Code detecta solas las ~13 skills que necesitás (viven en `.claude/skills/`): `architecture-review`, `api-design`, `backend-review`, `db-review`, `auth-review`, `security-audit`, `owasp-hardening`, `dependency-audit`, `devops-audit`, `monitoring-setup`, `performance-audit`, `code-quality`, `project-clean`. **No instalás nada** para tenerlas. Cuándo usar cada una: [`08_SKILLS_POR_TAREA.md`](./08_SKILLS_POR_TAREA.md).
+
+> **opencode** no lee `.claude/skills/` igual que Claude Code. Para tareas con criterio (revisar API/DB/seguridad), usá **Claude Code**. Detalle en [`08_SKILLS_POR_TAREA.md`](./08_SKILLS_POR_TAREA.md).
+
+Estas dos **sí** se instalan aparte (no son archivos que se clonan):
 
 | Skill / plugin | Para qué lo necesitás |
 |---|---|
 | **Vercel** (plugin) | **Clave.** Te guía para conectar servicios por el **Marketplace de Vercel** (Postgres/Neon, Blob, Mercado Pago, Resend) de la forma correcta, y para deploys/logs. Toda la infra pasa por acá. |
 | **agent-browser** (skill) | Probar el panel y los flujos en un navegador real (abrir, click, screenshots). Indispensable para verificar que el dashboard *funciona*. Instalá: `npm i -g agent-browser && agent-browser install`. |
 
-> Si Claude Code te ofrece más skills relacionadas (bases de datos, testing), sumalas cuando una tarea lo pida. Regla general: no instales por instalar; sumá lo que la tarea necesita y justificá por qué.
+> Si Claude Code te ofrece más skills relacionadas (testing, etc.), sumalas cuando una tarea lo pida. Regla general: no instales por instalar; sumá lo que la tarea necesita y justificá por qué.
 
 **Cómo la IA lee el contexto del proyecto:** Claude Code lee solo el [`../../AGENTS.md`](../../AGENTS.md) y el [`../../docs/CLAUDE.md`](../../docs/CLAUDE.md) del repo. No hace falta que se los pegues, pero conocelos.
 
