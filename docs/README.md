@@ -38,6 +38,7 @@ Documentación fuente de verdad del proyecto. Todo el equipo (humano o IA) parte
 | 16 | [`16_DECISIONS.md`](./16_DECISIONS.md) | Registro de decisiones (ADR) y preguntas abiertas. |
 | 17 | [`17_REFERENCES.md`](./17_REFERENCES.md) | Referencias visuales y de interacción, con el porqué. |
 | 18 | [`18_WORKFLOW_AND_SKILLS.md`](./18_WORKFLOW_AND_SKILLS.md) | Cómo operamos como agencia: skills por rol y manejo de agentes. |
+| 19 | [`19_ESTUDIO_VIRTUAL.md`](./19_ESTUDIO_VIRTUAL.md) | El estudio de ~30 roles como responsabilidades para Claude: qué decide cada rol y con qué vara. |
 
 ---
 
