@@ -25,16 +25,30 @@ Meta: dejar el **motor de datos** en pie para que todo lo demás se apoye. Al te
 - **Leé primero:** [`07_DB_IMPLEMENTACION.md`](./07_DB_IMPLEMENTACION.md) · [`01_COMO_TRABAJAMOS.md`](./01_COMO_TRABAJAMOS.md) §6.
 - **Criterios:** Payload levanta contra la Neon real; ninguna credencial en el código; `npm run build` pasa.
 
-### Tarea 2 — Modelar las colecciones núcleo ⏱️ 1–2 días
-- **Objetivo:** `Products`, `Media`, `Categories`/`Materials`, `Events`, `Testimonials`, `Users` y el global `Site`.
-- **Cómo:** partí del borrador de [`02_ARQUITECTURA_BACKEND.md`](./02_ARQUITECTURA_BACKEND.md) §6 y del checklist de [`../../docs/16_DECISIONS.md`](../../docs/16_DECISIONS.md) §C. Una colección por commit. Mirá qué datos consumen hoy `components/sections/*` para no olvidar campos.
-- **Criterios:** las colecciones aparecen y se puede crear/editar un registro; cubren lo que muestran las secciones actuales; tipos generados sin `any`; build pasa; un commit por colección.
+### Tarea 2 — Modelar las colecciones núcleo ⏱️ 2–3 días
+- **Objetivo:** `Contacts` (⭐ el centro), `Products`, `Media`, `Categories`/`Materials`, `Events`, `EventRegistrations`, `Memberships`, `EmailCampaigns`, `Testimonials`, `Orders`, `Quotes/Leads`, `Users` y el global `Site`.
+- **Clave (ADR-014):** `Contacts` es el eje. `Orders`, `EventRegistrations`, `Memberships` y `Quotes` **se relacionan a un `Contact`** (no repiten email/nombre sueltos). Cada contacto lleva `tags` y `consentEmail` (opt-in con fecha y origen). Esto es lo que hace la base reutilizable para campañas.
+- **Cómo:** partí del modelo de [`02_ARQUITECTURA_BACKEND.md`](./02_ARQUITECTURA_BACKEND.md) §6, el ADR-014 y el checklist de [`../../docs/16_DECISIONS.md`](../../docs/16_DECISIONS.md) §C. Una colección por commit. Mirá qué datos consumen hoy `components/sections/*` para no olvidar campos.
+- **Criterios:** las colecciones aparecen y se puede crear/editar un registro; las relaciones a `Contacts` funcionan; tipos generados sin `any`; build pasa; un commit por colección.
 
 ### Tarea 3 — Seed de datos placeholder ⏱️ medio día
 - **Objetivo:** script idempotente que cargue 5–6 productos, 1–2 eventos y 3 testimonios de ejemplo (con `TODO(contenido)`; precios `null`).
 - **Criterios:** `npm run <seed>` carga datos evidentemente placeholder (nada de precios inventados).
 
 > **Fin de Fase 0:** avisá a Franco. El motor está en pie.
+
+---
+
+## ⚡ PRIORIDAD — Inscripción al evento (deadline 18/09)
+
+> Va **fuera del orden normal** por el **deadline real** del Summit (18/09). Se puede hacer **apenas esté el motor** (Fase 0), en paralelo con la Fase 1. Coordiná con Franco cuándo entra. Es **captura de datos, SIN pago online** — el pago del evento sigue como hoy (transferencia/link de MP), según ADR-014.
+
+### Tarea P1 — Formulario de inscripción + captura en el CRM ⏱️ 1–2 días
+- **Objetivo:** una página pública en el sitio donde la gente se anota al Summit; los datos se guardan creando/actualizando un `Contact` + un `EventRegistration`, con **opt-in de email** explícito.
+- **Por qué:** junta los datos de los interesados para las campañas y para organizar el evento. Es lo que pidió el negocio y tiene fecha.
+- **Cómo:** form → **Server Action** → valida con **Zod** → crea `Contact` (o lo actualiza si el email ya existe) + `EventRegistration` ligado al `Event` del 18/09. Email de confirmación con Resend (opcional). Se ve en el panel (Comunidad → Inscripciones).
+- **Leé primero:** ADR-014 en [`../../docs/16_DECISIONS.md`](../../docs/16_DECISIONS.md) · [`02_ARQUITECTURA_BACKEND.md`](./02_ARQUITECTURA_BACKEND.md) §6 · [`09_TESTEAR_MERCADOPAGO.md`](./09_TESTEAR_MERCADOPAGO.md) (no aplica pago acá, pero sí el patrón de Server Action + Zod).
+- **Criterios:** una persona se anota desde el sitio; queda un `Contact` con opt-in + un `EventRegistration`; **no se duplica** el contacto si el email ya existía; se ve en el panel; sin datos inventados; build pasa.
 
 ---
 
@@ -77,7 +91,7 @@ El corazón transaccional (ADR-013): preferencia de **Checkout Pro** → redirec
 Formulario de consulta → colección `Quotes/Leads` → email al equipo y al cliente → **bandeja de leads** en el panel (ver / responder / cambiar estado).
 
 ## FASE 5 — Centro de operaciones completo (resumen)
-Los módulos que faltan del panel (ver [`06_DASHBOARD_SPEC.md`](./06_DASHBOARD_SPEC.md)): **Comunidad/Miembros** (CRM), **export de contactos**, **inscripciones a eventos**, y **Métricas** (ventas, stock bajo, inscripciones, altas). Es lo que convierte el panel en el cerebro del negocio.
+Los módulos que faltan del panel (ver [`06_DASHBOARD_SPEC.md`](./06_DASHBOARD_SPEC.md)): **Comunidad/CRM** con `Contactos` unificados (opt-in, tags, historial por persona), **Miembros**, **Inscripciones a eventos**, **Campañas de email** (envío propio a segmentos por Resend — ADR-014), y **Métricas** (ventas, stock bajo, inscripciones, altas). Es lo que convierte el panel en el cerebro del negocio.
 
 ## FASE 6 — Hardening (resumen)
 Tests de los flujos críticos (checkout, webhook), headers de seguridad, validación de inputs, revisión de dependencias, observabilidad/logs, performance (Core Web Vitals) y accesibilidad. Ver [`../../docs/13_DEVELOPMENT_STANDARDS.md`](../../docs/13_DEVELOPMENT_STANDARDS.md).
@@ -93,7 +107,8 @@ Tests de los flujos críticos (checkout, webhook), headers de seguridad, validac
 | 2 | Carrito | camino a la compra |
 | 3 | Checkout + Mercado Pago + Ventas en el panel | **vender** |
 | 4 | Presupuesto "a medida" + bandeja de leads | consultas custom |
-| 5 | Comunidad + inscripciones + métricas | centro de operaciones completo |
+| P1 | ⚡ Form de inscripción al evento (data-capture) | datos para el Summit + campañas (deadline 18/09) |
+| 5 | Comunidad/CRM + campañas + inscripciones + métricas | centro de operaciones completo |
 | 6 | Hardening | producción seria |
 
 > ¿Terminaste una fase o te trabaste? Avisá a Franco. Detallamos la siguiente juntos.
