@@ -7,6 +7,7 @@ Tu base. Vos llevás el **diseño**, la **carga de contenido** y la **dirección
 1. **[TU_SEMANA.md](./TU_SEMANA.md)** — el plan de "un día por página", cómo hacés cada una memorable, y cómo pulís el panel de Gonzalo.
 2. **[REVISAR_A_GONZALO.md](./REVISAR_A_GONZALO.md)** — cómo revisás sus PRs (aunque el back no sea lo tuyo).
 3. **[INTAKE_DE_CONTENIDO.md](./INTAKE_DE_CONTENIDO.md)** — qué hacés cuando Flor te pasa fotos y textos.
+4. **[GUION_ONBOARDING_GONZALO.md](./GUION_ONBOARDING_GONZALO.md)** — hoja de ruta cronometrada (≤ 40 min) para darle la bienvenida a Gonzalo por Discord: tour del repo, metodología y objetivos.
 
 ## Contexto que conviene tener a mano
 
