@@ -208,7 +208,7 @@ El sitio se está **bocetando con placeholders**. El contenido real fue **solici
 **Bloqueantes principales (ver checklist en [`16_DECISIONS.md`](./16_DECISIONS.md)):**
 
 - Logo **vectorial** (`.ai/.eps/.svg`) + manual de marca (colores y tipografías reales).
-- **Nombre definitivo del evento** del 18/09 (¿"8vo Workshop" o "Sweet Flowers Event Summit"?).
+- ~~Nombre definitivo del evento del 18/09~~ → **DECIDIDO: "Sweet Flowers Event Summit"** (ADR-008). Es un summit/evento, no un workshop.
 - **Listado maestro de productos** (medidas, material, desarmable, pintable, colores, precios, top 10 más vendidos).
 - Envíos, pagos, tiempos de fabricación, cambios/garantía.
 - **Historia real** de la empresa + bio de Flor + equipo.

@@ -44,7 +44,7 @@ Estos NO los podés conseguir solo. Pedíselos a Franco:
 
 - [ ] **Colaborador en el repo de GitHub** (para clonar y abrir PRs).
 - [ ] **Acceso al proyecto en Vercel** — o, si Franco prefiere, que él cree las integraciones del Marketplace y te pase las **variables de entorno** para tu `.env.local`.
-- [ ] **Credenciales de test de Mercado Pago** (recién para la Fase 3; van a la carpeta `00_ACCESOS`).
+- [ ] **Credenciales de test de Mercado Pago** (recién para la Fase 3; van a la carpeta `00_ACCESOS` — ver [`09_TESTEAR_MERCADOPAGO.md`](./09_TESTEAR_MERCADOPAGO.md)).
 
 > Mientras no tengas Vercel, podés avanzar Tarea 0 (spike) y leer los docs. La Tarea 1 en adelante necesita los accesos.
 

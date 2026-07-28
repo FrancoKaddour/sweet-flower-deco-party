@@ -47,12 +47,12 @@ El sitio no es "una landing": convive **e-commerce** (catálogo, precio, envío,
     "noImplicitOverride": true,
     "verbatimModuleSyntax": true,
     "moduleResolution": "bundler",
-    "paths": { "@/*": ["./src/*"] }
+    "paths": { "@/*": ["./*"] }
   }
 }
 ```
 
-Reglas de tipado (detalle en [`13_DEVELOPMENT_STANDARDS.md`](./13_DEVELOPMENT_STANDARDS.md)): **sin `any`**, sin `as` salvo *type guards* justificados, tipos de dominio en `src/lib/types`.
+Reglas de tipado (detalle en [`13_DEVELOPMENT_STANDARDS.md`](./13_DEVELOPMENT_STANDARDS.md)): **sin `any`**, sin `as` salvo *type guards* justificados, tipos de dominio en `lib/types`.
 
 ---
 
@@ -63,7 +63,7 @@ Reglas de tipado (detalle en [`13_DEVELOPMENT_STANDARDS.md`](./13_DEVELOPMENT_ST
 - **Coexiste con GSAP:** Tailwind maqueta el estado *estático* (layout, tipografía, color); GSAP anima *transform/opacity*. No se pisan.
 
 ```css
-/* src/styles/globals.css — los VALORES viven en 06_DESIGN_SYSTEM.md */
+/* app/globals.css — los VALORES viven en 06_DESIGN_SYSTEM.md */
 @import "tailwindcss";
 
 @theme {
@@ -99,7 +99,7 @@ Ambos podrían convivir, pero el **motion firmado del sitio** ([`07_MOTION_SYSTE
 El handoff pide que "el scroll se sienta con peso". Lenis da smooth scroll con inercia controlada, es liviano, respeta el scroll nativo del OS y —crítico— **se sincroniza con ScrollTrigger** para que parallax/reveals no se desfasen.
 
 ```tsx
-// src/components/providers/SmoothScroll.tsx
+// components/motion/SmoothScroll.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -152,42 +152,35 @@ sweet-flowers-deco-party/
 │  ├─ images/                 # placeholders con proporción correcta
 │  ├─ video/                  # TODO(contenido): SweetDay + bruto
 │  └─ fonts/                  # solo si next/font local
-├─ src/
-│  ├─ app/                    # App Router
-│  │  ├─ (marketing)/         # home, historia, evento, membresía
-│  │  │  ├─ page.tsx
-│  │  │  └─ layout.tsx
-│  │  ├─ (shop)/              # catálogo + producto
-│  │  │  ├─ productos/
-│  │  │  │  ├─ page.tsx
-│  │  │  │  └─ [slug]/page.tsx
-│  │  ├─ api/                 # route handlers (webhooks pago, etc.)
-│  │  ├─ layout.tsx           # root: fonts, providers, metadata base
-│  │  ├─ sitemap.ts
-│  │  ├─ robots.ts
-│  │  └─ opengraph-image.tsx
-│  ├─ components/
-│  │  ├─ ui/                  # Button, Link, Container, Section, Heading…
-│  │  ├─ motion/              # wrappers client de animación (useGSAP)
-│  │  ├─ product/             # ProductCard, ProductGallery…
-│  │  ├─ event/               # EventCard, Speakers…
-│  │  ├─ layout/              # Nav, MenuOverlay, Footer
-│  │  └─ providers/           # SmoothScroll, ReducedMotion…
-│  ├─ lib/
-│  │  ├─ types/               # tipos de dominio (Product, Event…)
-│  │  ├─ commerce/            # adapter de e-commerce (§10)
-│  │  ├─ constants.ts         # EVENT_NAME, rutas, etc.
-│  │  ├─ seo.ts               # helpers de metadata
-│  │  └─ utils.ts             # cn(), format…
-│  ├─ content/                # datos placeholder (MDX/JSON tipados)
-│  └─ styles/
-│     └─ globals.css          # @import tailwind + @theme (tokens)
+├─ app/                       # App Router (raíz del repo)
+│  ├─ layout.tsx              # root: fonts, providers, metadata base
+│  ├─ page.tsx                # home
+│  ├─ globals.css             # @import tailwind + @theme (tokens)
+│  ├─ sitemap.ts
+│  ├─ robots.ts
+│  ├─ opengraph-image.tsx
+│  ├─ api/                    # route handlers (webhooks pago, etc.)
+│  └─ productos/              # catálogo + producto (rutas planas)
+│     ├─ page.tsx
+│     └─ [slug]/page.tsx
+├─ components/
+│  ├─ ui/                     # Button, Link, Container, Section, Heading…
+│  ├─ motion/                 # wrappers client de animación (SmoothScroll, useGSAP)
+│  ├─ sections/              # bloques de página (home, historia, evento…)
+│  └─ site/                   # Nav, MenuOverlay, Footer
+├─ lib/
+│  ├─ types/                  # tipos de dominio (Product, Event…)
+│  ├─ commerce/               # adapter de e-commerce (§10)
+│  ├─ constants.ts            # EVENT_NAME, rutas, etc.
+│  ├─ seo.ts                  # helpers de metadata
+│  └─ utils.ts                # cn(), format…
+├─ content/                   # datos placeholder (MDX/JSON tipados)
 ├─ tsconfig.json
 ├─ next.config.ts
 └─ package.json
 ```
 
-> Se usa `src/` para separar código de config. Alias `@/*` → `src/*`. Los grupos de rutas `(marketing)` y `(shop)` permiten layouts distintos sin ensuciar la URL.
+> El repo **no** usa `src/`: todo cuelga de la raíz. El alias `@/*` apunta a la raíz del repo (`@/lib/… = lib/…`, `@/components/… = components/…`). Las rutas son planas; si en el futuro hiciera falta separar layouts, se pueden usar grupos de ruta (p. ej. `(marketing)`/`(shop)`) como opción, pero no son la estructura fija de hoy.
 
 ---
 
@@ -200,7 +193,7 @@ sweet-flowers-deco-party/
 
 ```ts
 // Ejemplo de route handler: runtime Node (default), sin edge.
-// src/app/api/webhooks/mercadopago/route.ts
+// app/api/webhooks/mercadopago/route.ts
 export const dynamic = "force-dynamic";
 // NO: export const runtime = "edge";
 
@@ -217,18 +210,18 @@ export async function POST(req: Request): Promise<Response> {
 Self-host automático, sin CLS, sin request a Google. Las familias reales se definen cuando llegue el manual de marca ([`06_DESIGN_SYSTEM.md`](./06_DESIGN_SYSTEM.md)).
 
 ```tsx
-// src/app/layout.tsx (extracto)
+// app/layout.tsx (extracto)
 import localFont from "next/font/local";
 // import { Fraunces, Manrope } from "next/font/google"; // alternativa si son Google Fonts
 
 // TODO(contenido): reemplazar por la familia display real del manual de marca
 const display = localFont({
-  src: "../../public/fonts/display.woff2",
+  src: "../public/fonts/display.woff2",
   variable: "--font-display",
   display: "swap",
 });
 const body = localFont({
-  src: "../../public/fonts/body.woff2",
+  src: "../public/fonts/body.woff2",
   variable: "--font-body",
   display: "swap",
 });
@@ -274,10 +267,10 @@ El sitio es **monolingüe es-AR** por ahora. **No** se instala framework de i18n
 
 - `<html lang="es-AR">`.
 - Formato de moneda/fecha con `Intl` y locale `es-AR`.
-- Copys centralizados en `src/content` para poder internacionalizar más adelante sin reescribir componentes.
+- Copys centralizados en `content/` para poder internacionalizar más adelante sin reescribir componentes.
 
 ```ts
-// src/lib/utils.ts
+// lib/utils.ts
 export const formatPrice = (value: number): string =>
   new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(value);
 ```

@@ -15,6 +15,7 @@ No importa que arranques sin saber de desarrollo web: vas a **aprender construye
 7. **[03_BACKLOG.md](./03_BACKLOG.md)** — tu plan de trabajo, tarea por tarea.
 8. **[04_PLANTILLAS_PROMPTS.md](./04_PLANTILLAS_PROMPTS.md)** — plantillas para hablarle a la IA, reportar y pedir ayuda.
 9. **[08_SKILLS_POR_TAREA.md](./08_SKILLS_POR_TAREA.md)** — chuleta: qué skill usar en cada tarea del backlog (ya vienen en el repo).
+10. **[09_TESTEAR_MERCADOPAGO.md](./09_TESTEAR_MERCADOPAGO.md)** — guía para testear pagos en la Fase 3 (entorno de test, webhooks, firma, idempotencia). Leela cuando llegues al checkout.
 
 ## Antes que nada
 

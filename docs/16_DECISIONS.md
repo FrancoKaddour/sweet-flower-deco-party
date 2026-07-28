@@ -50,7 +50,7 @@
 ## B. Decisiones ABIERTAS
 
 ### ADR-007 — Estrategia de e-commerce (DECIDIDA ✅ · 2026-07-25)
-- **Contexto:** hay que vender productos (hierro, MDF, madera, fundas/telas; stock y a medida) con canales Tiendanube/ML/Mercado Pago y **+15%** de recargo por canal.
+- **Contexto:** hay que vender productos (hierro, MDF, madera, fundas/telas; stock y a medida) con **Mercado Pago** como medio de pago (Tiendanube/ML descartados). El precio de catálogo va **sin recargo**; con MP se calcula `precio / (1 - 0,15)` ≈ **+17,6%** (se comunica como "15%"). Fuente: [`CONTENIDO_FLOR.md`](./CONTENIDO_FLOR.md) §4.
 - **Opciones evaluadas:**
   | Opción | Ventaja | Costo | SEO/UX |
   |---|---|---|---|

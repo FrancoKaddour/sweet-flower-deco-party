@@ -47,3 +47,8 @@ next-env.d.ts
 !.claude/
 .claude/*
 !.claude/skills/
+
+# Accesos/credenciales del equipo: la carpeta es LOCAL, solo se versiona el README.
+# Nunca commitear tokens/claves reales (Mercado Pago, base de datos, etc.).
+/00_ACCESOS/*
+!/00_ACCESOS/README.md
