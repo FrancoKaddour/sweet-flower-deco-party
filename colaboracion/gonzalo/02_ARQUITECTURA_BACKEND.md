@@ -98,24 +98,31 @@ Todo vive en **un solo proyecto Next.js**, desplegado en **Vercel**. No hay un s
 
 ## 6. El modelo de datos (borrador de colecciones)
 
-Lo refinás en la Fase 0. Punto de partida:
+Lo refinás en la Fase 0. Punto de partida.
+
+> **Principio que hace la base "reutilizable a futuro" (ADR-014):** `Contacts` es el **centro**. Toda persona que toca la marca —compra, se anota al evento, pide presupuesto, es miembro, se suscribe— es **UN contacto**. Las demás cosas (orden, inscripción, membresía, lead) **se relacionan a un contacto**, no repiten su email suelto. Así podés hacer **campañas cruzadas** ("mail a todos los que se anotaron al evento y no compraron") y los datos que junta el evento hoy sirven para las campañas mañana. **No guardes `email`/`name` sueltos en cada colección: apuntá a `Contacts`.**
 
 | Colección | Para qué | Campos clave (borrador) |
 |---|---|---|
+| **Contacts** ⭐ | **el centro**: toda persona (lead, comprador, inscripto, miembro, newsletter) | name, email, phone, tags[], source, **consentEmail** (bool + fecha + origen), createdAt |
 | **Products** | catálogo | title, slug, priceARS, material, stock, isDismountable, isPaintable, isCustomOrder, images (→Media), category |
 | **Media** | imágenes | archivo (→Blob), alt |
 | **Categories** / **Materials** | clasificar | name, slug |
-| **Events** | ediciones/workshops | name, date, location, edition, description, speakers, sponsors, gallery |
+| **Events** | ediciones/summit | name, date, location, edition, description, speakers, sponsors, gallery |
+| **EventRegistrations** 🆕 | inscripciones al evento (data-capture) | **contact (→Contacts)**, event (→Events), status, ticketType, notes, createdAt |
 | **Speakers** | disertantes | name, bio, photo, role |
 | **Sponsors** | auspiciantes | name, logo, url |
 | **Testimonials** | prueba social | quote, authorName, city, avatar |
-| **Members** | membresía/comunidad | name, email, plan, status, joinedAt |
-| **Orders** | compras | items, total, status, mpPaymentId, buyer, createdAt |
-| **Quotes / Leads** | presupuestos "a medida" | contacto, detalle, producto relacionado, estado |
-| **Users** | staff del panel | email, rol (admin/editor) |
+| **Memberships** | membresía/comunidad | **contact (→Contacts)**, plan, status, startedAt, renewsAt *(cobro TBD con Flor — ADR-014)* |
+| **EmailCampaigns** 🆕 | campañas de email desde el panel | subject, body, segment (filtro sobre Contacts), status, sentAt, stats (enviados/aperturas) |
+| **Orders** | compras | items, total, status, mpPaymentId, **buyer (→Contacts)**, createdAt |
+| **Quotes / Leads** | presupuestos "a medida" | **contact (→Contacts)**, detalle, producto relacionado, estado |
+| **Users** | staff del panel (auth de Payload) | email, rol (admin/editor) |
 | **Globals: Site** | textos/config del sitio | nav, contacto, redes, home |
 
-> Antes de modelar, mirá el checklist de contenido en [`../../docs/16_DECISIONS.md`](../../docs/16_DECISIONS.md) §C (materiales, +15% por canal, "a medida", stock).
+> ⭐ = eje del modelo · 🆕 = suma por ADR-014 (CRM + campañas + inscripción al evento). El **envío** de campañas es por la **API de Resend** a segmentos de `Contacts` (panel a medida, no ESP externo). El **opt-in (`consentEmail`)** es obligatorio para poder mandarle mails a un contacto (legal — ver skill `legal-review`).
+
+> Antes de modelar, mirá el checklist de contenido en [`../../docs/16_DECISIONS.md`](../../docs/16_DECISIONS.md) §C y el ADR-014 (CRM/campañas/evento). El **formulario de inscripción al evento** (que crea `EventRegistration` + `Contact`) es candidato a priorizarse por el deadline del 18/09 — coordinalo con Franco.
 
 ---
 
