@@ -162,7 +162,7 @@ Por eso la sección Evento debe vivir con dos capas: **"lo que viene"** (próxim
 
 Estratégicamente, la membresía es la apuesta a **convertir un negocio transaccional en uno de relación**. Su valor no está en el precio del abono sino en el **LTV** (valor de vida del cliente) que desbloquea: una alumna que se queda en el ecosistema compra productos, vuelve al evento y recomienda.
 
-El riesgo es lanzarla sin una propuesta de valor clara y que el churn se coma el beneficio. Por eso, hasta que el cliente defina el contenido, el sitio **presenta la membresía como concepto/lista de espera** en lugar de prometer beneficios que no están cerrados. Métricas asociadas (MRR, churn, LTV) se tratan en [`14_METRICS.md`](./14_METRICS.md) si existe, o en la sección de métricas del roadmap.
+El riesgo es lanzarla sin una propuesta de valor clara y que el churn se coma el beneficio. Por eso, hasta que el cliente defina el contenido, el sitio **presenta la membresía como concepto/lista de espera** en lugar de prometer beneficios que no están cerrados. Métricas asociadas (MRR, churn, LTV) se tratan en la sección de métricas del [`15_ROADMAP.md`](./15_ROADMAP.md).
 
 ---
 

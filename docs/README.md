@@ -20,6 +20,7 @@ Documentación fuente de verdad del proyecto. Todo el equipo (humano o IA) parte
 |---|-----------|----------------|
 | ⭐ | [`00_PROJECT_HANDOFF.md`](./00_PROJECT_HANDOFF.md) | La biblia. Filosofía, objetivo, experiencia, principios y estándares. |
 | — | [`CLAUDE.md`](./CLAUDE.md) | Cómo debe comportarse Claude Code en este repo. |
+| — | [`CONTENIDO_FLOR.md`](./CONTENIDO_FLOR.md) | Respuestas reales de Flor (precios, recargo MP, evento, canales). Fuente de datos del negocio. |
 | 01 | [`01_BUSINESS.md`](./01_BUSINESS.md) | Qué es el negocio, cómo gana dinero, unidades de negocio. |
 | 02 | [`02_BRAND.md`](./02_BRAND.md) | Identidad de marca, voz, tono, personalidad. |
 | 03 | [`03_TARGET_AUDIENCE.md`](./03_TARGET_AUDIENCE.md) | A quién le hablamos. Personas, jobs-to-be-done. |
