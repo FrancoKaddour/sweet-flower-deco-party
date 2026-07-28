@@ -237,7 +237,7 @@ export function Header() {
         ref={overlayRef}
         id="menu-overlay"
         onKeyDown={onOverlayKeyDown}
-        className={`fixed inset-0 z-[60] flex flex-col bg-ink text-bone ${
+        className={`invisible fixed inset-0 z-[60] flex flex-col bg-ink text-bone opacity-0 ${
           open ? "pointer-events-auto" : "pointer-events-none"
         }`}
         role="dialog"
