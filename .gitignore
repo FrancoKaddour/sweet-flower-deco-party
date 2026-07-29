@@ -52,3 +52,5 @@ next-env.d.ts
 # Nunca commitear tokens/claves reales (Mercado Pago, base de datos, etc.).
 /00_ACCESOS/*
 !/00_ACCESOS/README.md
+
+.vercel
