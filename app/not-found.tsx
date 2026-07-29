@@ -26,7 +26,7 @@ export default function NotFound() {
               >
                 404
               </p>
-              <h1 className="mt-4 max-w-[20ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink">
+              <h1 className="mt-4 max-w-[20ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink [overflow-wrap:anywhere]">
                 Esta página se fue de fiesta
               </h1>
               <p className="mt-6 max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-ink/70">

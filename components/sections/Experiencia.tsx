@@ -114,7 +114,7 @@ export function Experiencia() {
     >
       {/* 1) Bloque superior izquierda */}
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
-        <FadeUp y={100} className="w-[770px] max-w-full text-left">
+        <FadeUp y={100} className="max-w-[770px] text-left">
           {/* TODO(contenido): titular real de la sección. */}
           <h2 className="mb-6 font-display text-[length:var(--text-step-5)] font-bold uppercase leading-[0.9] text-bone md:text-[length:var(--text-step-6)]">
             Más que decoración,
