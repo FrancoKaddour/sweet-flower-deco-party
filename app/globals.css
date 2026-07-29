@@ -62,6 +62,8 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* iOS: sin flash gris azulado al tocar (el foco lo cubre :focus-visible). */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Utilidades tipográficas de display */

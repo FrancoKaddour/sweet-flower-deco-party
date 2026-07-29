@@ -178,7 +178,7 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-500 ${
+        className={`fixed inset-x-0 top-0 z-50 border-b pt-[env(safe-area-inset-top)] transition-colors duration-500 ${
           scrolled
             ? dark
               ? "border-bone/10 bg-ink/65 backdrop-blur-md"
@@ -202,7 +202,7 @@ export function Header() {
           <div className="flex items-center gap-4 md:gap-6">
             <Link
               href={CONTACTO_LINK.href}
-              className={`hidden rounded-[var(--radius-pill)] px-5 py-2.5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] transition-transform duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 sm:inline-flex ${
+              className={`hidden min-h-11 items-center rounded-[var(--radius-pill)] px-5 py-2.5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] transition-transform duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 sm:inline-flex ${
                 dark ? "bg-bone text-ink" : "bg-ink text-bone"
               }`}
             >
@@ -217,7 +217,7 @@ export function Header() {
               aria-expanded={open}
               aria-haspopup="dialog"
               aria-controls="menu-overlay"
-              className="group inline-flex items-center gap-2 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.14em]"
+              className="group -my-2 inline-flex min-h-11 items-center gap-2 py-2 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.14em]"
             >
               <span className="flex flex-col gap-[3px]">
                 <span className="h-px w-5 bg-current transition-transform duration-300 group-hover:translate-x-0.5" />
@@ -246,7 +246,7 @@ export function Header() {
         aria-hidden={!open}
         inert={!open}
       >
-        <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-6 md:px-10">
+        <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 pb-6 pt-[calc(1.5rem+env(safe-area-inset-top))] md:px-10">
           <span className="font-display text-[length:var(--text-step-1)] leading-none tracking-tight">
             Sweet&nbsp;Flowers
           </span>
@@ -263,7 +263,7 @@ export function Header() {
           </button>
         </div>
 
-        <nav className="flex flex-1 items-center px-6 md:px-10">
+        <nav className="flex flex-1 items-center overflow-y-auto px-6 py-4 md:px-10">
           <ul className="mx-auto w-full max-w-[1440px]">
             {NAV.map((item, i) => (
               <li key={item.href} className="overflow-hidden">

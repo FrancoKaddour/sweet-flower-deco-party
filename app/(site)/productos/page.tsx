@@ -27,7 +27,7 @@ export default function ProductosPage() {
             <Eyebrow className="mb-6">El catálogo</Eyebrow>
             <RevealText
               as="h1"
-              className="max-w-[18ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink"
+              className="max-w-[18ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink [overflow-wrap:anywhere]"
             >
               {/* TODO(contenido): titular real del catálogo */}
               La materia de cada fiesta
@@ -45,7 +45,7 @@ export default function ProductosPage() {
                 próximo evento.
               </p>
               {/* Dato honesto de operación (docs/CONTENIDO_FLOR.md §1). */}
-              <dl className="flex shrink-0 gap-10">
+              <dl className="flex shrink-0 flex-wrap gap-x-10 gap-y-6">
                 <div>
                   <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-champagne">
                     Categorías
@@ -134,9 +134,11 @@ export default function ProductosPage() {
 
                     <Link
                       href={`/productos/${cat.slug}`}
-                      className="group/cta mt-8 inline-flex items-center gap-2 border-b border-ink pb-1 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] text-ink"
+                      className="group/cta mt-6 inline-flex min-h-11 items-center gap-2 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] text-ink"
                     >
-                      Ver {cat.nombre}
+                      <span className="border-b border-ink pb-1">
+                        Ver {cat.nombre}
+                      </span>
                       <span
                         aria-hidden="true"
                         className="inline-block transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover/cta:translate-x-1"

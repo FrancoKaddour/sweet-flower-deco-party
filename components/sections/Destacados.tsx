@@ -37,9 +37,9 @@ export function Destacados() {
           </div>
           <Link
             href="/productos"
-            className="group inline-flex w-max items-center gap-2 border-b border-ink pb-1 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] text-ink"
+            className="group inline-flex min-h-11 w-max items-center gap-2 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] text-ink"
           >
-            Ver toda la tienda
+            <span className="border-b border-ink pb-1">Ver toda la tienda</span>
             <span
               aria-hidden="true"
               className="inline-block transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:translate-x-1"

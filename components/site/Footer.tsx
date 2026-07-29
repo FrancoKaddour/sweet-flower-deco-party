@@ -152,13 +152,13 @@ export function Footer() {
 
         <nav
           aria-label="Redes sociales"
-          className="flex items-center gap-5 text-bone/70"
+          className="-mr-2.5 flex items-center gap-1 text-bone/70"
         >
           {/* Instagram */}
           <a
             href="#"
             aria-label="Instagram"
-            className="transition-colors hover:text-bone"
+            className="inline-flex h-11 w-11 items-center justify-center transition-colors hover:text-bone"
           >
             {/* TODO(contenido): URL de Instagram */}
             <svg
@@ -192,7 +192,7 @@ export function Footer() {
           <a
             href="#"
             aria-label="WhatsApp"
-            className="transition-colors hover:text-bone"
+            className="inline-flex h-11 w-11 items-center justify-center transition-colors hover:text-bone"
           >
             {/* TODO(contenido): URL de WhatsApp */}
             <svg
@@ -219,7 +219,7 @@ export function Footer() {
           <a
             href="#"
             aria-label="Email"
-            className="transition-colors hover:text-bone"
+            className="inline-flex h-11 w-11 items-center justify-center transition-colors hover:text-bone"
           >
             {/* TODO(contenido): dirección de email real */}
             <svg
