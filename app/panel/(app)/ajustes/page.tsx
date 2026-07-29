@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/panel/PageHeader";
 import { PlugHint } from "@/components/panel/PlugHint";
 import { PanelButton } from "@/components/panel/PanelButton";
+import { PanelReveal } from "@/components/panel/PanelReveal";
+import { SectionHeading } from "@/components/panel/SectionHeading";
 import { DataTable, type Column } from "@/components/panel/DataTable";
 import { Badge } from "@/components/panel/Badge";
-import { getMockUsuarios, type Usuario } from "@/lib/panel/mock";
+import { getUsuarios } from "@/lib/panel/data";
+import type { Usuario } from "@/lib/panel/types";
 
 export const metadata: Metadata = { title: "Ajustes" };
 
@@ -41,14 +44,15 @@ const COLUMNS: Column<Usuario>[] = [
   },
 ];
 
-export default function AjustesPage() {
-  // 🔌 GONZALO: reemplazá getMockUsuarios() por la query a Users (auth de Payload).
-  // Esta vista es SOLO para admin: protegela por rol.
-  const usuarios = getMockUsuarios();
+export default async function AjustesPage() {
+  // 🔌 GONZALO: getUsuarios() vive en lib/panel/data.ts. Cambiá su cuerpo por la
+  // query a Users (auth de Payload). Esta vista es SOLO para admin: protegela por rol.
+  const usuarios = await getUsuarios();
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-12">
       <PageHeader
+        seccion="Ajustes"
         titulo="Ajustes"
         descripcion="Usuarios y roles del panel. Solo administradores pueden gestionar staff."
         accion={
@@ -65,14 +69,61 @@ export default function AjustesPage() {
         Payload. Protegé esta vista por rol admin — ver skill <em>auth-review</em>.
       </PlugHint>
 
-      <DataTable
-        caption="Listado de usuarios del panel"
-        columns={COLUMNS}
-        rows={usuarios}
-        getRowKey={(u) => u.id}
-        emptyTitulo="Sin usuarios todavía"
-        emptyDescripcion="Invitá a tu equipo y asignales un rol para que gestionen el panel."
-      />
+      {/* Referencia de roles — dos tarjetas sobrias que explican qué puede cada uno. */}
+      <section aria-labelledby="roles-heading" className="flex flex-col gap-6">
+        <SectionHeading
+          id="roles-heading"
+          eyebrow="Permisos"
+          titulo="Qué puede cada rol"
+        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <PanelReveal
+            as="article"
+            index={0}
+            className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-sand p-6"
+          >
+            <div className="flex items-center gap-2">
+              <Badge variant="warning">Admin</Badge>
+            </div>
+            <p className="text-[length:var(--text-step--1)] leading-relaxed text-muted">
+              Acceso total: gestiona ventas, catálogo, comunidad, campañas,
+              contenido y también <strong className="text-ink">este panel de ajustes</strong>{" "}
+              (invitar staff y cambiar roles).
+            </p>
+          </PanelReveal>
+          <PanelReveal
+            as="article"
+            index={1}
+            className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-sage p-6"
+          >
+            <div className="flex items-center gap-2">
+              <Badge variant="info">Editor</Badge>
+            </div>
+            <p className="text-[length:var(--text-step--1)] leading-relaxed text-muted">
+              Trabaja el día a día: catálogo, comunidad, campañas y contenido.
+              <strong className="text-ink"> No accede a Ajustes</strong> ni gestiona
+              otros usuarios.
+            </p>
+          </PanelReveal>
+        </div>
+      </section>
+
+      {/* Listado de staff. */}
+      <section aria-labelledby="staff-heading" className="flex flex-col gap-6">
+        <SectionHeading
+          id="staff-heading"
+          eyebrow="Equipo"
+          titulo="Staff del panel"
+        />
+        <DataTable
+          caption="Listado de usuarios del panel"
+          columns={COLUMNS}
+          rows={usuarios}
+          getRowKey={(u) => u.id}
+          emptyTitulo="Sin usuarios todavía"
+          emptyDescripcion="Invitá a tu equipo y asignales un rol para que gestionen el panel."
+        />
+      </section>
     </div>
   );
 }

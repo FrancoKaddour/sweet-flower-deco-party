@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { IconMenu } from "@/components/panel/icons";
-import { USUARIO_SESION } from "@/lib/panel/mock";
+import type { UsuarioSesion } from "@/lib/panel/types";
 
 // Topbar del panel — sobria (el peso editorial lo lleva el PageHeader de cada
-// página, no la topbar). Botón hamburguesa (mobile) + fecha (es-AR) + usuario mock
-// + logout mock. No duplica la descripción de la sección: eso vive en el PageHeader.
+// página, no la topbar). Botón hamburguesa (mobile) + fecha (es-AR) + usuario de
+// sesión + logout. No duplica la descripción de la sección: eso vive en el PageHeader.
 
 type TopbarProps = {
   /** Abre el sidebar en mobile. */
   onOpenMenu: () => void;
+  /** Usuario de la sesión activa (resuelto en el server). */
+  sesion: UsuarioSesion;
 };
 
 // Fecha larga en es-AR ("martes, 29 de julio de 2026"), capitalizada.
@@ -24,7 +26,7 @@ function fechaHoy(): string {
   return f.charAt(0).toUpperCase() + f.slice(1);
 }
 
-export function Topbar({ onOpenMenu }: TopbarProps) {
+export function Topbar({ onOpenMenu, sesion }: TopbarProps) {
   return (
     <header className="sticky top-0 z-30 flex items-center gap-4 border-b border-line bg-bone/85 px-4 py-3 backdrop-blur-md md:px-8">
       <button
@@ -46,10 +48,10 @@ export function Topbar({ onOpenMenu }: TopbarProps) {
       <div className="flex items-center gap-3">
         <span className="hidden text-right sm:block">
           <span className="block text-[length:var(--text-step--1)] font-medium text-ink">
-            {USUARIO_SESION.nombre}
+            {sesion.nombre}
           </span>
           <span className="block text-[length:var(--text-step--1)] uppercase tracking-[0.1em] text-muted">
-            {USUARIO_SESION.rol}
+            {sesion.rol}
           </span>
         </span>
         {/* 🔌 GONZALO: logout real → cerrar la sesión de Payload y redirigir a /panel/login */}

@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/panel/PageHeader";
 import { PlugHint } from "@/components/panel/PlugHint";
 import { PanelButton } from "@/components/panel/PanelButton";
+import { PanelReveal } from "@/components/panel/PanelReveal";
+import { SectionHeading } from "@/components/panel/SectionHeading";
 import { EmptyState } from "@/components/panel/EmptyState";
-import { getMockBloquesContenido } from "@/lib/panel/mock";
+import { getBloquesContenido } from "@/lib/panel/data";
 
 // Un bloque está "en cero" cuando su conteo arranca con 0 (ej. "0 cargados").
 // Se muestra con el patrón de estado vacío para que Gonzalo/Flor vean cómo luce
@@ -16,14 +18,16 @@ export const metadata: Metadata = { title: "Contenido" };
 
 // Contenido — tres bloques de acceso: Eventos/Ediciones, Testimonios y Textos
 // del sitio. Cada card enchufa a su propia colección de Payload.
-export default function ContenidoPage() {
-  // 🔌 GONZALO: reemplazá getMockBloquesContenido() por conteos reales de cada
-  // colección (Events, Testimonials) y el global Site.
-  const bloques = getMockBloquesContenido();
+export default async function ContenidoPage() {
+  // 🔌 GONZALO: getBloquesContenido() vive en lib/panel/data.ts y ya deriva sus
+  // conteos de getEventos()/getTestimonios(). Cambiando el cuerpo de ESAS dos por
+  // queries a Events/Testimonials, los conteos pasan a ser reales sin tocar esta page.
+  const bloques = await getBloquesContenido();
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-12">
       <PageHeader
+        seccion="Contenido"
         titulo="Contenido"
         descripcion="Lo que Flor edita sin tocar código: eventos, testimonios y textos del sitio."
       />
@@ -34,13 +38,22 @@ export default function ContenidoPage() {
         como <code className="font-mono">TODO(contenido)</code> en el código.
       </PlugHint>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {bloques.map((b) => {
+      <section aria-labelledby="contenido-bloques-heading" className="flex flex-col gap-6">
+        <SectionHeading
+          id="contenido-bloques-heading"
+          eyebrow="Lo editable"
+          titulo="Las tres piezas del sitio"
+        />
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {bloques.map((b, i) => {
           const vacio = estaVacio(b.conteo);
           return (
-            <article
+            <PanelReveal
+              as="article"
               key={b.id}
-              className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-line bg-cloud p-6"
+              index={i}
+              className="group flex flex-col gap-4 rounded-[var(--radius-md)] border border-line bg-cloud p-6 transition-colors duration-200 hover:border-champagne/60"
             >
               <div className="flex-1">
                 <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.1em] text-champagne">
@@ -88,10 +101,11 @@ export default function ContenidoPage() {
                   </PanelButton>
                 </div>
               )}
-            </article>
+            </PanelReveal>
           );
         })}
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

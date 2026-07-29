@@ -9,13 +9,13 @@ import { ArrowLink } from "@/components/panel/ArrowLink";
 import { ChipPago, ChipEnvio } from "@/components/panel/status";
 import { Badge } from "@/components/panel/Badge";
 import {
-  getMockKpis,
-  getMockAcciones,
-  getMockMetricasClave,
-  getMockActividad,
-  getMockUltimasOrdenes,
-  formatARS,
-} from "@/lib/panel/mock";
+  getKpis,
+  getAcciones,
+  getMetricasClave,
+  getActividad,
+  getUltimasOrdenes,
+} from "@/lib/panel/data";
+import { formatARS } from "@/lib/panel/types";
 
 // Inicio / Dashboard — "EL PULSO DEL NEGOCIO, HOY". El cockpit del panel: momento
 // oscuro (botanical) con las 3 métricas clave en display, KPIs secundarios sobre
@@ -25,19 +25,21 @@ import {
 // Superficies cálidas rotativas para los KPIs secundarios (variedad de marca).
 const SUPERFICIES = ["sage", "blush", "sand", "cloud"] as const;
 
-export default function InicioPage() {
-  // 🔌 GONZALO: reemplazá getMockMetricasClave() por las 3 agregaciones destacadas
-  // (ventas del mes, órdenes del mes, a despachar). Ver lib/panel/mock.ts.
-  const metricas = getMockMetricasClave();
-  // 🔌 GONZALO: reemplazá getMockKpis() por agregaciones sobre Orders/Products/
-  // EventRegistrations/Contacts/Quotes (ver comentarios en lib/panel/mock.ts).
-  const kpis = getMockKpis();
-  // 🔌 GONZALO: reemplazá getMockAcciones() por Orders pendientes + Quotes nuevas.
-  const acciones = getMockAcciones();
-  // 🔌 GONZALO: reemplazá getMockUltimasOrdenes() por las últimas Orders por fecha.
-  const ultimasOrdenes = getMockUltimasOrdenes();
-  // 🔌 GONZALO: reemplazá getMockActividad() por el feed unificado de últimas altas.
-  const actividad = getMockActividad();
+export default async function InicioPage() {
+  // 🔌 GONZALO: cada get*() vive en lib/panel/data.ts y hoy devuelve mock. Cuando
+  // enchufes Payload, cambiás SOLO el cuerpo de esas funciones (no esta página):
+  //   getMetricasClave → 3 agregaciones (ventas del mes, órdenes del mes, a despachar)
+  //   getKpis          → agregaciones sobre Orders/Products/EventRegistrations/Contacts/Quotes
+  //   getAcciones      → Orders pendientes + Quotes nuevas
+  //   getUltimasOrdenes→ últimas Orders por fecha
+  //   getActividad     → feed unificado de últimas altas
+  const [metricas, kpis, acciones, ultimasOrdenes, actividad] = await Promise.all([
+    getMetricasClave(),
+    getKpis(),
+    getAcciones(),
+    getUltimasOrdenes(3),
+    getActividad(),
+  ]);
 
   return (
     <div className="flex flex-col gap-12">
@@ -50,8 +52,8 @@ export default function InicioPage() {
 
       <PlugHint coleccion="Orders · Products · EventRegistrations · Contacts · Quotes">
         Todo este dashboard son agregaciones (counts/sumas) sobre varias
-        colecciones. Cada <code className="font-mono">getMockX()</code> en{" "}
-        <code className="font-mono">lib/panel/mock.ts</code> dice exactamente qué
+        colecciones. Cada <code className="font-mono">getX()</code> en{" "}
+        <code className="font-mono">lib/panel/data.ts</code> dice exactamente qué
         query lo alimenta.
       </PlugHint>
 

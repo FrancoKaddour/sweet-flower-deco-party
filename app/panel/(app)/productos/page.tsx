@@ -7,12 +7,8 @@ import { Toolbar, FiltroSelect } from "@/components/panel/Toolbar";
 import { DataTable, type Column } from "@/components/panel/DataTable";
 import { Badge } from "@/components/panel/Badge";
 import { ChipProducto } from "@/components/panel/status";
-import {
-  getMockProductos,
-  formatARS,
-  MATERIALES,
-  type Producto,
-} from "@/lib/panel/mock";
+import { getProductos } from "@/lib/panel/data";
+import { formatARS, MATERIALES, type Producto } from "@/lib/panel/types";
 
 export const metadata: Metadata = { title: "Productos" };
 
@@ -110,11 +106,11 @@ const COLUMNS: Column<Producto>[] = [
   },
 ];
 
-export default function ProductosPage() {
-  // 🔌 GONZALO: reemplazá getMockProductos() por la query a la colección Products
-  // (payload.find({ collection: "products" })). Búsqueda/filtro por material del
-  // lado del server.
-  const productos = getMockProductos();
+export default async function ProductosPage() {
+  // 🔌 GONZALO: getProductos() vive en lib/panel/data.ts y hoy devuelve mock.
+  // Cambiá SOLO su cuerpo por la query a Products (payload.find({ collection:
+  // "products" })) con búsqueda/filtro por material del lado del server.
+  const productos = await getProductos();
 
   return (
     <div className="flex flex-col gap-8">
@@ -131,8 +127,10 @@ export default function ProductosPage() {
       />
 
       <PlugHint coleccion="Products">
-        Reemplazá <code className="font-mono">getMockProductos()</code> por la
-        query a Payload. Los sub-módulos <strong>Categorías/Materiales</strong> y{" "}
+        Reemplazá el cuerpo de{" "}
+        <code className="font-mono">getProductos()</code> (en{" "}
+        <code className="font-mono">lib/panel/data.ts</code>) por la query a
+        Payload. Los sub-módulos <strong>Categorías/Materiales</strong> y{" "}
         <strong>Medios</strong> van como colecciones aparte (
         <code className="font-mono">Categories</code>,{" "}
         <code className="font-mono">Media</code>) — dejá el lugar acá con tabs

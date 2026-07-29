@@ -6,7 +6,7 @@ import type {
   EstadoLead,
   EstadoCampana,
   EstadoMembresia,
-} from "@/lib/panel/mock";
+} from "@/lib/panel/types";
 
 // Mapeos estado → chip. Centralizados acá para que las tablas queden limpias y
 // para que el vocabulario de estados (y sus colores) sea consistente en todo el

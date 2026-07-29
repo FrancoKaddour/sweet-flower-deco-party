@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PANEL_NAV, esRutaActiva } from "@/components/panel/nav";
 import { IconCerrar } from "@/components/panel/icons";
-import { USUARIO_SESION } from "@/lib/panel/mock";
+import type { UsuarioSesion } from "@/lib/panel/types";
 
 // Sidebar del panel — ancla oscura (ink) con texto bone, en el registro EDITORIAL
 // del sitio (ver components/site/Header.tsx): wordmark "Sweet Flowers" en display,
@@ -20,9 +20,11 @@ type SidebarProps = {
   open: boolean;
   /** Cierra el panel mobile (al navegar o tocar el botón). */
   onClose: () => void;
+  /** Usuario de la sesión activa (resuelto en el server). */
+  sesion: UsuarioSesion;
 };
 
-export function Sidebar({ open, onClose }: SidebarProps) {
+export function Sidebar({ open, onClose, sesion }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -119,10 +121,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             Sesión (mock)
           </p>
           <p className="mt-2 font-display text-[length:var(--text-step-1)] font-bold text-bone">
-            {USUARIO_SESION.nombre}
+            {sesion.nombre}
           </p>
           <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-champagne">
-            {USUARIO_SESION.rol}
+            {sesion.rol}
           </p>
         </div>
       </aside>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { PanelButton } from "@/components/panel/PanelButton";
-import { SEGMENTOS_CONTACTOS } from "@/lib/panel/mock";
+import { SEGMENTOS_CONTACTOS } from "@/lib/panel/types";
 
 // "Nueva campaña" — disclosure con un form mock (asunto + cuerpo + segmento).
 // No envía nada: es andamiaje. El envío real va por la API de Resend y SOLO a

@@ -16,6 +16,7 @@ No importa que arranques sin saber de desarrollo web: vas a **aprender construye
 8. **[04_PLANTILLAS_PROMPTS.md](./04_PLANTILLAS_PROMPTS.md)** — plantillas para hablarle a la IA, reportar y pedir ayuda.
 9. **[08_SKILLS_POR_TAREA.md](./08_SKILLS_POR_TAREA.md)** — chuleta: qué skill usar en cada tarea del backlog (ya vienen en el repo).
 10. **[09_TESTEAR_MERCADOPAGO.md](./09_TESTEAR_MERCADOPAGO.md)** — guía para testear pagos en la Fase 3 (entorno de test, webhooks, firma, idempotencia). Leela cuando llegues al checkout.
+11. **[10_HACER_FUNCIONAL_EL_PANEL.md](./10_HACER_FUNCIONAL_EL_PANEL.md)** — **cómo volver funcional el panel**: el patrón mock→Payload (`lib/panel/data.ts`), el mapa función→colección, el orden, un ejemplo completo y prompts para tu IA. La leés cuando tengas las colecciones (Fase 0).
 
 ## Antes que nada
 

@@ -3,6 +3,9 @@ import Link from "next/link";
 import { PageHeader } from "@/components/panel/PageHeader";
 import { PlugHint } from "@/components/panel/PlugHint";
 import { PanelButton } from "@/components/panel/PanelButton";
+import { PanelReveal } from "@/components/panel/PanelReveal";
+import { SectionHeading } from "@/components/panel/SectionHeading";
+import { StatCard } from "@/components/panel/StatCard";
 import { Toolbar } from "@/components/panel/Toolbar";
 import { DataTable, type Column } from "@/components/panel/DataTable";
 import { Badge } from "@/components/panel/Badge";
@@ -10,13 +13,11 @@ import { Tabs, type TabDef } from "@/components/panel/Tabs";
 import { OptInToggle } from "@/components/panel/OptInToggle";
 import { ChipMembresia } from "@/components/panel/status";
 import {
-  getMockContactos,
-  getMockMiembros,
-  getMockInscripciones,
-  type Contacto,
-  type Miembro,
-  type Inscripcion,
-} from "@/lib/panel/mock";
+  getContactos,
+  getMiembros,
+  getInscripciones,
+} from "@/lib/panel/data";
+import type { Contacto, Miembro, Inscripcion } from "@/lib/panel/types";
 
 export const metadata: Metadata = { title: "Comunidad" };
 
@@ -144,12 +145,56 @@ const COLS_INSCRIPCIONES: Column<Inscripcion>[] = [
   },
 ];
 
-export default function ContactosPage() {
+export default async function ContactosPage() {
   // 🔌 GONZALO: Contacts es el CENTRO del CRM (ADR-014). Miembros e inscripciones
-  // CUELGAN de un Contact. Reemplazá cada getMockX() por su colección.
-  const contactos = getMockContactos();
-  const miembros = getMockMiembros();
-  const inscripciones = getMockInscripciones();
+  // CUELGAN de un Contact. Cada get*() vive en lib/panel/data.ts: cambiás su cuerpo
+  // por la query a su colección (contacts / memberships / event-registrations).
+  const [contactos, miembros, inscripciones] = await Promise.all([
+    getContactos(),
+    getMiembros(),
+    getInscripciones(),
+  ]);
+
+  // Resumen de segmentos — derivado de los datos (no es dato suelto): cuando
+  // enchufes Payload, estas mismas funciones cambian y los conteos siguen reales.
+  const conOptIn = contactos.filter((c) => c.optIn).length;
+  const miembrosActivos = miembros.filter((m) => m.estado === "activa").length;
+  const segmentos = [
+    {
+      id: "total",
+      label: "Contactos",
+      valor: String(contactos.length),
+      tendencia: "neutral" as const,
+      ayuda: "Toda persona del CRM: compradoras, leads, inscriptas y miembros.",
+      superficie: "sage" as const,
+    },
+    {
+      id: "optin",
+      label: "Con opt-in",
+      valor: String(conOptIn),
+      tendencia: (conOptIn > 0 ? "sube" : "neutral") as "sube" | "neutral",
+      ayuda: "Consintieron recibir email — son las que entran a campañas (legal).",
+      superficie: "blush" as const,
+    },
+    {
+      id: "miembros",
+      label: "Miembros activos",
+      valor: String(miembrosActivos),
+      tendencia: "neutral" as const,
+      ayuda: "Contactos con membresía vigente en la comunidad.",
+      superficie: "sand" as const,
+    },
+    {
+      id: "inscriptos",
+      label: "Inscriptos",
+      valor: String(inscripciones.length),
+      tendencia: (inscripciones.length > 0 ? "sube" : "neutral") as
+        | "sube"
+        | "neutral",
+      ayuda: "Anotados a la próxima edición del Summit desde el sitio.",
+      superficie: "cloud" as const,
+    },
+  ];
 
   const tabs: TabDef[] = [
     {
@@ -212,8 +257,9 @@ export default function ContactosPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-12">
       <PageHeader
+        seccion="Comunidad"
         titulo="Comunidad"
         descripcion="El CRM: toda persona es un contacto con tags y opt-in. Miembros e inscripciones cuelgan de él."
       />
@@ -222,10 +268,43 @@ export default function ContactosPage() {
         <strong>Contacts es el centro</strong> (ADR-014): órdenes, inscripciones,
         membresías y leads se relacionan a un contacto, no guardan el email suelto.
         El <strong>opt-in</strong> (con fecha y origen) es requisito legal para
-        campañas — ver skill <em>legal-review</em>.
+        campañas — ver skill <em>legal-review</em>. Los indicadores de arriba se
+        derivan de <code className="font-mono">getContactos()</code>,{" "}
+        <code className="font-mono">getMiembros()</code> e{" "}
+        <code className="font-mono">getInscripciones()</code>.
       </PlugHint>
 
-      <Tabs tabs={tabs} />
+      {/* Resumen de segmentos — mini-KPIs sobre superficies cálidas. */}
+      <section aria-labelledby="segmentos-heading" className="flex flex-col gap-6">
+        <SectionHeading
+          id="segmentos-heading"
+          eyebrow="La comunidad"
+          titulo="Segmentos de un vistazo"
+        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {segmentos.map((s, i) => (
+            <PanelReveal key={s.id} index={i}>
+              <StatCard
+                label={s.label}
+                valor={s.valor}
+                tendencia={s.tendencia}
+                ayuda={s.ayuda}
+                superficie={s.superficie}
+              />
+            </PanelReveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Fichas del CRM organizadas por vista (contactos / miembros / inscripciones). */}
+      <section aria-labelledby="crm-heading" className="flex flex-col gap-6">
+        <SectionHeading
+          id="crm-heading"
+          eyebrow="Fichas"
+          titulo="El CRM completo"
+        />
+        <Tabs tabs={tabs} />
+      </section>
     </div>
   );
 }
