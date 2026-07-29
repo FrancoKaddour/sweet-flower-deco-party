@@ -201,12 +201,12 @@ export function Header() {
 
           <div className="flex items-center gap-4 md:gap-6">
             <Link
-              href="#contacto"
+              href={CONTACTO_LINK.href}
               className={`hidden rounded-[var(--radius-pill)] px-5 py-2.5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] transition-transform duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 sm:inline-flex ${
                 dark ? "bg-bone text-ink" : "bg-ink text-bone"
               }`}
             >
-              Contacto
+              {CONTACTO_LINK.label}
             </Link>
 
             <button
