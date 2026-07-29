@@ -1,5 +1,3 @@
-import { Header } from "@/components/site/Header";
-import { Footer } from "@/components/site/Footer";
 import { ColorBridge } from "@/components/site/ColorBridge";
 import { Hero } from "@/components/sections/Hero";
 import { Experiencia } from "@/components/sections/Experiencia";
@@ -17,6 +15,7 @@ import { Contacto } from "@/components/sections/Contacto";
 // los tokens de @theme (app/globals.css) → única fuente de verdad; ColorBridge
 // interpola en oklab con estos var(). Los momentos oscuros (Experiencia verde,
 // Membresía bordó, Footer tinta) van con CORTE LIMPIO.
+// El Header y el Footer los aporta app/(site)/layout.tsx (chrome compartido).
 const BONE = "var(--color-bone)";
 const SAGE = "var(--color-sage)";
 const BLUSH = "var(--color-blush)";
@@ -24,28 +23,24 @@ const SAND = "var(--color-sand)";
 
 export default function Home() {
   return (
-    <>
-      <Header />
-      <main id="main">
-        <Hero />
-        {/* Verde a sangre: corte limpio con las secciones marfil (sin puente) */}
-        <Experiencia />
-        <Productos />
-        <Destacados />
-        <ColorBridge from={BONE} to={SAGE} />
-        <Principios />
-        <ColorBridge from={SAGE} to={BLUSH} />
-        <Servicio />
-        <ColorBridge from={BLUSH} to={BONE} />
-        <Workshops />
-        <ColorBridge from={BONE} to={SAND} />
-        <Testimonios />
-        {/* Bordó a sangre (corte limpio, momento premium) */}
-        <Membresia />
-        <Historia />
-        <Contacto />
-      </main>
-      <Footer />
-    </>
+    <main id="main">
+      <Hero />
+      {/* Verde a sangre: corte limpio con las secciones marfil (sin puente) */}
+      <Experiencia />
+      <Productos />
+      <Destacados />
+      <ColorBridge from={BONE} to={SAGE} />
+      <Principios />
+      <ColorBridge from={SAGE} to={BLUSH} />
+      <Servicio />
+      <ColorBridge from={BLUSH} to={BONE} />
+      <Workshops />
+      <ColorBridge from={BONE} to={SAND} />
+      <Testimonios />
+      {/* Bordó a sangre (corte limpio, momento premium) */}
+      <Membresia />
+      <Historia />
+      <Contacto />
+    </main>
   );
 }
