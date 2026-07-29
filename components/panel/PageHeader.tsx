@@ -1,38 +1,39 @@
-// Header de página del panel: título en display (contenido, no gigante como el
-// storefront), descripción en muted, y un slot opcional de acción primaria a la
-// derecha. Semántico: el título es el <h1> de cada vista.
+import { Eyebrow } from "@/components/ui/Eyebrow";
+
+// Encabezado de página del panel — patrón EDITORIAL del storefront (ver
+// components/sections/Destacados.tsx): eyebrow champagne en versalitas + título
+// display EXTRABOLD en MAYÚSCULAS (contenido, no tan bestial como el hero) +
+// descripción en muted. Semántico: el título es el <h1> de cada vista.
+//
+// El eyebrow se arma con el nombre de la sección ("✧ CATÁLOGO"): champagne como
+// TEXTO va bien porque el eyebrow es chico y de acento (docs/06 §7 lo permite
+// para el rótulo; en cuerpo/tabla el champagne sigue siendo solo hairline).
 
 type PageHeaderProps = {
+  /** Rótulo de sección para el eyebrow (ej. "CATÁLOGO"). Si se omite, usa el título. */
+  seccion?: string;
   titulo: string;
   descripcion: string;
-  /**
-   * Nombre del módulo en la nav cuando difiere del título (ej. nav "Catálogo"
-   * vs H1 "Productos"). Se muestra como breadcrumb "Catálogo › Productos" para
-   * ubicar al usuario. Omitir cuando nav y H1 coinciden.
-   */
-  seccion?: string;
   /** Acción primaria (botón). Se acomoda a la derecha en desktop. */
   accion?: React.ReactNode;
 };
 
 export function PageHeader({
+  seccion,
   titulo,
   descripcion,
-  seccion,
   accion,
 }: PageHeaderProps) {
+  const rotulo = (seccion ?? titulo).toUpperCase();
+
   return (
-    <header className="flex flex-col gap-4 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
+    <header className="flex flex-col gap-6 border-b border-line pb-8 md:flex-row md:items-end md:justify-between">
       <div className="max-w-2xl">
-        {seccion ? (
-          <p className="mb-2 text-[length:var(--text-step--1)] uppercase tracking-[0.1em] text-muted">
-            {seccion} <span aria-hidden="true">›</span> {titulo}
-          </p>
-        ) : null}
-        <h1 className="font-display text-[length:var(--text-step-3)] font-bold leading-[1.05] tracking-tight text-ink">
+        <Eyebrow className="mb-4">✧ {rotulo}</Eyebrow>
+        <h1 className="font-display text-[length:var(--text-step-3)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-4)]">
           {titulo}
         </h1>
-        <p className="mt-2 text-[length:var(--text-step-0)] text-muted">
+        <p className="mt-4 text-[length:var(--text-step-0)] leading-relaxed text-muted">
           {descripcion}
         </p>
       </div>

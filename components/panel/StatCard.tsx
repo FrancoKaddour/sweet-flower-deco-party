@@ -1,7 +1,12 @@
-// Tarjeta KPI: label chico en mayúsculas, valor grande en display, delta opcional
-// como chip con tendencia. Superficie cloud + borde line + radio md, como el
-// resto de los paneles. El texto de ayuda queda visible en muted (no oculto tras
-// hover) para que Flor entienda cada número sin adivinar.
+// Tarjeta KPI editorial: label chico en versalitas, valor grande en display, delta
+// opcional como chip con tendencia (glifo + color, no solo color — WCAG 1.4.1).
+// Vive sobre una superficie CÁLIDA de marca (sage/blush/sand/cloud) con hairline
+// champagne al hover, en vez de la clásica card blanca sobre gris.
+//
+// El glifo direccional grande (↗ ↘ →) da carácter editorial y refuerza la
+// tendencia sin depender del color.
+
+type Superficie = "cloud" | "sage" | "blush" | "sand";
 
 type StatCardProps = {
   label: string;
@@ -9,6 +14,15 @@ type StatCardProps = {
   delta?: string;
   tendencia?: "sube" | "baja" | "neutral";
   ayuda: string;
+  /** Superficie cálida de fondo. Por defecto cloud. */
+  superficie?: Superficie;
+};
+
+const SUPERFICIE_CLASE: Record<Superficie, string> = {
+  cloud: "bg-cloud",
+  sage: "bg-sage",
+  blush: "bg-blush",
+  sand: "bg-sand",
 };
 
 const TENDENCIA_CLASE: Record<NonNullable<StatCardProps["tendencia"]>, string> =
@@ -20,9 +34,9 @@ const TENDENCIA_CLASE: Record<NonNullable<StatCardProps["tendencia"]>, string> =
 
 // Glifo direccional además del color (no depender solo del color — WCAG 1.4.1).
 const TENDENCIA_GLIFO: Record<NonNullable<StatCardProps["tendencia"]>, string> = {
-  sube: "▲",
-  baja: "▼",
-  neutral: "",
+  sube: "↗",
+  baja: "↘",
+  neutral: "→",
 };
 
 export function StatCard({
@@ -31,30 +45,39 @@ export function StatCard({
   delta,
   tendencia = "neutral",
   ayuda,
+  superficie = "cloud",
 }: StatCardProps) {
   return (
-    <article className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-cloud p-5">
-      <div className="flex items-center justify-between gap-2">
-        <h3 className="text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.12em] text-muted">
+    <article
+      className={`group flex flex-col gap-3 rounded-[var(--radius-md)] border border-line p-6 transition-colors duration-200 hover:border-champagne/60 ${SUPERFICIE_CLASE[superficie]}`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.14em] text-muted">
           {label}
         </h3>
+        {/* Glifo direccional editorial — grande, en el acento de la tendencia. */}
+        <span
+          aria-hidden="true"
+          className={`text-[length:var(--text-step-2)] leading-none ${TENDENCIA_CLASE[tendencia]}`}
+        >
+          {TENDENCIA_GLIFO[tendencia]}
+        </span>
+      </div>
+      <p className="font-display text-[length:var(--text-step-4)] font-extrabold leading-none tracking-[-0.01em] text-ink">
+        {valor}
+      </p>
+      <div className="mt-1 flex items-center gap-2">
         {delta ? (
           <span
-            className={`inline-flex items-center gap-1 text-[length:var(--text-step--1)] font-semibold ${TENDENCIA_CLASE[tendencia]}`}
+            className={`text-[length:var(--text-step--1)] font-semibold ${TENDENCIA_CLASE[tendencia]}`}
           >
-            {TENDENCIA_GLIFO[tendencia] ? (
-              <span aria-hidden="true">{TENDENCIA_GLIFO[tendencia]}</span>
-            ) : null}
             {delta}
           </span>
         ) : null}
+        <p className="text-[length:var(--text-step--1)] leading-relaxed text-muted">
+          {ayuda}
+        </p>
       </div>
-      <p className="font-display text-[length:var(--text-step-4)] font-bold leading-none tracking-tight text-ink">
-        {valor}
-      </p>
-      <p className="text-[length:var(--text-step--1)] leading-relaxed text-muted">
-        {ayuda}
-      </p>
     </article>
   );
 }

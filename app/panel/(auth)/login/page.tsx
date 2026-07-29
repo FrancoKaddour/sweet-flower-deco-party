@@ -19,13 +19,15 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="rounded-[var(--radius-lg)] border border-line bg-cloud p-8 sm:p-10">
           <div className="mb-8 text-center">
-            <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-muted">
-              Centro de operaciones
+            <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">
+              ✧ Centro de operaciones
             </p>
-            <h1 className="mt-2 font-display text-[length:var(--text-step-3)] font-bold leading-none tracking-tight text-ink">
-              Sweet&nbsp;Flowers
+            <h1 className="mt-3 font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink">
+              Sweet
+              <br />
+              Flowers
             </h1>
-            <p className="mt-3 text-[length:var(--text-step-0)] text-muted">
+            <p className="mt-4 text-[length:var(--text-step-0)] leading-relaxed text-muted">
               Ingresá para gestionar catálogo, ventas y comunidad.
             </p>
           </div>

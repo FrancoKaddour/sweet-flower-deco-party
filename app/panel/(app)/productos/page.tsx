@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { PageHeader } from "@/components/panel/PageHeader";
 import { PlugHint } from "@/components/panel/PlugHint";
 import { PanelButton } from "@/components/panel/PanelButton";
@@ -19,13 +20,28 @@ const COLUMNS: Column<Producto>[] = [
   {
     key: "titulo",
     header: "Producto",
-    cell: (p) => <span className="font-medium">{p.titulo}</span>,
-  },
-  {
-    key: "material",
-    header: "Material",
-    hideOnMobile: true,
-    cell: (p) => <span className="text-muted">{p.material}</span>,
+    // Thumbnail (next/image + picsum como en Destacados) + título + material en
+    // champagne debajo. El material va como acento champagne sobre claro (rótulo,
+    // no cuerpo — docs/06 §7). alt="" porque es decorativo (placeholder).
+    cell: (p) => (
+      <div className="flex items-center gap-4">
+        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[var(--radius-sm)] bg-sand">
+          <Image
+            src={`https://picsum.photos/seed/sfdp-panel-${p.id}/96/96`}
+            alt=""
+            fill
+            sizes="48px"
+            className="object-cover"
+          />
+        </div>
+        <div className="min-w-0">
+          <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-champagne">
+            {p.material}
+          </p>
+          <p className="truncate font-medium text-ink">{p.titulo}</p>
+        </div>
+      </div>
+    ),
   },
   {
     key: "precio",

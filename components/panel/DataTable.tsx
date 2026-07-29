@@ -1,12 +1,15 @@
 import { EmptyState } from "@/components/panel/EmptyState";
 
 // Tabla reutilizable y TIPADA por genéricos. Renderiza un <table> semántico real
-// (thead/tbody, <th scope="col">) con densidad cómoda. En mobile envuelve la
-// tabla en un contenedor con scroll horizontal contenido (no rompe el layout).
+// (thead/tbody, <th scope="col">) con densidad cómoda, en el registro EDITORIAL
+// del sitio: vive en una superficie cloud con border-line + radius-md, encabezado
+// en versalitas con hairline champagne, filas con hover cálido y reveal de entrada
+// escalonado (CSS panel-enter, respeta reduced-motion).
+//
+// En mobile envuelve la tabla en un contenedor con scroll horizontal contenido.
 // Si no hay filas, muestra el EmptyState en lugar de una tabla vacía.
 //
 // Uso: <DataTable columns={[...]} rows={data} getRowKey={r => r.id} />
-// Cada columna define un `header` y un `cell(row)` que devuelve el contenido.
 
 export type Column<T> = {
   /** Clave única de la columna. */
@@ -67,12 +70,13 @@ export function DataTable<T>({
         <table className="w-full border-collapse text-[length:var(--text-step--1)]">
           <caption className="sr-only">{caption}</caption>
           <thead>
-            <tr className="border-b border-line">
+            {/* Hairline champagne bajo el encabezado (acento sobre claro, no texto). */}
+            <tr className="border-b-2 border-champagne/30 bg-bone/50">
               {columns.map((col) => (
                 <th
                   key={col.key}
                   scope="col"
-                  className={`whitespace-nowrap px-4 py-3 font-medium uppercase tracking-[0.08em] text-muted ${
+                  className={`whitespace-nowrap px-5 py-3.5 text-[length:var(--text-step--1)] font-semibold uppercase tracking-[0.12em] text-muted ${
                     ALIGN[col.align ?? "left"]
                   } ${col.hideOnMobile ? "hidden sm:table-cell" : ""}`}
                 >
@@ -82,15 +86,16 @@ export function DataTable<T>({
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
+            {rows.map((row, i) => (
               <tr
                 key={getRowKey(row)}
-                className="border-b border-line/70 last:border-b-0 transition-colors hover:bg-bone/60"
+                className="panel-enter border-b border-line/70 transition-colors duration-200 last:border-b-0 hover:bg-bone/70"
+                style={{ animationDelay: `${Math.min(i * 0.04, 0.24)}s` }}
               >
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className={`px-4 py-3.5 align-middle text-ink ${
+                    className={`px-5 py-4 align-middle text-ink ${
                       ALIGN[col.align ?? "left"]
                     } ${col.hideOnMobile ? "hidden sm:table-cell" : ""}`}
                   >

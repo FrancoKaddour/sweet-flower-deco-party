@@ -104,6 +104,41 @@ export function getMockKpis(): Kpi[] {
   ];
 }
 
+// Las 3 métricas "clave" que van en el momento oscuro del dashboard (franja
+// bg-botanical con números grandes en display). Un subconjunto curado de los KPIs.
+export type MetricaClave = {
+  id: string;
+  label: string;
+  valor: string;
+  ayuda: string;
+};
+
+// 🔌 GONZALO: reemplazá getMockMetricasClave() por las 3 agregaciones destacadas:
+//   ventas del mes (suma Orders aprobadas), órdenes del mes (count Orders),
+//   a despachar (count Orders con envío pendiente).
+export function getMockMetricasClave(): MetricaClave[] {
+  return [
+    {
+      id: "ventas-mes",
+      label: "Ventas del mes",
+      valor: "$ 0", // TODO(contenido): formatARS(sumaOrdenesAprobadas)
+      ayuda: "Órdenes con pago aprobado en julio.",
+    },
+    {
+      id: "ordenes-mes",
+      label: "Órdenes del mes",
+      valor: "4",
+      ayuda: "Compras registradas en el período.",
+    },
+    {
+      id: "a-despachar",
+      label: "A despachar",
+      valor: "3",
+      ayuda: "Pagas, pendientes de preparar o enviar.",
+    },
+  ];
+}
+
 export type ItemAccion = {
   id: string;
   tipo: "orden" | "lead" | "inscripcion";
@@ -143,6 +178,55 @@ export function getMockAcciones(): ItemAccion[] {
       href: "/panel/contactos",
     },
   ];
+}
+
+// Actividad reciente / próximos — feed para el cockpit (contactos nuevos,
+// inscripciones que llegan, etc.). Da la sensación de "panel vivo".
+export type ItemActividad = {
+  id: string;
+  /** Marca de tiempo/relativo ya formateado (es-AR). */
+  cuando: string;
+  texto: string;
+  /** Rótulo corto del tipo de evento (para el chip). */
+  tipo: string;
+};
+
+// 🔌 GONZALO: reemplazá getMockActividad() por un feed unificado de las últimas
+// altas: nuevos `Contacts`, `EventRegistrations`, `Orders` y `Quotes`, ordenados
+// por fecha de creación descendente.
+export function getMockActividad(): ItemActividad[] {
+  return [
+    {
+      id: "act-1",
+      cuando: "Hace 2 h",
+      texto: "Nuevo contacto desde el formulario del sitio",
+      tipo: "Contacto",
+    },
+    {
+      id: "act-2",
+      cuando: "Hace 5 h",
+      texto: "Inscripción al Summit con opt-in",
+      tipo: "Inscripción",
+    },
+    {
+      id: "act-3",
+      cuando: "Ayer",
+      texto: "Orden #0002 marcada como enviada",
+      tipo: "Orden",
+    },
+    {
+      id: "act-4",
+      cuando: "Ayer",
+      texto: "Consulta a medida sin responder",
+      tipo: "Consulta",
+    },
+  ];
+}
+
+// Últimas órdenes — subconjunto reciente para la mini-lista del dashboard.
+// 🔌 GONZALO: reemplazá getMockUltimasOrdenes() por las últimas Orders por fecha.
+export function getMockUltimasOrdenes(): Orden[] {
+  return getMockOrdenes().slice(0, 3);
 }
 
 // ---------------------------------------------------------------------------

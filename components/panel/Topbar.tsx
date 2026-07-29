@@ -1,25 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { PANEL_NAV, esRutaActiva } from "@/components/panel/nav";
 import { IconMenu } from "@/components/panel/icons";
 import { USUARIO_SESION } from "@/lib/panel/mock";
 
-// Topbar del panel: botón hamburguesa (mobile), título de la sección activa,
-// usuario mock + logout mock. El título se deriva de la ruta activa vía PANEL_NAV.
-// El botón de logout es UI (sin auth real): la aporta Payload.
+// Topbar del panel — sobria (el peso editorial lo lleva el PageHeader de cada
+// página, no la topbar). Botón hamburguesa (mobile) + fecha (es-AR) + usuario mock
+// + logout mock. No duplica la descripción de la sección: eso vive en el PageHeader.
 
 type TopbarProps = {
   /** Abre el sidebar en mobile. */
   onOpenMenu: () => void;
 };
 
-export function Topbar({ onOpenMenu }: TopbarProps) {
-  const pathname = usePathname();
-  const seccion =
-    PANEL_NAV.find((item) => esRutaActiva(item.href, pathname)) ?? PANEL_NAV[0];
+// Fecha larga en es-AR ("martes, 29 de julio de 2026"), capitalizada.
+function fechaHoy(): string {
+  const f = new Intl.DateTimeFormat("es-AR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date());
+  return f.charAt(0).toUpperCase() + f.slice(1);
+}
 
+export function Topbar({ onOpenMenu }: TopbarProps) {
   return (
     <header className="sticky top-0 z-30 flex items-center gap-4 border-b border-line bg-bone/85 px-4 py-3 backdrop-blur-md md:px-8">
       <button
@@ -32,10 +37,9 @@ export function Topbar({ onOpenMenu }: TopbarProps) {
       </button>
 
       <div className="min-w-0 flex-1">
-        {/* Solo el label del módulo. La descripción la trae el PageHeader de cada
-            página — no la duplicamos acá pegada. */}
-        <p className="truncate text-[length:var(--text-step-0)] font-semibold text-ink">
-          {seccion.label}
+        {/* Fecha del día en es-AR — contexto sobrio, sin competir con el H1. */}
+        <p className="truncate text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-muted">
+          {fechaHoy()}
         </p>
       </div>
 
