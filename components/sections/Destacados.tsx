@@ -57,11 +57,9 @@ export function Destacados() {
           className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6 md:gap-y-14"
         >
           {PRODUCTOS.map((p) => (
-            <Link
-              key={p.slug}
-              href={`/productos/${p.slug}`}
-              className="group block"
-            >
+            // TODO(contenido): al existir la PDP real, volver a /productos/[categoria]/[slug].
+            // Interin: al catálogo raíz (evita 404s en demo — no hay fichas aún).
+            <Link key={p.slug} href="/productos" className="group block">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-sand">
                 <Image
                   src={`https://picsum.photos/seed/sfdp-dest-${p.slug}/700/880`}
