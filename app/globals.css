@@ -63,6 +63,13 @@
   --foreground: var(--color-ink);
 }
 
+html {
+  /* Reserva SIEMPRE el espacio de la barra de scroll: al abrir el menú overlay
+     el body pasa a overflow:hidden y la barra desaparece, pero el hueco queda
+     → el sitio no "salta" hacia los costados (ni el contenido ni el header fijo). */
+  scrollbar-gutter: stable;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
