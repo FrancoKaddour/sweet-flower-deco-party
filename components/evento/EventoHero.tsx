@@ -15,11 +15,10 @@ import {
 } from "@/content/evento";
 
 /**
- * Hero del Sweet Flowers Event Summit — momento oscuro cinematográfico.
- * 1) Foto de fondo con parallax scrubbed (se mueve más lento que el scroll).
- * 2) Timeline de entrada al montar: kicker → título (mask-reveal palabra x palabra
- *    con SplitText) → bajada, fecha, countdown y CTAs escalonados.
- * Respeta prefers-reduced-motion (todo visible, sin parallax ni desplazamientos).
+ * Hero editorial-cinematográfico del Sweet Flowers Event Summit.
+ * Foto full-bleed con duotono cálido + grano, marcas de revista (nº de edición,
+ * reglas finas), título gigante con mask-reveal (SplitText) y entrada escalonada.
+ * Parallax scrubbed en el fondo. Respeta prefers-reduced-motion.
  */
 export function EventoHero() {
   const root = useRef<HTMLElement>(null);
@@ -34,8 +33,8 @@ export function EventoHero() {
       const reduce = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
-
-      const revealTargets = el.querySelectorAll<HTMLElement>("[data-hero-reveal]");
+      const revealTargets =
+        el.querySelectorAll<HTMLElement>("[data-hero-reveal]");
 
       if (reduce) {
         gsap.set([title.current, ...Array.from(revealTargets)], {
@@ -45,9 +44,8 @@ export function EventoHero() {
         return;
       }
 
-      // Parallax del fondo: escalado extra para que el desplazamiento no deje bordes.
       if (bg.current) {
-        gsap.set(bg.current, { scale: 1.15 });
+        gsap.set(bg.current, { scale: 1.18 });
         gsap.to(bg.current, {
           yPercent: 12,
           ease: "none",
@@ -62,7 +60,6 @@ export function EventoHero() {
 
       const run = () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-
         if (title.current) {
           const split = SplitText.create(title.current, {
             type: "words",
@@ -70,17 +67,12 @@ export function EventoHero() {
             wordsClass: "reveal-word",
           });
           gsap.set(title.current, { autoAlpha: 1 });
-          tl.from(split.words, {
-            yPercent: 110,
-            duration: 0.9,
-            stagger: 0.08,
-          });
+          tl.from(split.words, { yPercent: 115, duration: 1, stagger: 0.09 });
         }
-
         tl.from(
           revealTargets,
-          { y: 28, autoAlpha: 0, duration: 0.8, stagger: 0.12 },
-          "-=0.45",
+          { y: 26, autoAlpha: 0, duration: 0.8, stagger: 0.1 },
+          "-=0.5",
         );
       };
 
@@ -94,9 +86,9 @@ export function EventoHero() {
     <section
       ref={root}
       data-theme="dark"
-      className="relative flex min-h-dvh flex-col justify-end overflow-hidden bg-ink px-6 pb-16 pt-32 text-bone md:px-10 md:pb-24"
+      className="relative flex min-h-dvh flex-col justify-between overflow-hidden bg-ink px-6 pb-14 pt-32 text-bone md:px-10 md:pb-16"
     >
-      {/* Fondo con parallax */}
+      {/* Fondo full-bleed con duotono + grano + parallax */}
       <div ref={bg} className="absolute inset-0 -z-10">
         {/* TODO(contenido): foto/video real del summit montado. */}
         <Image
@@ -105,66 +97,74 @@ export function EventoHero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover grayscale"
         />
-        {/* Velo para legibilidad del texto (gradiente cálido hacia la tinta). */}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-bordeaux/60 to-bordeaux/30 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-champagne/10 mix-blend-screen" />
+        <div className="evt-grain absolute inset-0" />
+        {/* Scrim general para el texto */}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-ink/50" />
       </div>
 
-      <div className="mx-auto w-full max-w-[1400px]">
-        {/* Kicker */}
-        <p
-          data-hero-reveal
-          className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne"
-        >
-          {EDICION_NUMERO}ª edición · Presencial · Argentina
-        </p>
+      {/* Franja editorial superior */}
+      <div
+        data-hero-reveal
+        className="mx-auto flex w-full max-w-[1400px] items-center justify-between border-b border-bone/20 pb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-bone/70"
+      >
+        <span>Nº 0{EDICION_NUMERO}</span>
+        {/* TODO(contenido): tagline real del summit */}
+        <span className="hidden sm:inline">El encuentro del año</span>
+        <span className="text-champagne">
+          {EVENT_DATE_LABEL} · {EVENT_YEAR}
+        </span>
+      </div>
 
-        {/* Título */}
+      {/* Bloque inferior */}
+      <div className="mx-auto w-full max-w-[1400px]">
         <h1
           ref={title}
-          className="max-w-[16ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-bone [overflow-wrap:anywhere] md:text-[length:var(--text-step-7)]"
+          className="font-display text-[length:var(--text-step-7)] font-extrabold uppercase leading-[0.82] tracking-[-0.03em] text-bone [overflow-wrap:anywhere]"
         >
           {EVENT_NAME}
         </h1>
 
-        {/* Bajada */}
-        <p
-          data-hero-reveal
-          className="mt-8 max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/80"
-        >
-          {/* TODO(contenido): frase real de qué es el summit */}
-          Un día para las que hacen de la decoración de eventos un oficio.
-          Formación, comunidad y la escena que soñás, en un mismo lugar.
-        </p>
+        <div className="mt-10 flex flex-col gap-10 border-t border-bone/15 pt-8 lg:flex-row lg:items-end lg:justify-between">
+          {/* Izquierda: bajada narrativa + escasez */}
+          <div className="max-w-[40ch]">
+            <p
+              data-hero-reveal
+              className="font-display text-[length:var(--text-step-2)] font-normal leading-[1.1] text-bone"
+            >
+              {/* TODO(contenido): frase real de qué es el summit */}
+              Un día al año, la decoración de eventos se junta en un mismo lugar.
+            </p>
+            <p
+              data-hero-reveal
+              className="mt-5 text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-champagne"
+            >
+              Presencial · {EVENT_CUPO} lugares · siempre se agota
+            </p>
+          </div>
 
-        {/* Fecha + cupo */}
-        <div
-          data-hero-reveal
-          className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-bone/15 pt-8"
-        >
-          <p className="font-display text-[length:var(--text-step-3)] font-bold uppercase text-bone">
-            {EVENT_DATE_LABEL}{" "}
-            <span className="text-champagne">· {EVENT_YEAR}</span>
-          </p>
-          <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/60">
-            Cupos limitados · {EVENT_CUPO} lugares
-          </p>
-        </div>
-
-        {/* Countdown */}
-        <div data-hero-reveal className="mt-10">
-          <Countdown />
-        </div>
-
-        {/* CTAs */}
-        <div data-hero-reveal className="mt-10 flex flex-wrap items-center gap-3">
-          <Button href={EVENT_CTA_HREF} variant="inverse">
-            Reservar mi lugar
-          </Button>
-          <Button href="#incluye" variant="outline" className="border-bone/30 text-bone">
-            Ver qué incluye
-          </Button>
+          {/* Derecha: countdown + CTA */}
+          <div data-hero-reveal className="shrink-0">
+            <p className="mb-4 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-bone/50">
+              Faltan
+            </p>
+            <Countdown />
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Button href={EVENT_CTA_HREF} variant="inverse">
+                Quiero mi lugar
+              </Button>
+              <Button
+                href="#incluye"
+                variant="outline"
+                className="border-bone/30 text-bone"
+              >
+                Qué incluye
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

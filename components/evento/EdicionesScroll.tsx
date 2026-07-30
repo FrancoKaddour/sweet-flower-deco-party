@@ -80,9 +80,13 @@ export function EdicionesScroll() {
                 alt=""
                 fill
                 sizes="(max-width: 640px) 72vw, (max-width: 768px) 48vw, (max-width: 1024px) 34vw, 26vw"
-                className="object-cover transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
+                className="object-cover grayscale transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent" />
+              {/* Duotono cálido + grano cinematográfico */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-bordeaux/60 to-bordeaux/30 mix-blend-multiply" />
+              <div className="pointer-events-none absolute inset-0 bg-champagne/15 mix-blend-screen" />
+              <div className="evt-grain pointer-events-none absolute inset-0" />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6">
                 <span className="font-display text-[length:var(--text-step--1)] tracking-[0.18em] text-champagne">
                   {String(i + 1).padStart(2, "0")}
