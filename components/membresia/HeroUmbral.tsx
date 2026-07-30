@@ -111,13 +111,15 @@ export function HeroUmbral() {
         ))}
       </div>
 
-      {/* Kicker */}
-      <p
-        data-hu-reveal
-        className="relative mb-8 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne"
-      >
-        La membresía de Sweet Flowers
-      </p>
+      {/* Kicker (contenido al ancho del sitio) */}
+      <div className="relative mx-auto w-full max-w-[1400px]">
+        <p
+          data-hu-reveal
+          className="mb-8 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne"
+        >
+          La membresía de Sweet Flowers
+        </p>
+      </div>
 
       {/* Arcada: los arcos se levantan dentro de máscaras */}
       <div className="relative flex items-end justify-center gap-3 md:gap-5">
@@ -147,14 +149,14 @@ export function HeroUmbral() {
       {/* Título gigante: pisa los arcos y sangra del canvas */}
       <h1
         ref={title}
-        className="relative z-10 -mt-[6vw] text-center font-display text-[clamp(3.6rem,16.5vw,15rem)] font-extrabold uppercase leading-[0.82] tracking-[-0.04em] text-ink"
+        className="relative z-10 -mt-[6vw] whitespace-nowrap text-center font-display text-[clamp(3.2rem,14.5vw,13.75rem)] font-extrabold uppercase leading-[0.82] tracking-[-0.04em] text-ink"
       >
         {/* TODO(contenido): validar el nombre "El Círculo" con Flor */}
         El Círculo
       </h1>
 
-      {/* Bajada + CTAs + indicio del portal */}
-      <div className="relative mt-10 flex flex-col items-start justify-between gap-8 border-t border-ink/10 pt-8 md:flex-row md:items-end">
+      {/* Bajada + CTAs + indicio del portal (contenido al ancho del sitio) */}
+      <div className="relative mx-auto mt-10 flex w-full max-w-[1400px] flex-col items-start justify-between gap-8 border-t border-ink/10 pt-8 md:flex-row md:items-end">
         <p
           data-hu-reveal
           className="max-w-[40ch] font-sans text-[length:var(--text-step-1)] leading-snug text-ink/70"

@@ -12,17 +12,19 @@ const CLIP_VISIBLE = "inset(0% 0% 0% 0%)";
  * "ADENTRO" — beneficios con VENTANA DE ARCO (identidad El Arco).
  * Izquierda: índice editorial de beneficios (filas altas, hairlines).
  * Derecha: una ventana en forma de arco, sticky, cuya "vista" cambia con una
- * cortina (clip-path 0.85s power3.out) según la fila que atraviesa el centro
- * del viewport. Como mirar por la ventana del salón mientras te cuentan qué
- * incluye. La fila activa se enciende; las demás bajan a 35%.
+ * cortina LIGADA AL SCROLL (scrub): cada imagen sube desde abajo a medida que
+ * su fila se acerca, y se retrae si scrolleás para arriba. La animación
+ * acompaña el scroll en ambas direcciones — nunca "salta" ni se rompe.
+ * Las capas se apilan por z-index (la vista i tapa a la i-1).
+ * La fila activa se enciende; las demás bajan a 35%.
  * Reduced-motion: sin dimming ni cortinas (primera vista fija, filas plenas).
  */
 export function BeneficiosVentana() {
   const root = useRef<HTMLElement>(null);
   const [activo, setActivo] = useState(0);
-  const previo = useRef(0);
 
-  // Filas → activan la vista. Un ScrollTrigger por fila (centro del viewport).
+  // Cortinas scrubbed: la capa i se revela mientras la fila i se acerca al
+  // centro. scrub:true → ida y vuelta perfecta con el scroll.
   useGSAP(
     () => {
       const el = root.current;
@@ -30,7 +32,10 @@ export function BeneficiosVentana() {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
       const filas = gsap.utils.toArray<HTMLElement>(".bv-fila", el);
+      const capas = gsap.utils.toArray<HTMLElement>(".bv-capa", el);
+
       filas.forEach((fila, i) => {
+        // Estado activo de la fila (para el dimming).
         ScrollTrigger.create({
           trigger: fila,
           start: "top 55%",
@@ -39,22 +44,37 @@ export function BeneficiosVentana() {
             if (self.isActive) setActivo(i);
           },
         });
+
+        // Cortina de la capa i (la 0 es la base, siempre visible).
+        if (i > 0 && capas[i]) {
+          gsap.fromTo(
+            capas[i],
+            { clipPath: CLIP_OCULTO },
+            {
+              clipPath: CLIP_VISIBLE,
+              ease: "none",
+              scrollTrigger: {
+                trigger: fila,
+                start: "top 85%",
+                end: "top 40%",
+                scrub: true,
+              },
+            },
+          );
+        }
       });
     },
     { scope: root },
   );
 
-  // Reacción al cambio de fila activa: cortina en la ventana + dimming de filas.
+  // Dimming editorial: la fila activa plena, el resto en penumbra.
   useGSAP(
     () => {
       const el = root.current;
       if (!el) return;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      const capas = gsap.utils.toArray<HTMLElement>(".bv-capa", el);
       const filas = gsap.utils.toArray<HTMLElement>(".bv-fila", el);
-
-      // Dimming editorial: la fila activa plena, el resto en penumbra.
       filas.forEach((fila, i) => {
         gsap.to(fila, {
           opacity: i === activo ? 1 : 0.35,
@@ -63,28 +83,6 @@ export function BeneficiosVentana() {
           overwrite: "auto",
         });
       });
-
-      // Cortina de la ventana (solo si de verdad cambió la vista).
-      if (previo.current !== activo && capas[activo]) {
-        gsap.set(capas[activo], { zIndex: 2 });
-        gsap.fromTo(
-          capas[activo],
-          { clipPath: CLIP_OCULTO },
-          {
-            clipPath: CLIP_VISIBLE,
-            duration: 0.85,
-            ease: "power3.out",
-            onComplete: () => {
-              capas.forEach((c, j) => {
-                if (j !== activo) {
-                  gsap.set(c, { zIndex: 1, clipPath: CLIP_OCULTO });
-                }
-              });
-            },
-          },
-        );
-        previo.current = activo;
-      }
     },
     { scope: root, dependencies: [activo] },
   );
@@ -131,14 +129,16 @@ export function BeneficiosVentana() {
 
           {/* Ventana del arco (sticky, desktop) */}
           <div className="hidden lg:col-span-5 lg:block">
-            <div className="sticky top-[16vh]">
-              <div className="relative mx-auto aspect-[3/4.2] w-[min(100%,380px)] overflow-hidden rounded-t-full bg-ink/20">
+            <div className="sticky top-[10vh]">
+              <div className="relative mx-auto aspect-[3/4.2] w-[min(100%,480px)] overflow-hidden rounded-t-full bg-ink/20">
                 {BENEFICIOS.map((b, i) => (
                   <div
                     key={b.titulo}
                     className="bv-capa absolute inset-0"
+                    // Apiladas en orden: la vista i tapa a la i-1. La cortina
+                    // scrubbed (clip-path) decide cuánto de cada una se ve.
                     style={{
-                      zIndex: i === 0 ? 2 : 1,
+                      zIndex: i + 1,
                       clipPath: i === 0 ? CLIP_VISIBLE : CLIP_OCULTO,
                     }}
                   >
@@ -147,7 +147,7 @@ export function BeneficiosVentana() {
                       src={`https://picsum.photos/seed/sfdp-mem-vista-${i}/700/1000`}
                       alt=""
                       fill
-                      sizes="380px"
+                      sizes="480px"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-bordeaux/30 mix-blend-multiply" />
