@@ -86,7 +86,7 @@ export function Workshops() {
     <section
       id="workshops"
       ref={root}
-      className="relative min-h-[150vh] md:min-h-[200vh] overflow-hidden bg-bone text-ink"
+      className="relative min-h-[150svh] md:min-h-[200svh] overflow-hidden bg-bone text-ink"
     >
       {/* Collage de fondo (decorativo) */}
       <div className="wk-collage" aria-hidden="true">
@@ -113,7 +113,7 @@ export function Workshops() {
       </div>
 
       {/* Título único anclado abajo-derecha + CTA */}
-      <div className="relative z-[3] mx-auto flex min-h-[150vh] md:min-h-[200vh] max-w-[1400px] items-center justify-end px-6 md:px-10">
+      <div className="relative z-[3] mx-auto flex min-h-[150svh] md:min-h-[200svh] max-w-[1400px] items-center justify-end px-6 md:px-10">
         <div className="flex flex-col items-end text-right">
           <RevealText
             as="h2"

@@ -52,8 +52,22 @@
   --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 
+  /* Tokens de timing robados del análisis de referencias (basicagency —
+     docs/20_MOTION_REFERENCIAS_ANALISIS.md). Regla: micro-UI ≤350ms con estos;
+     reveals de máscara ~1s con --ease-in-out-soft. */
+  --ease-out-soft: cubic-bezier(0.28, 0, 0.49, 1);
+  --ease-in-out-soft: cubic-bezier(0.72, 0, 0.28, 1);
+  --ease-in-out-hard: cubic-bezier(0.77, 0, 0.175, 1);
+
   --background: var(--color-bone);
   --foreground: var(--color-ink);
+}
+
+html {
+  /* Reserva SIEMPRE el espacio de la barra de scroll: al abrir el menú overlay
+     el body pasa a overflow:hidden y la barra desaparece, pero el hueco queda
+     → el sitio no "salta" hacia los costados (ni el contenido ni el header fijo). */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -62,6 +76,8 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* iOS: sin flash gris azulado al tocar (el foco lo cubre :focus-visible). */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Utilidades tipográficas de display */
@@ -328,6 +344,16 @@ html.lenis body {
   .panel-enter {
     animation: none;
   }
+}
+
+/* ---- Grano cinematográfico (página /evento) ----
+   Textura de película sobre las fotos: da mood editorial y disimula el gris de
+   los placeholders. Con fotos reales se atenúa (es sutil, mix-blend overlay). */
+.evt-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+  opacity: 0.26;
 }
 
 /* ---- Accesibilidad: foco visible por teclado ---- */

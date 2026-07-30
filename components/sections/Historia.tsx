@@ -15,7 +15,7 @@ export function Historia() {
       data-theme="light"
       className="bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
     >
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 md:gap-16 lg:grid-cols-2">
         {/* IZQUIERDA — imagen retrato/ambiente con detalle superpuesto */}
         <FadeUp y={50}>
           <div className="relative">
@@ -36,7 +36,7 @@ export function Historia() {
               width={500}
               height={500}
               sizes="192px"
-              className="absolute -bottom-8 -right-6 hidden aspect-square w-40 rounded-[var(--radius-md)] object-cover shadow-[0_24px_60px_-28px_rgba(20,17,15,0.4)] ring-8 ring-bone md:block lg:w-48"
+              className="absolute -bottom-8 -right-6 hidden aspect-square w-40 rounded-[var(--radius-md)] object-cover shadow-[0_24px_60px_-28px_rgba(20,17,15,0.4)] ring-8 ring-bone lg:block lg:w-48"
             />
           </div>
         </FadeUp>

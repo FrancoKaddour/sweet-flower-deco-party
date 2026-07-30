@@ -25,7 +25,7 @@ export function Membresia() {
       data-theme="dark"
       className="bg-bordeaux px-6 py-24 text-bone md:px-10 md:py-32"
     >
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16 lg:gap-24">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 md:gap-16 lg:grid-cols-2 lg:gap-24">
         {/* IZQUIERDA — bloque editorial de texto */}
         <FadeUp y={100}>
           {/* TODO(contenido) */}

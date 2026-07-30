@@ -119,7 +119,7 @@ export function Servicio() {
       {/* 1) Encabezado + navegación del carrusel */}
       <div className="mx-auto flex max-w-[1400px] items-end justify-between gap-6 px-6 md:px-10">
         <FadeUp y={100} className="min-w-0">
-          <h2 className="w-full max-w-full font-display text-[length:var(--text-step-5)] font-bold uppercase leading-[0.9] text-ink md:w-[680px] md:text-[length:var(--text-step-6)]">
+          <h2 className="w-full max-w-full font-display text-[length:var(--text-step-5)] font-bold uppercase leading-[0.9] text-ink md:max-w-[680px] md:text-[length:var(--text-step-6)]">
             {/* TODO(contenido): titular real */}
             Una fiesta Sweet Flowers es…
           </h2>
@@ -192,7 +192,7 @@ export function Servicio() {
           {SLIDES.map((slide) => (
           <article
             key={slide.seed}
-            className="group relative w-[80vw] shrink-0 snap-start overflow-hidden rounded-[var(--radius-md)] md:w-[40vw] lg:w-[30vw]"
+            className="group relative w-[80vw] shrink-0 snap-start overflow-hidden rounded-[var(--radius-md)] sm:w-[55vw] md:w-[40vw] lg:w-[30vw]"
           >
             <Image
               src={`https://picsum.photos/seed/${slide.seed}/600/800`}
@@ -200,7 +200,7 @@ export function Servicio() {
               width={600}
               height={800}
               draggable={false}
-              sizes="(max-width: 768px) 80vw, (max-width: 1024px) 40vw, 30vw"
+              sizes="(max-width: 639px) 80vw, (max-width: 767px) 55vw, (max-width: 1023px) 40vw, 30vw"
               className="pointer-events-none h-[338px] w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 lg:h-[458px]"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />

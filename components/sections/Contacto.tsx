@@ -52,15 +52,24 @@ export function Contacto() {
 
         {/* Canales de contacto */}
         <FadeUp y={50}>
-          <div className="mt-10 flex justify-center gap-6 text-[length:var(--text-step--1)] uppercase tracking-[0.1em] text-muted">
+          <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-1 text-[length:var(--text-step--1)] uppercase tracking-[0.1em] text-muted">
             {/* TODO(contenido): URLs reales de cada canal */}
-            <a href="#" className="transition-colors hover:text-ink">
+            <a
+              href="#"
+              className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-ink"
+            >
               Instagram
             </a>
-            <a href="#" className="transition-colors hover:text-ink">
+            <a
+              href="#"
+              className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-ink"
+            >
               Email
             </a>
-            <a href="#" className="transition-colors hover:text-ink">
+            <a
+              href="#"
+              className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-ink"
+            >
               WhatsApp
             </a>
           </div>

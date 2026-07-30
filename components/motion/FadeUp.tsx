@@ -1,6 +1,6 @@
 "use client";
 
-import { createElement, useRef } from "react";
+import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 
 type FadeUpProps = {
@@ -66,5 +66,12 @@ export function FadeUp({
     { scope: ref, dependencies: [y, delay, stagger, start] },
   );
 
-  return createElement(as, { ref, className }, children);
+  // Tag dinámico vía JSX (no createElement): así ESLint reconoce el ref como
+  // forwarding legítimo y no lo marca como "acceso a ref durante el render".
+  const Tag = as as React.ElementType;
+  return (
+    <Tag ref={ref} className={className}>
+      {children}
+    </Tag>
+  );
 }

@@ -37,9 +37,9 @@ export function Destacados() {
           </div>
           <Link
             href="/productos"
-            className="group inline-flex w-max items-center gap-2 border-b border-ink pb-1 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] text-ink"
+            className="group inline-flex min-h-11 w-max items-center gap-2 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] text-ink"
           >
-            Ver toda la tienda
+            <span className="border-b border-ink pb-1">Ver toda la tienda</span>
             <span
               aria-hidden="true"
               className="inline-block transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:translate-x-1"
@@ -57,11 +57,9 @@ export function Destacados() {
           className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6 md:gap-y-14"
         >
           {PRODUCTOS.map((p) => (
-            <Link
-              key={p.slug}
-              href={`/productos/${p.slug}`}
-              className="group block"
-            >
+            // TODO(contenido): al existir la PDP real, volver a /productos/[categoria]/[slug].
+            // Interin: al catálogo raíz (evita 404s en demo — no hay fichas aún).
+            <Link key={p.slug} href="/productos" className="group block">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-sand">
                 <Image
                   src={`https://picsum.photos/seed/sfdp-dest-${p.slug}/700/880`}

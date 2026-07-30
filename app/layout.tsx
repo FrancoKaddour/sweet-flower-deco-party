@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
@@ -54,6 +54,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+};
+
+// viewport-fit=cover activa env(safe-area-inset-*) en iPhone con notch (sin esto,
+// los insets no existen). themeColor pinta la UI del navegador con el marfil base.
+export const viewport: Viewport = {
+  viewportFit: "cover",
+  themeColor: "#f7f3ec",
 };
 
 export default function RootLayout({

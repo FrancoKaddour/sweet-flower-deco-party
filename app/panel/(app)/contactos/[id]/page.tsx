@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { PageHeader } from "@/components/panel/PageHeader";
 import { PlugHint } from "@/components/panel/PlugHint";
 import { PanelReveal } from "@/components/panel/PanelReveal";
