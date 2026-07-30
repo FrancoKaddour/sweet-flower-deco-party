@@ -17,7 +17,7 @@ export const EVENT_CUPO = 80; // ✅ "por el momento"
 
 // CTA de reserva: la inscripción hoy es por transferencia / contacto directo.
 // TODO(contenido): reemplazar por /evento/inscripcion cuando exista el flujo online.
-export const EVENT_CTA_HREF = "/#contacto";
+export const EVENT_CTA_HREF = "/contacto";
 
 // Qué incluye — TODOS ✅ (§10).
 export const INCLUYE = [

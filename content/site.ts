@@ -23,7 +23,7 @@ export const MAIN_NAV: readonly NavLink[] = [
 ] as const;
 
 /** Enlace a Contacto — el Header lo suma al final del menú; el Footer lo lista aparte. */
-export const CONTACTO_LINK: NavLink = { label: "Contacto", href: "/#contacto" };
+export const CONTACTO_LINK: NavLink = { label: "Contacto", href: "/contacto" };
 
 /** Contacto directo (Footer). href reales a completar. */
 export const CONTACTO_LINKS: readonly NavLink[] = [
