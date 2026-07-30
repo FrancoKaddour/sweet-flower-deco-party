@@ -5,11 +5,9 @@
 
 export type NavLink = { label: string; href: string };
 
-// NOTA DE NAVEGACIÓN (interino): /productos y /evento ya son páginas propias. Las
-// demás (Membresía, Historia) apuntan a anclas de la Home ("/#seccion") para que
-// funcionen desde CUALQUIER página (una ancla suelta "#seccion" no existe fuera de
-// la Home y no llevaría a ningún lado). Cuando se construyan /membresia e
-// /historia como páginas, se reemplazan esos href por la ruta real.
+// NOTA DE NAVEGACIÓN (interino): /productos, /evento, /membresia y /contacto ya
+// son páginas propias. Historia sigue apuntando al ancla de la Home ("/#historia")
+// para funcionar desde cualquier página; cuando exista /historia se reemplaza.
 // TODO(contenido): definir si la etiqueta "Workshops" se renombra a "Evento"
 // (la página es el Sweet Flowers Event Summit). Decisión de Franco.
 
@@ -18,7 +16,7 @@ export const MAIN_NAV: readonly NavLink[] = [
   { label: "Inicio", href: "/" },
   { label: "Productos", href: "/productos" },
   { label: "Workshops", href: "/evento" },
-  { label: "Membresía", href: "/#membresia" },
+  { label: "Membresía", href: "/membresia" },
   { label: "Historia", href: "/#historia" },
 ] as const;
 
