@@ -5,9 +5,7 @@
 
 export type NavLink = { label: string; href: string };
 
-// NOTA DE NAVEGACIÓN (interino): /productos, /evento, /membresia y /contacto ya
-// son páginas propias. Historia sigue apuntando al ancla de la Home ("/#historia")
-// para funcionar desde cualquier página; cuando exista /historia se reemplaza.
+// Todas las secciones del menú ya son páginas propias (el sitio completo navega).
 // TODO(contenido): definir si la etiqueta "Workshops" se renombra a "Evento"
 // (la página es el Sweet Flowers Event Summit). Decisión de Franco.
 
@@ -17,7 +15,7 @@ export const MAIN_NAV: readonly NavLink[] = [
   { label: "Productos", href: "/productos" },
   { label: "Workshops", href: "/evento" },
   { label: "Membresía", href: "/membresia" },
-  { label: "Historia", href: "/#historia" },
+  { label: "Historia", href: "/historia" },
 ] as const;
 
 /** Enlace a Contacto — el Header lo suma al final del menú; el Footer lo lista aparte. */
