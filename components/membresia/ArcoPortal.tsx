@@ -50,13 +50,25 @@ export function ArcoPortal() {
         },
       });
 
+      // Scale de COBERTURA calculado: el mínimo que tapa el viewport (+15% de
+      // margen). En iPhone (WebKit rasteriza la textura al tamaño original y
+      // escala en GPU) un scale fijo de 15 se veía pixelado; con ~4-6 alcanza.
+      // Function-based → se recalcula en cada refresh (invalidateOnRefresh).
+      const coverScale = () =>
+        1.15 *
+        Math.max(
+          window.innerWidth / arcoEl.offsetWidth,
+          window.innerHeight / arcoEl.offsetHeight,
+        );
+
       // El arco crece hasta tragarse el viewport (cruzás el umbral).
-      tl.to(arcoEl, { scale: 15, duration: 1 }, 0);
+      tl.to(arcoEl, { scale: coverScale, duration: 1 }, 0);
       // Los rótulos se van apenas empieza el cruce.
       tl.to(labels, { autoAlpha: 0, duration: 0.12 }, 0.02);
-      // El interior se vuelve bordó sólido antes del final (cierra la costura
-      // con la sección siguiente y evita ver el placeholder pixelado).
-      tl.to(veloEl, { autoAlpha: 1, duration: 0.4 }, 0.4);
+      // El interior se vuelve bordó sólido TEMPRANO (tapa la foto antes de que
+      // la rasterización de Safari se note y cierra la costura con la sección
+      // siguiente).
+      tl.to(veloEl, { autoAlpha: 1, duration: 0.35 }, 0.25);
     },
     { scope: root },
   );
@@ -65,7 +77,7 @@ export function ArcoPortal() {
     <section ref={root} data-theme="light" className="bg-bone text-ink">
       <div
         ref={panel}
-        className="flex h-dvh flex-col items-center justify-center overflow-hidden"
+        className="flex h-svh flex-col items-center justify-center overflow-hidden"
       >
         <p className="ap-label mb-8 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-ink/45">
           {/* TODO(contenido): copy real del cruce */}

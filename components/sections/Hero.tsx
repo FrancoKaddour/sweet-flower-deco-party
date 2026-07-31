@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
  */
 export function Hero() {
   return (
-    <section className="relative flex min-h-dvh flex-col items-center justify-center gap-8 overflow-hidden px-6 py-28 text-center md:px-10">
+    <section className="relative flex min-h-svh flex-col items-center justify-center gap-8 overflow-hidden px-6 py-28 text-center md:px-10">
       {/* Kicker */}
       <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-muted">
         Decoración de eventos

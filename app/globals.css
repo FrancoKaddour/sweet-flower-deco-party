@@ -147,7 +147,8 @@ html.lenis body {
   object-fit: cover;
   border-radius: var(--radius-sm);
   display: block;
-  will-change: transform;
+  /* Sin will-change permanente: 42 layers GPU fijas reventaban la memoria de
+     Safari iOS (recarga de página). GSAP composita solo mientras anima. */
   background: var(--color-line); /* placeholder mientras carga */
 }
 /* Sección clara: el collage se funde hacia el MARFIL en los bordes (arriba/abajo
@@ -203,6 +204,19 @@ html.lenis body {
         var(--color-bone) calc(100% - 22px),
         var(--color-bone) 100%
       );
+  }
+  /* iPhone: recortamos el collage a 3 columnas × 5 imágenes (≈15 layers en vez
+     de 42). Safari iOS mata páginas por presión de memoria GPU; en un viewport
+     de 390px las columnas extra ni se ven. Las <img> ocultas no se descargan
+     (loading="lazy" + display:none → nunca intersectan). */
+  .wk-col:nth-child(n + 4) {
+    display: none;
+  }
+  .wk-col img:nth-child(n + 6) {
+    display: none;
+  }
+  .wk-grid {
+    width: 150vw;
   }
 }
 

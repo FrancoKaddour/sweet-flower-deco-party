@@ -267,7 +267,7 @@ export function Header() {
           </button>
         </div>
 
-        <nav className="flex flex-1 items-center overflow-y-auto px-6 py-4 md:px-10">
+        <nav className="flex flex-1 items-center overflow-y-auto overscroll-contain px-6 py-4 md:px-10">
           <ul className="mx-auto w-full max-w-[1440px]">
             {NAV.map((item, i) => (
               <li key={item.href} className="overflow-hidden">

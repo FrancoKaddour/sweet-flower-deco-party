@@ -10,6 +10,10 @@ import { useGSAP } from "@gsap/react";
 // Registrar una sola vez (idempotente).
 gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
 
+// iOS Safari: la URL bar se retrae durante el scroll y dispara un "resize" que
+// recalcula todos los pins a mitad del gesto (saltos). Lo ignoramos en mobile.
+ScrollTrigger.config({ ignoreMobileResize: true });
+
 /**
  * Ease "hop" (robada del análisis de chkstepan.com): arranca rápido, se frena
  * al medio y remata. Para entradas narrativas (arcos del hero, cortinas).

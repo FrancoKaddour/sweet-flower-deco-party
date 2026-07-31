@@ -98,7 +98,7 @@ export function HeroUmbral() {
     <section
       ref={root}
       data-theme="light"
-      className="relative flex min-h-dvh flex-col justify-end overflow-hidden bg-bone px-6 pb-12 pt-28 text-ink md:px-10"
+      className="relative flex min-h-svh flex-col justify-end overflow-hidden bg-bone px-6 pb-12 pt-28 text-ink md:px-10"
     >
       {/* Hairlines de columna (decorativas) */}
       <div aria-hidden="true" className="absolute inset-0">

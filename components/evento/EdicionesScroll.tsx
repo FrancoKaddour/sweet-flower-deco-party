@@ -49,7 +49,7 @@ export function EdicionesScroll() {
     <section ref={root} data-theme="dark" className="bg-ink text-bone">
       <div
         ref={panel}
-        className="flex h-dvh flex-col justify-center overflow-hidden motion-reduce:overflow-x-auto motion-reduce:[scrollbar-width:none] motion-reduce:[&::-webkit-scrollbar]:hidden"
+        className="flex h-svh flex-col justify-center overflow-hidden motion-reduce:overflow-x-auto motion-reduce:[scrollbar-width:none] motion-reduce:[&::-webkit-scrollbar]:hidden"
       >
         <div
           ref={track}
@@ -82,11 +82,13 @@ export function EdicionesScroll() {
                 sizes="(max-width: 640px) 72vw, (max-width: 768px) 48vw, (max-width: 1024px) 34vw, 26vw"
                 className="object-cover grayscale transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
               />
-              {/* Duotono cálido + grano cinematográfico */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-bordeaux/60 to-bordeaux/30 mix-blend-multiply" />
-              <div className="pointer-events-none absolute inset-0 bg-champagne/15 mix-blend-screen" />
-              <div className="evt-grain pointer-events-none absolute inset-0" />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
+              {/* Duotono cálido + grano cinematográfico — SOLO md+ (en iPhone,
+                  6 tarjetas × 3 capas de blend re-compositeadas por frame en el
+                  scrub hacían el scroll pastoso; mobile usa un scrim simple). */}
+              <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-ink via-bordeaux/60 to-bordeaux/30 mix-blend-multiply md:block" />
+              <div className="pointer-events-none absolute inset-0 hidden bg-champagne/15 mix-blend-screen md:block" />
+              <div className="evt-grain pointer-events-none absolute inset-0 hidden md:block" />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-bordeaux/40 to-bordeaux/20 md:via-ink/20 md:to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6">
                 <span className="font-display text-[length:var(--text-step--1)] tracking-[0.18em] text-champagne">
                   {String(i + 1).padStart(2, "0")}

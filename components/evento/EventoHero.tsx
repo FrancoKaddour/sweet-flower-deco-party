@@ -86,7 +86,7 @@ export function EventoHero() {
     <section
       ref={root}
       data-theme="dark"
-      className="relative flex min-h-dvh flex-col justify-between overflow-hidden bg-ink px-6 pb-14 pt-32 text-bone md:px-10 md:pb-16"
+      className="relative flex min-h-svh flex-col justify-between overflow-hidden bg-ink px-6 pb-14 pt-32 text-bone md:px-10 md:pb-16"
     >
       {/* Fondo full-bleed con duotono + grano + parallax */}
       <div ref={bg} className="absolute inset-0 -z-10">
