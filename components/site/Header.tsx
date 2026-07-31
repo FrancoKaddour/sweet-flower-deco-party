@@ -71,6 +71,9 @@ export function Header() {
 
     if (open) {
       document.body.style.overflow = "hidden";
+      // También el <html>: algunos navegadores scrollean documentElement aunque
+      // el body esté bloqueado (QA detectó scroll de fondo con el menú abierto).
+      document.documentElement.style.overflow = "hidden";
       stopLenis(); // pausamos el scroll suave mientras el menú está abierto
       if (reduce) {
         gsap.set(el, { autoAlpha: 1 });
@@ -93,6 +96,7 @@ export function Header() {
       }
     } else {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
       startLenis(); // reanudamos el scroll suave al cerrar
       if (reduce) {
         gsap.set(el, { autoAlpha: 0 });
