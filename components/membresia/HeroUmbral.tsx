@@ -139,8 +139,9 @@ export function HeroUmbral() {
                 sizes="(max-width: 768px) 22vw, 240px"
                 className="object-cover"
               />
-              {/* Tinte cálido para unificar placeholders */}
-              <div className="pointer-events-none absolute inset-0 bg-bordeaux/25 mix-blend-multiply" />
+              {/* Velo marfil: aclara las fotos para que el título en tinta
+                  (que pisa los arcos) no se mezcle ni pierda contraste. */}
+              <div className="pointer-events-none absolute inset-0 bg-bone/60" />
             </figure>
           </div>
         ))}
