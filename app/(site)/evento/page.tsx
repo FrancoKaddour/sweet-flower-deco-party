@@ -133,22 +133,16 @@ export default function EventoPage() {
         className="bg-ink px-6 py-24 text-bone md:px-10 md:py-32"
       >
         <div className="mx-auto max-w-[1400px]">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-end">
-            <div className="lg:col-span-8">
-              <Eyebrow className="mb-6">Quiénes enseñan</Eyebrow>
-              <RevealText
-                as="h2"
-                onScroll
-                className="max-w-[18ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-bone"
-              >
-                {/* TODO(contenido): titular real */}
-                Más de 20 referentes ya pasaron por acá
-              </RevealText>
-            </div>
-            <p className="font-sans text-[length:var(--text-step-0)] leading-relaxed text-bone/60 lg:col-span-4">
-              Los tres nombres de esta edición están confirmados. Los anunciamos
-              muy pronto.
-            </p>
+          <div className="text-center">
+            <Eyebrow className="mb-6">Quiénes enseñan</Eyebrow>
+            <RevealText
+              as="h2"
+              onScroll
+              className="mx-auto max-w-[18ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-bone"
+            >
+              {/* TODO(contenido): titular real */}
+              Más de 20 referentes ya pasaron por acá
+            </RevealText>
           </div>
 
           {/* Slots de intriga (no fotos placeholder) */}
