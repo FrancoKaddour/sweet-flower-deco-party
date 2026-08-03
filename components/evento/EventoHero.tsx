@@ -123,7 +123,7 @@ export function EventoHero() {
       <div className="mx-auto w-full max-w-[1400px]">
         <h1
           ref={title}
-          className="font-display text-[length:var(--text-step-7)] font-extrabold uppercase leading-[0.82] tracking-[-0.03em] text-bone [overflow-wrap:anywhere]"
+          className="mx-auto text-center font-display text-[length:var(--text-step-7)] font-extrabold uppercase leading-[0.82] tracking-[-0.03em] text-bone [overflow-wrap:anywhere]"
         >
           {EVENT_NAME}
         </h1>
