@@ -11,7 +11,7 @@
   --color-ink: #14110f; /* tinta casi negra cálida — texto principal */
   --color-bone: #f7f3ec; /* base marfil / hueso */
   --color-cloud: #ffffff;
-  --color-botanical: #c1121f; /* rojo vivo — acento (ex verde profundo) */
+  --color-botanical: #8f3237; /* rojo granate tranquilo — acento (ex verde profundo) */
   --color-bordeaux: #5b2a3a; /* profundo — momentos oscuros */
   --color-champagne: #c6a15b; /* acento premium dorado */
   --color-muted: #736d64; /* texto atenuado (~ink 55%) */
@@ -19,7 +19,7 @@
 
   /* Superficies claras — fondos de sección que se blendean entre sí (ver
      ColorBridge en app/page.tsx, que interpola en oklab entre estos tokens). */
-  --color-sage: #f6d9d2; /* rojo muy claro (Principios — ex verde grisáceo) */
+  --color-sage: #f3ded8; /* rojo empolvado muy claro (Principios — ex verde grisáceo) */
   --color-blush: #f4e9e4; /* rosado marfil (Servicio) */
   --color-sand: #efe7d6; /* arena cálida (Testimonios, placeholders) */
 
