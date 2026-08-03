@@ -95,17 +95,12 @@ export default function EventoPage() {
         className="scroll-mt-24 bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
       >
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-14 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
-            <div>
-              <Eyebrow className="mb-5">Tu entrada incluye</Eyebrow>
-              <h2 className="max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink">
-                {/* TODO(contenido): titular real */}
-                Una entrada. Todo adentro.
-              </h2>
-            </div>
-            <p className="max-w-[30ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/55">
-              Sin letra chica, sin extras. Lo que ves es lo que te llevás.
-            </p>
+          <div className="mb-14 text-center md:mb-16">
+            <Eyebrow className="mb-5">Tu entrada incluye</Eyebrow>
+            <h2 className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink">
+              {/* TODO(contenido): titular real */}
+              Una entrada. Todo adentro.
+            </h2>
           </div>
 
           <FadeUp as="ul" y={40} stagger={0.06} className="border-b border-line">
