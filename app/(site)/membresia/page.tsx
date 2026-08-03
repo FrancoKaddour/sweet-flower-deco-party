@@ -45,12 +45,12 @@ export default function MembresiaPage() {
         className="bg-sage px-6 py-24 text-ink md:px-10 md:py-32"
       >
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-14 md:mb-20">
+          <div className="mb-14 text-center md:mb-20">
             <Eyebrow className="mb-5">Sin vueltas</Eyebrow>
             <RevealText
               as="h2"
               onScroll
-              className="max-w-[18ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)]"
+              className="mx-auto max-w-[18ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)]"
             >
               {/* TODO(contenido): titular real */}
               No es para todas. Y está bien
@@ -107,26 +107,25 @@ export default function MembresiaPage() {
         data-theme="dark"
         className="bg-ink px-6 py-28 text-bone md:px-10 md:py-40"
       >
-        <div className="mx-auto max-w-[1400px]">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end lg:gap-16">
-            <div className="lg:col-span-8">
-              <Eyebrow className="mb-6">La decisión</Eyebrow>
-              <RevealText
-                as="h2"
-                onScroll
-                className="max-w-[13ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.85] tracking-[-0.03em] text-bone [overflow-wrap:anywhere]"
-              >
-                {/* TODO(contenido): titular real */}
-                Adentro se está mejor
-              </RevealText>
-              <p className="mt-8 max-w-[52ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-bone/65">
-                {/* TODO(contenido): manifiesto real de Flor */}
-                {MANIFIESTO}
-              </p>
-            </div>
+        <div className="mx-auto max-w-[1400px] text-center">
+          <div>
+            <Eyebrow className="mb-6">La decisión</Eyebrow>
+            <RevealText
+              as="h2"
+              onScroll
+              className="mx-auto max-w-[13ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.85] tracking-[-0.03em] text-bone [overflow-wrap:anywhere]"
+            >
+              {/* TODO(contenido): titular real */}
+              Adentro se está mejor
+            </RevealText>
+            <p className="mx-auto mt-8 max-w-[52ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-bone/65">
+              {/* TODO(contenido): manifiesto real de Flor */}
+              {MANIFIESTO}
+            </p>
+          </div>
 
-            <div className="lg:col-span-4 lg:justify-self-end">
-              <dl className="border-t border-bone/20 pt-8">
+          <div className="mx-auto mt-14 w-full max-w-[420px] md:mt-20">
+            <dl className="border-t border-bone/20 pt-8">
                 <div className="flex items-baseline justify-between gap-6">
                   <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">
                     Valor mensual
@@ -152,7 +151,6 @@ export default function MembresiaPage() {
               </p>
             </div>
           </div>
-        </div>
       </section>
     </main>
   );
