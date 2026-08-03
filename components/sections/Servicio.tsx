@@ -69,11 +69,11 @@ const FEATURES = [
 export function Servicio() {
   const trackRef = useRef<HTMLDivElement>(null);
 
-  // Desplaza el carrusel aproximadamente un slide (ancho de slide ~32% + gap 16px).
+  // Desplaza el carrusel un slide (desktop muestra 3 por vista → 1/3 del track).
   const scrollByStep = (dir: 1 | -1) => {
     const track = trackRef.current;
     if (!track) return;
-    const step = track.clientWidth * 0.32 + 16;
+    const step = track.clientWidth / 3;
     track.scrollBy({ left: dir * step, behavior: "smooth" });
   };
 
@@ -116,17 +116,19 @@ export function Servicio() {
       id="servicio"
       className="relative w-full overflow-hidden bg-blush py-[64px] text-ink md:py-[120px]"
     >
-      {/* 1) Encabezado + navegación del carrusel */}
-      <div className="mx-auto flex max-w-[1400px] items-end justify-between gap-6 px-6 md:px-10">
-        <FadeUp y={100} className="min-w-0">
-          <h2 className="w-full max-w-full font-display text-[length:var(--text-step-5)] font-bold uppercase leading-[0.9] text-ink md:max-w-[680px] md:text-[length:var(--text-step-6)]">
+      {/* 1) Encabezado centrado (dos líneas: quiebre antes de la marca) + flechas */}
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+        <FadeUp y={100}>
+          <h2 className="mx-auto text-center font-display text-[length:var(--text-step-4)] font-bold uppercase leading-[0.92] text-ink sm:text-[length:var(--text-step-5)] md:text-[length:var(--text-step-6)]">
             {/* TODO(contenido): titular real */}
-            Una fiesta Sweet Flowers es…
+            Una fiesta
+            <br />
+            Sweet Flowers es…
           </h2>
         </FadeUp>
 
         <nav
-          className="hidden gap-3 md:flex"
+          className="mt-8 hidden justify-center gap-3 md:flex"
           aria-label="Navegación del carrusel"
         >
           <button
@@ -192,7 +194,7 @@ export function Servicio() {
           {SLIDES.map((slide) => (
           <article
             key={slide.seed}
-            className="group relative w-[80vw] shrink-0 snap-start overflow-hidden rounded-[var(--radius-md)] sm:w-[55vw] md:w-[40vw] lg:w-[30vw]"
+            className="group relative w-[78vw] shrink-0 snap-start overflow-hidden rounded-[var(--radius-md)] sm:w-[48%] md:w-[calc((100%-2rem)/3)]"
           >
             <Image
               src={`https://picsum.photos/seed/${slide.seed}/600/800`}
@@ -200,8 +202,8 @@ export function Servicio() {
               width={600}
               height={800}
               draggable={false}
-              sizes="(max-width: 639px) 80vw, (max-width: 767px) 55vw, (max-width: 1023px) 40vw, 30vw"
-              className="pointer-events-none h-[338px] w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 lg:h-[458px]"
+              sizes="(max-width: 639px) 78vw, (max-width: 767px) 48vw, 33vw"
+              className="pointer-events-none h-[320px] w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 lg:h-[400px]"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
             <header className="absolute bottom-4 left-4 max-w-[250px] md:bottom-6 md:left-6 md:max-w-[351px]">
