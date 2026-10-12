@@ -95,56 +95,46 @@ Combinaciones **validadas**. No inventes pares nuevos sin chequear contraste (§
 
 ## 3. Tipografía
 
-### 3.1 Familias (provisional)
+### 3.1 Familias (provisional — pairing vigente)
 
-- **Display / titulares → "Fraunces"**: serif editorial variable. Imita el registro de Canela / PP Editorial New. Pesos **300–500** para elegancia (evitar bold pesado en titulares grandes). Activar el eje óptico (`opsz`) alto en tamaños grandes.
-- **Body / UI → "Geist"** (fallback **"Inter"**): sans neutro y legible. Pesos **400 / 500**.
+> **Decisión vigente (confirmada por Franco):** el pairing es **grotesco/moderno**, no serif.
+> Equivalentes libres al pairing de snask.com. Esto reemplaza el pairing serif
+> (Fraunces + Geist) que figuraba antes en este doc y que **nunca llegó al código**.
+> Sigue **provisional** hasta el manual de marca de Flor; se consume por token.
 
-Filosofía: **titulares grandes con mucho espacio negativo.** El contraste serif/sans hace el trabajo editorial; no hace falta decorar.
+- **Display / titulares → "Bricolage Grotesque"**: grotesca display con carácter (≈ "Snaskface" de snask.com). Se usa en pesos altos (extrabold) en MAYÚSCULAS para titulares con punch. Token `--font-display`.
+- **Body / UI → "Hanken Grotesk"**: grotesca limpia y legible (≈ "Apercu"). Pesos **400 / 500**. Token `--font-sans`.
+
+Filosofía: **titulares grandes con mucho espacio negativo.** El contraste de pesos y escala (no serif/sans) hace el trabajo editorial; la grotesca da el registro moderno del rubro.
 
 ### 3.2 Carga con `next/font`
 
-`app/fonts.ts`:
-
-```ts
-import { Fraunces, Geist } from "next/font/google";
-
-export const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"], // display: elegante, sin bold pesado
-  style: ["normal", "italic"],   // itálica editorial para énfasis
-  variable: "--font-display",
-  display: "swap",
-});
-
-export const geist = Geist({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-body",
-  display: "swap",
-});
-```
-
-`app/layout.tsx`:
+Se cargan directamente en `app/layout.tsx` (no hay `app/fonts.ts`):
 
 ```tsx
-import { fraunces, geist } from "./fonts";
+import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="es-AR" className={`${fraunces.variable} ${geist.variable}`}>
-      <body className="bg-bone text-ink font-body antialiased">{children}</body>
-    </html>
-  );
-}
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const hanken = Hanken_Grotesk({
+  variable: "--font-hanken",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// <html className={`${bricolage.variable} ${hanken.variable} antialiased`}>
 ```
 
-Y en el CSS global exponemos los tokens de familia:
+Y en `@theme` (globals.css) se exponen los tokens semánticos apuntando a las variables de `next/font`:
 
 ```css
-:root {
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+@theme {
+  --font-display: var(--font-bricolage), "Arial Black", sans-serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
 }
 ```
 
