@@ -182,7 +182,7 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 border-b pt-[env(safe-area-inset-top)] transition-colors duration-500 ${
+        className={`c-site-header fixed inset-x-0 top-0 z-50 border-b pt-[env(safe-area-inset-top)] transition-colors duration-500 ${
           scrolled
             ? dark
               ? "border-bone/10 bg-ink/65 backdrop-blur-md"

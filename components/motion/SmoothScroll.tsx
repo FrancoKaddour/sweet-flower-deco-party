@@ -44,22 +44,51 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     ).matches;
     if (prefersReduced) return;
 
-    const lenis = new Lenis({
-      lerp: 0.1, // scroll "con peso" — ver docs/07
-      smoothWheel: true,
-    });
-    // Exponemos la instancia para poder pausarla/reanudarla desde fuera.
-    lenisInstance = lenis;
+    let lenis: Lenis | null = null;
+    let raf: ((time: number) => void) | null = null;
 
-    lenis.on("scroll", ScrollTrigger.update);
+    // Arranca Lenis. Idempotente: si ya hay instancia, no crea otra.
+    const iniciar = () => {
+      if (lenis) return;
+      lenis = new Lenis({
+        lerp: 0.1, // scroll "con peso" — ver docs/07
+        smoothWheel: true,
+      });
+      // Exponemos la instancia para poder pausarla/reanudarla desde fuera.
+      lenisInstance = lenis;
+      lenis.on("scroll", ScrollTrigger.update);
+      raf = (time: number) => lenis!.raf(time * 1000);
+      gsap.ticker.add(raf);
+      gsap.ticker.lagSmoothing(0);
+    };
 
-    const raf = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
+    // El loader de intro pone body[data-loader]='true' mientras corre (scroll
+    // bloqueado). Esperamos a que pase a 'false' para arrancar Lenis y no pelear
+    // con el scroll-lock del loader. Si el loader no corre (reduced-motion ya
+    // salió antes, o no está el atributo), arrancamos directo.
+    const estado = document.body.getAttribute("data-loader");
+    let observer: MutationObserver | null = null;
+
+    if (estado === "true") {
+      observer = new MutationObserver(() => {
+        if (document.body.getAttribute("data-loader") === "false") {
+          iniciar();
+          observer?.disconnect();
+          observer = null;
+        }
+      });
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ["data-loader"],
+      });
+    } else {
+      iniciar();
+    }
 
     return () => {
-      gsap.ticker.remove(raf);
-      lenis.destroy();
+      observer?.disconnect();
+      if (raf) gsap.ticker.remove(raf);
+      lenis?.destroy();
       lenisInstance = null;
     };
   }, [isPanel]);

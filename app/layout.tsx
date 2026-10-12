@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { JsonLd } from "@/components/site/JsonLd";
+import { Loader } from "@/components/intro/Loader";
 
 // Display grotesca con carácter — equivalente LIBRE al espíritu de "Snaskface".
 // Alternativa self-hosted con más punch: Clash Display (Fontshare). Ver docs/06 + ADR-012.
@@ -71,7 +72,11 @@ export default function RootLayout({
       lang="es-AR"
       className={`${bricolage.variable} ${hanken.variable} antialiased`}
     >
-      <body className="min-h-dvh bg-bone text-ink">
+      {/* data-loader="true" se escribe en el HTML servido (NO desde JS) → el
+          estado inicial del loader vive en CSS, cero flash, cero hidratación
+          rota. La timeline de GSAP lo pasa a "false" al terminar la intro.
+          Método Villurcann (colaboracion/franco/prompt-loader-hero.docx). */}
+      <body className="min-h-dvh bg-bone text-ink" data-loader="true">
         {/* Skip-link: acceso rápido al contenido para usuarios de teclado */}
         <a
           href="#main"
@@ -80,6 +85,9 @@ export default function RootLayout({
           Saltar al contenido
         </a>
         <JsonLd />
+        {/* Loader de intro: el nombre SWEET FLOWERS se separa y en el hueco
+            central nace el video del hero, que crece a pantalla completa. */}
+        <Loader />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>

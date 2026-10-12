@@ -370,6 +370,152 @@ html.lenis body {
   opacity: 0.26;
 }
 
+/* =====================================================================
+   LOADER + HERO — método Villurcann adaptado a Sweet Flowers.
+   Fuente de verdad: colaboracion/franco/prompt-loader-hero.docx.
+   Estado inicial en CSS (body[data-loader="true"]) → cero flash/hidratación.
+   El nombre son 2 LÍNEAS (SWEET FLOWERS / DECO PARTY) que se separan en
+   vertical; en la franja del medio nace el video, que crece a full-screen.
+   ===================================================================== */
+
+/* Easing del loader (= --ease-default del doc). */
+:root {
+  --ease-default: cubic-bezier(0.4, 0, 0, 1);
+  /* Separación horizontal de "SWEET"/"FLOWERS" (cerrado → abierto). Abierto deja
+     el hueco central donde nace el video. El padding-left compensa el ancho
+     desigual de las palabras para que el hueco quede centrado en pantalla. */
+  --loader-gap-closed: 0.6rem;
+  --loader-gap-open: 10rem; /* mobile */
+  --loader-pad-open: 2.75rem; /* mobile: compensación de centrado */
+  /* Caja del video al nacer: RETRATO 3:4 (como De Puydt). Se expande a full. */
+  --media-w: 7.5rem;
+  --media-h: 10rem;
+}
+@media (min-width: 48rem) {
+  :root {
+    --loader-gap-open: 25rem; /* desktop: separación amplia (De Puydt) */
+    --loader-pad-open: 5rem;
+    --media-w: 15rem;
+    --media-h: 20rem;
+  }
+}
+
+/* ---- Loader: una línea "SWEET FLOWERS" que se separa (método De Puydt) ---- */
+.c-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.25rem;
+  /* SIN background propio: lo que se ve detrás es el fondo bone del hero. */
+}
+.c-loader__name {
+  display: flex;
+  align-items: center;
+  column-gap: var(--loader-gap-closed);
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  font-size: var(--text-step-4);
+  white-space: nowrap;
+  transition: all 0.75s var(--ease-default);
+}
+@media (min-width: 48rem) {
+  .c-loader__name {
+    font-size: var(--text-step-6);
+  }
+}
+/* Las dos palabras se separan y en el medio aparece el video. */
+.c-loader__name[data-expanded="true"] {
+  column-gap: var(--loader-gap-open);
+  padding-left: var(--loader-pad-open);
+}
+.c-loader__name span {
+  opacity: 0; /* GSAP las revela (autoAlpha) */
+  visibility: hidden;
+}
+body[data-loader="false"] .c-loader {
+  display: none;
+}
+/* Mientras corre el loader: scroll bloqueado (red de seguridad además de Lenis)
+   y anclado al top, para que ninguna sección de abajo asome tras el loader. */
+body[data-loader="true"] {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* ---- Hero media (la caja del video) ---- */
+.c-hero__media {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  overflow: hidden; /* object-fit cover + recorte */
+  z-index: 0;
+}
+.c-hero__media video,
+.c-hero__media-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Placeholder cálido (hasta que llegue el video real). Gradiente de marca. */
+.c-hero__media-placeholder {
+  background: radial-gradient(
+    120% 120% at 50% 35%,
+    var(--color-blush) 0%,
+    var(--color-sand) 55%,
+    var(--color-bordeaux) 140%
+  );
+}
+.c-hero__media-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    rgba(20, 17, 15, 0.45) 0%,
+    rgba(20, 17, 15, 0.2) 100%
+  );
+}
+
+/* Estado INICIAL durante el loader: la caja del video es chica y está en el
+   hueco central (entre las dos líneas), invisible; el video interno a scale 1.5.
+   La timeline la agranda a 100%×100% y baja el video a scale 1. */
+body[data-loader="true"] .c-hero__media {
+  opacity: 0;
+  visibility: hidden;
+  width: var(--media-w);
+  height: var(--media-h);
+  transform: translate(-50%, -50%);
+}
+body[data-loader="true"] .c-hero__media video,
+body[data-loader="true"] .c-hero__media-placeholder {
+  transform: scale(1.5);
+}
+body[data-loader="true"] .c-hero__media-overlay {
+  opacity: 0;
+  visibility: hidden;
+}
+/* El contenido editorial del hero Y el header arrancan invisibles durante el
+   loader; la timeline del Loader los revela al final (como en De Puydt: el
+   header entra junto con el contenido, no antes). */
+body[data-loader="true"] .c-hero__content,
+body[data-loader="true"] .c-site-header {
+  opacity: 0;
+  visibility: hidden;
+}
+
 /* ---- Accesibilidad: foco visible por teclado ---- */
 :focus-visible {
   outline: 2px solid var(--color-champagne);
