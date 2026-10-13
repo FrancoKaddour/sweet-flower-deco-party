@@ -140,7 +140,9 @@ html.lenis body {
   margin-right: -4vw; /* corre el collage un poco hacia la derecha */
   display: flex;
   gap: 8px;
-  transform-style: preserve-3d;
+  /* flat (no preserve-3d): la grilla se inclina como UNA capa; con preserve-3d
+     cada foto era su propia capa 3D → scroll trabado. */
+  transform-style: flat;
   transform-origin: 50% 50%; /* pivote central → cobertura pareja al inclinar */
   /* Estado de reposo (fallback sin JS / reduced-motion); GSAP controla el tilt */
   transform: rotate(-10deg) scale(1.12);

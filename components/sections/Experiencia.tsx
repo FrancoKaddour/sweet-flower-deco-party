@@ -68,6 +68,7 @@ export function Experiencia() {
           const marquee = gsap.to(trackEl, {
             x: -group * 1.2, // recorrido suave; el wrap lo recicla infinitamente
             ease: "none",
+            force3D: true, // capa GPU fija: la tira no se re-pinta en cada frame
             scrollTrigger: {
               trigger: sectionEl,
               start: "top bottom",
@@ -86,6 +87,7 @@ export function Experiencia() {
             {
               y: -40,
               ease: "none",
+              force3D: true,
               scrollTrigger: {
                 trigger: sectionEl,
                 start: "top bottom",

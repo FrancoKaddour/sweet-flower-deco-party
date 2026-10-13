@@ -72,14 +72,23 @@ export function SummitHome() {
       );
 
       // 2) Parallax continuo de columnas (pares y impares en sentidos opuestos).
-      // fromTo (+X → −X) → las columnas se mueven durante todo el scroll.
+      // Se anima la COLUMNA entera (11 capas) y no cada foto (126 tweens/capas):
+      // mismo recorrido visual (±30% del alto de una foto), mucho más liviano.
       const cols = Array.from(el.querySelectorAll<HTMLElement>(".wk-col"));
       cols.forEach((col, i) => {
         const dir = i % 2 === 0 ? 1 : -1;
+        const base = i % 2 === 0 ? -22 : 22; // offset alterno del CSS
+        const travel = () =>
+          (col.querySelector("img")?.offsetHeight ?? 0) * 0.3 * dir;
         gsap.fromTo(
-          col.querySelectorAll("img"),
-          { yPercent: 30 * dir },
-          { yPercent: -30 * dir, ease: "none", scrollTrigger: trigger },
+          col,
+          { y: () => base + travel() },
+          {
+            y: () => base - travel(),
+            ease: "none",
+            force3D: true,
+            scrollTrigger: { ...trigger, invalidateOnRefresh: true },
+          },
         );
       });
     },
