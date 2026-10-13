@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SEDES } from "@/content/evento";
+import { SEDES, EDICIONES_PREVIAS } from "@/content/evento";
 
 /**
  * "Escenarios que nos recibieron" — scroll HORIZONTAL pineado (patrón GSAP clásico):
@@ -57,7 +57,7 @@ export function EdicionesScroll() {
         >
           {/* Bloque de intro (primer panel) */}
           <div className="flex w-[82vw] shrink-0 flex-col justify-center sm:w-[56vw] md:w-[40vw] lg:w-[34vw]">
-            <Eyebrow className="mb-6">7 ediciones</Eyebrow>
+            <Eyebrow className="mb-6">{EDICIONES_PREVIAS} ediciones</Eyebrow>
             <h2 className="font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone [overflow-wrap:anywhere]">
               {/* TODO(contenido): titular real */}
               Escenarios que nos recibieron

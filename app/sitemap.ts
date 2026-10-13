@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     //   priority: 0.7,
     // },
     // {
-    //   url: "https://sweetflowersdecoparty.com/evento",
+    //   url: "https://sweetflowersdecoparty.com/event-summit" // + /workshops,
     //   lastModified: "2026-01-01",
     //   changeFrequency: "monthly",
     //   priority: 0.7,

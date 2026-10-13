@@ -11,22 +11,26 @@
   --color-ink: #14110f; /* tinta casi negra cálida — texto principal */
   --color-bone: #f7f3ec; /* base marfil / hueso */
   --color-cloud: #ffffff;
-  --color-botanical: #772d36; /* rojo bordó — acento (ex verde profundo) */
-  --color-bordeaux: #5b2a3a; /* profundo — momentos oscuros */
+  --color-botanical: #ED1C23; /* rojo logo — acento principal */
+  --color-bordeaux: #7A1218; /* rojo oscuro contenido — fondos de sección */
   --color-champagne: #c6a15b; /* acento premium dorado */
   --color-muted: #736d64; /* texto atenuado (~ink 55%) */
   --color-line: #e4ddd1; /* líneas sutiles */
 
   /* Superficies claras — fondos de sección que se blendean entre sí (ver
      ColorBridge en app/page.tsx, que interpola en oklab entre estos tokens). */
-  --color-sage: #f2dcdb; /* rosado bordó muy claro (Principios — ex verde grisáceo) */
+  --color-sage: #fde8e9; /* rosado rojo muy claro (Principios) */
   --color-blush: #f4e9e4; /* rosado marfil (Servicio) */
   --color-sand: #efe7d6; /* arena cálida (Testimonios, placeholders) */
 
   /* Tipografía — equivalentes libres al pairing de snask.com (ver ADR-012).
      Display: Bricolage Grotesque (≈ Snaskface). Cuerpo: Hanken Grotesk (≈ Apercu). */
-  --font-display: var(--font-bricolage), "Arial Black", sans-serif;
+  /* Títulos: la serif fina del logotipo (Cormorant). Antes: Bricolage. */
+  --font-display: var(--font-logo), Georgia, "Times New Roman", serif;
+  --font-display-grotesk: var(--font-bricolage), "Arial Black", sans-serif;
   --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  /* Logotipo del header: serif editorial fina (Cormorant Garamond). */
+  --font-logo: var(--font-cormorant), Georgia, "Times New Roman", serif;
 }
 
 :root {
@@ -84,6 +88,19 @@ body {
 .font-display {
   font-family: var(--font-display);
 }
+/* Cormorant es una serif fina: los pesos "extrabold/bold" pensados para la
+   grotesca se normalizan a semibold (sin negrita sintética), y el tracking
+   negativo de los titulares grotescos se abre un poco para la serif. */
+.font-display:is(.font-extrabold, .font-black, .font-bold):not([data-area="panel"] *) {
+  font-weight: 600;
+}
+.font-display[class*="tracking-[-"]:not([data-area="panel"] *) {
+  letter-spacing: 0.01em;
+}
+/* El panel de administración conserva la grotesca original. */
+[data-area="panel"] .font-display {
+  font-family: var(--font-display-grotesk);
+}
 
 /* ---- Smooth scroll (Lenis) ---- */
 html.lenis,
@@ -119,20 +136,20 @@ html.lenis body {
 .wk-grid {
   position: relative;
   flex: none;
-  width: min(2200px, 205vw); /* bien ancho → cubre aun inclinado, sin huecos */
+  width: min(137.5rem, 205vw); /* bien ancho → cubre aun inclinado, sin huecos (rem: escala en TV) */
   margin-right: -4vw; /* corre el collage un poco hacia la derecha */
   display: flex;
-  gap: 12px;
+  gap: 8px;
   transform-style: preserve-3d;
   transform-origin: 50% 50%; /* pivote central → cobertura pareja al inclinar */
   /* Estado de reposo (fallback sin JS / reduced-motion); GSAP controla el tilt */
-  transform: rotate(-10deg) scale(1.35);
+  transform: rotate(-10deg) scale(1.12);
 }
 .wk-col {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 /* offset alterno de columnas (como befesti) */
 .wk-col:nth-child(odd) {
@@ -160,16 +177,10 @@ html.lenis body {
   z-index: 2;
   pointer-events: none;
   background:
-    /* scrim del lado derecho (marfil) para sostener el texto oscuro */
-    linear-gradient(
-      to left,
-      color-mix(in srgb, var(--color-bone) 55%, transparent) 0%,
-      transparent 30%
-    ),
-    /* fundido arriba/abajo hacia el marfil. Banda de marfil SÓLIDO de 24px en
-       el tope y el pie (en px, no en %) para no dejar ningún sliver de imagen
-       en el borde exacto —la grilla inclinada en 3D asoma ~1px en las esquinas—
-       y recién después el fundido largo hacia transparente. */
+    /* 1) ARRIBA de todo: fundido arriba/abajo hacia el marfil. Va primero (capa
+       superior) para que el scrim oscuro NUNCA tiña las bandas de marfil →
+       sin cortes bruscos contra las secciones vecinas. Banda sólida de 24px en
+       el tope y el pie (la grilla inclinada asoma ~1px en las esquinas). */
     linear-gradient(
       to bottom,
       var(--color-bone) 0,
@@ -178,6 +189,15 @@ html.lenis body {
       transparent 84%,
       var(--color-bone) calc(100% - 24px),
       var(--color-bone) 100%
+    ),
+    /* 2) Scrim de tinta detrás del título en blanco: elipse suave anclada a
+       la derecha, que se desvanece en todas direcciones (no una franja recta
+       de arriba a abajo). */
+    radial-gradient(
+      ellipse 58% 48% at 100% 52%,
+      color-mix(in srgb, var(--color-ink) 72%, transparent) 0%,
+      color-mix(in srgb, var(--color-ink) 40%, transparent) 50%,
+      transparent 100%
     );
 }
 /* Mobile: en el viewport angosto la grilla inclinada asoma en los CUATRO lados
@@ -209,10 +229,10 @@ html.lenis body {
      de 42). Safari iOS mata páginas por presión de memoria GPU; en un viewport
      de 390px las columnas extra ni se ven. Las <img> ocultas no se descargan
      (loading="lazy" + display:none → nunca intersectan). */
-  .wk-col:nth-child(n + 4) {
+  .wk-col:nth-child(n + 5) {
     display: none;
   }
-  .wk-col img:nth-child(n + 6) {
+  .wk-col img:nth-child(n + 7) {
     display: none;
   }
   .wk-grid {
@@ -222,6 +242,7 @@ html.lenis body {
 
 /* ---- Colecciones: clip-path "caída" reveal (referencia CANCAN) ---- */
 .clip-figure {
+  container-type: inline-size;
   position: relative;
   width: 100%;
   aspect-ratio: 8 / 11; /* vertical, tipo galería */
@@ -235,19 +256,34 @@ html.lenis body {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition:
-    clip-path 2s cubic-bezier(0.645, 0.045, 0.355, 1),
-    transform 0.7s var(--ease-out-expo);
-  will-change: clip-path, transform;
+  transform-origin: 50% 0%;
+  /* Hover (después de la caída): zoom suave. SIN will-change permanente: con
+     will-change la imagen se rasterizaba como capa a menor resolución y al
+     terminar "se acomodaba" (se veía más opaca/blanda y después nítida). */
+  transition: transform 0.7s var(--ease-out-expo);
 }
 /* Estado inicial recortado SOLO cuando JS "arma" la card (.armed). Sin JS, la
    imagen queda visible por defecto (bien para SEO / no-JS / accesibilidad). */
 .clip-figure.armed img {
-  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+  clip-path: inset(0 0 100% 0); /* cerrada contra el borde SUPERIOR */
+  transform: scale(1.12);
 }
-/* la caída: se despliega de arriba a abajo */
+/* La caída: se despliega de ARRIBA hacia ABAJO, y la foto asienta su escala
+   en el mismo tiempo (misma curva) → una sola acción, sin pasos. Duración
+   --clip-fall (también la usa CollectionCard.tsx para encadenar el texto). */
 .clip-figure.in-view img {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  clip-path: inset(0 0 0 0);
+  transform: scale(1);
+  transition:
+    clip-path var(--clip-fall) var(--ease-in-out-hard),
+    transform var(--clip-fall) var(--ease-in-out-hard);
+}
+/* Terminada la caída vuelve la transición corta del hover. */
+.clip-figure.is-complete img {
+  transition: transform 0.7s var(--ease-out-expo);
+}
+:root {
+  --clip-fall: 1.3s;
 }
 
 /* overlay para legibilidad del texto (aparece al terminar la caída) */
@@ -257,7 +293,7 @@ html.lenis body {
   z-index: 1;
   background: rgba(20, 17, 15, 0.34);
   opacity: 1; /* visible por defecto (legibilidad sin JS) */
-  transition: opacity 0.6s ease, background 0.6s ease;
+  transition: opacity 0.45s var(--ease-out-quart), background 0.6s ease;
 }
 .clip-figure.armed .clip-overlay {
   opacity: 0;
@@ -285,7 +321,7 @@ html.lenis body {
 }
 .clip-figure.armed .clip-content {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(-14px);
 }
 .clip-figure.is-complete .clip-content {
   opacity: 1;
@@ -299,9 +335,11 @@ html.lenis body {
 }
 .clip-title {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
-  font-size: var(--text-step-4);
+  /* Escala con el ANCHO DE LA CARD (container query), no del viewport: en
+     tablet (3 cards angostas) "CATERING" ya no se sale de la tarjeta. */
+  font-size: min(var(--text-step-4), 15cqi);
   line-height: 0.95;
   letter-spacing: -0.01em;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
@@ -384,7 +422,7 @@ html.lenis body {
   /* Separación horizontal de "SWEET"/"FLOWERS" (cerrado → abierto). Abierto deja
      el hueco central donde nace el video. El padding-left compensa el ancho
      desigual de las palabras para que el hueco quede centrado en pantalla. */
-  --loader-gap-closed: 0.6rem;
+  --loader-gap-closed: 0.3em; /* espacio entre palabras, relativo a la tipo */
   --loader-gap-open: 10rem; /* mobile */
   --loader-pad-open: 2.75rem; /* mobile: compensación de centrado */
   /* Caja del video al nacer: RETRATO 3:4 (como De Puydt). Se expande a full. */
@@ -413,29 +451,33 @@ html.lenis body {
   /* SIN background propio: lo que se ve detrás es el fondo bone del hero. */
 }
 .c-loader__name {
+  /* El CONJUNTO "SWEET [hueco] FLOWERS" queda centrado en pantalla (como un
+     bloque). Como FLOWERS es más ancha, el hueco cae un poco a la izquierda
+     del centro: el Loader mide las palabras y corre el video a ese hueco. */
   display: flex;
   align-items: center;
   column-gap: var(--loader-gap-closed);
-  font-family: var(--font-display);
-  font-weight: 800;
+  /* Misma serif fina del logotipo del header (Cormorant). */
+  font-family: var(--font-logo);
+  font-weight: 500;
   text-transform: uppercase;
   line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--color-ink);
+  letter-spacing: 0.08em;
+  color: var(--color-bone);
   font-size: var(--text-step-4);
   white-space: nowrap;
   transition: all 0.75s var(--ease-default);
 }
 @media (min-width: 48rem) {
   .c-loader__name {
-    font-size: var(--text-step-6);
+    font-size: clamp(3.2rem, 1.9rem + 5.4vw, 7rem);
   }
 }
 /* Las dos palabras se separan y en el medio aparece el video. */
 .c-loader__name[data-expanded="true"] {
   column-gap: var(--loader-gap-open);
-  padding-left: var(--loader-pad-open);
 }
+.c-loader__name span:first-child { margin-right: -0.08em; /* compensa el tracking final */ }
 .c-loader__name span {
   opacity: 0; /* GSAP las revela (autoAlpha) */
   visibility: hidden;
@@ -516,6 +558,24 @@ body[data-loader="true"] .c-site-header {
   visibility: hidden;
 }
 
+/* ---- Hero: border-radius en las esquinas inferiores al scrollear ----
+   Al bajar la página, las esquinas inferiores del hero se redondean formando
+   un "encuadre" que sube y baja con el scroll (animation-timeline: scroll()).
+   El efecto revierte cuando el usuario vuelve arriba. Solo en desktop. */
+@supports (animation-timeline: scroll()) {
+  @media (min-width: 48rem) and (prefers-reduced-motion: no-preference) {
+    .c-hero {
+      animation: hero-corners linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0px 60vh;
+    }
+  }
+}
+@keyframes hero-corners {
+  from { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  to   { border-bottom-left-radius: clamp(0.75rem, 2vw, 1.5rem); border-bottom-right-radius: clamp(0.75rem, 2vw, 1.5rem); }
+}
+
 /* ---- Accesibilidad: foco visible por teclado ---- */
 :focus-visible {
   outline: 2px solid var(--color-champagne);
@@ -534,5 +594,132 @@ body[data-loader="true"] .c-site-header {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---- Header sobre el video del hero (inicio, arriba de todo) ----
+   data-tone="light" lo pone Header.tsx; pasa a tono claro sin tocar cada clase. */
+.c-site-header .text-ink,
+.c-site-header .text-ink\/70,
+.c-site-header img {
+  transition: color 0.6s var(--ease-out-quart), filter 0.6s var(--ease-out-quart);
+}
+.c-site-header[data-tone="light"] .text-ink { color: var(--color-bone); }
+.c-site-header[data-tone="light"] .text-ink\/70 { color: color-mix(in oklab, var(--color-bone) 75%, transparent); }
+.c-site-header[data-tone="light"] img { filter: brightness(0) invert(1); }
+
+/* ---- CTA del sitio (components/ui/Button.tsx) ----
+   Lenguaje de "Contacto"/"Menú": versalitas, línea fina, flecha en círculo. */
+.sf-btn__text {
+  transition: transform 0.55s var(--ease-out-expo);
+}
+.sf-btn__text--copy {
+  transform: translateY(115%);
+}
+.sf-btn:hover .sf-btn__text,
+.sf-btn:focus-visible .sf-btn__text {
+  transform: translateY(-115%);
+}
+.sf-btn:hover .sf-btn__text--copy,
+.sf-btn:focus-visible .sf-btn__text--copy {
+  transform: translateY(0);
+}
+.sf-btn__line {
+  transform-origin: left center;
+}
+.sf-btn:hover .sf-btn__line,
+.sf-btn:focus-visible .sf-btn__line {
+  animation: sf-btn-line 0.8s var(--ease-in-out-hard);
+}
+@keyframes sf-btn-line {
+  0% { transform: scaleX(1); transform-origin: right center; }
+  48% { transform: scaleX(0); transform-origin: right center; }
+  52% { transform: scaleX(0); transform-origin: left center; }
+  100% { transform: scaleX(1); transform-origin: left center; }
+}
+.sf-btn__dot {
+  transition: background-color 0.5s var(--ease-out-expo), border-color 0.5s var(--ease-out-expo), color 0.5s var(--ease-out-expo);
+}
+.sf-btn:hover .sf-btn__dot,
+.sf-btn:focus-visible .sf-btn__dot {
+  background-color: currentColor;
+  border-color: currentColor;
+}
+.sf-btn__arrow {
+  grid-area: 1 / 1;
+  font-size: 0.95rem;
+  line-height: 1;
+  transition: transform 0.55s var(--ease-out-expo), color 0.4s ease;
+}
+.sf-btn__arrow--in {
+  transform: translate(-160%, 160%);
+}
+.sf-btn:hover .sf-btn__arrow,
+.sf-btn:focus-visible .sf-btn__arrow {
+  transform: translate(160%, -160%);
+}
+.sf-btn:hover .sf-btn__arrow--in,
+.sf-btn:focus-visible .sf-btn__arrow--in {
+  transform: translate(0, 0);
+  transition-delay: 0.08s;
+}
+/* La flecha toma el color del fondo al rellenarse el círculo. */
+.sf-btn:hover .sf-btn__dot--dark .sf-btn__arrow,
+.sf-btn:focus-visible .sf-btn__dot--dark .sf-btn__arrow { color: var(--color-bone); }
+.sf-btn:hover .sf-btn__dot--light .sf-btn__arrow,
+.sf-btn:focus-visible .sf-btn__dot--light .sf-btn__arrow { color: var(--color-ink); }
+.sf-btn__plus {
+  transition: transform 0.5s var(--ease-out-expo);
+}
+.sf-btn:hover .sf-btn__plus,
+.sf-btn:focus-visible .sf-btn__plus {
+  transform: rotate(90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sf-btn__text, .sf-btn__arrow, .sf-btn__plus { transition: none; }
+  .sf-btn:hover .sf-btn__line { animation: none; }
+}
+
+/* ---- Barra de scroll de marca ----
+   Riel hueso, pulgar fino en tinta suave (cápsula con aire alrededor) que pasa
+   a bordó al tomarla. Chrome/Edge/Safari: ::-webkit-scrollbar. Firefox: el
+   estándar scrollbar-color (solo si no hay soporte webkit, para no pisarlo). */
+html::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+html::-webkit-scrollbar-track {
+  background: var(--color-bone);
+}
+html::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--color-ink) 28%, transparent);
+  border-radius: 999px;
+  border: 3.5px solid var(--color-bone); /* aire alrededor → pulgar fino */
+  transition: background-color 0.3s;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklab, var(--color-bordeaux) 75%, transparent);
+}
+html::-webkit-scrollbar-thumb:active {
+  background-color: var(--color-bordeaux);
+}
+html::-webkit-scrollbar-corner {
+  background: var(--color-bone);
+}
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--color-ink) 30%, transparent) var(--color-bone);
+  }
+}
+
+/* ---- Pantallas grandes (≥1920px: monitores 2K/4K y TV) ----
+   El root font-size crece en proporción al ancho (16px exactos a 1920px).
+   Todo lo que está en rem (tipografía, espaciados, contenedores max-w) escala
+   junto: en una TV 4K el sitio se ve como en un escritorio de 1920, sin
+   franjas vacías ni letra chica. */
+@media (min-width: 1920px) {
+  html {
+    font-size: calc(100vw / 120);
   }
 }

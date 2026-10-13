@@ -5,13 +5,15 @@ import { RevealText } from "@/components/motion/RevealText";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { EventoHero } from "@/components/evento/EventoHero";
+import { SummitIntro } from "@/components/evento/SummitIntro";
+import { SummitEscenas } from "@/components/evento/SummitEscenas";
 import { EventoStats } from "@/components/evento/EventoStats";
 import { EdicionesScroll } from "@/components/evento/EdicionesScroll";
 import { Duotone } from "@/components/evento/Duotone";
 import {
   EVENT_NAME,
-  EVENT_DATE_LABEL,
-  EVENT_YEAR,
+  EVENT_WHEN,
+  EDICION_NUMERO,
   EVENT_CUPO,
   EVENT_CTA_HREF,
   INCLUYE,
@@ -20,10 +22,10 @@ import {
 
 export const metadata: Metadata = {
   title: "Event Summit",
-  description: `${EVENT_NAME}: la 8ª edición, el ${EVENT_DATE_LABEL} de ${EVENT_YEAR}. Formación, comunidad y decoración de eventos de nivel. Cupos limitados (${EVENT_CUPO}).`,
-  alternates: { canonical: "/evento" },
+  description: `${EVENT_NAME}: la ${EDICION_NUMERO}ª edición, ${EVENT_WHEN.toLowerCase()}. Formación, comunidad y decoración de eventos de nivel. Cupos limitados (${EVENT_CUPO}).`,
+  alternates: { canonical: "/event-summit" },
   openGraph: {
-    title: `${EVENT_NAME} · ${EVENT_DATE_LABEL} ${EVENT_YEAR}`,
+    title: `${EVENT_NAME} · ${EVENT_WHEN}`,
     description:
       "Un día al año, la decoración de eventos se junta en un mismo lugar. Formación, comunidad y la escena que soñás.",
   },
@@ -35,12 +37,18 @@ export default function EventoPage() {
       {/* 1 · HERO cinematográfico (dark) */}
       <EventoHero />
 
+      {/* 1b · INTRO editorial (dark) — estructura/motion de depuydthaarden.be */}
+      <SummitIntro />
+
+      {/* 1c · ESCENAS pineadas (dark) — estructura/motion de depuydthaarden.be */}
+      <SummitEscenas />
+
       {/* 2 · LA EXPERIENCIA — spread editorial (light) */}
       <section
         data-theme="light"
         className="bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
       >
-        <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Texto */}
           <div className="lg:col-span-5">
             <Eyebrow className="mb-6">La experiencia</Eyebrow>
@@ -94,7 +102,7 @@ export default function EventoPage() {
         data-theme="light"
         className="scroll-mt-24 bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
       >
-        <div className="mx-auto max-w-[1400px]">
+        <div className="mx-auto max-w-[87.5rem]">
           <div className="mb-14 text-center md:mb-16">
             <Eyebrow className="mb-5">Tu entrada incluye</Eyebrow>
             <h2 className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink">
@@ -132,7 +140,7 @@ export default function EventoPage() {
         data-theme="dark"
         className="bg-ink px-6 py-24 text-bone md:px-10 md:py-32"
       >
-        <div className="mx-auto max-w-[1400px]">
+        <div className="mx-auto max-w-[87.5rem]">
           <div className="text-center">
             <Eyebrow className="mb-6">Quiénes enseñan</Eyebrow>
             <RevealText
@@ -150,7 +158,7 @@ export default function EventoPage() {
             {DISERTANTES.map((_, i) => (
               <div
                 key={i}
-                className="relative flex h-[300px] flex-col justify-between overflow-hidden rounded-[var(--radius-md)] border border-bone/15 bg-gradient-to-b from-bordeaux/25 to-ink p-7 md:h-[380px]"
+                className="relative flex h-[18.75rem] flex-col justify-between overflow-hidden rounded-[var(--radius-md)] border border-bone/15 bg-gradient-to-b from-bordeaux/25 to-ink p-7 md:h-[23.75rem]"
               >
                 <div className="evt-grain pointer-events-none absolute inset-0" />
                 <span className="relative font-display text-[length:var(--text-step-4)] font-extrabold leading-none text-champagne">
@@ -185,7 +193,7 @@ export default function EventoPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/40" />
 
-        <div className="relative mx-auto max-w-[1400px]">
+        <div className="relative mx-auto max-w-[87.5rem]">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end lg:gap-16">
             <div className="lg:col-span-7">
               <Eyebrow className="mb-6">Reservá tu lugar</Eyebrow>
@@ -199,7 +207,7 @@ export default function EventoPage() {
               </RevealText>
               <p className="mt-8 max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/80">
                 {/* Copy real: pago por transferencia; MP suma recargo (§10). */}
-                El {EVENT_DATE_LABEL} de {EVENT_YEAR}, presencial. Reservás por
+                {EVENT_WHEN}, presencial (fecha exacta a confirmar). Reservás por
                 transferencia; si preferís Mercado Pago, se suma el recargo
                 habitual (~18%).
               </p>

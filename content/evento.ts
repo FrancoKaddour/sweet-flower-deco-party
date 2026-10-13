@@ -4,14 +4,19 @@
 
 export const EVENT_NAME = "Sweet Flowers Event Summit"; // ✅ (NO es un workshop)
 
-// Esta es la 8ª edición: hubo 7 previas (§11) → derivado, no inventado.
-export const EDICION_NUMERO = 8;
+// La 8ª edición fue el 18/09/2026 ✅. La PRÓXIMA es la 9ª, a comienzos de
+// 2027 ✅ (dicho por Franco/Flor, oct-2026). Fecha exacta ⬜.
+export const EDICIONES_PREVIAS = 8;
+export const EDICION_NUMERO = EDICIONES_PREVIAS + 1;
 
-// Fecha real: 18/09 ✅. Año asumido = próximo 18/09 (2026); horario tentativo.
-// TODO(contenido): confirmar AÑO, horario exacto, sede y modalidad con Flor.
-export const EVENT_DATE_ISO = "2026-09-18T10:00:00-03:00";
-export const EVENT_DATE_LABEL = "18 de septiembre";
-export const EVENT_YEAR = 2026;
+// TODO(contenido): fecha exacta (ISO) de la 9ª edición. Mientras sea null, la
+// cuenta regresiva se oculta y se muestra EVENT_WHEN.
+export const EVENT_DATE_ISO: string | null = null;
+export const EVENT_YEAR = 2027;
+/** Cuándo es, en texto: "Comienzos de 2027" hasta tener la fecha exacta. */
+export const EVENT_WHEN = "Comienzos de 2027";
+/** @deprecated usar EVENT_WHEN */
+export const EVENT_DATE_LABEL = EVENT_WHEN;
 
 export const EVENT_CUPO = 80; // ✅ "por el momento"
 
@@ -50,7 +55,7 @@ export const INCLUYE = [
 
 // Trayectoria (§11) — cifras aproximadas dichas por Flor (de memoria).
 export const STATS = [
-  { valor: 7, prefijo: "", sufijo: "", label: "Ediciones" },
+  { valor: EDICIONES_PREVIAS, prefijo: "", sufijo: "", label: "Ediciones" },
   { valor: 180, prefijo: "+", sufijo: "", label: "Asistentes" },
   { valor: 20, prefijo: "+", sufijo: "", label: "Disertantes" },
   { valor: EVENT_CUPO, prefijo: "", sufijo: "", label: "Cupos esta edición" },

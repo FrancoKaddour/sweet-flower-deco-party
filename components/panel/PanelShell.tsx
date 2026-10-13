@@ -33,7 +33,7 @@ export function PanelShell({
   }, [open]);
 
   return (
-    <div className="min-h-dvh bg-bone lg:grid lg:grid-cols-[18rem_1fr]">
+    <div data-area="panel" className="min-h-dvh bg-bone lg:grid lg:grid-cols-[18rem_1fr]">
       <Sidebar open={open} onClose={() => setOpen(false)} sesion={sesion} />
       <div className="flex min-w-0 flex-col">
         <Topbar onOpenMenu={() => setOpen(true)} sesion={sesion} />

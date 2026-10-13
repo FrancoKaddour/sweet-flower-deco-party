@@ -74,13 +74,29 @@ export function Footer() {
       </div>
 
       {/* 2) Grilla de columnas */}
-      <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-10 px-6 py-16 md:grid-cols-4 md:px-10">
-        {/* Marca */}
-        <div className="col-span-2">
-          <p className="font-display text-[length:var(--text-step-3)] font-bold uppercase leading-[0.9] text-bone">
-            Sweet Flowers
-          </p>
-          <p className="mt-3 text-[length:var(--text-step--1)] text-muted">
+      <div className="mx-auto grid max-w-[87.5rem] grid-cols-2 gap-10 px-6 py-16 md:grid-cols-4 md:px-10 lg:grid-cols-5 lg:py-24">
+        {/* Marca: isotipo blanco + logotipo Cormorant (como el header) */}
+        <div className="col-span-2 flex flex-col gap-4 md:gap-6">
+          <div className="flex items-center gap-4 md:gap-6">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/logo-mark-full.png"
+              alt="Sweet Flowers Deco Party"
+              className="h-[clamp(3.5rem,8vw,7.5rem)] w-auto brightness-0 invert"
+            />
+            <div className="flex flex-col leading-none">
+              <span
+                className="whitespace-nowrap font-(family-name:--font-logo) text-[clamp(1.35rem,2.6vw,2.4rem)] font-medium uppercase tracking-[0.12em] text-bone"
+                style={{ wordSpacing: "0.15em" }}
+              >
+                Sweet Flowers
+              </span>
+              <span className="mt-2 text-[clamp(0.72rem,0.9vw,0.85rem)] font-medium uppercase tracking-[0.2em] text-bone/70">
+                Deco Party
+              </span>
+            </div>
+          </div>
+          <p className="max-w-[32ch] text-[length:var(--text-step--1)] leading-relaxed text-bone/50 md:text-[length:var(--text-step-0)]">
             {/* TODO(contenido): bajada de marca */}
             Decoración de eventos · Argentina
           </p>
@@ -147,7 +163,7 @@ export function Footer() {
       </div>
 
       {/* 3) Barra inferior */}
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 py-8 text-[length:var(--text-step--1)] text-muted md:px-10">
+      <div className="mx-auto flex max-w-[87.5rem] flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 py-8 text-[length:var(--text-step--1)] text-muted md:px-10">
         <p>© 2026 Sweet Flowers Deco Party</p>
 
         <nav

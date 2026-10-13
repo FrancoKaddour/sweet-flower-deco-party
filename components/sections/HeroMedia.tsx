@@ -12,10 +12,20 @@
 export function HeroMedia() {
   return (
     <div className="c-hero__media" aria-hidden="true">
-      {/* TODO(contenido): reemplazar el placeholder por el <video> real del
-          evento (webm + mp4 + poster, muted autoPlay loop playsInline). Mientras
-          tanto, un placeholder de gradiente cálido que hace la misma animación. */}
-      <div className="c-hero__media-placeholder" />
+      {/* Placeholder de stock (30s, transiciones en arco). TODO(contenido):
+          reemplazar por video real de Sweet Flowers. Sin autoplay: lo arranca
+          HeroStory cuando el loader agranda el video (texto y video en sync). */}
+      <video
+        muted
+        loop
+        playsInline
+        preload="auto"
+        poster="/video/hero-poster.jpg"
+        tabIndex={-1}
+      >
+        <source src="/video/hero.webm" type="video/webm" />
+        <source src="/video/hero.mp4" type="video/mp4" />
+      </video>
       <div className="c-hero__media-overlay" />
     </div>
   );

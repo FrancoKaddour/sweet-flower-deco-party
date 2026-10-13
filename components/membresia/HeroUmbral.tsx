@@ -112,7 +112,7 @@ export function HeroUmbral() {
       </div>
 
       {/* Kicker (contenido al ancho del sitio) */}
-      <div className="relative mx-auto w-full max-w-[1400px]">
+      <div className="relative mx-auto w-full max-w-[87.5rem]">
         <p
           data-hu-reveal
           className="mb-8 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne"
@@ -157,7 +157,7 @@ export function HeroUmbral() {
       </h1>
 
       {/* Bajada + CTAs + indicio del portal (contenido al ancho del sitio) */}
-      <div className="relative mx-auto mt-10 flex w-full max-w-[1400px] flex-col items-start justify-between gap-8 border-t border-ink/10 pt-8 md:flex-row md:items-end">
+      <div className="relative mx-auto mt-10 flex w-full max-w-[87.5rem] flex-col items-start justify-between gap-8 border-t border-ink/10 pt-8 md:flex-row md:items-end">
         <p
           data-hu-reveal
           className="max-w-[40ch] font-sans text-[length:var(--text-step-1)] leading-snug text-ink/70"

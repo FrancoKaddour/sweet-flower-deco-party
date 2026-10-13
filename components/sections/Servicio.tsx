@@ -114,10 +114,10 @@ export function Servicio() {
   return (
     <section
       id="servicio"
-      className="relative w-full overflow-hidden bg-blush py-[64px] text-ink md:py-[120px]"
+      className="relative w-full overflow-hidden bg-blush py-[4rem] text-ink md:py-[7.5rem]"
     >
       {/* 1) Encabezado centrado (dos líneas: quiebre antes de la marca) + flechas */}
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+      <div className="mx-auto max-w-[87.5rem] px-6 md:px-10">
         <FadeUp y={100}>
           <h2 className="mx-auto text-center font-display text-[length:var(--text-step-4)] font-bold uppercase leading-[0.92] text-ink sm:text-[length:var(--text-step-5)] md:text-[length:var(--text-step-6)]">
             {/* TODO(contenido): titular real */}
@@ -181,7 +181,7 @@ export function Servicio() {
       </div>
 
       {/* 2) Carrusel — respeta los márgenes del sitio; scroll-snap + flechas + drag */}
-      <div className="mx-auto mt-12 max-w-[1400px] px-6 md:px-10">
+      <div className="mx-auto mt-12 max-w-[87.5rem] px-6 md:px-10">
         <div
           ref={trackRef}
           onPointerDown={onPointerDown}
@@ -203,10 +203,10 @@ export function Servicio() {
               height={800}
               draggable={false}
               sizes="(max-width: 639px) 78vw, (max-width: 767px) 48vw, 33vw"
-              className="pointer-events-none h-[320px] w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 lg:h-[400px]"
+              className="pointer-events-none h-[20rem] w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 lg:h-[25rem]"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
-            <header className="absolute bottom-4 left-4 max-w-[250px] md:bottom-6 md:left-6 md:max-w-[351px]">
+            <header className="absolute bottom-4 left-4 max-w-[15.625rem] md:bottom-6 md:left-6 md:max-w-[21.9375rem]">
               <h3 className="font-display text-[length:var(--text-step-1)] font-bold uppercase leading-[0.9] text-bone">
                 {slide.titulo}
               </h3>
@@ -220,13 +220,13 @@ export function Servicio() {
       </div>
 
       {/* 3) Bloque grande centrado */}
-      <div className="mx-auto mt-12 max-w-[1400px] px-6 md:my-[76px] md:px-10">
-        <FadeUp y={100} className="mx-auto max-w-[900px] text-center">
+      <div className="mx-auto mt-12 max-w-[87.5rem] px-6 md:my-[4.75rem] md:px-10">
+        <FadeUp y={100} className="mx-auto max-w-[56.25rem] text-center">
           <h3 className="mb-6 font-display text-[length:var(--text-step-5)] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-6)]">
             {/* TODO(contenido): titular real */}
             El verdadero oficio de Sweet Flowers
           </h3>
-          <p className="mx-auto max-w-[720px] font-display text-[length:var(--text-step-2)] font-normal leading-[1.05] text-ink md:text-[length:var(--text-step-3)]">
+          <p className="mx-auto max-w-[45rem] font-display text-[length:var(--text-step-2)] font-normal leading-[1.05] text-ink md:text-[length:var(--text-step-3)]">
             {/* TODO(contenido): copy real */}
             No decoramos: creamos experiencias a medida. Escuchamos tu historia,
             imaginamos la escena y la construimos pieza por pieza, para que cada
@@ -236,7 +236,7 @@ export function Servicio() {
       </div>
 
       {/* 4) Grilla de features */}
-      <div className="mx-auto mt-8 grid max-w-[1400px] grid-cols-1 gap-12 px-6 md:mt-[76px] md:grid-cols-4 md:px-10">
+      <div className="mx-auto mt-8 grid max-w-[87.5rem] grid-cols-1 gap-12 px-6 sm:grid-cols-2 md:mt-[4.75rem] md:px-10 lg:grid-cols-4">
         {FEATURES.map((feature, i) => (
           <FadeUp key={feature.titulo} y={50}>
             <div className="flex flex-col items-center gap-4 text-center md:items-start md:text-left">
@@ -244,7 +244,7 @@ export function Servicio() {
               <div className="grid h-10 w-10 place-items-center rounded-full border border-champagne text-[length:var(--text-step--1)] font-bold text-champagne">
                 {String(i + 1).padStart(2, "0")}
               </div>
-              <h4 className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-[0.9] text-ink [overflow-wrap:anywhere]">
+              <h4 className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-[0.9] text-ink [overflow-wrap:break-word] [hyphens:auto]">
                 {feature.titulo}
               </h4>
               <p className="mt-1 font-sans text-[length:var(--text-step-0)] leading-snug text-ink">

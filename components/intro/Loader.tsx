@@ -23,6 +23,7 @@
  */
 
 import { useRef } from "react";
+import { usePathname } from "next/navigation";
 import { gsap, CustomEase, useGSAP } from "@/lib/gsap";
 import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
 
@@ -30,14 +31,37 @@ const WORDS: [string, string] = ["Sweet", "Flowers"];
 
 export function Loader() {
   const root = useRef<HTMLDivElement>(null);
+  // El Loader vive en el layout raíz (persiste entre navegaciones): se re-ejecuta
+  // cada vez que se ENTRA al inicio (carga directa o navegación cliente desde
+  // logo/menú/footer). En cualquier otra página se apaga.
+  const pathname = usePathname();
 
   useGSAP(
     () => {
       const nameEl = root.current?.querySelector<HTMLElement>(".c-loader__name");
       if (!nameEl) return;
 
-      // Guard StrictMode: la intro corre una sola vez por carga.
-      if (document.body.getAttribute("data-loader") !== "true") return;
+      if (pathname !== "/") {
+        // Fuera del inicio no hay intro: estado final directo (header visible,
+        // scroll libre). Evita que el loader quede "armado" y trabe la vuelta.
+        document.body.setAttribute("data-loader", "false");
+        document.body.removeAttribute("data-skip-intro"); // recarga en otra página
+        startLenis();
+        return;
+      }
+      // Recarga (F5): el script inline del layout marcó data-skip-intro → sin
+      // intro, solo arrancamos el video (y sus frases). Vale una sola vez:
+      // navegar después al inicio vuelve a mostrar la intro.
+      if (document.body.getAttribute("data-skip-intro") === "true") {
+        document.body.removeAttribute("data-skip-intro");
+        document.body.setAttribute("data-loader", "false");
+        startLenis();
+        window.dispatchEvent(new Event("sf:hero-start"));
+        return;
+      }
+      // Entrando al inicio: estado inicial del loader (antes del paint).
+      document.body.setAttribute("data-loader", "true");
+      nameEl.setAttribute("data-expanded", "false");
 
       const spans = nameEl.querySelectorAll<HTMLElement>("span");
       const media = document.querySelector<HTMLElement>(".c-hero__media");
@@ -81,6 +105,12 @@ export function Loader() {
         return;
       }
 
+      // El video nace en el HUECO entre las palabras, no en el centro de la
+      // pantalla: con el bloque centrado, el hueco queda desplazado
+      // (anchoSWEET − anchoFLOWERS) / 2. Al expandirse vuelve a x: 0.
+      const gapOffset =
+        spans.length === 2 ? (spans[0].offsetWidth - spans[1].offsetWidth) / 2 : 0;
+
       // Scroll bloqueado y en el top mientras corre la intro.
       stopLenis();
       window.scrollTo(0, 0);
@@ -101,6 +131,8 @@ export function Loader() {
         .call(
           () => {
             nameEl.setAttribute("data-expanded", "true");
+            // El video corre desde que nace (y con él las frases de HeroStory).
+            window.dispatchEvent(new Event("sf:hero-start"));
           },
           undefined,
           1,
@@ -108,18 +140,21 @@ export function Loader() {
         // 3) El video (retrato) nace en el hueco central: scale 0.5→1, rota a 7.5°.
         .fromTo(
           media,
-          { autoAlpha: 0, scale: 0.5 },
-          { autoAlpha: 1, scale: 1, rotate: 7.5, duration: 1 },
+          { autoAlpha: 0, scale: 0.5, borderRadius: 22, x: gapOffset },
+          { autoAlpha: 1, scale: 1, rotate: 7.5, borderRadius: 22, x: gapOffset, duration: 1 },
           "<",
         )
         // 4) El nombre desaparece (no reaparece).
         .to(nameEl, { autoAlpha: 0, duration: 0.25 })
         // 5) El video crece a full, vuelve a recto; el video interno baja a scale 1;
-        //    aparece el overlay. Simultáneos (1.5s).
+        //    aparece el overlay. Simultáneos (1.5s). Acá arranca el video (y con
+        //    él las frases sincronizadas de HeroStory).
         .to(media, {
           width: "100%",
           height: "100%",
           rotate: 0,
+          x: 0, // del hueco al centro, acompañando la expansión
+          borderRadius: 0, // las esquinas se enderezan acompañando la expansión
           duration: 1.5,
         })
         .to(mediaInner, { scale: 1, duration: 1.5 }, "<")
@@ -132,7 +167,7 @@ export function Loader() {
           "<+0.75",
         );
     },
-    { scope: root },
+    { scope: root, dependencies: [pathname], revertOnUpdate: true },
   );
 
   return (

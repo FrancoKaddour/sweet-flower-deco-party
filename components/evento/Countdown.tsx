@@ -27,12 +27,16 @@ export function Countdown({ className = "" }: { className?: string }) {
   const [parts, setParts] = useState<Parts | null>(null);
 
   useEffect(() => {
+    if (!EVENT_DATE_ISO) return;
     const target = new Date(EVENT_DATE_ISO).getTime();
     const tick = () => setParts(partsUntil(target));
     tick();
     const id = window.setInterval(tick, 1000);
     return () => window.clearInterval(id);
   }, []);
+
+  // Sin fecha confirmada (o ya pasada) no hay cuenta regresiva.
+  if (!EVENT_DATE_ISO || new Date(EVENT_DATE_ISO).getTime() < Date.now()) return null;
 
   const units: { value: number | null; label: string }[] = [
     { value: parts?.d ?? null, label: "Días" },

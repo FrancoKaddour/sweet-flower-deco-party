@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ButtonInner, buttonClasses } from "@/components/ui/Button";
 
 // Tipos de consulta → ayudan a rutear el lead (producto / a medida / evento).
 const TIPOS = [
@@ -177,11 +178,10 @@ export function ContactForm() {
         )}
       </div>
 
-      <button
-        type="submit"
-        className="inline-flex min-h-11 w-max items-center gap-2 rounded-[var(--radius-pill)] bg-ink px-8 py-3.5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-bone transition-transform duration-[400ms] ease-[var(--ease-out-expo)] hover:-translate-y-0.5"
-      >
-        Enviar consulta
+      <button type="submit" className={buttonClasses("dark", "w-max cursor-pointer")}>
+        <ButtonInner primary tone="dark">
+          Enviar consulta
+        </ButtonInner>
       </button>
     </form>
   );

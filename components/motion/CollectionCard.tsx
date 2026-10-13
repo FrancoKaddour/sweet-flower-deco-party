@@ -15,7 +15,7 @@ type CollectionCardProps = {
 
 /**
  * Card de colección con "caída" clip-path (referencia CANCAN).
- * La imagen se despliega de arriba a abajo (clip-path 3.2s); al terminar,
+ * La imagen cae de arriba a abajo (clip-path, --clip-fall); al terminar,
  * aparecen el overlay y el texto. Hover: zoom + overlay más oscuro.
  * Mecanismo por clases CSS (.in-view / .is-complete) — ver app/globals.css.
  * Respeta prefers-reduced-motion (muestra todo directo).
@@ -55,9 +55,13 @@ export function CollectionCard({
       if (started || !inView || !loaded) return;
       started = true;
       startTimer = window.setTimeout(() => el.classList.add("in-view"), delay);
+      // Overlay + texto entran recién cuando la foto terminó de caer (si no, el
+      // overlay oscurecía la imagen a mitad de la caída). Duración = --clip-fall.
+      const fallMs =
+        parseFloat(getComputedStyle(el).getPropertyValue("--clip-fall")) * 1000 || 1300;
       completeTimer = window.setTimeout(
         () => el.classList.add("is-complete"),
-        delay + 1400, // el texto aparece durante la caída (dura 2s)
+        delay + fallMs - 120, // arranca apenas antes del final: empalme sin pausa
       );
     };
 

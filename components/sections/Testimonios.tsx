@@ -60,7 +60,7 @@ export function Testimonios() {
       id="testimonios"
       className="bg-sand px-6 py-24 text-ink md:px-10 md:py-32"
     >
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-[87.5rem]">
         {/* Encabezado */}
         <FadeUp y={80} className="mb-14 text-center md:mb-20">
           <Eyebrow className="mb-5">Testimonios</Eyebrow>

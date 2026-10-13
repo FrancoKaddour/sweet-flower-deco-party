@@ -48,9 +48,9 @@ export function EventoStats() {
     <section
       ref={root}
       data-theme="dark"
-      className="bg-botanical px-6 py-24 text-bone md:px-10 md:py-32"
+      className="bg-ink px-6 py-24 text-bone md:px-10 md:py-32"
     >
-      <div className="mx-auto max-w-[1400px] text-center">
+      <div className="mx-auto max-w-[87.5rem] text-center">
         <Eyebrow className="mb-6">Trayectoria</Eyebrow>
         <h2 className="mx-auto max-w-[20ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone md:text-[length:var(--text-step-5)]">
           {/* TODO(contenido): titular real */}

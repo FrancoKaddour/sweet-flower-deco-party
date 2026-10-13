@@ -39,7 +39,7 @@ export default function HistoriaPage() {
         data-theme="light"
         className="bg-bone px-6 pb-20 pt-32 text-ink md:px-10 md:pb-28 md:pt-44"
       >
-        <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
             <Eyebrow className="mb-6">Nuestra historia</Eyebrow>
             <RevealText
@@ -80,7 +80,7 @@ export default function HistoriaPage() {
         data-theme="light"
         className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32"
       >
-        <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 lg:grid-cols-12">
+        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-10 lg:grid-cols-12">
           <FadeUp
             y={60}
             className="space-y-6 font-sans text-[length:var(--text-step-1)] leading-relaxed text-ink/80 lg:col-span-7 lg:col-start-4"
@@ -116,7 +116,7 @@ export default function HistoriaPage() {
         data-theme="dark"
         className="bg-botanical px-6 py-24 text-bone md:px-10 md:py-32"
       >
-        <div className="mx-auto max-w-[1400px] text-center">
+        <div className="mx-auto max-w-[87.5rem] text-center">
           <Eyebrow className="mb-6">Cómo trabajamos</Eyebrow>
           <RevealText
             as="h2"
@@ -155,7 +155,7 @@ export default function HistoriaPage() {
         data-theme="light"
         className="bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
       >
-        <div className="mx-auto max-w-[1400px] text-center">
+        <div className="mx-auto max-w-[87.5rem] text-center">
           <Eyebrow className="mb-6">El siguiente capítulo</Eyebrow>
           <RevealText
             as="h2"
@@ -163,14 +163,14 @@ export default function HistoriaPage() {
             className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink"
           >
             {/* 7 ediciones reales del Summit (docs/CONTENIDO_FLOR.md §11) */}
-            Siete ediciones después, seguimos empezando
+            Ocho ediciones después, seguimos empezando
           </RevealText>
           <p className="mx-auto mt-6 max-w-[48ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
             Lo que arrancó en un taller hoy junta a la industria entera una
             vez al año. La próxima edición del Summit ya tiene fecha.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-3">
-            <Button href="/evento">Conocer el Summit</Button>
+          <div className="mt-10 flex flex-wrap justify-center gap-x-10 gap-y-4">
+            <Button href="/event-summit">Conocer el Summit</Button>
             <Button href="/contacto" variant="outline">
               Escribinos
             </Button>

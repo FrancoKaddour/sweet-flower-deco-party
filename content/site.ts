@@ -3,17 +3,25 @@
 // TODO(contenido): reemplazar los href="#" por URLs reales (WhatsApp, redes,
 // páginas legales) cuando Flor pase los datos. Ver docs/16_DECISIONS.md.
 
-export type NavLink = { label: string; href: string };
+export type NavLink = {
+  label: string;
+  href: string;
+  /** Ítem destacado (Event Summit): se resalta en menú/footer. */
+  destacado?: boolean;
+  /** Dato corto que acompaña al destacado (ej. "2027"). */
+  meta?: string;
+};
 
 // Todas las secciones del menú ya son páginas propias (el sitio completo navega).
-// TODO(contenido): definir si la etiqueta "Workshops" se renombra a "Evento"
-// (la página es el Sweet Flowers Event Summit). Decisión de Franco.
+// Event Summit y Workshops son páginas DISTINTAS (oct-2026). El Summit va
+// segundo y destacado: es la prioridad de la clienta.
 
 /** Navegación principal — compartida por el menú del Header y la columna del Footer. */
 export const MAIN_NAV: readonly NavLink[] = [
   { label: "Inicio", href: "/" },
+  { label: "Event Summit", href: "/event-summit", destacado: true, meta: "2027" },
   { label: "Productos", href: "/productos" },
-  { label: "Workshops", href: "/evento" },
+  { label: "Workshops", href: "/workshops" },
   { label: "Membresía", href: "/membresia" },
   { label: "Historia", href: "/historia" },
 ] as const;

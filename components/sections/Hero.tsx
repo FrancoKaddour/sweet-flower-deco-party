@@ -1,5 +1,5 @@
 import { HeroMedia } from "@/components/sections/HeroMedia";
-import { RevealText } from "@/components/motion/RevealText";
+import { HeroStory } from "@/components/sections/HeroStory";
 import { Button } from "@/components/ui/Button";
 
 /**
@@ -12,37 +12,24 @@ import { Button } from "@/components/ui/Button";
  */
 export function Hero() {
   return (
-    <section className="c-hero relative flex min-h-svh flex-col items-center justify-center gap-8 overflow-hidden px-6 py-28 text-center md:px-10">
+    <section className="c-hero relative flex min-h-svh flex-col items-center justify-center gap-8 overflow-hidden px-6 pb-28 pt-40 md:justify-end md:pb-[12svh] text-center md:px-10 md:pt-44">
       {/* Media del hero (video + overlay). TODO(contenido): video real. */}
       <HeroMedia />
 
       {/* Contenido editorial, por encima del media */}
       <div className="c-hero__content relative z-10 flex flex-col items-center gap-8">
         {/* Kicker */}
-        <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-muted">
+        <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-bone/75">
           Decoración de eventos
         </p>
 
-        {/* Titular */}
-        <RevealText
-          as="h1"
-          className="mx-auto max-w-[18ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.92] tracking-[-0.02em] text-ink md:text-[length:var(--text-step-6)]"
-        >
-          {/* TODO(contenido): titular real de marca */}
-          Creamos la escenografía de tus mejores momentos
-        </RevealText>
-
-        {/* Bajada */}
-        <p className="mx-auto max-w-xl text-[length:var(--text-step-0)] leading-relaxed text-muted">
-          {/* TODO(contenido) */}
-          Piezas en hierro, MDF, madera y telas para transformar cualquier evento
-          en una experiencia memorable.
-        </p>
+        {/* Titular cinético sincronizado con el video (h1 incluido, para SEO) */}
+        <HeroStory />
 
         {/* CTAs */}
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Button href="/productos">Ver catálogo</Button>
-          <Button href="#workshops" variant="outline">
+        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+          <Button href="/productos" variant="inverse">Ver catálogo</Button>
+          <Button href="#summit" variant="outline" tone="light">
             Próxima edición
           </Button>
         </div>

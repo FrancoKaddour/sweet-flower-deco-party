@@ -44,7 +44,7 @@ export default async function CategoriaPage({ params }: Props) {
         data-theme="light"
         className="bg-bone px-6 pb-16 pt-32 text-ink md:px-10 md:pb-20 md:pt-44"
       >
-        <div className="mx-auto max-w-[1400px]">
+        <div className="mx-auto max-w-[87.5rem]">
           {/* Breadcrumb editorial (solo e-commerce — docs/04 §6) */}
           <nav
             aria-label="Migas de pan"
@@ -97,7 +97,7 @@ export default async function CategoriaPage({ params }: Props) {
         data-theme="light"
         className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32"
       >
-        <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
+        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
           {/* Foto en arco (identidad El Arco) */}
           <FadeUp y={50} className="lg:col-span-5">
             <div className="relative mx-auto aspect-[3/4] w-[min(100%,420px)] overflow-hidden rounded-t-full bg-sand">
@@ -124,7 +124,7 @@ export default async function CategoriaPage({ params }: Props) {
               Mientras tanto, pedilo directo — te pasamos el catálogo completo y
               cotizamos tu pedido.
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="mt-9 flex flex-wrap items-center gap-x-10 gap-y-4">
               <Button href="/contacto">Pedir el catálogo</Button>
               <Button href="/productos" variant="outline">
                 Ver otras categorías

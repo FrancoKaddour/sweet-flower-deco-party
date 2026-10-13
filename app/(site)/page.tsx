@@ -5,6 +5,7 @@ import { Productos } from "@/components/sections/Productos";
 import { Destacados } from "@/components/sections/Destacados";
 import { Principios } from "@/components/sections/Principios";
 import { Servicio } from "@/components/sections/Servicio";
+import { SummitHome } from "@/components/sections/SummitHome";
 import { Workshops } from "@/components/sections/Workshops";
 import { Testimonios } from "@/components/sections/Testimonios";
 import { Membresia } from "@/components/sections/Membresia";
@@ -23,10 +24,12 @@ const SAND = "var(--color-sand)";
 
 export default function Home() {
   return (
-    <main id="main">
+    <main id="main" className="bg-bone">
       <Hero />
-      {/* Verde a sangre: corte limpio con las secciones marfil (sin puente) */}
+      {/* Experiencia (marfil): las esquinas redondeadas del hero asoman sobre marfil */}
       <Experiencia />
+      {/* Event Summit: prioridad de la clienta → arriba, después de "El arte de crear" */}
+      <SummitHome />
       <Productos />
       <Destacados />
       <ColorBridge from={BONE} to={SAGE} />

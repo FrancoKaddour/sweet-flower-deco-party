@@ -1,5 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  Hanken_Grotesk,
+  Cormorant_Garamond,
+} from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { JsonLd } from "@/components/site/JsonLd";
@@ -17,6 +21,15 @@ const bricolage = Bricolage_Grotesque({
 const hanken = Hanken_Grotesk({
   variable: "--font-hanken",
   subsets: ["latin"],
+  display: "swap",
+});
+
+// Logotipo — serif editorial FINA y elegante para el texto del logo del header
+// ("Sweet Flowers"). Pesos ligeros para un registro premium, menos "simple".
+const cormorant = Cormorant_Garamond({
+  variable: "--font-logo",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -70,13 +83,22 @@ export default function RootLayout({
   return (
     <html
       lang="es-AR"
-      className={`${bricolage.variable} ${hanken.variable} antialiased`}
+      className={`${bricolage.variable} ${hanken.variable} ${cormorant.variable} antialiased`}
     >
       {/* data-loader="true" se escribe en el HTML servido (NO desde JS) → el
           estado inicial del loader vive en CSS, cero flash, cero hidratación
           rota. La timeline de GSAP lo pasa a "false" al terminar la intro.
           Método Villurcann (colaboracion/franco/prompt-loader-hero.docx). */}
-      <body className="min-h-dvh bg-bone text-ink" data-loader="true">
+      <body className="min-h-dvh bg-bone text-ink" data-loader="true" suppressHydrationWarning>
+        {/* Al RECARGAR (F5) no hay intro: este script corre antes del primer
+            paint y deja el sitio en su estado final (sin loader a medias si
+            estabas scrolleado). La intro sigue corriendo al entrar al inicio
+            por primera vez o navegando hacia él. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var n=performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload"){document.body.setAttribute("data-loader","false");document.body.setAttribute("data-skip-intro","true")}}catch(e){}`,
+          }}
+        />
         {/* Skip-link: acceso rápido al contenido para usuarios de teclado */}
         <a
           href="#main"

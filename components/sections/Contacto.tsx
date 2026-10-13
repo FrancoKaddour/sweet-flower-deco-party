@@ -16,7 +16,7 @@ export function Contacto() {
       data-theme="light"
       className="bg-bone px-6 py-28 text-ink md:px-10 md:py-40"
     >
-      <div className="mx-auto max-w-[1400px] text-center">
+      <div className="mx-auto max-w-[87.5rem] text-center">
         {/* Kicker */}
         <Eyebrow className="mb-6">Hablemos</Eyebrow>
 
@@ -40,7 +40,7 @@ export function Contacto() {
 
         {/* CTAs */}
         <FadeUp y={50}>
-          <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <div className="mt-10 flex flex-wrap justify-center gap-x-10 gap-y-4">
             {/* TODO(contenido): link real de WhatsApp */}
             {/* TODO(contenido): link real de WhatsApp */}
             <Button href="#">Escribinos por WhatsApp</Button>

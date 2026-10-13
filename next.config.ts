@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // El Summit se mudó de /evento a /event-summit (y /workshops es otra página).
+  // Redirect permanente para no romper links viejos ni el SEO acumulado.
+  async redirects() {
+    return [{ source: "/evento", destination: "/event-summit", permanent: true }];
+  },
   images: {
     // Placeholders del boceto. TODO(contenido): al pasar a fotos reales,
     // preferir imports estáticos locales (width/height + blurDataURL automáticos)

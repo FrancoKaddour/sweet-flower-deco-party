@@ -23,7 +23,7 @@ export default function ProductosPage() {
           data-theme="light"
           className="bg-bone px-6 pb-16 pt-32 text-ink md:px-10 md:pb-24 md:pt-44"
         >
-          <div className="mx-auto max-w-[1400px]">
+          <div className="mx-auto max-w-[87.5rem]">
             <Eyebrow className="mb-6">El catálogo</Eyebrow>
             <RevealText
               as="h1"
@@ -74,7 +74,7 @@ export default function ProductosPage() {
           aria-label="Categorías del catálogo"
           className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32"
         >
-          <div className="mx-auto flex max-w-[1400px] flex-col gap-20 md:gap-28">
+          <div className="mx-auto flex max-w-[87.5rem] flex-col gap-20 md:gap-28">
             {CATEGORIAS.map((cat, i) => {
               const flip = i % 2 === 1; // alternamos el lado de la imagen
               return (
@@ -158,7 +158,7 @@ export default function ProductosPage() {
           data-theme="dark"
           className="bg-bordeaux px-6 py-24 text-bone md:px-10 md:py-32"
         >
-          <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-end gap-10 md:grid-cols-12">
+          <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-end gap-10 md:grid-cols-12">
             <div className="md:col-span-8">
               <Eyebrow className="mb-6">A medida</Eyebrow>
               <RevealText

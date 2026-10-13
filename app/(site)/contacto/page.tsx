@@ -38,7 +38,7 @@ export default function ContactoPage() {
         data-theme="light"
         className="bg-bone px-6 pb-16 pt-32 text-ink md:px-10 md:pb-20 md:pt-44"
       >
-        <div className="mx-auto max-w-[1400px]">
+        <div className="mx-auto max-w-[87.5rem]">
           <Eyebrow className="mb-6">Contacto</Eyebrow>
           <RevealText
             as="h1"
@@ -66,7 +66,7 @@ export default function ContactoPage() {
         data-theme="light"
         className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32"
       >
-        <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Formulario */}
           <FadeUp y={50} className="lg:col-span-7">
             <ContactForm />
@@ -119,7 +119,7 @@ export default function ContactoPage() {
         data-theme="light"
         className="bg-sand px-6 py-24 text-ink md:px-10 md:py-32"
       >
-        <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-4">
             <Eyebrow className="mb-5">Preguntas frecuentes</Eyebrow>
             <h2 className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)]">

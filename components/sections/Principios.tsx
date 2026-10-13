@@ -30,19 +30,19 @@ export function Principios() {
   return (
     <section
       id="principios"
-      className="relative w-full bg-sage py-[64px] text-ink md:pb-[80px] md:pt-[80px]"
+      className="relative w-full bg-sage py-[4rem] text-ink md:pb-[5rem] md:pt-[5rem]"
     >
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+      <div className="mx-auto max-w-[87.5rem] px-6 md:px-10">
       {/* Título de la sección (anima al entrar) */}
       <FadeUp y={100}>
-        <h2 className="mx-auto max-w-[18ch] pb-[40px] text-center font-display text-[length:var(--text-step-4)] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-5)]">
+        <h2 className="mx-auto max-w-[18ch] pb-[2.5rem] text-center font-display text-[length:var(--text-step-4)] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-5)]">
           {/* TODO(contenido): titular real */}
           Nuestros principios le dan vida a tu evento
         </h2>
       </FadeUp>
 
       {/* Lista apilable: cada item se pega con top incremental (96, 168, 240) */}
-      <ul className="m-0 grid list-none gap-[40px] p-0">
+      <ul className="m-0 grid list-none gap-[2.5rem] p-0">
         {PRINCIPIOS.map((p, i) => (
           <li
             key={p.titulo}
@@ -57,7 +57,7 @@ export function Principios() {
               </header>
               <figure className="m-0">
                 <Image
-                  className="h-[525px] max-h-[40vh] w-full rounded-[var(--radius-sm)] object-cover md:max-h-none md:w-[429px]"
+                  className="h-[32.8125rem] max-h-[40vh] w-full rounded-[var(--radius-sm)] object-cover md:max-h-none md:w-[26.8125rem]"
                   src={p.img}
                   alt={p.titulo}
                   width={429}

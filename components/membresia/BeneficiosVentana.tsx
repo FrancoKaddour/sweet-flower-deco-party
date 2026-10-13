@@ -93,7 +93,7 @@ export function BeneficiosVentana() {
       data-theme="dark"
       className="bg-bordeaux px-6 py-24 text-bone md:px-10 md:py-32"
     >
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-[87.5rem]">
         {/* Encabezado de la escena "adentro" */}
         <div className="mb-16 max-w-[52ch] md:mb-24">
           <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">

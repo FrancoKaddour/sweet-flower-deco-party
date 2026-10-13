@@ -16,7 +16,7 @@ export default function NotFound() {
         data-theme="light"
         className="flex min-h-[80svh] items-center bg-bone px-6 pt-32 pb-24 text-ink md:px-10"
       >
-        <div className="mx-auto w-full max-w-[1400px]">
+        <div className="mx-auto w-full max-w-[87.5rem]">
           <div className="grid grid-cols-1 items-end gap-10 md:grid-cols-12">
             <div className="md:col-span-8">
               <Eyebrow className="mb-6">Error 404</Eyebrow>
@@ -37,7 +37,7 @@ export default function NotFound() {
 
             <nav
               aria-label="Salidas rápidas"
-              className="flex flex-wrap gap-4 md:col-span-4 md:justify-self-end"
+              className="flex flex-wrap gap-x-10 gap-y-4 md:col-span-4 md:justify-self-end"
             >
               <Button href="/">Volver al inicio</Button>
               <Button href="/productos" variant="outline">

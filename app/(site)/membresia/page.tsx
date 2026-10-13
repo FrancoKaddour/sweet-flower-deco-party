@@ -44,7 +44,7 @@ export default function MembresiaPage() {
         data-theme="light"
         className="bg-sage px-6 py-24 text-ink md:px-10 md:py-32"
       >
-        <div className="mx-auto max-w-[1400px]">
+        <div className="mx-auto max-w-[87.5rem]">
           <div className="mb-14 text-center md:mb-20">
             <Eyebrow className="mb-5">Sin vueltas</Eyebrow>
             <RevealText
@@ -107,7 +107,7 @@ export default function MembresiaPage() {
         data-theme="dark"
         className="bg-ink px-6 py-28 text-bone md:px-10 md:py-40"
       >
-        <div className="mx-auto max-w-[1400px] text-center">
+        <div className="mx-auto max-w-[87.5rem] text-center">
           <div>
             <Eyebrow className="mb-6">La decisión</Eyebrow>
             <RevealText
@@ -124,7 +124,7 @@ export default function MembresiaPage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-14 w-full max-w-[420px] md:mt-20">
+          <div className="mx-auto mt-14 w-full max-w-[26.25rem] md:mt-20">
             <dl className="border-t border-bone/20 pt-8">
                 <div className="flex items-baseline justify-between gap-6">
                   <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">
