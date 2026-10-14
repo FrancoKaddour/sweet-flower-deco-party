@@ -450,7 +450,9 @@ export function Header() {
         {/* Pilares de fondo */}
         <div className="pointer-events-none absolute inset-0 flex" aria-hidden="true">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="menu-pillar flex-1 bg-ink" />
+            // -mr-[2px]: cada pilar se monta 2px sobre el siguiente → sin líneas
+            // claras entre pilares (antialiasing subpíxel al escalar en mobile).
+            <div key={i} className="menu-pillar -mr-[2px] flex-1 bg-ink last:mr-0" />
           ))}
         </div>
 
