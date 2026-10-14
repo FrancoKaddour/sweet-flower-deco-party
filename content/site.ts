@@ -33,7 +33,7 @@ export const CONTACTO_LINK: NavLink = { label: "Contacto", href: "/contacto" };
 export const CONTACTO_LINKS: readonly NavLink[] = [
   { label: "WhatsApp", href: "#" },
   { label: "Email", href: "#" },
-  { label: "Instagram", href: "#" },
+  { label: "Instagram", href: "https://www.instagram.com/sweetflowersdecoparty/" },
 ] as const;
 
 /** Enlaces informativos / legales (Footer). */
@@ -45,9 +45,8 @@ export const INFO_LINKS: readonly NavLink[] = [
 ] as const;
 
 // WhatsApp de contacto (botón flotante).
-// TODO(contenido): número real de Flor — formato internacional SIN "+", espacios ni guiones
-// (Argentina celular: 549 + código de área + número, p. ej. 5491122334455).
-export const WHATSAPP_NUMBER = "5491100000000";
+// Línea de VENTAS (11 5106-4010). Formato internacional sin "+": 549 + área + número.
+export const WHATSAPP_NUMBER = "5491151064010";
 export const WHATSAPP_MESSAGE =
   "¡Hola Flor! Vengo de la web de Sweet Flowers y quiero consultar por un evento.";
 export const WHATSAPP_HREF = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;

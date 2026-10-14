@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
+import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,16 +10,17 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { CATEGORIAS } from "@/content/catalogo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Productos",
   description:
-    "Catálogo de piezas de decoración de eventos: estructuras de hierro, catering, pies de lámpara, fundas y telas. Piezas en stock o a medida, hechas por encargo.",
-  alternates: { canonical: "/productos" },
-};
+    "Catálogo de piezas para decoración de eventos: estructuras y arcos de hierro, catering, pies de lámpara, fundas y telas sublimadas. Por encargo, con envíos a todo el país.",
+  path: "/productos",
+});
 
 export default function ProductosPage() {
   return (
     <main id="main">
+      <BreadcrumbJsonLd items={[{ name: "Productos", path: "/productos" }]} />
         {/* ── INTRO DEL CATÁLOGO ─────────────────────────────────────────── */}
         <section
           data-theme="light"

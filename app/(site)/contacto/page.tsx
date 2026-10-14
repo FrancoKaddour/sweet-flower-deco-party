@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
+import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/site/JsonLd";
 
 import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
@@ -6,12 +8,12 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ContactForm } from "@/components/contacto/ContactForm";
 import { CONTACTO_LINKS } from "@/content/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contacto",
   description:
-    "Contanos tu evento y lo hacemos realidad. Consultas, presupuestos a medida y dudas sobre envíos, pagos y tiempos. Escribinos por WhatsApp, Instagram o email.",
-  alternates: { canonical: "/contacto" },
-};
+    "Contanos tu evento: presupuestos a medida, formas de pago, envíos a todo el país y tiempos de entrega. Te responden Flor y Tobías por WhatsApp.",
+  path: "/contacto",
+});
 
 // 3 preguntas más frecuentes ANTES de comprar (docs/CONTENIDO_FLOR.md §7),
 // con respuestas reales (§1, §4, §5). TODO(contenido): afinar con Flor.
@@ -33,6 +35,8 @@ const FAQS = [
 export default function ContactoPage() {
   return (
     <main id="main">
+      <BreadcrumbJsonLd items={[{ name: "Contacto", path: "/contacto" }]} />
+      <FaqJsonLd faqs={FAQS} />
       {/* 1 · INTRO (light) */}
       <section
         data-theme="light"

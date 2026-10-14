@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
+import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
 import Image from "next/image";
 
 import { FadeUp } from "@/components/motion/FadeUp";
@@ -6,12 +8,12 @@ import { RevealText } from "@/components/motion/RevealText";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Historia",
   description:
     "La historia de Sweet Flowers Deco Party: un emprendimiento familiar argentino que convirtió el oficio de decorar eventos en piezas, formación y comunidad.",
-  alternates: { canonical: "/historia" },
-};
+  path: "/historia",
+});
 
 // Datos REALES confirmados (docs/CONTENIDO_FLOR.md §1, §7, §8):
 // marca casera/familiar · por encargo (~20 días) · responden Flor y Tobías ·
@@ -34,6 +36,7 @@ const COMO_TRABAJAMOS = [
 export default function HistoriaPage() {
   return (
     <main id="main">
+      <BreadcrumbJsonLd items={[{ name: "Historia", path: "/historia" }]} />
       {/* 1 · HERO — retrato en arco + titular editorial (bone) */}
       <section
         data-theme="light"

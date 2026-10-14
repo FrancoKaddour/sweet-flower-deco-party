@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
+import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
 
 import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
@@ -18,22 +20,20 @@ import {
   EVENT_CTA_HREF,
   INCLUYE,
   DISERTANTES,
+  EVENT_YEAR,
 } from "@/content/evento";
 
-export const metadata: Metadata = {
-  title: "Event Summit",
-  description: `${EVENT_NAME}: la ${EDICION_NUMERO}ª edición, ${EVENT_WHEN.toLowerCase()}. Formación, comunidad y decoración de eventos de nivel. Cupos limitados (${EVENT_CUPO}).`,
-  alternates: { canonical: "/event-summit" },
-  openGraph: {
-    title: `${EVENT_NAME} · ${EVENT_WHEN}`,
-    description:
-      "Un día al año, la decoración de eventos se junta en un mismo lugar. Formación, comunidad y la escena que soñás.",
-  },
-};
+export const metadata: Metadata = pageMetadata({
+  title: `${EVENT_NAME} ${EVENT_YEAR}`,
+  description: `${EVENT_NAME}: la cumbre argentina de la decoración y la organización de eventos. ${EDICION_NUMERO}ª edición, ${EVENT_WHEN.toLowerCase()}. Charlas, certificado y comunidad. Cupo de ${EVENT_CUPO} lugares.`,
+  path: "/event-summit",
+  ogTitle: `${EVENT_NAME} · ${EVENT_WHEN}`,
+});
 
 export default function EventoPage() {
   return (
     <main id="main">
+      <BreadcrumbJsonLd items={[{ name: "Event Summit", path: "/event-summit" }]} />
       {/* 1 · HERO cinematográfico (dark) */}
       <EventoHero />
 

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
+import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
 
 import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
@@ -14,12 +16,12 @@ import {
   MEMBRESIA_CTA_HREF,
 } from "@/content/membresia";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Membresía",
   description:
-    "El Círculo Sweet Flowers: la membresía para quienes viven de decorar. Se entra por el arco: comunidad, prioridad y el oficio compartido, todo el año.",
-  alternates: { canonical: "/membresia" },
-};
+    "El Círculo Sweet Flowers: la membresía para quienes viven de decorar. Comunidad, prioridad y el oficio compartido, todo el año.",
+  path: "/membresia",
+});
 
 /**
  * /membresia — identidad EL ARCO (docs/20_MOTION_REFERENCIAS_ANALISIS.md).
@@ -30,6 +32,7 @@ export const metadata: Metadata = {
 export default function MembresiaPage() {
   return (
     <main id="main">
+      <BreadcrumbJsonLd items={[{ name: "Membresía", path: "/membresia" }]} />
       {/* ESCENA 1 · EL UMBRAL (bone) */}
       <HeroUmbral />
 

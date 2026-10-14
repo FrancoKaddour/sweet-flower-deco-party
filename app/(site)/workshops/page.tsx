@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
+import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
 import Image from "next/image";
 
 import { FadeUp } from "@/components/motion/FadeUp";
@@ -15,16 +17,17 @@ import { EVENT_NAME, EVENT_WHEN } from "@/content/evento";
 
 // ⚠️ Página con estructura final y textos PLACEHOLDER (ver content/workshops.ts).
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Workshops",
   description:
     "Workshops presenciales de decoración de eventos con Sweet Flowers: armado, diseño, telas y el negocio de decorar.",
-  alternates: { canonical: "/workshops" },
-};
+  path: "/workshops",
+});
 
 export default function WorkshopsPage() {
   return (
     <main id="main">
+      <BreadcrumbJsonLd items={[{ name: "Workshops", path: "/workshops" }]} />
       {/* ── 1 · INTRO ───────────────────────────────────────────────────── */}
       <section
         data-theme="light"

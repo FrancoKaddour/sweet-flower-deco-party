@@ -9,6 +9,7 @@ import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { JsonLd } from "@/components/site/JsonLd";
 import { Loader } from "@/components/intro/Loader";
 import { PageTransition } from "@/components/motion/PageTransition";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, IS_INDEXABLE } from "@/lib/site";
 
 // Display grotesca con carácter — equivalente LIBRE al espíritu de "Snaskface".
 // Alternativa self-hosted con más punch: Clash Display (Fontshare). Ver docs/06 + ADR-012.
@@ -35,40 +36,60 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  // TODO(contenido): dominio real (ADR-010) + textos/imágenes OG reales. Ver docs/11_SEO_STRATEGY.md.
-  metadataBase: new URL("https://sweetflowersdecoparty.com"),
+  // URL real (dominio de producción de Vercel o el propio). Ver lib/site.ts.
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Sweet Flowers Deco Party — Decoración de eventos",
-    template: "%s · Sweet Flowers Deco Party",
+    default: `${SITE_NAME} | Decoración de eventos y estructuras de hierro`,
+    template: `%s · ${SITE_NAME}`,
   },
-  description:
-    "Decoración de eventos y formación del rubro en Argentina. Piezas en hierro, MDF, madera y telas, a medida o en stock. Workshops y comunidad.",
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  category: "Decoración de eventos",
   keywords: [
     "decoración de eventos",
-    "escenografía de eventos",
-    "piezas de decoración",
-    "workshop decoración",
+    "estructuras de hierro para eventos",
+    "arcos para decoración de eventos",
+    "catering para eventos",
+    "pies de lámpara",
+    "fundas para estructuras",
+    "telas sublimadas",
+    "insumos para decoradores",
+    "ambientación de eventos",
+    "Event Summit decoración",
     "Sweet Flowers",
+    "Tortuguitas",
+    "Buenos Aires",
     "Argentina",
   ],
-  authors: [{ name: "Sweet Flowers Deco Party" }],
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  formatDetection: { telephone: false },
   openGraph: {
     type: "website",
     locale: "es_AR",
-    siteName: "Sweet Flowers Deco Party",
-    title: "Sweet Flowers Deco Party — Decoración de eventos",
+    siteName: SITE_NAME,
+    url: "/",
+    title: `${SITE_NAME} — Decoración de eventos`,
     description:
-      "Creamos la escenografía de tus mejores momentos. Piezas en hierro, MDF, madera y telas. Workshops y comunidad.",
+      "Estructuras de hierro, catering, fundas y telas para armar la escena de cada evento. Producción propia y envíos a todo el país.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sweet Flowers Deco Party — Decoración de eventos",
+    title: `${SITE_NAME} — Decoración de eventos`,
     description:
-      "Creamos la escenografía de tus mejores momentos. Decoración de eventos y workshops.",
+      "Estructuras de hierro, catering, fundas y telas para armar la escena de cada evento. Envíos a todo el país.",
   },
-  alternates: {
-    canonical: "/",
-  },
+  // Solo producción se indexa (previews de Vercel y local, no).
+  robots: IS_INDEXABLE
+    ? {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+      }
+    : { index: false, follow: false },
+  // TODO(lanzamiento): pegar acá el código de Google Search Console.
+  // verification: { google: "" },
 };
 
 // viewport-fit=cover activa env(safe-area-inset-*) en iPhone con notch (sin esto,

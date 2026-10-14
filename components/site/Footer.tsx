@@ -172,11 +172,12 @@ export function Footer() {
         >
           {/* Instagram */}
           <a
-            href="#"
+            href="https://www.instagram.com/sweetflowersdecoparty/"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Instagram"
             className="inline-flex h-11 w-11 items-center justify-center transition-colors hover:text-bone"
           >
-            {/* TODO(contenido): URL de Instagram */}
             <svg
               width="20"
               height="20"

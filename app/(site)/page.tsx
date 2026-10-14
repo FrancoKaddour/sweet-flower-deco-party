@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { ColorBridge } from "@/components/site/ColorBridge";
 import { Hero } from "@/components/sections/Hero";
 import { Experiencia } from "@/components/sections/Experiencia";
@@ -18,6 +19,9 @@ import { Contacto } from "@/components/sections/Contacto";
 const BONE = "var(--color-bone)";
 const BLUSH = "var(--color-blush)";
 const SAND = "var(--color-sand)";
+
+// La home usa título/OG del layout; solo fija su canonical.
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default function Home() {
   return (

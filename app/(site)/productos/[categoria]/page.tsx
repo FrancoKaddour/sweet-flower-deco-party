@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
+import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,11 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { categoria } = await params;
   const cat = CATEGORIAS.find((c) => c.slug === categoria);
   if (!cat) return {};
-  return {
-    title: `${cat.nombre} · Productos`,
-    description: cat.desc,
-    alternates: { canonical: `/productos/${cat.slug}` },
-  };
+  return pageMetadata({
+    title: `${cat.nombre} para eventos · Productos`,
+    description: `${cat.desc} Fabricación propia, por encargo y con envíos a todo el país.`,
+    path: `/productos/${cat.slug}`,
+  });
 }
 
 export default async function CategoriaPage({ params }: Props) {
@@ -39,6 +41,12 @@ export default async function CategoriaPage({ params }: Props) {
 
   return (
     <main id="main">
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Productos", path: "/productos" },
+          { name: cat.nombre, path: `/productos/${cat.slug}` },
+        ]}
+      />
       {/* Intro de la categoría */}
       <section
         data-theme="light"
