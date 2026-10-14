@@ -1,22 +1,19 @@
 import { ImageResponse } from "next/og";
-import { OG, OG_SIZE, ogFonts, publicAsDataUrl } from "@/lib/og";
+import { OG, OG_SIZE, publicAsDataUrl } from "@/lib/og";
 
 /**
- * Imagen para compartir del sitio (1200×630): la que aparece al pegar el link
- * en WhatsApp, Instagram, LinkedIn, Facebook o X. Logo real (casita + globos)
- * y el nombre en Cormorant, como en el sitio. Las páginas con imagen propia
- * (p. ej. /event-summit) la pisan con su propio opengraph-image.
+ * Imagen para compartir del sitio (1200×630): solo el logo (casita + globos),
+ * centrado sobre marfil. WhatsApp recorta la imagen en un CUADRADO central
+ * (630×630) en la vista chica: el logo mide 470px de alto y vive entero dentro
+ * de ese cuadrado, con aire, así no se corta en ninguna red.
+ * Las páginas con imagen propia (p. ej. /event-summit) la pisan.
  */
 export const size = OG_SIZE;
 export const contentType = "image/png";
 export const alt = "Sweet Flowers Deco Party — Decoración de eventos";
 
 export default async function Image() {
-  const [logo, fonts] = await Promise.all([
-    publicAsDataUrl("brand/logo-mark-full.png", "image/png"),
-    ogFonts(500),
-  ]);
-  const { serif, sans } = fonts;
+  const logo = await publicAsDataUrl("brand/logo-mark-full.png", "image/png");
 
   return new ImageResponse(
     (
@@ -26,71 +23,15 @@ export default async function Image() {
           height: "100%",
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
           backgroundColor: OG.bone,
-          padding: "0 90px",
-          gap: 80,
         }}
       >
-        {/* Logo real */}
+        {/* Logo real: 2135×2099 → 478×470 */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={logo} width={380} height={374} alt="" style={{ objectFit: "contain" }} />
-
-        <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 24,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              color: OG.champagne,
-              fontFamily: sans,
-            }}
-          >
-            Decoración de eventos
-          </div>
-          <div
-            style={{
-              display: "flex",
-              marginTop: 18,
-              fontSize: 112,
-              lineHeight: 0.95,
-              color: OG.ink,
-              fontFamily: serif,
-              textTransform: "uppercase",
-              letterSpacing: "0.04em",
-            }}
-          >
-            Sweet Flowers
-          </div>
-          <div
-            style={{
-              display: "flex",
-              marginTop: 8,
-              fontSize: 40,
-              color: OG.ink,
-              fontFamily: serif,
-              letterSpacing: "0.3em",
-              textTransform: "uppercase",
-            }}
-          >
-            Deco Party
-          </div>
-          <div style={{ display: "flex", width: 90, height: 4, backgroundColor: OG.red, marginTop: 34 }} />
-          <div
-            style={{
-              display: "flex",
-              marginTop: 30,
-              fontSize: 28,
-              lineHeight: 1.35,
-              color: "#4a4440",
-              fontFamily: sans,
-            }}
-          >
-            Estructuras de hierro · Catering · Fundas y telas. Envíos a todo el país.
-          </div>
-        </div>
+        <img src={logo} width={478} height={470} alt="" />
       </div>
     ),
-    { ...size, ...fonts.options },
+    size,
   );
 }
