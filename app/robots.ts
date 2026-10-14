@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL, IS_INDEXABLE } from "@/lib/site";
+import { SITE_URL } from "@/lib/site";
 
 /**
  * robots.txt — producción abierta a buscadores Y a los bots de IA (para que
  * ChatGPT, Claude, Perplexity, Gemini y Copilot puedan leer y recomendar el
- * sitio). Previews de Vercel y local: cerrado. El panel nunca se indexa.
+ * sitio). Qué se guarda en Google lo decide el meta robots (IS_INDEXABLE).
+ * El panel nunca se rastrea.
  */
 const AI_BOTS = [
   "GPTBot",
@@ -22,9 +23,9 @@ const AI_BOTS = [
 ];
 
 export default function robots(): MetadataRoute.Robots {
-  if (!IS_INDEXABLE) {
-    return { rules: { userAgent: "*", disallow: "/" } };
-  }
+  // Siempre abierto al rastreo (si se bloquea, WhatsApp e Instagram no pueden
+  // armar la vista previa del link). Mientras IS_INDEXABLE sea false, cada
+  // página lleva <meta name="robots" content="noindex"> (ver app/layout.tsx).
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow: ["/panel", "/api/"] },

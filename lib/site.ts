@@ -15,9 +15,17 @@ export const SITE_URL = (
     : "https://sweet-flower-deco-party.vercel.app")
 ).replace(/\/$/, "");
 
-/** Solo producción se indexa; previews y local quedan fuera de Google. */
+/**
+ * ¿Google puede indexar? Hoy NO: el sitio tiene fotos y textos de relleno.
+ * Los bots SÍ pueden leerlo (robots.txt abierto), así funcionan las vistas
+ * previas de WhatsApp/redes y las IAs que leen el link en vivo; solo se pide
+ * "noindex" para que no quede guardado en Google con contenido provisorio.
+ *
+ * LANZAMIENTO: en Vercel → Settings → Environment Variables, agregar
+ * NEXT_PUBLIC_INDEX = 1 (Production) y redeployar. Sin tocar código.
+ */
 export const IS_INDEXABLE =
-  process.env.VERCEL_ENV === "production" || process.env.NEXT_PUBLIC_FORCE_INDEX === "1";
+  process.env.VERCEL_ENV === "production" && process.env.NEXT_PUBLIC_INDEX === "1";
 
 export const SITE_NAME = "Sweet Flowers Deco Party";
 export const SITE_TAGLINE = "Decoración de eventos";
