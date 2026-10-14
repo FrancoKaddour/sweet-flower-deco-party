@@ -18,6 +18,12 @@ export function stopLenis() {
   lenisInstance?.stop();
 }
 
+/** Vuelve al tope al instante (Lenis + nativo). Usado por la transición de página. */
+export function scrollToTopNow() {
+  lenisInstance?.scrollTo(0, { immediate: true, force: true });
+  window.scrollTo(0, 0);
+}
+
 /** Reanuda el scroll suave (no-op si Lenis no está activo). */
 export function startLenis() {
   lenisInstance?.start();

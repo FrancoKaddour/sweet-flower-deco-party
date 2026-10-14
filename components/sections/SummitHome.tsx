@@ -14,10 +14,10 @@ import {
 
 // TODO(contenido): reemplazar por fotos reales de las ediciones del Summit.
 // Ver docs/16_DECISIONS.md → checklist 03_EVENTOS (fotos/video de ediciones).
-// 11 columnas × 11–12 fotos: más piezas y más chicas (la grilla mantiene su
-// ancho, así cada columna es más angosta). En mobile se recorta (ver CSS).
-const COLUMNS: number[][] = Array.from({ length: 11 }, (_, c) =>
-  Array.from({ length: c % 2 ? 12 : 11 }, (_, i) => c * 12 + i + 1),
+// 9 columnas × 5 fotos (45): antes eran 126 y trababan el scroll. La grilla
+// mantiene su ancho → fotos más grandes, misma cobertura. Mobile se recorta (CSS).
+const COLUMNS: number[][] = Array.from({ length: 9 }, (_, c) =>
+  Array.from({ length: 5 }, (_, i) => c * 12 + i + 1),
 );
 
 

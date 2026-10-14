@@ -43,3 +43,11 @@ export const INFO_LINKS: readonly NavLink[] = [
   { label: "Términos", href: "#" },
   { label: "Privacidad", href: "#" },
 ] as const;
+
+// WhatsApp de contacto (botón flotante).
+// TODO(contenido): número real de Flor — formato internacional SIN "+", espacios ni guiones
+// (Argentina celular: 549 + código de área + número, p. ej. 5491122334455).
+export const WHATSAPP_NUMBER = "5491100000000";
+export const WHATSAPP_MESSAGE =
+  "¡Hola Flor! Vengo de la web de Sweet Flowers y quiero consultar por un evento.";
+export const WHATSAPP_HREF = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;

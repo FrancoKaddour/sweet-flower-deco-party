@@ -14,7 +14,7 @@ const COLECCIONES = CATEGORIAS.slice(0, 3);
  */
 export function Productos() {
   return (
-    <section id="productos" className="bg-bone px-6 py-28 md:px-10 md:py-40">
+    <section id="productos" className="bg-bone px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-40">
       <div className="mx-auto max-w-[87.5rem]">
         {/* Encabezado (centrado) */}
         <div className="mb-16 text-center md:mb-20">

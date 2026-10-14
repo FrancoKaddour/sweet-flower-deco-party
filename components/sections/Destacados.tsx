@@ -99,19 +99,21 @@ export function Destacados() {
   );
 
   return (
-    <section ref={sectionRef} id="destacados" className="bg-bone px-6 py-24 md:px-10 md:py-32">
+    <section ref={sectionRef} id="destacados" className="bg-bone px-6 pb-24 pt-0 md:px-10 md:pb-32">
       <div className="mx-auto max-w-[87.5rem]">
         {/* Encabezado: título a la izquierda + CTA a la derecha */}
         <FadeUp
           y={80}
-          className="mb-14 flex flex-col gap-6 md:mb-20 md:flex-row md:items-end md:justify-between"
+          className="mb-10 flex flex-col gap-4 border-t border-ink/10 pt-10 md:mb-14 md:flex-row md:items-end md:justify-between md:pt-14"
         >
           <div>
-            <Eyebrow className="mb-5">La tienda</Eyebrow>
-            <h2 className="max-w-[16ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)]">
+            {/* Continuación de "El catálogo" (Productos): misma sección visual,
+                encabezado chico para no competir con el título de arriba. */}
+            <Eyebrow className="mb-3">La tienda</Eyebrow>
+            <h3 className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-[0.95] text-ink">
               {/* TODO(contenido): titular real */}
-              Piezas que se llevan la fiesta
-            </h2>
+              Lo más pedido
+            </h3>
           </div>
           <Link
             href="/productos"

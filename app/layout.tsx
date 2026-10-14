@@ -8,6 +8,7 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { JsonLd } from "@/components/site/JsonLd";
 import { Loader } from "@/components/intro/Loader";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 // Display grotesca con carácter — equivalente LIBRE al espíritu de "Snaskface".
 // Alternativa self-hosted con más punch: Clash Display (Fontshare). Ver docs/06 + ADR-012.
@@ -110,6 +111,8 @@ export default function RootLayout({
         {/* Loader de intro: el nombre SWEET FLOWERS se separa y en el hueco
             central nace el video del hero, que crece a pantalla completa. */}
         <Loader />
+        {/* Transición entre páginas (globos del logo) — la firma de la marca. */}
+        <PageTransition />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>

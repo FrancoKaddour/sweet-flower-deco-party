@@ -725,3 +725,14 @@ html::-webkit-scrollbar-corner {
     font-size: calc(100vw / 120);
   }
 }
+
+/* ---- Botón flotante de WhatsApp ---- */
+.c-wa {
+  transition-property: background-color, opacity, translate;
+}
+/* Fuera de escena mientras corre el loader del inicio. */
+body[data-loader="true"] .c-wa {
+  opacity: 0;
+  translate: 0 1rem;
+  pointer-events: none;
+}
