@@ -104,7 +104,7 @@ export function Destacados() {
         {/* Encabezado: título a la izquierda + CTA a la derecha */}
         <FadeUp
           y={80}
-          className="mb-10 flex flex-col gap-4 border-t border-ink/10 pt-10 md:mb-14 md:flex-row md:items-end md:justify-between md:pt-14"
+          className="mb-10 flex flex-col items-center gap-4 border-t border-ink/10 pt-10 text-center md:mb-14 md:flex-row md:items-end md:justify-between md:pt-14 md:text-left"
         >
           <div>
             {/* Continuación de "El catálogo" (Productos): misma sección visual,
