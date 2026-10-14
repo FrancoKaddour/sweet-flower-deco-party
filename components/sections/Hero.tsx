@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/Button";
  */
 export function Hero() {
   return (
-    <section className="c-hero relative flex bg-ink min-h-svh flex-col items-center justify-center gap-8 overflow-hidden px-6 pb-28 pt-40 md:justify-end md:pb-[12svh] text-center md:px-10 md:pt-44">
+    <section className="c-hero relative flex bg-ink min-h-svh flex-col items-center justify-end gap-8 overflow-hidden px-6 pb-[max(4.5rem,9svh)] pt-40 md:pb-[12svh] text-center md:px-10 md:pt-44">
       {/* Media del hero (video + overlay). TODO(contenido): video real. */}
       <HeroMedia />
 

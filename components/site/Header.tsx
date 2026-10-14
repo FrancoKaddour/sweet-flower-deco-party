@@ -398,7 +398,7 @@ export function Header() {
                 }`}
               >
               <span
-                className="whitespace-nowrap font-(family-name:--font-logo) text-[1.05rem] font-medium uppercase leading-none tracking-[0.08em] text-ink sm:text-[1.45rem] sm:tracking-[0.12em]"
+                className="whitespace-nowrap font-(family-name:--font-logo) text-[0.95rem] font-medium uppercase leading-none tracking-[0.08em] text-ink sm:text-[1.45rem] sm:tracking-[0.12em]"
                 style={{ wordSpacing: "0.15em" }}
               >
                 Sweet&nbsp;Flowers

@@ -202,43 +202,34 @@ html.lenis body {
       transparent 100%
     );
 }
-/* Mobile: en el viewport angosto la grilla inclinada asoma en los CUATRO lados
-   (los costados son "a sangre" por diseño, pensado para desktop). Enmarcamos el
-   collage con marfil en los cuatro bordes: banda sólida en px + fundido. */
-@media (max-width: 767px) {
-  .wk-fade {
-    background:
-      linear-gradient(
-        to right,
-        var(--color-bone) 0,
-        var(--color-bone) 14px,
-        transparent 14%,
-        transparent 86%,
-        var(--color-bone) calc(100% - 14px),
-        var(--color-bone) 100%
-      ),
-      linear-gradient(
-        to bottom,
-        var(--color-bone) 0,
-        var(--color-bone) 22px,
-        transparent 12%,
-        transparent 88%,
-        var(--color-bone) calc(100% - 22px),
-        var(--color-bone) 100%
-      );
-  }
-  /* iPhone: recortamos el collage a 3 columnas × 5 imágenes (≈15 layers en vez
-     de 42). Safari iOS mata páginas por presión de memoria GPU; en un viewport
-     de 390px las columnas extra ni se ven. Las <img> ocultas no se descargan
-     (loading="lazy" + display:none → nunca intersectan). */
-  .wk-col:nth-child(n + 5) {
-    display: none;
-  }
-  .wk-col img:nth-child(n + 7) {
-    display: none;
+/* Mobile y tablet: collage A SANGRE en los costados (sin bandas marfil a los
+   lados). La grilla se centra y es bien ancha para que, inclinada, cubra los
+   bordes laterales sin huecos. Arriba/abajo se mantiene el fundido a marfil. */
+@media (max-width: 1023px) {
+  .wk-collage {
+    justify-content: center;
   }
   .wk-grid {
-    width: 150vw;
+    width: 230vw;
+    margin-right: 0;
+  }
+  .wk-fade {
+    background: linear-gradient(
+      to bottom,
+      var(--color-bone) 0,
+      var(--color-bone) 22px,
+      transparent 12%,
+      transparent 88%,
+      var(--color-bone) calc(100% - 22px),
+      var(--color-bone) 100%
+    );
+  }
+}
+@media (max-width: 767px) {
+  /* iPhone: menos capas (Safari iOS mata páginas por presión de memoria GPU).
+     5 columnas × 5 fotos; las <img> ocultas no se descargan (lazy + none). */
+  .wk-col:nth-child(n + 6) {
+    display: none;
   }
 }
 
