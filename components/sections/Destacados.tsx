@@ -6,6 +6,7 @@ import Link from "next/link";
 import { gsap, ScrollTrigger, CustomEase, useGSAP } from "@/lib/gsap";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SwipeDots } from "@/components/ui/SwipeDots";
 
 // TODO(contenido): productos, precios y fotos reales (ver docs/16_DECISIONS.md → 02_PRODUCTOS).
 const PRODUCTOS = [
@@ -28,6 +29,13 @@ const PRODUCTOS = [
   { slug: "soporte-flores",    nombre: "Soporte de flores",  material: "Hierro",  precio: "$ —" },
   { slug: "letras-gigantes",   nombre: "Letras gigantes",    material: "MDF",     precio: "$ —" },
 ];
+
+// Mobile: 2 páginas de 6 (grilla 2×3); las 6 restantes solo en md+.
+const POR_PAGINA = 6;
+const PAGINAS_MOBILE = 2;
+const PAGINAS = Array.from({ length: Math.ceil(PRODUCTOS.length / POR_PAGINA) }, (_, i) =>
+  PRODUCTOS.slice(i * POR_PAGINA, (i + 1) * POR_PAGINA),
+);
 
 // Misma "caída" que las colecciones del catálogo (CollectionCard): la foto cae
 // de ARRIBA hacia ABAJO y asienta su escala en el mismo tiempo y curva
@@ -129,43 +137,61 @@ export function Destacados() {
           </Link>
         </FadeUp>
 
-        {/* Grilla de productos */}
-        <div className="dest-grid grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 md:gap-x-5 md:gap-y-10 lg:grid-cols-6 lg:gap-x-5 lg:gap-y-12">
-          {PRODUCTOS.map((p) => (
-            <Link key={p.slug} href="/productos" className="dest-card group block">
-              {/* Un-zoom hover: image lives at 1.05 scale, settles to 1 on hover */}
-              <div className="dest-frame relative aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-sand">
-               <div className="dest-media absolute inset-0">
-                <Image
-                  src={`https://picsum.photos/seed/sfdp-dest-${p.slug}/700/880`}
-                  alt=""
-                  fill
-                  sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 230px"
-                  className="object-cover transition-transform duration-[800ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
-                />
-               </div>
-                <span className="absolute right-2.5 top-2.5 grid h-8 w-8 translate-y-1 place-items-center rounded-full bg-ink text-[length:var(--text-step-0)] text-bone opacity-0 transition-all duration-300 ease-[var(--ease-out-expo)] group-hover:translate-y-0 group-hover:opacity-100">
-                  ↗
-                </span>
-              </div>
-
-              <div className="dest-info mt-3 flex items-baseline justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="text-[0.7rem] uppercase tracking-[0.12em] text-champagne">
-                    {p.material}
-                  </p>
-                  <h3 className="font-display text-[length:var(--text-step-0)] font-bold uppercase leading-tight text-ink">
-                    {p.nombre}
-                  </h3>
-                </div>
-                {/* TODO(contenido): precio real */}
-                <p className="shrink-0 font-sans text-[length:var(--text-step--1)] text-ink">
-                  {p.precio}
-                </p>
-              </div>
-            </Link>
+        {/* Grilla de productos — mobile: 2 páginas deslizables de 2×3 (12
+            piezas; el resto en "Ver toda la tienda"). md+: grilla de 18.
+            Las "páginas" usan md:contents → en desktop desaparecen y las cards
+            quedan como hijos directos de la grilla. */}
+        <div
+          id="destacados-track"
+          className="dest-grid -mx-6 flex snap-x snap-mandatory scroll-px-6 gap-6 overflow-x-auto px-6 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-x-5 md:gap-y-10 md:overflow-visible md:px-0 lg:grid-cols-6 lg:gap-x-5 lg:gap-y-12 [&::-webkit-scrollbar]:hidden"
+        >
+          {PAGINAS.map((pagina, pi) => (
+            <div
+              key={pi}
+              className={
+                pi < PAGINAS_MOBILE
+                  ? "grid w-full shrink-0 snap-start grid-cols-2 content-start gap-x-4 gap-y-8 md:contents"
+                  : "hidden md:contents"
+              }
+            >
+              {pagina.map((p) => (
+                <Link key={p.slug} href="/productos" className="dest-card group block">
+                  {/* Un-zoom hover: image lives at 1.05 scale, settles to 1 on hover */}
+                  <div className="dest-frame relative aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-sand">
+                   <div className="dest-media absolute inset-0">
+                    <Image
+                      src={`https://picsum.photos/seed/sfdp-dest-${p.slug}/700/880`}
+                      alt=""
+                      fill
+                      sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 230px"
+                      className="object-cover transition-transform duration-[800ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
+                    />
+                   </div>
+                    <span className="absolute right-2.5 top-2.5 grid h-8 w-8 translate-y-1 place-items-center rounded-full bg-ink text-[length:var(--text-step-0)] text-bone opacity-0 transition-all duration-300 ease-[var(--ease-out-expo)] group-hover:translate-y-0 group-hover:opacity-100">
+                      ↗
+                    </span>
+                  </div>
+    
+                  <div className="dest-info mt-3 flex items-baseline justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-[0.7rem] uppercase tracking-[0.12em] text-champagne">
+                        {p.material}
+                      </p>
+                      <h3 className="font-display text-[length:var(--text-step-0)] font-bold uppercase leading-tight text-ink">
+                        {p.nombre}
+                      </h3>
+                    </div>
+                    {/* TODO(contenido): precio real */}
+                    <p className="shrink-0 font-sans text-[length:var(--text-step--1)] text-ink">
+                      {p.precio}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           ))}
         </div>
+        <SwipeDots forId="destacados-track" count={PAGINAS_MOBILE} label="Productos destacados" />
       </div>
     </section>
   );

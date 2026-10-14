@@ -71,7 +71,10 @@ export function CollectionCard({
     };
     if (!loaded) img.addEventListener("load", onLoad);
 
-    const rect = el.getBoundingClientRect();
+    // En el carrusel de mobile las cards de la derecha están fuera de cuadro en
+    // horizontal: el disparo lo da el GRUPO (la fila entera), así caen juntas.
+    const target = el.closest<HTMLElement>("[data-fall-group]") ?? el;
+    const rect = target.getBoundingClientRect();
     if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
       inView = true;
       maybeStart();
@@ -86,7 +89,7 @@ export function CollectionCard({
         },
         { rootMargin: "0px 0px -10% 0px" },
       );
-      io.observe(el);
+      io.observe(target);
     }
 
     return () => {

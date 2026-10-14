@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
 
@@ -68,6 +68,24 @@ const FEATURES = [
  */
 export function Servicio() {
   const trackRef = useRef<HTMLDivElement>(null);
+
+  // Mobile: el carrusel arranca CENTRADO en un slide del medio → hay fotos
+  // para deslizar a izquierda y a derecha (no solo hacia la derecha).
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || !window.matchMedia("(max-width: 639px)").matches) return;
+    const slides = track.querySelectorAll<HTMLElement>("article");
+    const mid = slides[Math.floor((slides.length - 1) / 2)];
+    if (!mid) return;
+    const prevSnap = track.style.scrollSnapType;
+    track.style.scrollSnapType = "none";
+    const m = mid.getBoundingClientRect();
+    const t = track.getBoundingClientRect();
+    track.scrollLeft += m.left - t.left - (track.clientWidth - m.width) / 2;
+    requestAnimationFrame(() => {
+      track.style.scrollSnapType = prevSnap;
+    });
+  }, []);
 
   // Desplaza el carrusel un slide (desktop muestra 3 por vista → 1/3 del track).
   const scrollByStep = (dir: 1 | -1) => {
@@ -194,7 +212,7 @@ export function Servicio() {
           {SLIDES.map((slide) => (
           <article
             key={slide.seed}
-            className="group relative w-[78vw] shrink-0 snap-start overflow-hidden rounded-[var(--radius-md)] sm:w-[48%] md:w-[calc((100%-2rem)/3)]"
+            className="group relative w-[78vw] shrink-0 snap-center overflow-hidden sm:snap-start rounded-[var(--radius-md)] sm:w-[48%] md:w-[calc((100%-2rem)/3)]"
           >
             <Image
               src={`https://picsum.photos/seed/${slide.seed}/600/800`}

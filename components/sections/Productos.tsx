@@ -1,6 +1,7 @@
 import { RevealText } from "@/components/motion/RevealText";
 import { CollectionCard } from "@/components/motion/CollectionCard";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SwipeDots } from "@/components/ui/SwipeDots";
 import { CATEGORIAS } from "@/content/catalogo";
 
 // Colecciones destacadas en la Home = las 3 primeras categorías del catálogo.
@@ -29,20 +30,27 @@ export function Productos() {
           </RevealText>
         </div>
 
-        {/* Colecciones */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
+        {/* Colecciones — mobile: carrusel deslizable (las 3 caen juntas al
+            entrar y la siguiente asoma); md+: grilla de 3 columnas. */}
+        <div
+          id="colecciones-track"
+          data-fall-group
+          className="-mx-6 flex snap-x snap-mandatory scroll-px-6 gap-4 overflow-x-auto px-6 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
+        >
           {COLECCIONES.map((c, i) => (
-            <CollectionCard
-              key={c.slug}
-              href={`/productos/${c.slug}`}
-              index={c.index}
-              titulo={c.nombre}
-              desc={c.tagline}
-              img={c.img}
-              delay={i * 140}
-            />
+            <div key={c.slug} className="w-[80%] shrink-0 snap-center md:w-auto">
+              <CollectionCard
+                href={`/productos/${c.slug}`}
+                index={c.index}
+                titulo={c.nombre}
+                desc={c.tagline}
+                img={c.img}
+                delay={i * 140}
+              />
+            </div>
           ))}
         </div>
+        <SwipeDots forId="colecciones-track" count={COLECCIONES.length} label="Colecciones" />
       </div>
     </section>
   );
