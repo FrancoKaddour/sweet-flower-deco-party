@@ -33,26 +33,28 @@ export default async function Image() {
             width: 1200,
             height: 630,
             display: "flex",
-            backgroundImage: "linear-gradient(to top, rgba(20,17,15,0.92) 10%, rgba(20,17,15,0.45) 100%)",
+            backgroundImage: "linear-gradient(to top, rgba(20,17,15,0.85) 0%, rgba(20,17,15,0.6) 100%)",
           }}
         />
+        {/* Texto dentro del CUADRADO central (560px de ancho): WhatsApp recorta
+            630×630 del medio en la vista chica y así no se corta nada. */}
         <div
           style={{
             position: "relative",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "flex-end",
+            justifyContent: "center",
             alignItems: "center",
             width: "100%",
-            padding: "0 80px 70px",
+            height: "100%",
             textAlign: "center",
           }}
         >
           <div
             style={{
               display: "flex",
-              fontSize: 26,
-              letterSpacing: "0.26em",
+              fontSize: 22,
+              letterSpacing: "0.22em",
               textTransform: "uppercase",
               color: OG.champagne,
               fontFamily: sans,
@@ -63,30 +65,33 @@ export default async function Image() {
           <div
             style={{
               display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginTop: 20,
-              fontSize: 104,
-              lineHeight: 0.92,
+              marginTop: 26,
+              fontSize: 54,
+              letterSpacing: "0.08em",
               color: OG.bone,
               fontFamily: serif,
               textTransform: "uppercase",
             }}
           >
-            <span>Sweet Flowers</span>
-            <span>Event Summit</span>
+            Sweet Flowers
           </div>
           <div
             style={{
               display: "flex",
-              marginTop: 26,
-              fontSize: 28,
-              color: "rgba(247,243,236,0.82)",
-              fontFamily: sans,
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: 6,
+              fontSize: 128,
+              lineHeight: 0.9,
+              color: OG.bone,
+              fontFamily: serif,
+              textTransform: "uppercase",
             }}
           >
-            La cumbre argentina de la decoración de eventos
+            <span>Event</span>
+            <span>Summit</span>
           </div>
+          <div style={{ display: "flex", width: 70, height: 3, backgroundColor: OG.champagne, marginTop: 30 }} />
         </div>
       </div>
     ),
