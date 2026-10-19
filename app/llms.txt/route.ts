@@ -10,8 +10,8 @@ import {
   EVENT_NAME,
   EVENT_WHEN,
   EVENT_CUPO,
-  EDICION_NUMERO,
-  EDICIONES_PREVIAS,
+  EDICION_LABEL,
+  WORKSHOPS_REALIZADOS,
   INCLUYE,
 } from "@/content/evento";
 
@@ -28,7 +28,7 @@ ${SITE_NAME} es un emprendimiento familiar argentino de decoración de eventos, 
 
 ## Datos clave
 
-- Qué hace: fabricación y venta de estructuras y piezas para decorar eventos (bodas, cumpleaños, quince, eventos corporativos) + formación para el rubro.
+- Qué hace: fabricación y venta de piezas para decorar eventos — catering (exhibidores), ambientación y estructuras de hierro — y el Event Summit, la cumbre del rubro.
 - Para quién: decoradores, ambientadores, organizadores de eventos y salones; también particulares.
 - Dónde: ${BUSINESS.locality}, ${BUSINESS.region}, Argentina. ${BUSINESS.shipping}.
 - Producción: ${BUSINESS.leadTime}. Los productos a medida se cotizan; la demora depende de la complejidad.
@@ -44,8 +44,8 @@ Catálogo completo: ${SITE_URL}/productos
 ## ${EVENT_NAME}
 
 - Qué es: la cumbre argentina de la decoración y la organización de eventos. Charlas de referentes del rubro, comunidad y networking.
-- Trayectoria: ${EDICIONES_PREVIAS} ediciones realizadas, con más de 180 asistentes y más de 20 disertantes en total. Sedes anteriores: Centro Naval, Madero Tango (Puerto Madero), La Rioja, Río Cuarto, Palacio San Miguel y La Rural.
-- Próxima edición: Nº ${EDICION_NUMERO}, ${EVENT_WHEN.toLowerCase()}. Cupo de ${EVENT_CUPO} lugares.
+- Trayectoria: ${WORKSHOPS_REALIZADOS} workshops presenciales (Centro Naval, Madero Tango en Puerto Madero, La Rioja, Río Cuarto, Palacio San Miguel y La Rural, entre otras sedes) y la 1ª edición del Summit (septiembre de 2026). Más de 180 asistentes y más de 20 disertantes en total.
+- Próxima edición: ${EDICION_LABEL}, ${EVENT_WHEN}. Cupo de ${EVENT_CUPO} lugares. Pre-preventa abierta: se puede pagar con Mercado Pago o reservar por WhatsApp.
 - Incluye: ${INCLUYE.map((i) => i.titulo.toLowerCase()).join(", ")}.
 - Más info e inscripción: ${SITE_URL}/event-summit
 
@@ -61,7 +61,6 @@ Catálogo completo: ${SITE_URL}/productos
 - [Inicio](${SITE_URL}/)
 - [Productos](${SITE_URL}/productos)
 - [Event Summit](${SITE_URL}/event-summit)
-- [Workshops](${SITE_URL}/workshops)
 - [Contacto y preguntas frecuentes](${SITE_URL}/contacto)
 - [Historia](${SITE_URL}/historia)
 `;

@@ -21,7 +21,6 @@ export const MAIN_NAV: readonly NavLink[] = [
   { label: "Inicio", href: "/" },
   { label: "Event Summit", href: "/event-summit", destacado: true, meta: "2027" },
   { label: "Productos", href: "/productos" },
-  { label: "Workshops", href: "/workshops" },
   { label: "Membresía", href: "/membresia" },
   { label: "Historia", href: "/historia" },
 ] as const;

@@ -4,10 +4,11 @@ import { useRef } from "react";
 import Image from "next/image";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { SEDES, EDICIONES_PREVIAS } from "@/content/evento";
+import { TRAYECTORIA, WORKSHOPS_REALIZADOS, EDICION_LABEL } from "@/content/evento";
 
 /**
- * "Escenarios que nos recibieron" — scroll HORIZONTAL pineado (patrón GSAP clásico):
+ * TRAYECTORIA: 7 workshops → 1ª edición del Summit → 2ª edición (pedido de
+ * Flor, §18). Antes era "Escenarios que nos recibieron". — scroll HORIZONTAL pineado (patrón GSAP clásico):
  * la sección se fija y el track se desplaza en X a medida que scrolleás en Y.
  * Sincronizado con Lenis vía ScrollTrigger (ver components/motion/SmoothScroll).
  * Reduced-motion: sin pin; el track queda como carrusel swipeable nativo.
@@ -46,7 +47,7 @@ export function EdicionesScroll() {
   );
 
   return (
-    <section ref={root} data-theme="dark" className="bg-ink text-bone">
+    <section ref={root} id="trayectoria" data-theme="dark" className="scroll-mt-24 bg-ink text-bone">
       <div
         ref={panel}
         className="flex h-svh flex-col justify-center overflow-hidden motion-reduce:overflow-x-auto motion-reduce:[scrollbar-width:none] motion-reduce:[&::-webkit-scrollbar]:hidden"
@@ -57,51 +58,78 @@ export function EdicionesScroll() {
         >
           {/* Bloque de intro (primer panel) */}
           <div className="flex w-[82vw] shrink-0 flex-col justify-center sm:w-[56vw] md:w-[40vw] lg:w-[34vw]">
-            <Eyebrow className="mb-6">{EDICIONES_PREVIAS} ediciones</Eyebrow>
+            <Eyebrow className="mb-6">La trayectoria</Eyebrow>
             <h2 className="font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone [overflow-wrap:anywhere]">
-              {/* TODO(contenido): titular real */}
-              Escenarios que nos recibieron
+              El camino hasta acá
             </h2>
             <p className="mt-6 max-w-[38ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-bone/70">
-              De Buenos Aires al interior, cada edición encontró su escena.
-              Deslizá para recorrerlas.
+              {WORKSHOPS_REALIZADOS} workshops, una primera edición del Summit y
+              ahora vamos por la {EDICION_LABEL}. Deslizá para recorrerlo.
             </p>
           </div>
 
-          {/* Tarjetas de sedes */}
-          {SEDES.map((sede, i) => (
-            <article
-              key={`${sede.lugar}-${i}`}
-              className="group relative h-[62vh] w-[72vw] shrink-0 overflow-hidden rounded-[var(--radius-lg)] sm:w-[48vw] md:h-[68vh] md:w-[34vw] lg:w-[26vw]"
-            >
-              {/* TODO(contenido): foto real de la edición en esa sede. */}
-              <Image
-                src={`https://picsum.photos/seed/sfdp-sede-${i}/900/1200`}
-                alt=""
-                fill
-                sizes="(max-width: 640px) 72vw, (max-width: 768px) 48vw, (max-width: 1024px) 34vw, 26vw"
-                className="object-cover grayscale transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
-              />
-              {/* Duotono cálido + grano cinematográfico — SOLO md+ (en iPhone,
-                  6 tarjetas × 3 capas de blend re-compositeadas por frame en el
-                  scrub hacían el scroll pastoso; mobile usa un scrim simple). */}
-              <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-ink via-bordeaux/60 to-bordeaux/30 mix-blend-multiply md:block" />
-              <div className="pointer-events-none absolute inset-0 hidden bg-champagne/15 mix-blend-screen md:block" />
-              <div className="evt-grain pointer-events-none absolute inset-0 hidden md:block" />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-bordeaux/40 to-bordeaux/20 md:via-ink/20 md:to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6">
-                <span className="font-display text-[length:var(--text-step--1)] tracking-[0.18em] text-champagne">
-                  {String(i + 1).padStart(2, "0")}
+          {/* Etapas: workshops → 1ª edición → próxima */}
+          {TRAYECTORIA.map((t, i) =>
+            t.proxima ? (
+              <a
+                key={t.etapa}
+                href="#inscripcion"
+                className="group relative flex h-[62vh] w-[72vw] shrink-0 flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border border-champagne/40 bg-bordeaux p-7 sm:w-[48vw] md:h-[68vh] md:w-[34vw] lg:w-[26vw]"
+              >
+                <div className="evt-grain pointer-events-none absolute inset-0" />
+                <span className="relative text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">
+                  {t.etapa}
                 </span>
-                <h3 className="mt-2 font-display text-[length:var(--text-step-3)] font-bold uppercase leading-[0.95] text-bone">
-                  {sede.lugar}
-                </h3>
-                <p className="mt-1 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-bone/70">
-                  {sede.ciudad}
-                </p>
-              </div>
-            </article>
-          ))}
+                <div className="relative">
+                  <h3 className="font-display text-[length:var(--text-step-4)] font-bold uppercase leading-[0.9] text-bone">
+                    {t.titulo}
+                  </h3>
+                  {t.detalle && (
+                    <p className="mt-3 text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/75">
+                      {t.detalle}
+                    </p>
+                  )}
+                  <span className="mt-8 inline-flex items-center gap-2 border-b border-bone pb-1 text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone">
+                    Reservá tu lugar
+                    <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </span>
+                </div>
+              </a>
+            ) : (
+              <article
+                key={t.etapa}
+                className="group relative h-[62vh] w-[72vw] shrink-0 overflow-hidden rounded-[var(--radius-lg)] sm:w-[48vw] md:h-[68vh] md:w-[34vw] lg:w-[26vw]"
+              >
+                {/* TODO(contenido): foto real de cada workshop / de la 1ª edición. */}
+                <Image
+                  src={`https://picsum.photos/seed/sfdp-sede-${i}/900/1200`}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 72vw, (max-width: 768px) 48vw, (max-width: 1024px) 34vw, 26vw"
+                  className="object-cover grayscale transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
+                />
+                {/* Duotono cálido + grano — SOLO md+ (en iPhone el blend por frame
+                    en el scrub hacía el scroll pastoso; mobile usa scrim simple). */}
+                <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-ink via-bordeaux/60 to-bordeaux/30 mix-blend-multiply md:block" />
+                <div className="pointer-events-none absolute inset-0 hidden bg-champagne/15 mix-blend-screen md:block" />
+                <div className="evt-grain pointer-events-none absolute inset-0 hidden md:block" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-bordeaux/40 to-bordeaux/20 md:via-ink/20 md:to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-6">
+                  <span className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">
+                    {t.etapa}
+                  </span>
+                  <h3 className="mt-2 font-display text-[length:var(--text-step-3)] font-bold uppercase leading-[0.95] text-bone">
+                    {t.titulo}
+                  </h3>
+                  {t.lugar && (
+                    <p className="mt-1 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-bone/70">
+                      {t.lugar}
+                    </p>
+                  )}
+                </div>
+              </article>
+            ),
+          )}
 
           {/* Espaciador final para que la última tarjeta respire */}
           <div className="w-6 shrink-0 md:w-10" aria-hidden="true" />

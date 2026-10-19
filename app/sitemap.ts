@@ -21,7 +21,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/productos", 0.9, "weekly"),
     ...CATEGORIAS.map((c) => page(`/productos/${c.slug}`, 0.8, "weekly")),
     page("/event-summit", 0.9, "weekly"),
-    page("/workshops", 0.7, "monthly"),
     page("/contacto", 0.7, "monthly"),
     page("/historia", 0.5, "yearly"),
     page("/membresia", 0.4, "monthly"),

@@ -166,7 +166,7 @@ export default function HistoriaPage() {
             className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink"
           >
             {/* 7 ediciones reales del Summit (docs/CONTENIDO_FLOR.md §11) */}
-            Ocho ediciones después, seguimos empezando
+            Siete workshops y un Summit después, seguimos empezando
           </RevealText>
           <p className="mx-auto mt-6 max-w-[48ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
             Lo que arrancó en un taller hoy junta a la industria entera una

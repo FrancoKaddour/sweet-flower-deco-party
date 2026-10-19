@@ -8,8 +8,8 @@ import {
   EVENT_NAME,
   EVENT_WHEN,
   EVENT_CTA_HREF,
-  EDICION_NUMERO,
-  EDICIONES_PREVIAS,
+  EDICION_LABEL,
+  WORKSHOPS_REALIZADOS,
 } from "@/content/evento";
 
 // TODO(contenido): reemplazar por fotos reales de las ediciones del Summit.
@@ -135,7 +135,7 @@ export function SummitHome() {
       <div className="relative z-[3] mx-auto flex min-h-[150svh] md:min-h-[200svh] max-w-[87.5rem] items-center justify-start px-6 md:justify-end md:px-10">
         <div className="flex flex-col items-start text-left md:items-end md:text-right [text-shadow:0_2px_28px_rgb(20_17_15/0.5)]">
           <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">
-            Nº {String(EDICION_NUMERO).padStart(2, "0")} · {EVENT_WHEN}
+            {EDICION_LABEL} · {EVENT_WHEN}
           </p>
           <RevealText
             as="h2"
@@ -146,7 +146,7 @@ export function SummitHome() {
           </RevealText>
           <p className="mt-6 max-w-[38ch] text-[length:var(--text-step-0)] leading-snug text-bone/85">
             {/* TODO(contenido): bajada real del Summit */}
-            El encuentro del año de la decoración de eventos. {EDICIONES_PREVIAS} ediciones juntando a todo el rubro.
+            El encuentro del año de la decoración de eventos. Después de {WORKSHOPS_REALIZADOS} workshops y una primera edición, vamos por la segunda. Pre-preventa abierta.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-start gap-x-10 gap-y-4 md:justify-end">
             <Button href={EVENT_CTA_HREF} tone="light">

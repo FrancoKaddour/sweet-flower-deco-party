@@ -5,7 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 
 /**
- * Sección WORKSHOPS en el inicio — bloque corto que lleva a /workshops.
+ * Sección TRAYECTORIA en el inicio (antes "Workshops") → /event-summit#trayectoria.
  * (El collage cinematográfico pasó a ser la sección del Event Summit, arriba.)
  * Imagen en máscara de ARCO (identidad "EL ARCO"). Copy placeholder.
  */
@@ -31,7 +31,7 @@ export function Workshops() {
         </FadeUp>
 
         <div className="lg:col-span-6 lg:col-start-7">
-          <Eyebrow className="mb-6">Workshops</Eyebrow>
+          <Eyebrow className="mb-6">Trayectoria</Eyebrow>
           <RevealText
             as="h2"
             onScroll
@@ -41,12 +41,12 @@ export function Workshops() {
           </RevealText>
           <FadeUp y={30} delay={0.1}>
             <p className="mt-8 max-w-[44ch] text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
-              {/* TODO(contenido): bajada real */}
-              Workshops presenciales para aprender a montar, diseñar y vender
-              decoración de eventos con el método Sweet Flowers.
+              Siete workshops por todo el país y una primera edición del Event
+              Summit. Así se armó la comunidad que hoy se junta en la cumbre
+              del rubro.
             </p>
-            <Button href="/workshops" className="mt-8">
-              Ver workshops
+            <Button href="/event-summit#trayectoria" className="mt-8">
+              Ver la trayectoria
             </Button>
           </FadeUp>
         </div>

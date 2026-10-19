@@ -4,25 +4,57 @@
 
 export const EVENT_NAME = "Sweet Flowers Event Summit"; // ✅ (NO es un workshop)
 
-// La 8ª edición fue el 18/09/2026 ✅. La PRÓXIMA es la 9ª, a comienzos de
-// 2027 ✅ (dicho por Franco/Flor, oct-2026). Fecha exacta ⬜.
-export const EDICIONES_PREVIAS = 8;
+// Trayectoria ✅ (audios de Flor, 19/10/2026 — docs/CONTENIDO_FLOR.md §18):
+// primero hubo 7 WORKSHOPS (terminados), después la 1ª edición del Summit
+// (18/09/2026). La próxima es la 2ª EDICIÓN del Summit: 9 de abril de 2027.
+export const WORKSHOPS_REALIZADOS = 7;
+/** Ediciones del Summit ya hechas. */
+export const EDICIONES_PREVIAS = 1;
 export const EDICION_NUMERO = EDICIONES_PREVIAS + 1;
+/** "2ª edición" */
+export const EDICION_LABEL = `${EDICION_NUMERO}ª edición`;
 
-// TODO(contenido): fecha exacta (ISO) de la 9ª edición. Mientras sea null, la
-// cuenta regresiva se oculta y se muestra EVENT_WHEN.
-export const EVENT_DATE_ISO: string | null = null;
+export const EVENT_DATE_ISO: string | null = "2027-04-09T09:00:00-03:00"; // ✅ fecha · horario ⬜
 export const EVENT_YEAR = 2027;
-/** Cuándo es, en texto: "Comienzos de 2027" hasta tener la fecha exacta. */
-export const EVENT_WHEN = "Comienzos de 2027";
+/** Cuándo es, en texto. */
+export const EVENT_WHEN = "9 de abril de 2027";
 /** @deprecated usar EVENT_WHEN */
 export const EVENT_DATE_LABEL = EVENT_WHEN;
+// TODO(contenido): sede de la 2ª edición.
+export const EVENT_SEDE: string | null = null;
 
 export const EVENT_CUPO = 80; // ✅ "por el momento"
 
-// CTA de reserva: la inscripción hoy es por transferencia / contacto directo.
-// TODO(contenido): reemplazar por /evento/inscripcion cuando exista el flujo online.
-export const EVENT_CTA_HREF = "/contacto";
+// Inscripción ✅ (§18): el que quiere paga directo con Mercado Pago (cuotas);
+// el que quiere algo más personalizado, formulario → WhatsApp.
+export const EVENT_CTA_HREF = "/event-summit#inscripcion";
+// TODO(contenido): link de pago de Mercado Pago de la pre-preventa (lo genera
+// Flor desde su cuenta). Mientras sea null, el botón de MP no se muestra.
+export const EVENT_MP_LINK: string | null = null;
+// TODO(contenido): precio de la pre-preventa (contado / cuotas / vigencia).
+export const EVENT_PRECIO: string | null = null;
+/** Línea de WhatsApp de capacitaciones / Summit (11 5512-7508). */
+export const EVENT_WHATSAPP = "5491155127508";
+
+/** El camino hasta acá: 7 workshops → 1ª edición → 2ª edición. */
+export const TRAYECTORIA: readonly {
+  etapa: string;
+  titulo: string;
+  lugar?: string;
+  detalle?: string;
+  proxima?: boolean;
+}[] = [
+  // Sedes de los workshops en orden (§11). El 7º se hizo en un hotel que NO se nombra.
+  { etapa: "Workshop 01", titulo: "Centro Naval", lugar: "CABA" },
+  { etapa: "Workshop 02", titulo: "Madero Tango", lugar: "Puerto Madero" },
+  { etapa: "Workshop 03", titulo: "La Rioja Capital", lugar: "La Rioja" },
+  { etapa: "Workshop 04", titulo: "Río Cuarto", lugar: "Córdoba" },
+  { etapa: "Workshop 05", titulo: "Palacio San Miguel", lugar: "CABA" },
+  { etapa: "Workshop 06", titulo: "La Rural", lugar: "CABA" },
+  { etapa: "Workshop 07", titulo: "Séptimo workshop" },
+  { etapa: "Event Summit · 1ª edición", titulo: "La Rural", lugar: "18 de septiembre de 2026" },
+  { etapa: "Event Summit · 2ª edición", titulo: "9 de abril de 2027", detalle: "Pre-preventa abierta", proxima: true },
+];
 
 // Qué incluye — TODOS ✅ (§10).
 export const INCLUYE = [
@@ -55,10 +87,10 @@ export const INCLUYE = [
 
 // Trayectoria (§11) — cifras aproximadas dichas por Flor (de memoria).
 export const STATS = [
-  { valor: EDICIONES_PREVIAS, prefijo: "", sufijo: "", label: "Ediciones" },
+  { valor: WORKSHOPS_REALIZADOS, prefijo: "", sufijo: "", label: "Workshops" },
   { valor: 180, prefijo: "+", sufijo: "", label: "Asistentes" },
   { valor: 20, prefijo: "+", sufijo: "", label: "Disertantes" },
-  { valor: EVENT_CUPO, prefijo: "", sufijo: "", label: "Cupos esta edición" },
+  { valor: EVENT_CUPO, prefijo: "", sufijo: "", label: "Cupos 2ª edición" },
 ] as const;
 
 // Escenarios que nos recibieron (§11). La 7ª sede (un hotel) se OMITE a propósito.

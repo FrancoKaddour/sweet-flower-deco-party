@@ -10,21 +10,21 @@ const TESTIMONIOS = [
       "Fui por las piezas y me llevé una comunidad. El workshop me ordenó la cabeza y el negocio.",
     nombre: "Sofía R.",
     lugar: "Córdoba",
-    edicion: "Edición 06",
+    edicion: "Workshop 06",
   },
   {
     quote:
       "Cada estructura se siente distinta: se nota el oficio y la terminación. Mis clientas lo notan.",
     nombre: "Marina L.",
     lugar: "Rosario",
-    edicion: "Edición 04",
+    edicion: "Workshop 04",
   },
   {
     quote:
       "Volví con ideas para todo el año. Es formación de verdad, no un evento más.",
     nombre: "Caro P.",
     lugar: "Mendoza",
-    edicion: "Edición 07",
+    edicion: "Workshop 07",
   },
   {
     quote:
@@ -38,14 +38,14 @@ const TESTIMONIOS = [
       "Las telas y las fundas cambiaron por completo la escena. Calidad premium de verdad.",
     nombre: "Luciana M.",
     lugar: "La Plata",
-    edicion: "Edición 05",
+    edicion: "Workshop 05",
   },
   {
     quote:
       "Me inspiró a animarme a lo grande. Hoy mis eventos son otra cosa.",
     nombre: "Belén T.",
     lugar: "Santa Fe",
-    edicion: "Edición 03",
+    edicion: "Workshop 03",
   },
 ];
 

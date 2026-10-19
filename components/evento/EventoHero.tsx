@@ -10,7 +10,7 @@ import {
   EVENT_DATE_ISO,
   EVENT_WHEN,
   EVENT_CTA_HREF,
-  EDICION_NUMERO,
+  EDICION_LABEL,
 } from "@/content/evento";
 
 /**
@@ -122,15 +122,18 @@ export function EventoHero() {
         <div data-hero-reveal className="mx-auto mt-12 flex flex-col items-center text-center">
           {EVENT_DATE_ISO ? (
             <>
-              <p className="mb-4 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-bone/50">
-                Faltan
+              <p className="mb-3 text-[0.7rem] uppercase tracking-[0.2em] text-bone/50">
+                {EDICION_LABEL} · Pre-preventa abierta
+              </p>
+              <p className="mb-6 font-display text-[length:var(--text-step-2)] font-extrabold uppercase leading-none text-champagne md:text-[length:var(--text-step-3)]">
+                {EVENT_WHEN}
               </p>
               <Countdown />
             </>
           ) : (
             <>
               <p className="mb-3 text-[0.7rem] uppercase tracking-[0.2em] text-bone/50">
-                Próxima edición · Nº {String(EDICION_NUMERO).padStart(2, "0")}
+                Próxima edición · {EDICION_LABEL}
               </p>
               <p className="font-display text-[length:var(--text-step-2)] font-extrabold uppercase leading-none text-champagne md:text-[length:var(--text-step-3)]">
                 {EVENT_WHEN}

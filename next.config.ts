@@ -4,7 +4,11 @@ const nextConfig: NextConfig = {
   // El Summit se mudó de /evento a /event-summit (y /workshops es otra página).
   // Redirect permanente para no romper links viejos ni el SEO acumulado.
   async redirects() {
-    return [{ source: "/evento", destination: "/event-summit", permanent: true }];
+    return [
+      { source: "/evento", destination: "/event-summit", permanent: true },
+      // Los workshops terminaron (fueron 7): su historia vive en la trayectoria del Summit.
+      { source: "/workshops", destination: "/event-summit#trayectoria", permanent: false },
+    ];
   },
   images: {
     // Placeholders del boceto. TODO(contenido): al pasar a fotos reales,

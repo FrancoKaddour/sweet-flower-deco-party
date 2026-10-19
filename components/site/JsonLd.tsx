@@ -6,7 +6,7 @@
  */
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, BUSINESS } from "@/lib/site";
 import { CATEGORIAS } from "@/content/catalogo";
-import { EVENT_NAME } from "@/content/evento";
+import { EVENT_NAME, EVENT_DATE_ISO, EDICION_LABEL } from "@/content/evento";
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 
@@ -85,7 +85,14 @@ export function JsonLd() {
             url: `${SITE_URL}/productos/${c.slug}`,
           })),
         },
-        event: { "@type": "Event", name: EVENT_NAME, url: `${SITE_URL}/event-summit` },
+        event: {
+          "@type": "Event",
+          name: `${EVENT_NAME} · ${EDICION_LABEL}`,
+          url: `${SITE_URL}/event-summit`,
+          ...(EVENT_DATE_ISO ? { startDate: EVENT_DATE_ISO } : {}),
+          eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+          eventStatus: "https://schema.org/EventScheduled",
+        },
       },
       {
         "@type": "WebSite",

@@ -1,11 +1,11 @@
 import { ImageResponse } from "next/og";
 import { OG, OG_SIZE, ogFonts, publicAsDataUrl } from "@/lib/og";
-import { EVENT_NAME, EVENT_WHEN, EDICION_NUMERO } from "@/content/evento";
+import { EVENT_NAME, EVENT_WHEN, EDICION_LABEL } from "@/content/evento";
 
 /** Imagen para compartir del Event Summit: foto del salón + título del evento. */
 export const size = OG_SIZE;
 export const contentType = "image/png";
-export const alt = `${EVENT_NAME} — ${EVENT_WHEN}`;
+export const alt = `${EVENT_NAME} — ${EDICION_LABEL}, ${EVENT_WHEN}`;
 
 export default async function Image() {
   const [bg, fonts] = await Promise.all([
@@ -60,7 +60,7 @@ export default async function Image() {
               fontFamily: sans,
             }}
           >
-            {`Nº ${String(EDICION_NUMERO).padStart(2, "0")} · ${EVENT_WHEN}`}
+            {`${EDICION_LABEL} · ${EVENT_WHEN}`}
           </div>
           <div
             style={{

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/site";
+import { SummitInscripcion } from "@/components/evento/SummitInscripcion";
 import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
 
 import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Button } from "@/components/ui/Button";
 import { EventoHero } from "@/components/evento/EventoHero";
 import { SummitIntro } from "@/components/evento/SummitIntro";
 import { SummitEscenas } from "@/components/evento/SummitEscenas";
@@ -17,15 +17,17 @@ import {
   EVENT_WHEN,
   EDICION_NUMERO,
   EVENT_CUPO,
-  EVENT_CTA_HREF,
   INCLUYE,
   DISERTANTES,
   EVENT_YEAR,
+  EDICION_LABEL,
+  EVENT_SEDE,
+  EVENT_PRECIO,
 } from "@/content/evento";
 
 export const metadata: Metadata = pageMetadata({
   title: `${EVENT_NAME} ${EVENT_YEAR}`,
-  description: `${EVENT_NAME}: la cumbre argentina de la decoración y la organización de eventos. ${EDICION_NUMERO}ª edición, ${EVENT_WHEN.toLowerCase()}. Charlas, certificado y comunidad. Cupo de ${EVENT_CUPO} lugares.`,
+  description: `${EVENT_NAME}: la cumbre argentina de la decoración y la organización de eventos. ${EDICION_NUMERO}ª edición: ${EVENT_WHEN}. Charlas, certificado y comunidad. Cupo de ${EVENT_CUPO} lugares. Pre-preventa abierta.`,
   path: "/event-summit",
   ogTitle: `${EVENT_NAME} · ${EVENT_WHEN}`,
 });
@@ -206,10 +208,9 @@ export default function EventoPage() {
                 {`Son ${EVENT_CUPO} lugares. Nada más.`}
               </RevealText>
               <p className="mt-8 max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/80">
-                {/* Copy real: pago por transferencia; MP suma recargo (§10). */}
-                {EVENT_WHEN}, presencial (fecha exacta a confirmar). Reservás por
-                transferencia; si preferís Mercado Pago, se suma el recargo
-                habitual (~18%).
+                {EDICION_LABEL} · {EVENT_WHEN}
+                {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}, presencial. Pagá online
+                con Mercado Pago o dejanos tus datos y te escribimos por WhatsApp.
               </p>
             </div>
 
@@ -227,24 +228,16 @@ export default function EventoPage() {
                   <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">
                     Valor
                   </dt>
-                  {/* TODO(contenido): precio real (los números del audio son ambiguos). */}
-                  <dd className="font-display text-[length:var(--text-step-4)] font-extrabold text-bone">
-                    Consultar
+                  {/* TODO(contenido): precio de la pre-preventa → EVENT_PRECIO. */}
+                  <dd className="font-display text-[length:var(--text-step-3)] font-extrabold text-bone">
+                    {EVENT_PRECIO ?? "Pre-preventa"}
                   </dd>
                 </div>
               </dl>
 
-              <Button
-                href={EVENT_CTA_HREF}
-                variant="inverse"
-                className="mt-8 w-full justify-center"
-              >
-                Quiero mi lugar
-              </Button>
-              <p className="mt-4 text-center text-[length:var(--text-step--1)] text-bone/55">
-                {/* TODO(contenido): apertura de inscripción online */}
-                Te respondemos y coordinamos la seña.
-              </p>
+              <div className="mt-10">
+                <SummitInscripcion />
+              </div>
             </div>
           </div>
         </div>
