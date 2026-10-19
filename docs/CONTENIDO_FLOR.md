@@ -154,3 +154,34 @@ Flor avisó que **las imágenes las pasa aparte** ("no tengo nada" cargado todav
 **Imágenes:** TODO el material visual del punto 16. ⬜
 
 > Cuando Flor mande cada cosa, se marca ✅ acá y se lleva a donde corresponde (panel o código), siguiendo `colaboracion/franco/INTAKE_DE_CONTENIDO.md`.
+
+---
+
+## 18. Audios de Flor — 19/10/2026 (respuesta a la demo)
+
+### Correcciones IMPORTANTES ✅
+- **El Event Summit NO es la 9ª edición.** Hubo **7 workshops** (ya terminados: "hasta ahí quedamos") y después la **1ª edición del Sweet Flowers Event Summit** (18/09/2026). La próxima es la **2ª edición del Summit**.
+- **Fecha 2ª edición: 9 de abril de 2027.** ✅ (sede ⬜)
+- Contar la trayectoria como transición: **7 workshops → 1ª edición del Summit → 2ª edición**, con imágenes de cada workshop y de la 1ª edición.
+- **Esta semana lanzan la PRE-PREVENTA** del Summit 2027 → prioridad máxima.
+
+### Prioridad de contenido ✅
+1. **Event Summit** (contenido fresco, lo pasan primero).
+2. **Catering** — lo que más se mueve hoy (exhibidores para catering). Tienen fotos lindas.
+3. **Ambientación / decoración** — 10 años de productos: necesitan limpiar fotos y definir qué siguen haciendo. Va de a poco.
+- Estructura base del sitio: **Event Summit · Catering · Ambientación**. Después se suman más proyectos.
+
+### Pagos ✅
+- **Summit:** botón para pagar por **Mercado Pago** (cuotas, como quieran) para quien quiera pagar directo + **formulario que llega a WhatsApp** para seguimiento personalizado.
+- **Productos:** se puede armar desde el **catálogo de WhatsApp** (precios y medidas en casi todo). Link de MP con recargo: se comunica "15%" pero la cuenta real es ≈18% (ver §4). También vale mostrar productos con precio sin pagar online, por ahora.
+
+### Productos ✅
+- Empezar por **hierro** con lo que sirva del catálogo de WhatsApp. Las fotos del catálogo pueden ser de baja calidad; se pueden usar provisorias y después las reemplazan.
+- El catálogo de WhatsApp también hay que actualizarlo (hay productos que no están subidos).
+
+### Imágenes ✅
+- Solo imágenes **propias o de clientes** (con permiso). El video del hero y las fotos de referencia se reemplazan por material de ellos.
+
+### Otros
+- Flor pide el **Instagram de Franco** para hacerle publicidad por la web.
+- ⚠️ Los audios 3 y 4 llegaron con la misma transcripción: puede faltar el contenido real del audio 4.
