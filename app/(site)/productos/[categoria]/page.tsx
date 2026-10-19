@@ -10,6 +10,8 @@ import { RevealText } from "@/components/motion/RevealText";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { CATEGORIAS } from "@/content/catalogo";
+import { productosDe } from "@/content/productos";
+import { ProductCard } from "@/components/productos/ProductCard";
 
 // Listado de categoría — VERSIÓN INTERINA "próximamente" (estado vacío cálido,
 // ver docs/04_SITE_ARCHITECTURE.md §7.2). La grilla real de productos llega
@@ -38,6 +40,7 @@ export default async function CategoriaPage({ params }: Props) {
   const { categoria } = await params;
   const cat = CATEGORIAS.find((c) => c.slug === categoria);
   if (!cat) notFound();
+  const productos = productosDe(cat.slug);
 
   return (
     <main id="main">
@@ -100,47 +103,60 @@ export default async function CategoriaPage({ params }: Props) {
         </div>
       </section>
 
+      {productos.length > 0 ? (
+        /* Grilla de productos (content/productos.ts) */
+        <section data-theme="light" className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32">
+          <div className="mx-auto grid max-w-[87.5rem] grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-3 md:gap-x-6 lg:grid-cols-4">
+            {productos.map((p) => (
+              <ProductCard key={p.slug} p={p} />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <>
       {/* Estado "próximamente" cálido + salida clara */}
-      <section
-        data-theme="light"
-        className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32"
-      >
-        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
-          {/* Foto en arco (identidad El Arco) */}
-          <FadeUp y={50} className="lg:col-span-5">
-            <div className="relative mx-auto aspect-[3/4] w-[min(100%,420px)] overflow-hidden rounded-t-full bg-sand">
-              {/* TODO(contenido): foto real de la categoría */}
-              <Image
-                src={cat.img}
-                alt=""
-                fill
-                sizes="(max-width: 1024px) 90vw, 420px"
-                className="object-cover"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-bordeaux/20 mix-blend-multiply" />
-            </div>
-          </FadeUp>
-
-          <FadeUp y={60} className="lg:col-span-6 lg:col-start-7">
-            <h2 className="max-w-[18ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink">
-              {/* Estado vacío honesto: el catálogo online se está cargando. */}
-              Estamos preparando estas piezas para la web
-            </h2>
-            <p className="mt-6 max-w-[46ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
-              El catálogo online de {cat.nombre.toLowerCase()} está en camino:
-              cada pieza se sube con sus fotos, medidas y precio reales.
-              Mientras tanto, pedilo directo — te pasamos el catálogo completo y
-              cotizamos tu pedido.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-x-10 gap-y-4">
-              <Button href="/contacto">Pedir el catálogo</Button>
-              <Button href="/productos" variant="outline">
-                Ver otras categorías
-              </Button>
-            </div>
-          </FadeUp>
-        </div>
-      </section>
+        <section
+          data-theme="light"
+          className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32"
+        >
+          <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
+            {/* Foto en arco (identidad El Arco) */}
+            <FadeUp y={50} className="lg:col-span-5">
+              <div className="relative mx-auto aspect-[3/4] w-[min(100%,420px)] overflow-hidden rounded-t-full bg-sand">
+                {/* TODO(contenido): foto real de la categoría */}
+                <Image
+                  src={cat.img}
+                  alt=""
+                  fill
+                  sizes="(max-width: 1024px) 90vw, 420px"
+                  className="object-cover"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-bordeaux/20 mix-blend-multiply" />
+              </div>
+            </FadeUp>
+  
+            <FadeUp y={60} className="lg:col-span-6 lg:col-start-7">
+              <h2 className="max-w-[18ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink">
+                {/* Estado vacío honesto: el catálogo online se está cargando. */}
+                Estamos preparando estas piezas para la web
+              </h2>
+              <p className="mt-6 max-w-[46ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
+                El catálogo online de {cat.nombre.toLowerCase()} está en camino:
+                cada pieza se sube con sus fotos, medidas y precio reales.
+                Mientras tanto, pedilo directo — te pasamos el catálogo completo y
+                cotizamos tu pedido.
+              </p>
+              <div className="mt-9 flex flex-wrap items-center gap-x-10 gap-y-4">
+                <Button href="/contacto">Pedir el catálogo</Button>
+                <Button href="/productos" variant="outline">
+                  Ver otras categorías
+                </Button>
+              </div>
+            </FadeUp>
+          </div>
+        </section>
+        </>
+      )}
     </main>
   );
 }

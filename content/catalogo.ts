@@ -10,8 +10,12 @@
 // schema del panel). Hasta entonces, este archivo es lo ÚNICO a editar.
 // TODO(contenido): confirmar categorías, textos y foto representativa por cat.
 
+/** Las dos líneas del negocio (pedido de Flor, §18): Catering y Ambientación. */
+export type Linea = "catering" | "ambientacion";
+
 export type Categoria = {
   slug: string;
+  linea: Linea;
   index: string;
   nombre: string;
   /** Bajada corta — para las cards de la Home. */
@@ -25,8 +29,19 @@ export type Categoria = {
 
 export const CATEGORIAS: readonly Categoria[] = [
   {
-    slug: "hierro",
+    slug: "catering",
+    linea: "catering",
     index: "01",
+    nombre: "Catering",
+    tagline: "Exhibidores y piezas para el momento de servir.",
+    desc: "Exhibidores y piezas que visten la mesa y el momento de servir. Lo que más sale hoy: presencia y terminación de nivel evento.",
+    incluye: ["Exhibidores", "Eclipse", "Arcoíris", "Bases y soportes"],
+    img: "https://picsum.photos/seed/sfdp-cat-catering/1200/1500",
+  },
+  {
+    slug: "hierro",
+    linea: "ambientacion",
+    index: "02",
     nombre: "Hierro",
     tagline: "Estructuras, arcos y bases para armar la escena.",
     desc: "El corazón de la campaña. Estructuras, arcos y bases que sostienen la escena y se arman una y otra vez.",
@@ -34,16 +49,8 @@ export const CATEGORIAS: readonly Categoria[] = [
     img: "https://picsum.photos/seed/sfdp-cat-hierro/1200/1500",
   },
   {
-    slug: "catering",
-    index: "02",
-    nombre: "Catering",
-    tagline: "Piezas que visten la mesa y el momento de servir.",
-    desc: "Piezas que visten la mesa y el momento de servir. Presencia y terminación de nivel evento.",
-    incluye: ["Eclipse", "Arcoíris", "Bases y soportes"],
-    img: "https://picsum.photos/seed/sfdp-cat-catering/1200/1500",
-  },
-  {
     slug: "fundas-y-telas",
+    linea: "ambientacion",
     index: "03",
     nombre: "Fundas & telas",
     tagline: "Textiles y telas sublimadas para vestir cada estructura.",
@@ -53,6 +60,7 @@ export const CATEGORIAS: readonly Categoria[] = [
   },
   {
     slug: "pies-de-lampara",
+    linea: "ambientacion",
     index: "04",
     nombre: "Pies de lámpara",
     tagline: "El detalle que ilumina y ordena el ambiente.",
