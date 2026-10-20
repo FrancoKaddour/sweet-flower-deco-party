@@ -59,7 +59,7 @@ export default async function CategoriaPage({ params }: Props) {
           {/* Breadcrumb editorial (solo e-commerce — docs/04 §6) */}
           <nav
             aria-label="Migas de pan"
-            className="mb-8 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-ink/50"
+            className="mb-8 text-center text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-ink/50"
           >
             <Link href="/" className="transition-colors hover:text-ink">
               Inicio
@@ -74,22 +74,22 @@ export default async function CategoriaPage({ params }: Props) {
             </span>
           </nav>
 
-          <Eyebrow className="mb-6">Categoría {cat.index}</Eyebrow>
+          <Eyebrow className="mb-6 text-center">Categoría {cat.index}</Eyebrow>
           <RevealText
             as="h1"
-            className="max-w-[16ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink [overflow-wrap:anywhere]"
+            className="mx-auto max-w-[16ch] text-center font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink [overflow-wrap:anywhere]"
           >
             {cat.nombre}
           </RevealText>
           <FadeUp
             y={40}
             delay={0.15}
-            className="mt-8 max-w-[52ch] border-t border-line pt-8"
+            className="mx-auto mt-8 max-w-[52ch] border-t border-line pt-8 text-center"
           >
             <p className="font-sans text-[length:var(--text-step-1)] leading-snug text-ink/70">
               {cat.desc}
             </p>
-            <ul className="mt-6 flex flex-wrap gap-x-3 gap-y-2">
+            <ul className="mt-6 flex flex-wrap justify-center gap-x-3 gap-y-2">
               {cat.incluye.map((item) => (
                 <li
                   key={item}
