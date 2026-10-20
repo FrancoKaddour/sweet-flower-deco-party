@@ -35,8 +35,10 @@ export function Countdown({ className = "" }: { className?: string }) {
     return () => window.clearInterval(id);
   }, []);
 
-  // Sin fecha confirmada (o ya pasada) no hay cuenta regresiva.
-  if (!EVENT_DATE_ISO || new Date(EVENT_DATE_ISO).getTime() < Date.now()) return null;
+  // Sin fecha confirmada (o ya pasada) no hay cuenta regresiva. El "ya pasó"
+  // se evalúa con el estado del efecto (Date.now en render rompe la pureza).
+  const vencido = parts !== null && parts.d + parts.h + parts.m + parts.s === 0;
+  if (!EVENT_DATE_ISO || vencido) return null;
 
   const units: { value: number | null; label: string }[] = [
     { value: parts?.d ?? null, label: "Días" },
