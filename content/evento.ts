@@ -14,22 +14,99 @@ export const EDICION_NUMERO = EDICIONES_PREVIAS + 1;
 /** "2ª edición" */
 export const EDICION_LABEL = `${EDICION_NUMERO}ª edición`;
 
-export const EVENT_DATE_ISO: string | null = "2027-04-09T09:00:00-03:00"; // ✅ fecha · horario ⬜
+export const EVENT_DATE_ISO: string | null = "2027-04-09T12:30:00-03:00"; // ✅ fecha y horario
+export const EVENT_END_ISO = "2027-04-09T19:00:00-03:00";
+export const EVENT_HORARIO = "12:30 a 19 h"; // ✅
 export const EVENT_YEAR = 2027;
 /** Cuándo es, en texto. */
 export const EVENT_WHEN = "9 de abril de 2027";
 /** @deprecated usar EVENT_WHEN */
 export const EVENT_DATE_LABEL = EVENT_WHEN;
-// TODO(contenido): sede de la 2ª edición.
-export const EVENT_SEDE: string | null = null;
+export const EVENT_SEDE: string | null = "La Rural · Palermo, Buenos Aires"; // ✅
 
 export const EVENT_CUPO = 80; // ✅ "por el momento"
 
 // Inscripción: TODO por WhatsApp (sin pago en el sitio — decisión oct-2026).
 // El formulario de /event-summit#inscripcion abre la línea de capacitaciones.
 export const EVENT_CTA_HREF = "/event-summit#inscripcion";
-// TODO(contenido): precio de la pre-preventa (contado / cuotas / vigencia).
-export const EVENT_PRECIO: string | null = null;
+/** Precio de referencia (el más bajo vigente) para resúmenes. */
+export const EVENT_PRECIO: string | null = "Desde $150.000";
+
+// PASES y PREVENTAS ✅ (Flor, 20/10/2026). Precios en ARS: transferencia y por
+// link de Mercado Pago (el link lo mandan por WhatsApp; no se paga en el sitio).
+export type PaseId = "vip" | "general";
+
+export const PASES: readonly { id: PaseId; nombre: string; incluye: readonly string[] }[] = [
+  {
+    id: "vip",
+    nombre: "Pase VIP",
+    incluye: [
+      "Ingreso al Event Summit",
+      "Lugar preferencial en el auditorio",
+      "Ingreso preferencial al auditorio",
+      "Regalos exclusivos",
+      "Sorteos",
+      "Coffee break",
+      "Certificado de asistencia",
+      "Ingreso a Expo Hobby",
+      "Cliente VIP Sweet Flowers: 15% de descuento en cualquier compra",
+      "Grupo de WhatsApp exclusivo",
+      "Valores preferenciales en próximos eventos",
+      "Descuentos con proveedores recomendados",
+    ],
+  },
+  {
+    id: "general",
+    nombre: "Pase General",
+    incluye: [
+      "Ingreso al auditorio del Event Summit",
+      "Regalos",
+      "Coffee break",
+      "Certificado de asistencia",
+      "Ingreso a Expo Hobby",
+    ],
+  },
+];
+
+export type Preventa = {
+  id: string;
+  nombre: string;
+  /** Último día válido (inclusive), ISO yyyy-mm-dd. */
+  hasta: string;
+  hastaLabel: string;
+  precios: Record<PaseId, { transferencia: number; mp: number }>;
+};
+
+export const PREVENTAS: readonly Preventa[] = [
+  {
+    id: "comunidad",
+    nombre: "Preventa Comunidad VIP Sweet Flowers",
+    hasta: "2026-11-10",
+    hastaLabel: "hasta el 10/11",
+    precios: {
+      vip: { transferencia: 280000, mp: 330000 },
+      general: { transferencia: 150000, mp: 180000 },
+    },
+  },
+  {
+    id: "general",
+    nombre: "Preventa general",
+    hasta: "2026-12-15",
+    hastaLabel: "hasta el 15/12",
+    precios: {
+      vip: { transferencia: 320000, mp: 370000 },
+      general: { transferencia: 220000, mp: 260000 },
+    },
+  },
+];
+
+/** Preventa vigente hoy (o null si ya pasaron todas). */
+export function preventaVigente(hoy = new Date()): Preventa | null {
+  const d = hoy.toISOString().slice(0, 10);
+  return PREVENTAS.find((p) => d <= p.hasta) ?? null;
+}
+
+export const EXTRAS_NOTA = "Actividades extra el 7 y 8 de abril: se abonan aparte.";
 /** Línea de WhatsApp de capacitaciones / Summit (11 5512-7508). */
 export const EVENT_WHATSAPP = "5491155127508";
 
@@ -50,7 +127,7 @@ export const TRAYECTORIA: readonly {
   { etapa: "Workshop 06", titulo: "La Rural", lugar: "CABA" },
   { etapa: "Workshop 07", titulo: "Séptimo workshop" },
   { etapa: "Event Summit · 1ª edición", titulo: "La Rural", lugar: "18 de septiembre de 2026" },
-  { etapa: "Event Summit · 2ª edición", titulo: "9 de abril de 2027", detalle: "Pre-preventa abierta", proxima: true },
+  { etapa: "Event Summit · 2ª edición", titulo: "9 de abril de 2027", detalle: "Preventa abierta", proxima: true },
 ];
 
 // Qué incluye — TODOS ✅ (§10).

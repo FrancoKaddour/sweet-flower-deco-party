@@ -6,23 +6,30 @@ import {
   EDICION_LABEL,
   EVENT_WHEN,
   EVENT_WHATSAPP,
+  PASES,
+  preventaVigente,
 } from "@/content/evento";
+import { formatARS } from "@/content/productos";
 
 /**
  * Inscripción al Summit — TODO por WhatsApp (sin pago en el sitio, oct-2026):
  * el formulario arma el mensaje con los datos y abre la línea de capacitaciones
- * para coordinar la reserva y el pago de la pre-preventa 1 a 1.
+ * para coordinar la reserva y el pago de la preventa 1 a 1.
  */
-const FORMAS = ["Transferencia", "Mercado Pago en cuotas", "Tengo dudas antes de reservar"] as const;
+const FORMAS = ["Transferencia", "Link de Mercado Pago", "Tengo dudas antes de reservar"] as const;
 
 export function SummitInscripcion() {
   const [enviado, setEnviado] = useState(false);
+  const [pase, setPase] = useState<(typeof PASES)[number]["id"]>("vip");
+  const pv = preventaVigente();
+  const precio = pv?.precios[pase];
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     const msg = [
       `¡Hola! Quiero reservar mi lugar en el ${EVENT_NAME} (${EDICION_LABEL}, ${EVENT_WHEN}).`,
+      `Pase: ${PASES.find((p) => p.id === pase)?.nombre}${pv ? ` (${pv.nombre}, ${pv.hastaLabel})` : ""}`,
       `Nombre: ${f.get("nombre")}`,
       `Ciudad: ${f.get("ciudad")}`,
       `Cómo prefiero pagar: ${f.get("forma")}`,
@@ -41,6 +48,35 @@ export function SummitInscripcion() {
   return (
     <div className="flex flex-col gap-8">
       <form onSubmit={onSubmit} className="flex flex-col gap-6" aria-label="Reservar por WhatsApp">
+        <fieldset className="flex flex-col gap-2">
+          <legend className={`${label} mb-2`}>Pase</legend>
+          <div className="grid grid-cols-2 gap-2">
+            {PASES.map((p) => (
+              <label
+                key={p.id}
+                className={`flex min-h-12 cursor-pointer items-center justify-center rounded-full border text-[0.75rem] uppercase tracking-[0.12em] transition-colors ${
+                  pase === p.id ? "border-bone bg-bone text-ink" : "border-bone/30 text-bone hover:border-bone/70"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="pase"
+                  value={p.id}
+                  checked={pase === p.id}
+                  onChange={() => setPase(p.id)}
+                  className="sr-only"
+                />
+                {p.nombre}
+              </label>
+            ))}
+          </div>
+          {precio && pv && (
+            <p className="text-[length:var(--text-step--1)] text-bone/65">
+              {pv.nombre} ({pv.hastaLabel}): {formatARS(precio.transferencia)} por transferencia ·{" "}
+              {formatARS(precio.mp)} por link de Mercado Pago
+            </p>
+          )}
+        </fieldset>
         <label className="flex flex-col gap-1">
           <span className={label}>Nombre y apellido</span>
           <input name="nombre" required autoComplete="name" className={field} />

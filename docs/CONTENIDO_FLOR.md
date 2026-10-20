@@ -185,3 +185,11 @@ Flor avisó que **las imágenes las pasa aparte** ("no tengo nada" cargado todav
 ### Otros
 - Flor pide el **Instagram de Franco** para hacerle publicidad por la web.
 - ⚠️ Los audios 3 y 4 llegaron con la misma transcripción: puede faltar el contenido real del audio 4.
+
+## 19. Summit 2027 — pases y preventa (Flor, 20/10/2026) ✅
+- **9 de abril de 2027 · 12:30 a 19 h · La Rural, Palermo (Bs As).**
+- Preventa Comunidad VIP (hasta 10/11): VIP $280.000 transf / $330.000 link MP · General $150.000 / $180.000.
+- Preventa general (hasta 15/12): VIP $320.000 / $370.000 · General $220.000 / $260.000.
+- Qué incluye cada pase: ver `content/evento.ts` (PASES). Actividades extra 7 y 8 de abril se abonan aparte.
+- Todo se reserva y paga por WhatsApp (sin pasarela en el sitio).
+- ⬜ Confirmar cupo (el sitio todavía dice 80, de la 1ª edición).

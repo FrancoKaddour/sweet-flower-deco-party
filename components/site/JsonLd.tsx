@@ -6,7 +6,7 @@
  */
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, BUSINESS } from "@/lib/site";
 import { CATEGORIAS } from "@/content/catalogo";
-import { EVENT_NAME, EVENT_DATE_ISO, EDICION_LABEL } from "@/content/evento";
+import { EVENT_NAME, EVENT_DATE_ISO, EVENT_END_ISO, EDICION_LABEL, PASES, PREVENTAS } from "@/content/evento";
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 
@@ -89,7 +89,27 @@ export function JsonLd() {
           "@type": "Event",
           name: `${EVENT_NAME} · ${EDICION_LABEL}`,
           url: `${SITE_URL}/event-summit`,
-          ...(EVENT_DATE_ISO ? { startDate: EVENT_DATE_ISO } : {}),
+          ...(EVENT_DATE_ISO ? { startDate: EVENT_DATE_ISO, endDate: EVENT_END_ISO } : {}),
+          location: {
+            "@type": "Place",
+            name: "La Rural",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Palermo, Ciudad Autónoma de Buenos Aires",
+              addressCountry: "AR",
+            },
+          },
+          organizer: { "@id": ORG_ID },
+          offers: PREVENTAS.flatMap((pv) =>
+            PASES.map((p) => ({
+              "@type": "Offer",
+              name: `${p.nombre} · ${pv.nombre}`,
+              price: pv.precios[p.id].transferencia,
+              priceCurrency: "ARS",
+              validThrough: pv.hasta,
+              url: `${SITE_URL}/event-summit#pases`,
+            })),
+          ),
           eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
           eventStatus: "https://schema.org/EventScheduled",
         },

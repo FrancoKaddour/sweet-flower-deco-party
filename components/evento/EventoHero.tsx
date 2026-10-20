@@ -11,6 +11,8 @@ import {
   EVENT_WHEN,
   EVENT_CTA_HREF,
   EDICION_LABEL,
+  EVENT_HORARIO,
+  EVENT_SEDE,
 } from "@/content/evento";
 
 /**
@@ -123,10 +125,13 @@ export function EventoHero() {
           {EVENT_DATE_ISO ? (
             <>
               <p className="mb-3 text-[0.7rem] uppercase tracking-[0.2em] text-bone/50">
-                {EDICION_LABEL} · Pre-preventa abierta
+                {EDICION_LABEL} · Preventa abierta
               </p>
-              <p className="mb-6 font-display text-[length:var(--text-step-2)] font-extrabold uppercase leading-none text-champagne md:text-[length:var(--text-step-3)]">
+              <p className="font-display text-[length:var(--text-step-2)] font-extrabold uppercase leading-none text-champagne md:text-[length:var(--text-step-3)]">
                 {EVENT_WHEN}
+              </p>
+              <p className="mb-6 mt-2.5 text-[0.7rem] uppercase tracking-[0.16em] text-bone/60">
+                {EVENT_HORARIO} · {EVENT_SEDE}
               </p>
               <Countdown />
             </>
@@ -147,8 +152,8 @@ export function EventoHero() {
             <Button href={EVENT_CTA_HREF} variant="inverse">
               Quiero mi lugar
             </Button>
-            <Button href="#incluye" variant="outline" tone="light">
-              Qué incluye
+            <Button href="#pases" variant="outline" tone="light">
+              Ver pases
             </Button>
           </div>
         </div>

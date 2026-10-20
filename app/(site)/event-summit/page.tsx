@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/site";
 import { SummitInscripcion } from "@/components/evento/SummitInscripcion";
+import { Pases } from "@/components/evento/Pases";
 import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
 
 import { FadeUp } from "@/components/motion/FadeUp";
@@ -17,11 +18,11 @@ import {
   EVENT_WHEN,
   EDICION_NUMERO,
   EVENT_CUPO,
-  INCLUYE,
   DISERTANTES,
   EVENT_YEAR,
   EDICION_LABEL,
   EVENT_SEDE,
+  EVENT_HORARIO,
   EVENT_PRECIO,
 } from "@/content/evento";
 
@@ -98,41 +99,8 @@ export default function EventoPage() {
       {/* 3 · TRAYECTORIA con count-up (dark) */}
       <EventoStats />
 
-      {/* 4 · QUÉ INCLUYE — índice editorial (light), sin tarjetas */}
-      <section
-        id="incluye"
-        data-theme="light"
-        className="scroll-mt-24 bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
-      >
-        <div className="mx-auto max-w-[87.5rem]">
-          <div className="mb-14 text-center md:mb-16">
-            <Eyebrow className="mb-5">Tu entrada incluye</Eyebrow>
-            <h2 className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink">
-              {/* TODO(contenido): titular real */}
-              Una entrada. Todo adentro.
-            </h2>
-          </div>
-
-          <FadeUp as="ul" y={40} stagger={0.06} className="border-b border-line">
-            {INCLUYE.map((item, i) => (
-              <li
-                key={item.titulo}
-                className="group grid grid-cols-1 gap-2 border-t border-line py-7 md:grid-cols-12 md:items-baseline md:gap-8 md:py-9"
-              >
-                <span className="font-display text-[length:var(--text-step-3)] font-extrabold leading-none text-champagne md:col-span-2">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="font-display text-[length:var(--text-step-3)] font-bold uppercase leading-[0.95] text-ink [overflow-wrap:anywhere] md:col-span-6">
-                  {item.titulo}
-                </h3>
-                <p className="font-sans text-[length:var(--text-step-0)] leading-snug text-ink/60 md:col-span-4">
-                  {item.desc}
-                </p>
-              </li>
-            ))}
-          </FadeUp>
-        </div>
-      </section>
+      {/* 4 · PASES (VIP / General) con precios de preventa → WhatsApp */}
+      <Pases />
 
       {/* 5 · EDICIONES · scroll horizontal pineado (dark) */}
       <EdicionesScroll />
@@ -208,9 +176,9 @@ export default function EventoPage() {
                 {`Son ${EVENT_CUPO} lugares. Nada más.`}
               </RevealText>
               <p className="mt-8 max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/80">
-                {EDICION_LABEL} · {EVENT_WHEN}
-                {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}, presencial. Dejanos tus datos
-                y coordinamos tu lugar y el pago de la pre-preventa por WhatsApp.
+                {EDICION_LABEL} · {EVENT_WHEN} · {EVENT_HORARIO}
+                {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}. Dejanos tus datos y
+                coordinamos tu pase y el pago de la preventa por WhatsApp.
               </p>
             </div>
 
@@ -228,9 +196,8 @@ export default function EventoPage() {
                   <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">
                     Valor
                   </dt>
-                  {/* TODO(contenido): precio de la pre-preventa → EVENT_PRECIO. */}
                   <dd className="font-display text-[length:var(--text-step-3)] font-extrabold text-bone">
-                    {EVENT_PRECIO ?? "Pre-preventa"}
+                    {EVENT_PRECIO ?? "Preventa"}
                   </dd>
                 </div>
               </dl>

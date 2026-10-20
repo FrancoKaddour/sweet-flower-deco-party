@@ -146,7 +146,7 @@ export function SummitHome() {
           </RevealText>
           <p className="mt-6 max-w-[38ch] text-[length:var(--text-step-0)] leading-snug text-bone/85">
             {/* TODO(contenido): bajada real del Summit */}
-            El encuentro del año de la decoración de eventos. Después de {WORKSHOPS_REALIZADOS} workshops y una primera edición, vamos por la segunda. Pre-preventa abierta.
+            El encuentro del año de la decoración de eventos. Después de {WORKSHOPS_REALIZADOS} workshops y una primera edición, vamos por la segunda. Preventa abierta: La Rural, Palermo.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-start gap-x-10 gap-y-4 md:justify-end">
             <Button href={EVENT_CTA_HREF} tone="light">
