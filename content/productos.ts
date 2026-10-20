@@ -8,9 +8,8 @@
 //   medidas    → texto libre ("2 m alto × 1,5 m ancho")
 //   variantes  → opcional (["Pintado", "Sin pintar"], colores, combos…)
 //   img        → foto en /public/productos/<archivo>.jpg (o null mientras no haya)
-//   mpLink     → link de pago de Mercado Pago de ese producto (opcional)
 //
-// El precio con Mercado Pago se CALCULA (no se carga): precio / (1 − 0,15) ≈ +17,6 %.
+// No hay pago en el sitio: el carrito arma el pedido y se envía por WhatsApp.
 
 import { CATALOGO_WHATSAPP } from "./catalogo-whatsapp";
 
@@ -26,17 +25,9 @@ export type Producto = {
   medidas?: string;
   variantes?: readonly string[];
   img: string | null;
-  mpLink?: string | null;
   /** Estaba en una colección destacada del catálogo de WhatsApp. */
   destacado?: boolean;
 };
-
-export const RECARGO_MP = 0.15;
-
-/** Precio con Mercado Pago: catálogo / (1 − 15 %). */
-export function precioMP(precio: number): number {
-  return Math.round(precio / (1 - RECARGO_MP));
-}
 
 export function formatARS(n: number): string {
   return new Intl.NumberFormat("es-AR", {

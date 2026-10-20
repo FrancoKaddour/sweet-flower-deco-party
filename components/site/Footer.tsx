@@ -207,11 +207,12 @@ export function Footer() {
 
           {/* WhatsApp */}
           <a
-            href="#"
+            href="https://wa.me/5491151064010"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="WhatsApp"
             className="inline-flex h-11 w-11 items-center justify-center transition-colors hover:text-bone"
           >
-            {/* TODO(contenido): URL de WhatsApp */}
             <svg
               width="20"
               height="20"
@@ -232,38 +233,6 @@ export function Footer() {
             </svg>
           </a>
 
-          {/* Email */}
-          <a
-            href="#"
-            aria-label="Email"
-            className="inline-flex h-11 w-11 items-center justify-center transition-colors hover:text-bone"
-          >
-            {/* TODO(contenido): dirección de email real */}
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <rect
-                x="3"
-                y="5"
-                width="18"
-                height="14"
-                rx="2"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <path
-                d="m4 7 8 6 8-6"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
         </nav>
       </div>
     </footer>

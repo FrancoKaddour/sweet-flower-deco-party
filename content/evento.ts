@@ -25,12 +25,9 @@ export const EVENT_SEDE: string | null = null;
 
 export const EVENT_CUPO = 80; // ✅ "por el momento"
 
-// Inscripción ✅ (§18): el que quiere paga directo con Mercado Pago (cuotas);
-// el que quiere algo más personalizado, formulario → WhatsApp.
+// Inscripción: TODO por WhatsApp (sin pago en el sitio — decisión oct-2026).
+// El formulario de /event-summit#inscripcion abre la línea de capacitaciones.
 export const EVENT_CTA_HREF = "/event-summit#inscripcion";
-// TODO(contenido): link de pago de Mercado Pago de la pre-preventa (lo genera
-// Flor desde su cuenta). Mientras sea null, el botón de MP no se muestra.
-export const EVENT_MP_LINK: string | null = null;
 // TODO(contenido): precio de la pre-preventa (contado / cuotas / vigencia).
 export const EVENT_PRECIO: string | null = null;
 /** Línea de WhatsApp de capacitaciones / Summit (11 5512-7508). */

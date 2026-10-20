@@ -13,8 +13,8 @@ import { Contacto } from "@/components/sections/Contacto";
 // Fondos de las secciones claras (para blendear esas transiciones). Referencian
 // los tokens de @theme (app/globals.css) → única fuente de verdad; ColorBridge
 // interpola en oklab con estos var(). Los momentos oscuros (Experiencia verde,
-// Footer tinta) van con CORTE LIMPIO. Inicio recortado a 8 bloques: Membresía,
-// Historia y Principios viven en sus páginas (/membresia, /historia).
+// Footer tinta) van con CORTE LIMPIO. Inicio recortado: Historia y Principios viven
+// en /historia. Membresía se sacó (oct-2026: simplificar).
 // El Header y el Footer los aporta app/(site)/layout.tsx (chrome compartido).
 const BONE = "var(--color-bone)";
 const BLUSH = "var(--color-blush)";

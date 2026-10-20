@@ -5,18 +5,15 @@ import {
   EVENT_NAME,
   EDICION_LABEL,
   EVENT_WHEN,
-  EVENT_MP_LINK,
   EVENT_WHATSAPP,
 } from "@/content/evento";
 
 /**
- * Inscripción al Summit — lo que pidió Flor (§18):
- * 1) el que quiere pagar directo → botón de Mercado Pago (cuotas);
- * 2) el que quiere algo más personalizado → formulario que abre WhatsApp
- *    (línea de capacitaciones) con los datos ya escritos, para seguimiento 1 a 1.
- * Sin backend: el formulario arma el mensaje y abre wa.me.
+ * Inscripción al Summit — TODO por WhatsApp (sin pago en el sitio, oct-2026):
+ * el formulario arma el mensaje con los datos y abre la línea de capacitaciones
+ * para coordinar la reserva y el pago de la pre-preventa 1 a 1.
  */
-const FORMAS = ["Mercado Pago en cuotas", "Transferencia", "Tengo dudas antes de reservar"] as const;
+const FORMAS = ["Transferencia", "Mercado Pago en cuotas", "Tengo dudas antes de reservar"] as const;
 
 export function SummitInscripcion() {
   const [enviado, setEnviado] = useState(false);
@@ -28,7 +25,7 @@ export function SummitInscripcion() {
       `¡Hola! Quiero reservar mi lugar en el ${EVENT_NAME} (${EDICION_LABEL}, ${EVENT_WHEN}).`,
       `Nombre: ${f.get("nombre")}`,
       `Ciudad: ${f.get("ciudad")}`,
-      `Cómo quiero reservar: ${f.get("forma")}`,
+      `Cómo prefiero pagar: ${f.get("forma")}`,
       f.get("mensaje") ? `Consulta: ${f.get("mensaje")}` : "",
     ]
       .filter(Boolean)
@@ -43,29 +40,7 @@ export function SummitInscripcion() {
 
   return (
     <div className="flex flex-col gap-8">
-      {EVENT_MP_LINK && (
-        <div>
-          <a
-            href={EVENT_MP_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-bone px-6 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink transition-colors duration-300 hover:bg-champagne"
-          >
-            Pagar con Mercado Pago
-            <span aria-hidden="true">↗</span>
-          </a>
-          <p className="mt-3 text-center text-[length:var(--text-step--1)] text-bone/55">
-            Pagás online y elegís las cuotas.
-          </p>
-        </div>
-      )}
-
       <form onSubmit={onSubmit} className="flex flex-col gap-6" aria-label="Reservar por WhatsApp">
-        {EVENT_MP_LINK && (
-          <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">
-            O reservá con atención personalizada
-          </p>
-        )}
         <label className="flex flex-col gap-1">
           <span className={label}>Nombre y apellido</span>
           <input name="nombre" required autoComplete="name" className={field} />
@@ -75,7 +50,7 @@ export function SummitInscripcion() {
           <input name="ciudad" required autoComplete="address-level2" className={field} />
         </label>
         <label className="flex flex-col gap-1">
-          <span className={label}>¿Cómo querés reservar?</span>
+          <span className={label}>¿Cómo preferís pagar?</span>
           <select name="forma" required defaultValue={FORMAS[0]} className={`${field} [&>option]:text-ink`}>
             {FORMAS.map((f) => (
               <option key={f}>{f}</option>
@@ -88,7 +63,7 @@ export function SummitInscripcion() {
         </label>
         <button
           type="submit"
-          className="mt-2 flex min-h-14 w-full items-center justify-center gap-3 rounded-full border border-bone px-6 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-bone transition-colors duration-300 hover:bg-bone hover:text-ink"
+          className="mt-2 flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-bone px-6 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink transition-colors duration-300 hover:bg-champagne"
         >
           Reservar por WhatsApp
           <span aria-hidden="true">→</span>

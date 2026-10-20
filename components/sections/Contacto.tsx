@@ -1,3 +1,4 @@
+import { WHATSAPP_HREF } from "@/content/site";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
 import { Button } from "@/components/ui/Button";
@@ -41,9 +42,7 @@ export function Contacto() {
         {/* CTAs */}
         <FadeUp y={50}>
           <div className="mt-10 flex flex-wrap justify-center gap-x-10 gap-y-4">
-            {/* TODO(contenido): link real de WhatsApp */}
-            {/* TODO(contenido): link real de WhatsApp */}
-            <Button href="#">Escribinos por WhatsApp</Button>
+            <Button href={WHATSAPP_HREF}>Escribinos por WhatsApp</Button>
             <Button href="/productos" variant="outline">
               Ver catálogo
             </Button>
@@ -53,21 +52,18 @@ export function Contacto() {
         {/* Canales de contacto */}
         <FadeUp y={50}>
           <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-1 text-[length:var(--text-step--1)] uppercase tracking-[0.1em] text-muted">
-            {/* TODO(contenido): URLs reales de cada canal */}
             <a
-              href="#"
+              href="https://www.instagram.com/sweetflowersdecoparty/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-ink"
             >
               Instagram
             </a>
             <a
-              href="#"
-              className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-ink"
-            >
-              Email
-            </a>
-            <a
-              href="#"
+              href={WHATSAPP_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-ink"
             >
               WhatsApp

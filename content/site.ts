@@ -22,17 +22,15 @@ export const MAIN_NAV: readonly NavLink[] = [
   { label: "Event Summit", href: "/event-summit", destacado: true, meta: "2027" },
   { label: "Catering", href: "/productos/catering" },
   { label: "Ambientación", href: "/productos" },
-  { label: "Membresía", href: "/membresia" },
   { label: "Historia", href: "/historia" },
 ] as const;
 
 /** Enlace a Contacto — el Header lo suma al final del menú; el Footer lo lista aparte. */
 export const CONTACTO_LINK: NavLink = { label: "Contacto", href: "/contacto" };
 
-/** Contacto directo (Footer). href reales a completar. */
+/** Contacto directo (Footer). TODO(contenido): email cuando Flor lo pase. */
 export const CONTACTO_LINKS: readonly NavLink[] = [
-  { label: "WhatsApp", href: "#" },
-  { label: "Email", href: "#" },
+  { label: "WhatsApp", href: "https://wa.me/5491151064010" },
   { label: "Instagram", href: "https://www.instagram.com/sweetflowersdecoparty/" },
 ] as const;
 

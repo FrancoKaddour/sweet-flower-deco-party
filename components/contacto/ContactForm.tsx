@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { ButtonInner, buttonClasses } from "@/components/ui/Button";
+import { WHATSAPP_NUMBER } from "@/content/site";
+import { EVENT_WHATSAPP } from "@/content/evento";
 
 // Tipos de consulta → ayudan a rutear el lead (producto / a medida / evento).
 const TIPOS = [
@@ -20,10 +22,9 @@ const labelBase =
   "text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-ink/60";
 
 /**
- * Formulario de contacto / captura de lead. Client Component: validación en vivo
- * y estado de éxito. La persistencia real (colección de leads) la conecta Gonzalo
- * vía Server Action / route handler — ver TODO(backend). Hoy muestra éxito
- * optimista sin guardar, para no fingir un envío que aún no existe.
+ * Formulario de contacto → WhatsApp (decisión oct-2026: todo se resuelve por
+ * WhatsApp). Arma el mensaje con el tipo de consulta y los datos y abre la
+ * línea que corresponde: Summit → capacitaciones; el resto → ventas.
  */
 export function ContactForm() {
   const [tipo, setTipo] = useState<Tipo>(TIPOS[0]);
@@ -39,7 +40,7 @@ export function ContactForm() {
 
     const errs: Record<string, string> = {};
     if (!nombre) errs.nombre = "Contanos tu nombre.";
-    if (!EMAIL_RE.test(email)) errs.email = "Ingresá un email válido.";
+    if (email && !EMAIL_RE.test(email)) errs.email = "Revisá el email (o dejalo vacío).";
     if (!mensaje) errs.mensaje = "Escribinos un mensaje.";
 
     setErrors(errs);
@@ -49,8 +50,20 @@ export function ContactForm() {
       return;
     }
 
-    // TODO(backend): enviar el lead a la colección de Payload (Server Action /
-    // route handler) — tarea de Gonzalo. Por ahora, éxito optimista sin persistir.
+    const telefono = String(data.get("telefono") ?? "").trim();
+    const msg = [
+      `¡Hola! Te escribo desde la web — ${tipo}.`,
+      "",
+      mensaje,
+      "",
+      `Nombre: ${nombre}`,
+      email && `Email: ${email}`,
+      telefono && `Teléfono: ${telefono}`,
+    ]
+      .filter((l): l is string => typeof l === "string")
+      .join("\n");
+    const numero = tipo === "El evento (Summit)" ? EVENT_WHATSAPP : WHATSAPP_NUMBER;
+    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
     setDone(true);
   };
 
@@ -64,11 +77,11 @@ export function ContactForm() {
           ✓
         </span>
         <h3 className="font-display text-[length:var(--text-step-3)] font-bold uppercase leading-[0.95] text-ink">
-          ¡Gracias! Te respondemos pronto
+          ¡Listo! Se abrió WhatsApp
         </h3>
         <p className="max-w-[42ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
-          Recibimos tu mensaje. Flor o Tobías se van a poner en contacto a la
-          brevedad para ayudarte con tu evento.
+          Tu mensaje ya está escrito: solo tenés que enviarlo. Flor o Tobías te
+          responden en persona.
         </p>
       </div>
     );
@@ -180,7 +193,7 @@ export function ContactForm() {
 
       <button type="submit" className={buttonClasses("dark", "w-max cursor-pointer")}>
         <ButtonInner primary tone="dark">
-          Enviar consulta
+          Enviar por WhatsApp
         </ButtonInner>
       </button>
     </form>

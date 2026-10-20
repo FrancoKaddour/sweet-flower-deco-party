@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
       { source: "/evento", destination: "/event-summit", permanent: true },
       // Los workshops terminaron (fueron 7): su historia vive en la trayectoria del Summit.
       { source: "/workshops", destination: "/event-summit#trayectoria", permanent: false },
+      // Membresía fuera del sitio (oct-2026): se simplifica todo a WhatsApp.
+      { source: "/membresia", destination: "/", permanent: false },
     ];
   },
   images: {

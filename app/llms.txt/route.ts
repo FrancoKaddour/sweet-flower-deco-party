@@ -32,7 +32,7 @@ ${SITE_NAME} es un emprendimiento familiar argentino de decoración de eventos, 
 - Para quién: decoradores, ambientadores, organizadores de eventos y salones; también particulares.
 - Dónde: ${BUSINESS.locality}, ${BUSINESS.region}, Argentina. ${BUSINESS.shipping}.
 - Producción: ${BUSINESS.leadTime}. Los productos a medida se cotizan; la demora depende de la complejidad.
-- Pagos: transferencia bancaria o Mercado Pago (con recargo). El precio de catálogo es sin recargo.
+- Pedidos y pagos: todo se coordina por WhatsApp (no hay pago online en el sitio). Transferencia bancaria, o link de Mercado Pago con recargo.
 - Atención: responden Flor y Tobías en persona por WhatsApp.
 
 ## Productos
@@ -45,7 +45,7 @@ Catálogo completo: ${SITE_URL}/productos
 
 - Qué es: la cumbre argentina de la decoración y la organización de eventos. Charlas de referentes del rubro, comunidad y networking.
 - Trayectoria: ${WORKSHOPS_REALIZADOS} workshops presenciales (Centro Naval, Madero Tango en Puerto Madero, La Rioja, Río Cuarto, Palacio San Miguel y La Rural, entre otras sedes) y la 1ª edición del Summit (septiembre de 2026). Más de 180 asistentes y más de 20 disertantes en total.
-- Próxima edición: ${EDICION_LABEL}, ${EVENT_WHEN}. Cupo de ${EVENT_CUPO} lugares. Pre-preventa abierta: se puede pagar con Mercado Pago o reservar por WhatsApp.
+- Próxima edición: ${EDICION_LABEL}, ${EVENT_WHEN}. Cupo de ${EVENT_CUPO} lugares. Pre-preventa abierta: la reserva y el pago se coordinan por WhatsApp.
 - Incluye: ${INCLUYE.map((i) => i.titulo.toLowerCase()).join(", ")}.
 - Más info e inscripción: ${SITE_URL}/event-summit
 

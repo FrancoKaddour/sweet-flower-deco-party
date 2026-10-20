@@ -209,8 +209,8 @@ export default function EventoPage() {
               </RevealText>
               <p className="mt-8 max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/80">
                 {EDICION_LABEL} · {EVENT_WHEN}
-                {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}, presencial. Pagá online
-                con Mercado Pago o dejanos tus datos y te escribimos por WhatsApp.
+                {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}, presencial. Dejanos tus datos
+                y coordinamos tu lugar y el pago de la pre-preventa por WhatsApp.
               </p>
             </div>
 

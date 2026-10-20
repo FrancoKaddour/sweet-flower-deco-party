@@ -1,11 +1,13 @@
 import Image from "next/image";
-import { formatARS, precioMP, type Producto } from "@/content/productos";
+import { formatARS, type Producto } from "@/content/productos";
 import { WHATSAPP_NUMBER } from "@/content/site";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 /**
- * Card de producto — vitrina + compra simple (sin carrito), como pidió Flor:
- * precio de catálogo, precio con Mercado Pago (+recargo calculado), botón de
- * pago directo si hay link, y consulta por WhatsApp con el producto ya escrito.
+ * Card de producto — vitrina + "Agregar al pedido" (carrito que se envía por
+ * WhatsApp, sin compra en el sitio), como pidió Flor:
+ * precio de catálogo y consulta por WhatsApp con el producto ya escrito.
+ * Sin pago en el sitio: todo se cierra por WhatsApp.
  */
 export function ProductCard({ p }: { p: Producto }) {
   const msg = `¡Hola! Quiero consultar por: ${p.nombre}${p.medidas ? ` (${p.medidas})` : ""}.`;
@@ -47,40 +49,28 @@ export function ProductCard({ p }: { p: Producto }) {
 
         <div className="mt-3">
           {p.precio != null ? (
-            <>
-              <p className="font-sans text-[length:var(--text-step-1)] font-medium text-ink">
+            <p className="font-sans text-[length:var(--text-step-1)] font-medium text-ink">
                 {formatARS(p.precio)}
                 <span className="ml-2 text-[0.7rem] uppercase tracking-[0.12em] text-ink/50">
                   transferencia
                 </span>
-              </p>
-              <p className="text-[length:var(--text-step--1)] text-ink/55">
-                {formatARS(precioMP(p.precio))} con Mercado Pago
-              </p>
-            </>
+            </p>
           ) : (
             <p className="font-sans text-[length:var(--text-step-0)] text-ink/70">Precio a consultar</p>
           )}
         </div>
 
         <div className="mt-4 flex flex-col gap-2 sm:mt-auto sm:pt-4">
-          {p.mpLink && (
-            <a
-              href={p.mpLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex min-h-11 items-center justify-center rounded-full bg-ink px-4 text-[0.72rem] font-medium uppercase tracking-[0.12em] text-bone transition-colors hover:bg-bordeaux"
-            >
-              Comprar con Mercado Pago
-            </a>
-          )}
+          <AddToCartButton
+            item={{ slug: p.slug, nombre: p.nombre, precio: p.precio, img: p.img }}
+          />
           <a
             href={wa}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex min-h-11 items-center justify-center rounded-full border border-ink/25 px-4 text-[0.72rem] font-medium uppercase tracking-[0.12em] text-ink transition-colors hover:border-ink hover:bg-ink hover:text-bone"
+            className="flex min-h-9 items-center justify-center px-4 text-[0.68rem] font-medium uppercase tracking-[0.12em] text-ink/60 underline-offset-4 transition-colors hover:text-ink hover:underline"
           >
-            Consultar por WhatsApp
+            Consultar este producto
           </a>
         </div>
       </div>

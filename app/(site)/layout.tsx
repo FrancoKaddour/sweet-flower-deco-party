@@ -1,6 +1,8 @@
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppButton } from "@/components/site/WhatsAppButton";
+import { CartProvider } from "@/components/cart/CartProvider";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 
 // Layout del sitio público (route group "(site)" → no afecta la URL).
 // Aporta el chrome compartido (Header + Footer) a todas las páginas de marketing
@@ -13,11 +15,13 @@ export default function SiteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <CartProvider>
       <Header />
       {children}
       <Footer />
       <WhatsAppButton />
-    </>
+      {/* Carrito de pedido → se envía por WhatsApp (no se compra en el sitio). */}
+      <CartDrawer />
+    </CartProvider>
   );
 }

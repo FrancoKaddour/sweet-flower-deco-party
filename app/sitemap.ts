@@ -23,6 +23,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/event-summit", 0.9, "weekly"),
     page("/contacto", 0.7, "monthly"),
     page("/historia", 0.5, "yearly"),
-    page("/membresia", 0.4, "monthly"),
   ];
 }
