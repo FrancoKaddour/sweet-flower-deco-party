@@ -6,29 +6,39 @@ import Link from "next/link";
 import { gsap, ScrollTrigger, CustomEase, useGSAP } from "@/lib/gsap";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { CATALOGO_WHATSAPP } from "@/content/catalogo-whatsapp";
+import { formatARS, type Producto } from "@/content/productos";
 import { SwipeDots } from "@/components/ui/SwipeDots";
 
-// TODO(contenido): productos, precios y fotos reales (ver docs/16_DECISIONS.md → 02_PRODUCTOS).
-const PRODUCTOS = [
-  { slug: "arco-floral",       nombre: "Arco floral",        material: "Hierro",  precio: "$ —" },
-  { slug: "mesa-tribal",       nombre: "Mesa tribal",        material: "Madera",  precio: "$ —" },
-  { slug: "panel-geometrico",  nombre: "Panel geométrico",   material: "MDF",     precio: "$ —" },
-  { slug: "columna-romana",    nombre: "Columna romana",     material: "MDF",     precio: "$ —" },
-  { slug: "funda-terciopelo",  nombre: "Funda de terciopelo",material: "Telas",   precio: "$ —" },
-  { slug: "sosten-globos",     nombre: "Sostén de globos",   material: "Hierro",  precio: "$ —" },
-  { slug: "arco-romano",       nombre: "Arco romano",        material: "Hierro",  precio: "$ —" },
-  { slug: "cilindros",         nombre: "Set de cilindros",   material: "MDF",     precio: "$ —" },
-  { slug: "bandeja-dorada",    nombre: "Bandeja dorada",     material: "Catering",precio: "$ —" },
-  { slug: "torta-falsa",       nombre: "Base para torta",    material: "Catering",precio: "$ —" },
-  { slug: "funda-sublimada",   nombre: "Funda sublimada",    material: "Telas",   precio: "$ —" },
-  { slug: "panel-circular",    nombre: "Panel circular",     material: "MDF",     precio: "$ —" },
-  { slug: "escalera-deco",     nombre: "Escalera deco",      material: "Madera",  precio: "$ —" },
-  { slug: "marco-hexagonal",   nombre: "Marco hexagonal",    material: "Hierro",  precio: "$ —" },
-  { slug: "mantel-saten",      nombre: "Mantel de satén",    material: "Telas",   precio: "$ —" },
-  { slug: "mesa-ratona",       nombre: "Mesa ratona",        material: "Madera",  precio: "$ —" },
-  { slug: "soporte-flores",    nombre: "Soporte de flores",  material: "Hierro",  precio: "$ —" },
-  { slug: "letras-gigantes",   nombre: "Letras gigantes",    material: "MDF",     precio: "$ —" },
-];
+// Productos reales del catálogo de WhatsApp: los DESTACADOS (colecciones de
+// Flor), con catering primero. 18 piezas (12 en mobile).
+const NOMBRE_CAT: Record<string, string> = {
+  catering: "Catering",
+  hierro: "Hierro",
+  "fundas-y-telas": "Fundas",
+  mdf: "MDF",
+  madera: "Madera",
+};
+const ORDEN_CAT = ["catering", "hierro", "fundas-y-telas", "mdf", "madera"];
+const PRODUCTOS = CATALOGO_WHATSAPP.filter((p) => p.destacado && p.img)
+  .sort((a, b) => ORDEN_CAT.indexOf(a.categoria) - ORDEN_CAT.indexOf(b.categoria))
+  // intercalar categorías para que la grilla no sea monótona
+  .reduce<Producto[][]>((cols, p) => {
+    const i = ORDEN_CAT.indexOf(p.categoria);
+    (cols[i] ||= []).push(p);
+    return cols;
+  }, [])
+  .flatMap((col) => col.map((p, k) => ({ p, k })))
+  .sort((a, b) => a.k - b.k)
+  .slice(0, 18)
+  .map(({ p }) => ({
+    slug: p.slug,
+    nombre: p.nombre,
+    material: NOMBRE_CAT[p.categoria],
+    precio: p.precio != null ? formatARS(p.precio) : "Consultar",
+    img: p.img as string,
+    href: `/productos/${p.categoria}`,
+  }));
 
 // Mobile: 2 páginas de 6 (grilla 2×3); las 6 restantes solo en md+.
 const POR_PAGINA = 6;
@@ -155,13 +165,13 @@ export function Destacados() {
               }
             >
               {pagina.map((p) => (
-                <Link key={p.slug} href="/productos" className="dest-card group block">
+                <Link key={p.slug} href={p.href} className="dest-card group block">
                   {/* Un-zoom hover: image lives at 1.05 scale, settles to 1 on hover */}
                   <div className="dest-frame relative aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-sand">
                    <div className="dest-media absolute inset-0">
                     <Image
-                      src={`https://picsum.photos/seed/sfdp-dest-${p.slug}/700/880`}
-                      alt=""
+                      src={p.img}
+                      alt={p.nombre}
                       fill
                       sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 230px"
                       className="object-cover transition-transform duration-[800ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
@@ -181,7 +191,6 @@ export function Destacados() {
                         {p.nombre}
                       </h3>
                     </div>
-                    {/* TODO(contenido): precio real */}
                     <p className="shrink-0 font-sans text-[length:var(--text-step--1)] text-ink">
                       {p.precio}
                     </p>

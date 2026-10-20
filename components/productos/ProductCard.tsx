@@ -33,6 +33,11 @@ export function ProductCard({ p }: { p: Producto }) {
         <h3 className="font-display text-[length:var(--text-step-1)] font-bold uppercase leading-tight text-ink">
           {p.nombre}
         </h3>
+        {p.descripcion && (
+          <p className="mt-1.5 line-clamp-3 text-[length:var(--text-step--1)] leading-snug text-ink/60">
+            {p.descripcion}
+          </p>
+        )}
         {p.medidas && (
           <p className="mt-1 text-[length:var(--text-step--1)] text-ink/60">{p.medidas}</p>
         )}
