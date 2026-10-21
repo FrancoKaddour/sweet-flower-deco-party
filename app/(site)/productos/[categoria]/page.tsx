@@ -12,11 +12,8 @@ import { Button } from "@/components/ui/Button";
 import { getCategoria, getCategorias, getProductosDeCategoria } from "@/modules/catalog/repository";
 import { GrillaPaginada } from "@/components/productos/GrillaPaginada";
 
-// Listado de categoría — VERSIÓN INTERINA "próximamente" (estado vacío cálido,
-// ver docs/04_SITE_ARCHITECTURE.md §7.2). La grilla real de productos llega
-// cuando Gonzalo enchufe la capa de datos (lib/commerce) y Flor cargue el
-// catálogo por el panel. Hasta entonces: cero 404s en los links del sitio y
-// una salida clara (pedir por contacto).
+// Listado de categoría: productos desde la base (con respaldo estático),
+// paginados de a 24, destacados primero.
 
 type Props = { params: Promise<{ categoria: string }> };
 

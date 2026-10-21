@@ -1,128 +1,93 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/panel/PageHeader";
-import { PlugHint } from "@/components/panel/PlugHint";
-import { PanelButton } from "@/components/panel/PanelButton";
 import { PanelReveal } from "@/components/panel/PanelReveal";
 import { SectionHeading } from "@/components/panel/SectionHeading";
-import { DataTable, type Column } from "@/components/panel/DataTable";
 import { Badge } from "@/components/panel/Badge";
-import { getUsuarios } from "@/lib/panel/data";
-import type { Usuario } from "@/lib/panel/types";
+import { requireStaff } from "@/lib/dal";
+import { listarStaff } from "@/lib/panel/staff";
+import { ROL_LABEL, type RolStaff } from "@/lib/panel/types";
 
 export const metadata: Metadata = { title: "Ajustes" };
 
-const COLUMNS: Column<Usuario>[] = [
+const ROLES: { rol: RolStaff; texto: string; fondo: string }[] = [
   {
-    key: "email",
-    header: "Email",
-    cell: (u) => <span className="font-medium">{u.email}</span>,
+    rol: "admin",
+    texto: "Todo el catálogo: cargar, editar, ocultar y borrar productos, fotos y categorías.",
+    fondo: "bg-sand",
   },
   {
-    key: "rol",
-    header: "Rol",
-    cell: (u) => (
-      <Badge variant={u.rol === "admin" ? "warning" : "info"}>
-        {u.rol === "admin" ? "Admin" : "Editor"}
-      </Badge>
-    ),
-  },
-  {
-    key: "acciones",
-    header: "Acciones",
-    align: "right",
-    cell: (u) => (
-      // 🔌 GONZALO: cablear editar rol / dar de baja (solo admin) sobre Users.
-      <PanelButton
-        variant="ghost"
-        className="px-3"
-        aria-label={`Editar ${u.email}`}
-        title={`Pendiente: editar ${u.email}`}
-      >
-        Editar
-      </PanelButton>
-    ),
+    rol: "editor",
+    texto: "Carga y edita productos, fotos y categorías. No puede borrar productos.",
+    fondo: "bg-sage",
   },
 ];
 
+const BADGE: Record<RolStaff, "warning" | "info"> = { superadmin: "warning", admin: "warning", editor: "info" };
+
 export default async function AjustesPage() {
-  // 🔌 GONZALO: getUsuarios() vive en lib/panel/data.ts. Cambiá su cuerpo por la
-  // query a Users (auth de Payload). Esta vista es SOLO para admin: protegela por rol.
-  const usuarios = await getUsuarios();
+  const yo = await requireStaff();
+  const equipo = await listarStaff();
 
   return (
     <div className="flex flex-col gap-12">
       <PageHeader
         seccion="Ajustes"
-        titulo="Ajustes"
-        descripcion="Usuarios y roles del panel. Solo administradores pueden gestionar staff."
-        accion={
-          // 🔌 GONZALO: alta de staff con invitación por email sobre Users (hoy self-href mock).
-          <PanelButton href="/panel/ajustes" title="Pendiente: invitar usuario">
-            Invitar usuario
-          </PanelButton>
-        }
+        titulo="Equipo"
+        descripcion="Quién puede entrar al panel y qué puede hacer cada uno. Se ingresa con la cuenta de Google del email habilitado."
       />
 
-      <PlugHint coleccion="Users">
-        Staff del panel con rol <strong>admin</strong> (todo) o{" "}
-        <strong>editor</strong> (contenido, sin ajustes). Es la auth nativa de
-        Payload. Protegé esta vista por rol admin — ver skill <em>auth-review</em>.
-      </PlugHint>
-
-      {/* Referencia de roles — dos tarjetas sobrias que explican qué puede cada uno. */}
-      <section aria-labelledby="roles-heading" className="flex flex-col gap-6">
-        <SectionHeading
-          id="roles-heading"
-          eyebrow="Permisos"
-          titulo="Qué puede cada rol"
-        />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <PanelReveal
-            as="article"
-            index={0}
-            className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-sand p-6"
-          >
-            <div className="flex items-center gap-2">
-              <Badge variant="warning">Admin</Badge>
-            </div>
-            <p className="text-[length:var(--text-step--1)] leading-relaxed text-muted">
-              Acceso total: gestiona ventas, catálogo, comunidad, campañas,
-              contenido y también <strong className="text-ink">este panel de ajustes</strong>{" "}
-              (invitar staff y cambiar roles).
-            </p>
-          </PanelReveal>
-          <PanelReveal
-            as="article"
-            index={1}
-            className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-line bg-sage p-6"
-          >
-            <div className="flex items-center gap-2">
-              <Badge variant="info">Editor</Badge>
-            </div>
-            <p className="text-[length:var(--text-step--1)] leading-relaxed text-muted">
-              Trabaja el día a día: catálogo, comunidad, campañas y contenido.
-              <strong className="text-ink"> No accede a Ajustes</strong> ni gestiona
-              otros usuarios.
-            </p>
-          </PanelReveal>
-        </div>
+      <section aria-labelledby="staff-heading" className="flex flex-col gap-6">
+        <SectionHeading id="staff-heading" eyebrow="Acceso" titulo="Personas habilitadas" />
+        <ul className="flex flex-col divide-y divide-line rounded-[var(--radius-md)] border border-line bg-cloud">
+          {equipo.map((m, i) => (
+            <PanelReveal as="li" key={m.email} index={i}>
+              <div className="flex flex-wrap items-center gap-4 px-5 py-4">
+                {m.imagen ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={m.imagen} alt="" width={40} height={40} className="h-10 w-10 rounded-full object-cover" referrerPolicy="no-referrer" />
+                ) : (
+                  <span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-full bg-sand font-display font-bold uppercase text-ink">
+                    {m.email[0]}
+                  </span>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium text-ink">
+                    {m.nombre ?? m.email}
+                    {m.email === yo.email?.toLowerCase() && <span className="text-muted"> (vos)</span>}
+                  </p>
+                  {m.nombre && <p className="truncate text-[length:var(--text-step--1)] text-muted">{m.email}</p>}
+                </div>
+                <div className="flex items-center gap-2">
+                  {!m.ingreso && <Badge variant="neutral">Todavía no entró</Badge>}
+                  <Badge variant={BADGE[m.rol]}>{ROL_LABEL[m.rol]}</Badge>
+                </div>
+              </div>
+            </PanelReveal>
+          ))}
+        </ul>
+        <p className="max-w-[70ch] text-[length:var(--text-step--1)] leading-relaxed text-muted">
+          Para sumar o quitar a alguien del equipo, pedíselo al desarrollador: los permisos se configuran en el servidor,
+          así nadie puede darse acceso a sí mismo.
+        </p>
       </section>
 
-      {/* Listado de staff. */}
-      <section aria-labelledby="staff-heading" className="flex flex-col gap-6">
-        <SectionHeading
-          id="staff-heading"
-          eyebrow="Equipo"
-          titulo="Staff del panel"
-        />
-        <DataTable
-          caption="Listado de usuarios del panel"
-          columns={COLUMNS}
-          rows={usuarios}
-          getRowKey={(u) => u.id}
-          emptyTitulo="Sin usuarios todavía"
-          emptyDescripcion="Invitá a tu equipo y asignales un rol para que gestionen el panel."
-        />
+      <section aria-labelledby="roles-heading" className="flex flex-col gap-6">
+        <SectionHeading id="roles-heading" eyebrow="Permisos" titulo="Qué puede cada rol" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {ROLES.map((r, i) => (
+            <PanelReveal
+              as="article"
+              key={r.rol}
+              index={i}
+              className={`flex flex-col gap-3 rounded-[var(--radius-md)] border border-line ${r.fondo} p-6`}
+            >
+              <div>
+                <Badge variant={BADGE[r.rol]}>{ROL_LABEL[r.rol]}</Badge>
+              </div>
+              <p className="text-[length:var(--text-step--1)] leading-relaxed text-muted">{r.texto}</p>
+            </PanelReveal>
+          ))}
+        </div>
       </section>
     </div>
   );

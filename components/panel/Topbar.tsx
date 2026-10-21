@@ -2,7 +2,7 @@
 
 import { salir } from "@/lib/auth/actions";
 import { IconMenu } from "@/components/panel/icons";
-import type { UsuarioSesion } from "@/lib/panel/types";
+import { ROL_LABEL, type UsuarioSesion } from "@/lib/panel/types";
 
 // Topbar del panel — sobria (el peso editorial lo lleva el PageHeader de cada
 // página, no la topbar). Botón hamburguesa (mobile) + fecha (es-AR) + usuario de
@@ -51,7 +51,7 @@ export function Topbar({ onOpenMenu, sesion }: TopbarProps) {
             {sesion.nombre}
           </span>
           <span className="block text-[length:var(--text-step--1)] uppercase tracking-[0.1em] text-muted">
-            {sesion.rol}
+            {ROL_LABEL[sesion.rol]}
           </span>
         </span>
         <form action={salir.bind(null, "/panel/login")}>

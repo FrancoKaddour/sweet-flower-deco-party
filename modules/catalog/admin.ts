@@ -94,11 +94,26 @@ export async function resumenCatalogo() {
         sql`not exists (select 1 from ${productImages} where ${productImages.productId} = ${products.id})`,
       ),
     );
+  const [ocultos] = await db
+    .select({ n: count() })
+    .from(products)
+    .where(and(isNull(products.deletedAt), eq(products.visible, false)));
+  const [destacados] = await db
+    .select({ n: count() })
+    .from(products)
+    .where(and(isNull(products.deletedAt), eq(products.destacado, true)));
   const ultimos = await db
     .select({ id: products.id, nombre: products.nombre, updatedAt: products.updatedAt })
     .from(products)
     .where(isNull(products.deletedAt))
     .orderBy(desc(products.updatedAt))
     .limit(5);
-  return { total: tot?.n ?? 0, sinPrecio: sinPrecio?.n ?? 0, sinFoto: sinFoto?.n ?? 0, ultimos };
+  return {
+    total: tot?.n ?? 0,
+    sinPrecio: sinPrecio?.n ?? 0,
+    sinFoto: sinFoto?.n ?? 0,
+    ocultos: ocultos?.n ?? 0,
+    destacados: destacados?.n ?? 0,
+    ultimos,
+  };
 }

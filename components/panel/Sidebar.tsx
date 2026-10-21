@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PANEL_NAV, esRutaActiva } from "@/components/panel/nav";
 import { IconCerrar } from "@/components/panel/icons";
-import type { UsuarioSesion } from "@/lib/panel/types";
+import { ROL_LABEL, type UsuarioSesion } from "@/lib/panel/types";
 
 // Sidebar del panel — ancla oscura (ink) con texto bone, en el registro EDITORIAL
 // del sitio (ver components/site/Header.tsx): wordmark "Sweet Flowers" en display,
@@ -115,16 +115,16 @@ export function Sidebar({ open, onClose, sesion }: SidebarProps) {
           </ul>
         </nav>
 
-        {/* Sesión (mock) — pb-16 para no quedar tapado por el badge de dev de Next. */}
+        {/* Sesión — pb-16 para no quedar tapado por el badge de dev de Next. */}
         <div className="mt-auto border-t border-bone/10 px-7 pt-6 pb-16">
           <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/45">
-            Sesión (mock)
+            Sesión
           </p>
           <p className="mt-2 font-display text-[length:var(--text-step-1)] font-bold text-bone">
             {sesion.nombre}
           </p>
           <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-champagne">
-            {sesion.rol}
+            {ROL_LABEL[sesion.rol]}
           </p>
         </div>
       </aside>
