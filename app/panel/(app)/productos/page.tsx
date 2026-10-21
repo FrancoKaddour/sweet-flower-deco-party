@@ -1,169 +1,150 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { PageHeader } from "@/components/panel/PageHeader";
-import { PlugHint } from "@/components/panel/PlugHint";
 import { PanelButton } from "@/components/panel/PanelButton";
-import { Toolbar, FiltroSelect } from "@/components/panel/Toolbar";
-import { DataTable, type Column } from "@/components/panel/DataTable";
 import { Badge } from "@/components/panel/Badge";
-import { ChipProducto } from "@/components/panel/status";
-import { getProductos } from "@/lib/panel/data";
-import { formatARS, MATERIALES, type Producto } from "@/lib/panel/types";
+import { SinBase } from "@/components/panel/SinBase";
+import { Alternar } from "@/components/panel/catalogo/Alternar";
+import { inputCls } from "@/components/panel/catalogo/campos";
+import { hasDb } from "@/db";
+import { requireStaff } from "@/lib/dal";
+import { listarCategoriasPanel, listarProductosPanel, type FiltroProductos } from "@/modules/catalog/admin";
+import { formatARS } from "@/modules/catalog/types";
 
 export const metadata: Metadata = { title: "Productos" };
 
-const COLUMNS: Column<Producto>[] = [
-  {
-    key: "titulo",
-    header: "Producto",
-    // Thumbnail (next/image + picsum como en Destacados) + título + material en
-    // champagne debajo. El material va como acento champagne sobre claro (rótulo,
-    // no cuerpo — docs/06 §7). alt="" porque es decorativo (placeholder).
-    cell: (p) => (
-      <div className="flex items-center gap-4">
-        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[var(--radius-sm)] bg-sand">
-          <Image
-            src={`https://picsum.photos/seed/sfdp-panel-${p.id}/96/96`}
-            alt=""
-            fill
-            sizes="48px"
-            className="object-cover"
-          />
-        </div>
-        <div className="min-w-0">
-          <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-champagne">
-            {p.material}
-          </p>
-          <p className="truncate font-medium text-ink">{p.titulo}</p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    key: "precio",
-    header: "Precio",
-    align: "right",
-    cell: (p) => formatARS(p.precio),
-  },
-  {
-    key: "stock",
-    header: "Stock",
-    align: "right",
-    hideOnMobile: true,
-    cell: (p) =>
-      p.stock === 0 ? (
-        // No solo color: chip textual "Agotado" (WCAG 1.4.1).
-        <span className="inline-flex items-center gap-2">
-          <span className="text-bordeaux">0</span>
-          <Badge variant="danger">Agotado</Badge>
-        </span>
-      ) : (
-        <span>{p.stock}</span>
-      ),
-  },
-  {
-    key: "aMedida",
-    header: "A medida",
-    align: "center",
-    hideOnMobile: true,
-    cell: (p) =>
-      p.aMedida ? (
-        <Badge variant="info">Sí</Badge>
-      ) : (
-        <span className="text-muted">—</span>
-      ),
-  },
-  {
-    key: "estado",
-    header: "Estado",
-    cell: (p) => <ChipProducto estado={p.estado} />,
-  },
-  {
-    key: "acciones",
-    header: "Acciones",
-    align: "right",
-    cell: (p) => (
-      // 🔌 GONZALO: cablear a editar/borrar (con confirmación) sobre Products.
-      <div className="flex justify-end gap-2 whitespace-nowrap">
-        <PanelButton
-          variant="ghost"
-          className="px-3"
-          aria-label={`Editar ${p.titulo}`}
-          title={`Pendiente: editar ${p.titulo}`}
-        >
-          Editar
-        </PanelButton>
-        <PanelButton
-          variant="ghost"
-          className="px-3"
-          aria-label={`Borrar ${p.titulo}`}
-          title={`Pendiente: borrar ${p.titulo}`}
-        >
-          Borrar
-        </PanelButton>
-      </div>
-    ),
-  },
+const ESTADOS: { v: NonNullable<FiltroProductos["estado"]>; l: string }[] = [
+  { v: "visibles", l: "Visibles" },
+  { v: "ocultos", l: "Ocultos" },
+  { v: "destacados", l: "Destacados" },
+  { v: "sin-foto", l: "Sin foto" },
+  { v: "sin-precio", l: "Sin precio" },
 ];
 
-export default async function ProductosPage() {
-  // 🔌 GONZALO: getProductos() vive en lib/panel/data.ts y hoy devuelve mock.
-  // Cambiá SOLO su cuerpo por la query a Products (payload.find({ collection:
-  // "products" })) con búsqueda/filtro por material del lado del server.
-  const productos = await getProductos();
+export default async function ProductosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; cat?: string; estado?: string; borrado?: string }>;
+}) {
+  await requireStaff();
+  const sp = await searchParams;
+  const header = (
+    <PageHeader
+      seccion="Catálogo"
+      titulo="Productos"
+      descripcion="Lo que se ve en el sitio: fotos, precios, descripción y categoría."
+      accion={
+        <div className="flex flex-wrap gap-3">
+          <PanelButton href="/panel/productos/categorias" variant="outline">
+            Categorías
+          </PanelButton>
+          <PanelButton href="/panel/productos/nuevo">Nuevo producto</PanelButton>
+        </div>
+      }
+    />
+  );
+  if (!hasDb()) return <div className="flex flex-col gap-8">{header}<SinBase /></div>;
+
+  const estado = ESTADOS.find((e) => e.v === sp.estado)?.v;
+  const [productos, categorias] = await Promise.all([
+    listarProductosPanel({ q: sp.q?.slice(0, 80), categoria: sp.cat, estado }),
+    listarCategoriasPanel(),
+  ]);
 
   return (
     <div className="flex flex-col gap-8">
-      <PageHeader
-        seccion="Catálogo"
-        titulo="Productos"
-        descripcion="Catálogo de piezas: título, material, precio, stock, a medida y estado."
-        accion={
-          // 🔌 GONZALO: abrir el ABM de alta sobre Products (hoy self-href mock).
-          <PanelButton href="/panel/productos" title="Pendiente: nuevo producto">
-            Nuevo producto
-          </PanelButton>
-        }
-      />
+      {header}
+      {sp.borrado && (
+        <p role="status" className="rounded-[var(--radius-md)] border border-line bg-cloud px-4 py-3 text-muted">
+          Producto borrado.
+        </p>
+      )}
 
-      <PlugHint coleccion="Products">
-        Reemplazá el cuerpo de{" "}
-        <code className="font-mono">getProductos()</code> (en{" "}
-        <code className="font-mono">lib/panel/data.ts</code>) por la query a
-        Payload. Los sub-módulos <strong>Categorías/Materiales</strong> y{" "}
-        <strong>Medios</strong> van como colecciones aparte (
-        <code className="font-mono">Categories</code>,{" "}
-        <code className="font-mono">Media</code>) — dejá el lugar acá con tabs
-        cuando los necesites.
-      </PlugHint>
+      {/* Filtros (GET → se pueden compartir/guardar como link) */}
+      <form className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto_auto_auto]" role="search">
+        <input name="q" defaultValue={sp.q} placeholder="Buscar por nombre o descripción…" className={inputCls} aria-label="Buscar" />
+        <select name="cat" defaultValue={sp.cat ?? ""} className={inputCls} aria-label="Categoría">
+          <option value="">Todas las categorías</option>
+          {categorias.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nombre} ({c.productos})
+            </option>
+          ))}
+        </select>
+        <select name="estado" defaultValue={estado ?? ""} className={inputCls} aria-label="Estado">
+          <option value="">Todos</option>
+          {ESTADOS.map((e) => (
+            <option key={e.v} value={e.v}>
+              {e.l}
+            </option>
+          ))}
+        </select>
+        <PanelButton type="submit" variant="outline">
+          Filtrar
+        </PanelButton>
+      </form>
 
-      <Toolbar
-        buscarId="buscar-productos"
-        placeholderBuscar="Buscar productos…"
-        filtros={
-          <FiltroSelect
-            id="filtro-material"
-            label="Filtrar por material"
-            opciones={MATERIALES}
-            placeholder="Todos los materiales"
-          />
-        }
-      />
+      <p className="text-[length:var(--text-step--1)] text-muted">
+        {productos.length} producto{productos.length === 1 ? "" : "s"}
+      </p>
 
-      <DataTable
-        caption="Listado de productos del catálogo"
-        columns={COLUMNS}
-        rows={productos}
-        getRowKey={(p) => p.id}
-        emptyTitulo="Sin productos todavía"
-        emptyDescripcion="Cuando cargues el catálogo, tus piezas van a aparecer acá."
-        emptyAccion={
-          // 🔌 GONZALO: abrir el ABM de alta sobre Products (hoy self-href mock).
-          <PanelButton href="/panel/productos" title="Pendiente: nuevo producto">
-            Nuevo producto
-          </PanelButton>
-        }
-      />
+      <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-line bg-cloud">
+        <table className="w-full min-w-[640px] text-left text-[length:var(--text-step--1)]">
+          <caption className="sr-only">Productos del catálogo</caption>
+          <thead className="border-b border-line text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+            <tr>
+              <th className="px-4 py-3 font-medium">Producto</th>
+              <th className="px-4 py-3 text-right font-medium">Precio</th>
+              <th className="px-4 py-3 text-center font-medium">Visible</th>
+              <th className="px-4 py-3 text-center font-medium">Destacado</th>
+              <th className="px-4 py-3 text-right font-medium">
+                <span className="sr-only">Acciones</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-line">
+            {productos.map((p) => (
+              <tr key={p.id} className="hover:bg-bone/60">
+                <td className="px-4 py-3">
+                  <Link href={`/panel/productos/${p.id}`} className="flex items-center gap-3">
+                    <span className="relative h-12 w-10 shrink-0 overflow-hidden rounded-[var(--radius-sm)] bg-sand">
+                      {p.img && <Image src={p.img} alt="" fill sizes="40px" className="object-cover" />}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[0.68rem] uppercase tracking-[0.12em] text-champagne">{p.categoria}</span>
+                      <span className="block truncate font-medium text-ink">{p.nombre}</span>
+                      {!p.img && <Badge variant="warning">Sin foto</Badge>}
+                    </span>
+                  </Link>
+                </td>
+                <td className="px-4 py-3 text-right tabular-nums">
+                  {p.precio != null ? formatARS(p.precio) : <Badge variant="warning">A consultar</Badge>}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <Alternar id={p.id} campo="visible" valor={p.visible} label={`Visible: ${p.nombre}`} />
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <Alternar id={p.id} campo="destacado" valor={p.destacado} label={`Destacado: ${p.nombre}`} />
+                </td>
+                <td className="whitespace-nowrap px-4 py-3 text-right">
+                  <Link href={`/panel/productos/${p.id}`} className="font-medium uppercase tracking-[0.08em] text-ink hover:text-bordeaux">
+                    Editar
+                  </Link>
+                  <Link
+                    href={`/productos/${p.categoriaSlug}/${p.slug}`}
+                    target="_blank"
+                    className="ml-4 text-muted hover:text-ink"
+                  >
+                    Ver ↗
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {productos.length === 0 && <p className="px-4 py-10 text-center text-muted">No hay productos con esos filtros.</p>}
+      </div>
     </div>
   );
 }

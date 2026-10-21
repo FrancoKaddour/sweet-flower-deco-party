@@ -8,7 +8,7 @@ import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
-import { CATEGORIAS } from "@/content/catalogo";
+import { getCategorias } from "@/modules/catalog/repository";
 
 export const metadata: Metadata = pageMetadata({
   title: "Productos",
@@ -17,7 +17,10 @@ export const metadata: Metadata = pageMetadata({
   path: "/productos",
 });
 
-export default function ProductosPage() {
+export const revalidate = 300;
+
+export default async function ProductosPage() {
+  const CATEGORIAS = await getCategorias();
   return (
     <main id="main">
       <BreadcrumbJsonLd items={[{ name: "Productos", path: "/productos" }]} />

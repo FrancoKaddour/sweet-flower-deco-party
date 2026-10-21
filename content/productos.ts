@@ -29,13 +29,7 @@ export type Producto = {
   destacado?: boolean;
 };
 
-export function formatARS(n: number): string {
-  return new Intl.NumberFormat("es-AR", {
-    style: "currency",
-    currency: "ARS",
-    maximumFractionDigits: 0,
-  }).format(n);
-}
+export { formatARS } from "@/modules/catalog/types";
 
 // Productos = catálogo de WhatsApp (content/catalogo-whatsapp.ts).
 export const PRODUCTOS: readonly Producto[] = CATALOGO_WHATSAPP;

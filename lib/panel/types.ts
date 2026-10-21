@@ -35,7 +35,7 @@ export type EstadoCampana = "borrador" | "enviada" | "programada";
 /** Estado de una membresía. */
 export type EstadoMembresia = "activa" | "vencida" | "pendiente";
 /** Rol del staff del panel (auth de Payload). */
-export type RolStaff = "admin" | "editor";
+export type RolStaff = "superadmin" | "admin" | "editor";
 /** Estado de una inscripción a una edición del evento. */
 export type EstadoInscripcion = "anotado" | "confirmado" | "asistio";
 /** De dónde entró un contacto al CRM (para segmentar y trazar el origen). */

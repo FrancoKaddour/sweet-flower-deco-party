@@ -1,16 +1,20 @@
 import { PanelShell } from "@/components/panel/PanelShell";
-import { getUsuarioSesion } from "@/lib/panel/data";
+import { requireStaff } from "@/lib/dal";
+import type { RolStaff } from "@/lib/panel/types";
 
-// Layout del grupo (app): todas las vistas del panel que van dentro del shell
-// (sidebar + topbar). El login vive en el grupo (auth), fuera de este layout.
-// Server Component: lee la sesión en el server y la baja al shell (cliente) por prop.
+// Layout del grupo (app): todas las vistas del panel dentro del shell.
+// requireStaff() valida sesión + rol en el server (sin sesión → /panel/login).
+// Cada página y Server Action vuelve a validar (el layout no alcanza solo).
 export default async function PanelAppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // 🔌 GONZALO: getUsuarioSesion() devuelve el usuario logueado (hoy mock, mañana
-  // payload.auth). La sesión baja como prop al shell/sidebar/topbar.
-  const sesion = await getUsuarioSesion();
+  const user = await requireStaff();
+  const sesion = {
+    nombre: user.name ?? user.email ?? "Staff",
+    email: user.email ?? "",
+    rol: user.role as RolStaff,
+  };
   return <PanelShell sesion={sesion}>{children}</PanelShell>;
 }

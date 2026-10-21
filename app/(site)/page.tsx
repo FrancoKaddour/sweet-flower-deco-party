@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { getDestacados } from "@/modules/catalog/repository";
+import { seleccionarDestacados } from "@/modules/catalog/destacados";
 import { ColorBridge } from "@/components/site/ColorBridge";
 import { Hero } from "@/components/sections/Hero";
 import { Experiencia } from "@/components/sections/Experiencia";
@@ -23,7 +25,11 @@ const SAND = "var(--color-sand)";
 // La home usa título/OG del layout; solo fija su canonical.
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
-export default function Home() {
+// Se regenera cada 5 min y al instante cuando se edita el catálogo en el panel.
+export const revalidate = 300;
+
+export default async function Home() {
+  const destacados = seleccionarDestacados(await getDestacados());
   return (
     <main id="main" className="bg-bone">
       <Hero />
@@ -32,7 +38,7 @@ export default function Home() {
       {/* Event Summit: prioridad de la clienta → arriba, después de "El arte de crear" */}
       <SummitHome />
       <Productos />
-      <Destacados />
+      <Destacados items={destacados} />
       <ColorBridge from={BONE} to={BLUSH} />
       <Servicio />
       <ColorBridge from={BLUSH} to={BONE} />

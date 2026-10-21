@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
-import { LoginForm } from "@/components/panel/LoginForm";
-import { PlugHint } from "@/components/panel/PlugHint";
+import { redirect } from "next/navigation";
+import { GoogleButton } from "@/components/auth/GoogleButton";
+import { getSession } from "@/lib/dal";
+import { STAFF_ROLES } from "@/db/schema";
 
-export const metadata: Metadata = {
-  title: "Ingresar",
-};
+export const metadata: Metadata = { title: "Ingresar" };
 
-// Login del panel — pantalla centrada, con la marca. SOLO UI (sin auth real):
-// la autenticación la aporta Payload (colección Users). El <main> propio hace
-// que el skip-link funcione también acá.
-export default function LoginPage() {
+// Login del panel: Google (Flor, Tobi y Franco). Solo entra quien figura como
+// staff en las env vars (PANEL_*); el resto ve el aviso de permiso.
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+  const s = await getSession();
+  if (s?.user && STAFF_ROLES.includes(s.user.role)) redirect("/panel");
+  const sinPermiso = error === "permiso" || (s?.user && !STAFF_ROLES.includes(s.user.role));
+
   return (
-    <main
-      id="panel-main"
-      tabIndex={-1}
-      className="flex min-h-dvh items-center justify-center bg-bone px-4 py-12"
-    >
+    <main id="panel-main" tabIndex={-1} className="flex min-h-dvh items-center justify-center bg-bone px-4 py-12">
       <div className="w-full max-w-md">
         <div className="rounded-[var(--radius-lg)] border border-line bg-cloud p-8 sm:p-10">
           <div className="mb-8 text-center">
@@ -28,21 +32,17 @@ export default function LoginPage() {
               Flowers
             </h1>
             <p className="mt-4 text-[length:var(--text-step-0)] leading-relaxed text-muted">
-              Ingresá para gestionar catálogo, ventas y comunidad.
+              Ingresá con tu cuenta de Google para gestionar catálogo, pedidos y comunidad.
             </p>
           </div>
 
-          <LoginForm />
-        </div>
+          {sinPermiso && (
+            <p role="alert" className="mb-6 rounded-[var(--radius-md)] border border-bordeaux/25 bg-bordeaux/10 px-4 py-3 text-[length:var(--text-step--1)] text-bordeaux">
+              Esta cuenta no tiene acceso al panel. Pedile a Franco que la habilite.
+            </p>
+          )}
 
-        <div className="mt-6">
-          <PlugHint coleccion="Users">
-            La auth la aporta Payload (colección{" "}
-            <code className="font-mono">Users</code>): reemplazá el submit mock
-            por <code className="font-mono">payload.login()</code> y protegé{" "}
-            <code className="font-mono">/panel</code> con un proxy que redirija a
-            este login sin sesión. Ver skill <em>auth-review</em>.
-          </PlugHint>
+          <GoogleButton volver="/panel" tone="dark" />
         </div>
       </div>
     </main>

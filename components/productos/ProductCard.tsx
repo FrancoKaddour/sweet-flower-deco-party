@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { formatARS, type Producto } from "@/content/productos";
+import Link from "next/link";
+import { formatARS, type Producto } from "@/modules/catalog/types";
 import { WHATSAPP_NUMBER } from "@/content/site";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
@@ -15,7 +16,11 @@ export function ProductCard({ p }: { p: Producto }) {
 
   return (
     <article className="group flex flex-col">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-sand">
+      <Link
+        href={`/productos/${p.categoria}/${p.slug}`}
+        className="relative block aspect-[4/5] overflow-hidden rounded-[var(--radius-md)] bg-sand"
+        aria-label={`Ver ${p.nombre}`}
+      >
         {p.img ? (
           <Image
             src={p.img}
@@ -29,11 +34,13 @@ export function ProductCard({ p }: { p: Producto }) {
             Foto en camino
           </div>
         )}
-      </div>
+      </Link>
 
       <div className="mt-4 flex flex-1 flex-col">
         <h3 className="font-display text-[length:var(--text-step-1)] font-bold uppercase leading-tight text-ink">
-          {p.nombre}
+          <Link href={`/productos/${p.categoria}/${p.slug}`} className="hover:text-bordeaux">
+            {p.nombre}
+          </Link>
         </h3>
         {p.descripcion && (
           <p className="mt-1.5 line-clamp-3 text-[length:var(--text-step--1)] leading-snug text-ink/60">

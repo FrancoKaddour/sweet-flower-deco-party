@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { salir } from "@/lib/auth/actions";
 import { IconMenu } from "@/components/panel/icons";
 import type { UsuarioSesion } from "@/lib/panel/types";
 
@@ -54,13 +54,14 @@ export function Topbar({ onOpenMenu, sesion }: TopbarProps) {
             {sesion.rol}
           </span>
         </span>
-        {/* 🔌 GONZALO: logout real → cerrar la sesión de Payload y redirigir a /panel/login */}
-        <Link
-          href="/panel/login"
-          className="inline-flex min-h-11 items-center rounded-[var(--radius-pill)] border border-line bg-cloud px-4 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink transition-colors hover:border-ink/30"
-        >
-          Salir
-        </Link>
+        <form action={salir.bind(null, "/panel/login")}>
+          <button
+            type="submit"
+            className="inline-flex min-h-11 items-center rounded-[var(--radius-pill)] border border-line bg-cloud px-4 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink transition-colors hover:border-ink/30"
+          >
+            Salir
+          </button>
+        </form>
       </div>
     </header>
   );

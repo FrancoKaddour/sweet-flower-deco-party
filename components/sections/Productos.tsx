@@ -2,18 +2,18 @@ import { RevealText } from "@/components/motion/RevealText";
 import { CollectionCard } from "@/components/motion/CollectionCard";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SwipeDots } from "@/components/ui/SwipeDots";
-import { CATEGORIAS } from "@/content/catalogo";
+import { getCategorias } from "@/modules/catalog/repository";
 
 // Colecciones destacadas en la Home = las 3 primeras categorías del catálogo.
 // La fuente única es content/catalogo.ts, así los slugs no se desincronizan con
 // la página /productos. TODO(contenido): fotos y textos reales.
-const COLECCIONES = CATEGORIAS.slice(0, 3);
 
 /**
  * Sección PRODUCTOS — 3 colecciones con "caída" clip-path (referencia CANCAN).
  * Cada colección enlaza a su parte del ecommerce. Ver docs/05_CONTENT_STRATEGY.md.
  */
-export function Productos() {
+export async function Productos() {
+  const COLECCIONES = (await getCategorias()).slice(0, 3);
   return (
     <section id="productos" className="bg-bone px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-40">
       <div className="mx-auto max-w-[87.5rem]">

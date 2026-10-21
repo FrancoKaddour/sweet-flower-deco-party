@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
         hostname: "picsum.photos",
         pathname: "/**",
       },
+      // Fotos subidas desde el panel (Vercel Blob).
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com", pathname: "/**" },
+      // Avatares de Google (cuentas de clientes/staff).
+      { protocol: "https", hostname: "lh3.googleusercontent.com", pathname: "/**" },
     ],
     // AVIF con fallback a WebP para las secciones ya migradas a next/image.
     formats: ["image/avif", "image/webp"],

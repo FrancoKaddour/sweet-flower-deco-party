@@ -6,46 +6,16 @@ import Link from "next/link";
 import { gsap, ScrollTrigger, CustomEase, useGSAP } from "@/lib/gsap";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { CATALOGO_WHATSAPP } from "@/content/catalogo-whatsapp";
-import { formatARS, type Producto } from "@/content/productos";
+import type { DestacadoItem } from "@/modules/catalog/destacados";
 import { SwipeDots } from "@/components/ui/SwipeDots";
-
-// Productos reales del catálogo de WhatsApp: los DESTACADOS (colecciones de
-// Flor), con catering primero. 18 piezas (12 en mobile).
-const NOMBRE_CAT: Record<string, string> = {
-  catering: "Catering",
-  hierro: "Hierro",
-  "fundas-y-telas": "Fundas",
-  mdf: "MDF",
-  madera: "Madera",
-};
-const ORDEN_CAT = ["catering", "hierro", "fundas-y-telas", "mdf", "madera"];
-const PRODUCTOS = CATALOGO_WHATSAPP.filter((p) => p.destacado && p.img)
-  .sort((a, b) => ORDEN_CAT.indexOf(a.categoria) - ORDEN_CAT.indexOf(b.categoria))
-  // intercalar categorías para que la grilla no sea monótona
-  .reduce<Producto[][]>((cols, p) => {
-    const i = ORDEN_CAT.indexOf(p.categoria);
-    (cols[i] ||= []).push(p);
-    return cols;
-  }, [])
-  .flatMap((col) => col.map((p, k) => ({ p, k })))
-  .sort((a, b) => a.k - b.k)
-  .slice(0, 18)
-  .map(({ p }) => ({
-    slug: p.slug,
-    nombre: p.nombre,
-    material: NOMBRE_CAT[p.categoria],
-    precio: p.precio != null ? formatARS(p.precio) : "Consultar",
-    img: p.img as string,
-    href: `/productos/${p.categoria}`,
-  }));
 
 // Mobile: 2 páginas de 6 (grilla 2×3); las 6 restantes solo en md+.
 const POR_PAGINA = 6;
 const PAGINAS_MOBILE = 2;
-const PAGINAS = Array.from({ length: Math.ceil(PRODUCTOS.length / POR_PAGINA) }, (_, i) =>
-  PRODUCTOS.slice(i * POR_PAGINA, (i + 1) * POR_PAGINA),
-);
+const paginar = (items: DestacadoItem[]) =>
+  Array.from({ length: Math.ceil(items.length / POR_PAGINA) }, (_, i) =>
+    items.slice(i * POR_PAGINA, (i + 1) * POR_PAGINA),
+  );
 
 // Misma "caída" que las colecciones del catálogo (CollectionCard): la foto cae
 // de ARRIBA hacia ABAJO y asienta su escala en el mismo tiempo y curva
@@ -61,7 +31,8 @@ const DUR_VAR = [0.06, -0.08, 0.14, 0, -0.06, 0.1, -0.03, 0.08, -0.1];
  * arriba a abajo (misma receta que las colecciones del catálogo) y después
  * entra el texto. Hover: zoom suave de la foto.
  */
-export function Destacados() {
+export function Destacados({ items }: { items: DestacadoItem[] }) {
+  const PAGINAS = paginar(items);
   const sectionRef = useRef<HTMLElement>(null);
 
   useGSAP(

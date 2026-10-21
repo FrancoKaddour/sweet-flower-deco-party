@@ -9,8 +9,7 @@ import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
-import { CATEGORIAS } from "@/content/catalogo";
-import { productosDe } from "@/content/productos";
+import { getCategoria, getCategorias, getProductosDeCategoria } from "@/modules/catalog/repository";
 import { ProductCard } from "@/components/productos/ProductCard";
 
 // Listado de categoría — VERSIÓN INTERINA "próximamente" (estado vacío cálido,
@@ -21,13 +20,16 @@ import { ProductCard } from "@/components/productos/ProductCard";
 
 type Props = { params: Promise<{ categoria: string }> };
 
-export function generateStaticParams() {
-  return CATEGORIAS.map((c) => ({ categoria: c.slug }));
+// Se regenera sola cada 5 min y al instante cuando se edita desde el panel.
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  return (await getCategorias()).map((c) => ({ categoria: c.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { categoria } = await params;
-  const cat = CATEGORIAS.find((c) => c.slug === categoria);
+  const cat = await getCategoria(categoria);
   if (!cat) return {};
   return pageMetadata({
     title: `${cat.nombre} para eventos · Productos`,
@@ -38,9 +40,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoriaPage({ params }: Props) {
   const { categoria } = await params;
-  const cat = CATEGORIAS.find((c) => c.slug === categoria);
+  const cat = await getCategoria(categoria);
   if (!cat) notFound();
-  const productos = productosDe(cat.slug);
+  const productos = await getProductosDeCategoria(cat.slug);
 
   return (
     <main id="main">
@@ -104,7 +106,7 @@ export default async function CategoriaPage({ params }: Props) {
       </section>
 
       {productos.length > 0 ? (
-        /* Grilla de productos (content/productos.ts) */
+        /* Grilla de productos (modules/catalog) */
         <section data-theme="light" className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32">
           <div className="mx-auto grid max-w-[87.5rem] grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-3 md:gap-x-6 lg:grid-cols-4">
             {productos.map((p) => (
