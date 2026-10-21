@@ -1,4 +1,8 @@
+import { existsSync } from "node:fs";
 import { defineConfig } from "drizzle-kit";
+
+// drizzle-kit no lee .env.local solo: lo cargamos con el loader nativo de Node.
+if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 // Migraciones versionadas en ./drizzle (se commitean). La estructura de la base
 // SOLO cambia por migraciones: `npm run db:generate` → revisar → `npm run db:migrate`.
