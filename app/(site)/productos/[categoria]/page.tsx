@@ -10,7 +10,7 @@ import { RevealText } from "@/components/motion/RevealText";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { getCategoria, getCategorias, getProductosDeCategoria } from "@/modules/catalog/repository";
-import { ProductCard } from "@/components/productos/ProductCard";
+import { GrillaPaginada } from "@/components/productos/GrillaPaginada";
 
 // Listado de categoría — VERSIÓN INTERINA "próximamente" (estado vacío cálido,
 // ver docs/04_SITE_ARCHITECTURE.md §7.2). La grilla real de productos llega
@@ -108,10 +108,8 @@ export default async function CategoriaPage({ params }: Props) {
       {productos.length > 0 ? (
         /* Grilla de productos (modules/catalog) */
         <section data-theme="light" className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32">
-          <div className="mx-auto grid max-w-[87.5rem] grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-3 md:gap-x-6 lg:grid-cols-4">
-            {productos.map((p) => (
-              <ProductCard key={p.slug} p={p} />
-            ))}
+          <div className="mx-auto max-w-[87.5rem]">
+            <GrillaPaginada productos={productos} />
           </div>
         </section>
       ) : (

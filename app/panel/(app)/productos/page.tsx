@@ -7,6 +7,7 @@ import { Badge } from "@/components/panel/Badge";
 import { SinBase } from "@/components/panel/SinBase";
 import { Alternar } from "@/components/panel/catalogo/Alternar";
 import { inputCls } from "@/components/panel/catalogo/campos";
+import { Paginacion } from "@/components/ui/Paginacion";
 import { hasDb } from "@/db";
 import { requireStaff } from "@/lib/dal";
 import { listarCategoriasPanel, listarProductosPanel, type FiltroProductos } from "@/modules/catalog/admin";
@@ -25,7 +26,7 @@ const ESTADOS: { v: NonNullable<FiltroProductos["estado"]>; l: string }[] = [
 export default async function ProductosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; cat?: string; estado?: string; borrado?: string }>;
+  searchParams: Promise<{ q?: string; cat?: string; estado?: string; borrado?: string; pagina?: string }>;
 }) {
   await requireStaff();
   const sp = await searchParams;
@@ -47,10 +48,24 @@ export default async function ProductosPage({
   if (!hasDb()) return <div className="flex flex-col gap-8">{header}<SinBase /></div>;
 
   const estado = ESTADOS.find((e) => e.v === sp.estado)?.v;
-  const [productos, categorias] = await Promise.all([
+  const [todos, categorias] = await Promise.all([
     listarProductosPanel({ q: sp.q?.slice(0, 80), categoria: sp.cat, estado }),
     listarCategoriasPanel(),
   ]);
+  // Paginación (25 por página). La página vive en la URL junto con los filtros.
+  const POR_PAGINA = 25;
+  const totalPaginas = Math.max(1, Math.ceil(todos.length / POR_PAGINA));
+  const pagina = Math.min(Math.max(1, Number(sp.pagina) || 1), totalPaginas);
+  const productos = todos.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
+  const hrefPagina = (n: number) => {
+    const q = new URLSearchParams();
+    if (sp.q) q.set("q", sp.q);
+    if (sp.cat) q.set("cat", sp.cat);
+    if (estado) q.set("estado", estado);
+    if (n > 1) q.set("pagina", String(n));
+    const s = q.toString();
+    return `/panel/productos${s ? `?${s}` : ""}`;
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -86,7 +101,8 @@ export default async function ProductosPage({
       </form>
 
       <p className="text-[length:var(--text-step--1)] text-muted">
-        {productos.length} producto{productos.length === 1 ? "" : "s"}
+        {todos.length} producto{todos.length === 1 ? "" : "s"}
+        {totalPaginas > 1 && ` · página ${pagina} de ${totalPaginas}`}
       </p>
 
       <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-line bg-cloud">
@@ -145,6 +161,7 @@ export default async function ProductosPage({
         </table>
         {productos.length === 0 && <p className="px-4 py-10 text-center text-muted">No hay productos con esos filtros.</p>}
       </div>
+      <Paginacion pagina={pagina} total={totalPaginas} href={hrefPagina} />
     </div>
   );
 }
