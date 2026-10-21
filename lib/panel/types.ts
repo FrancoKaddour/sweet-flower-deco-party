@@ -15,3 +15,6 @@ export const ROL_LABEL: Record<RolStaff, string> = {
   admin: "Admin",
   editor: "Editor",
 };
+
+/** Pendientes por módulo (badge del sidebar): pedidos nuevos, consultas nuevas, reservas sin seña. */
+export type Pendientes = Partial<Record<"pedidos" | "consultas" | "inscripciones", number>>;

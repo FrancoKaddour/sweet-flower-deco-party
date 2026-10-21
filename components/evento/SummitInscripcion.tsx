@@ -10,6 +10,8 @@ import {
   preventaVigente,
 } from "@/content/evento";
 import { formatARS } from "@/content/productos";
+import { nuevoCodigo } from "@/lib/codigo";
+import { registrarInscripcion } from "@/modules/ventas/registro";
 
 /**
  * Inscripción al Summit — TODO por WhatsApp (sin pago en el sitio, oct-2026):
@@ -27,8 +29,19 @@ export function SummitInscripcion() {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
+    const codigo = nuevoCodigo("SUM");
+    void registrarInscripcion({
+      codigo,
+      pase,
+      nombre: String(f.get("nombre") ?? ""),
+      ciudad: String(f.get("ciudad") ?? ""),
+      formaPago: String(f.get("forma") ?? ""),
+      mensaje: String(f.get("mensaje") ?? ""),
+      web: String(f.get("web") ?? ""),
+    }).catch(() => {});
     const msg = [
       `¡Hola! Quiero reservar mi lugar en el ${EVENT_NAME} (${EDICION_LABEL}, ${EVENT_WHEN}).`,
+      `Reserva: ${codigo}`,
       `Pase: ${PASES.find((p) => p.id === pase)?.nombre}${pv ? ` (${pv.nombre}, ${pv.hastaLabel})` : ""}`,
       `Nombre: ${f.get("nombre")}`,
       `Ciudad: ${f.get("ciudad")}`,
@@ -48,6 +61,8 @@ export function SummitInscripcion() {
   return (
     <div className="flex flex-col gap-8">
       <form onSubmit={onSubmit} className="flex flex-col gap-6" aria-label="Reservar por WhatsApp">
+        {/* Honeypot anti-spam: invisible para personas. */}
+        <input type="text" name="web" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
         <fieldset className="flex flex-col gap-2">
           <legend className={`${label} mb-2`}>Pase</legend>
           <div className="grid grid-cols-2 gap-2">

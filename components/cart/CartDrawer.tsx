@@ -10,6 +10,8 @@ import Image from "next/image";
 import { useCart } from "./CartProvider";
 import { formatARS } from "@/content/productos";
 import { WHATSAPP_NUMBER } from "@/content/site";
+import { nuevoCodigo } from "@/lib/codigo";
+import { registrarPedido } from "@/modules/ventas/registro";
 
 export function CartDrawer() {
   const { items, count, setQty, remove, clear, open, setOpen } = useCart();
@@ -28,6 +30,17 @@ export function CartDrawer() {
   const hayConsultar = items.some((i) => i.precio == null);
 
   const enviar = () => {
+    // El código viaja en el mensaje y queda registrado en el panel, así el
+    // equipo cruza el chat de WhatsApp con el pedido. El registro es en segundo
+    // plano: si falla, el pedido por WhatsApp sale igual.
+    const codigo = nuevoCodigo("SF");
+    void registrarPedido({
+      codigo,
+      nombre,
+      localidad,
+      nota,
+      items: items.map((i) => ({ slug: i.slug, nombre: i.nombre, qty: i.qty })),
+    }).catch(() => {});
     const lineas = items.map(
       (i) => `• ${i.qty} × ${i.nombre} — ${i.precio != null ? `${formatARS(i.precio)} c/u` : "precio a consultar"}`,
     );
@@ -37,7 +50,7 @@ export function CartDrawer() {
       nota && `Comentarios: ${nota}`,
     ].filter(Boolean) as string[];
     const msg = [
-      "¡Hola! Quiero hacer este pedido desde la web:",
+      `¡Hola! Quiero hacer este pedido desde la web (pedido ${codigo}):`,
       "",
       ...lineas,
       "",

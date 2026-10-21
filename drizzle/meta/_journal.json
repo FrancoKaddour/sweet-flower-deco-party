@@ -8,6 +8,13 @@
       "when": 1792589753631,
       "tag": "0000_fearless_leo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792592808181,
+      "tag": "0001_fase2_pedidos",
+      "breakpoints": true
     }
   ]
 }

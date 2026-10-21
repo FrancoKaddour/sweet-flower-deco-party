@@ -31,6 +31,8 @@ type CommonProps = {
 
 type LinkButtonProps = CommonProps & {
   href: string;
+  /** "_blank" para links externos (WhatsApp, sitio). */
+  target?: "_blank";
 };
 
 type ActionButtonProps = CommonProps & {
@@ -52,6 +54,8 @@ export function PanelButton(
     return (
       <Link
         href={props.href}
+        target={props.target}
+        rel={props.target === "_blank" ? "noopener noreferrer" : undefined}
         title={props.title}
         aria-label={props["aria-label"]}
         className={cls}

@@ -8,8 +8,10 @@
  * - Fechas `timestamptz`; `createdAt`/`updatedAt` en todo; soft delete con `deletedAt`.
  * - FKs con onDelete explícito; CHECK para invariantes (precio ≥ 0).
  *
- * Fase 1: auth (Auth.js) + catálogo + auditoría. Pedidos, contactos, Summit,
- * newsletter y contenido se suman en las fases siguientes.
+ * Fase 1: auth (Auth.js) + catálogo + auditoría.
+ * Fase 2: pedidos del carrito, consultas del formulario e inscripciones al
+ * Summit. Todo se sigue resolviendo por WhatsApp: estas tablas son el registro
+ * para que el equipo haga el seguimiento desde el panel.
  */
 import { sql } from "drizzle-orm";
 import {
@@ -186,7 +188,112 @@ export const auditLog = pgTable(
   (t) => [index("audit_log_entidad_idx").on(t.entidad, t.entidadId), index("audit_log_created_idx").on(t.createdAt)],
 );
 
+/* ───────────────────── Pedidos, consultas y Summit ───────────────────── */
+
+/** Línea de pedido: snapshot del producto al momento de pedir. */
+export type ItemPedido = { slug: string; nombre: string; precio: number | null; qty: number };
+
+export const orderStatusEnum = pgEnum("order_status", [
+  "nuevo",
+  "confirmado",
+  "en_produccion",
+  "enviado",
+  "entregado",
+  "cancelado",
+]);
+export type OrderStatus = (typeof orderStatusEnum.enumValues)[number];
+
+/** Pedido armado en el carrito y enviado por WhatsApp. `codigo` viaja en el mensaje. */
+export const orders = pgTable(
+  "orders",
+  {
+    id: id(),
+    codigo: text("codigo").notNull(),
+    userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+    nombre: text("nombre"),
+    localidad: text("localidad"),
+    nota: text("nota"),
+    items: jsonb("items").$type<ItemPedido[]>().notNull(),
+    total: integer("total").notNull(),
+    hayConsultar: boolean("hay_consultar").default(false).notNull(),
+    estado: orderStatusEnum("estado").default("nuevo").notNull(),
+    telefono: text("telefono"),
+    notaInterna: text("nota_interna"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("orders_codigo_idx").on(t.codigo),
+    index("orders_estado_idx").on(t.estado),
+    index("orders_created_idx").on(t.createdAt),
+    check("orders_total_check", sql`${t.total} >= 0`),
+  ],
+);
+
+export const inquiryStatusEnum = pgEnum("inquiry_status", ["nueva", "respondida", "archivada"]);
+export type InquiryStatus = (typeof inquiryStatusEnum.enumValues)[number];
+
+/** Consulta del formulario de contacto. */
+export const inquiries = pgTable(
+  "inquiries",
+  {
+    id: id(),
+    tipo: text("tipo").notNull(),
+    nombre: text("nombre").notNull(),
+    email: text("email"),
+    telefono: text("telefono"),
+    mensaje: text("mensaje").notNull(),
+    estado: inquiryStatusEnum("estado").default("nueva").notNull(),
+    notaInterna: text("nota_interna"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  },
+  (t) => [index("inquiries_estado_idx").on(t.estado), index("inquiries_created_idx").on(t.createdAt)],
+);
+
+export const registrationStatusEnum = pgEnum("registration_status", [
+  "consulto",
+  "seno",
+  "pago",
+  "asistio",
+  "cancelado",
+]);
+export type RegistrationStatus = (typeof registrationStatusEnum.enumValues)[number];
+
+/** Reserva de lugar al Event Summit (se cierra por WhatsApp). */
+export const summitRegistrations = pgTable(
+  "summit_registrations",
+  {
+    id: id(),
+    codigo: text("codigo").notNull(),
+    edicion: text("edicion").notNull(),
+    pase: text("pase").notNull(), // "vip" | "general"
+    nombre: text("nombre").notNull(),
+    ciudad: text("ciudad"),
+    formaPago: text("forma_pago"),
+    mensaje: text("mensaje"),
+    /** Precio de la preventa vigente al reservar (referencia, en pesos). */
+    precioReferencia: integer("precio_referencia"),
+    estado: registrationStatusEnum("estado").default("consulto").notNull(),
+    telefono: text("telefono"),
+    notaInterna: text("nota_interna"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("summit_registrations_codigo_idx").on(t.codigo),
+    index("summit_registrations_estado_idx").on(t.estado),
+    index("summit_registrations_edicion_idx").on(t.edicion),
+  ],
+);
+
 export type DbCategory = typeof categories.$inferSelect;
 export type DbProduct = typeof products.$inferSelect;
 export type DbProductImage = typeof productImages.$inferSelect;
 export type DbUser = typeof users.$inferSelect;
+export type DbOrder = typeof orders.$inferSelect;
+export type DbInquiry = typeof inquiries.$inferSelect;
+export type DbSummitRegistration = typeof summitRegistrations.$inferSelect;

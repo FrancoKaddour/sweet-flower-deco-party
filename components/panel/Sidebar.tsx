@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PANEL_NAV, esRutaActiva } from "@/components/panel/nav";
 import { IconCerrar } from "@/components/panel/icons";
-import { ROL_LABEL, type UsuarioSesion } from "@/lib/panel/types";
+import { ROL_LABEL, type Pendientes, type UsuarioSesion } from "@/lib/panel/types";
 
 // Sidebar del panel — ancla oscura (ink) con texto bone, en el registro EDITORIAL
 // del sitio (ver components/site/Header.tsx): wordmark "Sweet Flowers" en display,
@@ -22,9 +22,11 @@ type SidebarProps = {
   onClose: () => void;
   /** Usuario de la sesión activa (resuelto en el server). */
   sesion: UsuarioSesion;
+  /** Contadores de cosas por atender. */
+  pendientes: Pendientes;
 };
 
-export function Sidebar({ open, onClose, sesion }: SidebarProps) {
+export function Sidebar({ open, onClose, sesion, pendientes }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -108,6 +110,12 @@ export function Sidebar({ open, onClose, sesion }: SidebarProps) {
                     <span className="text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.12em]">
                       {item.label}
                     </span>
+                    {item.pendientes && (pendientes[item.pendientes] ?? 0) > 0 && (
+                      <span className="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-champagne px-1.5 text-[0.7rem] font-semibold tabular-nums text-ink">
+                        <span className="sr-only">Pendientes: </span>
+                        {pendientes[item.pendientes]}
+                      </span>
+                    )}
                   </Link>
                 </li>
               );

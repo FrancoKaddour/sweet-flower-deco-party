@@ -1,6 +1,8 @@
 import { PanelShell } from "@/components/panel/PanelShell";
 import { requireStaff } from "@/lib/dal";
 import type { RolStaff } from "@/lib/panel/types";
+import { hasDb } from "@/db";
+import { conteosSeguros } from "@/modules/ventas/admin";
 
 // Layout del grupo (app): todas las vistas del panel dentro del shell.
 // requireStaff() valida sesión + rol en el server (sin sesión → /panel/login).
@@ -16,5 +18,13 @@ export default async function PanelAppLayout({
     email: user.email ?? "",
     rol: user.role as RolStaff,
   };
-  return <PanelShell sesion={sesion}>{children}</PanelShell>;
+  const c = hasDb() ? await conteosSeguros() : null;
+  const pendientes = c
+    ? { pedidos: c.pedidos.nuevo ?? 0, consultas: c.consultas.nueva ?? 0, inscripciones: c.inscripciones.consulto ?? 0 }
+    : {};
+  return (
+    <PanelShell sesion={sesion} pendientes={pendientes}>
+      {children}
+    </PanelShell>
+  );
 }

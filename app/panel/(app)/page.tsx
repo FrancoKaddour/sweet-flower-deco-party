@@ -8,6 +8,7 @@ import { SinBase } from "@/components/panel/SinBase";
 import { hasDb } from "@/db";
 import { requireStaff } from "@/lib/dal";
 import { resumenCatalogo } from "@/modules/catalog/admin";
+import { conteosSeguros } from "@/modules/ventas/admin";
 
 // Inicio del panel: estado real del catálogo + lo que conviene completar +
 // accesos rápidos. Todo sale de la base (nada de datos de ejemplo).
@@ -43,7 +44,7 @@ export default async function InicioPage() {
     <PageHeader
       seccion="Inicio"
       titulo={`${saludo()}${nombre ? `, ${nombre}` : ""}`}
-      descripcion="Desde acá manejás el catálogo del sitio: lo que cambies se ve publicado en unos minutos."
+      descripcion="Pedidos, consultas y reservas que entraron por el sitio, y el catálogo. Lo que cambies se publica en unos minutos."
       accion={<PanelButton href="/panel/productos/nuevo">Nuevo producto</PanelButton>}
     />
   );
@@ -57,7 +58,12 @@ export default async function InicioPage() {
     );
   }
 
-  const r = await resumenCatalogo();
+  const [r, c] = await Promise.all([resumenCatalogo(), conteosSeguros()]);
+  const atender = [
+    { n: c.pedidos.nuevo ?? 0, label: "Pedidos nuevos", ayuda: "Confirmalos y pasalos a producción.", href: "/panel/pedidos?estado=nuevo", fondo: "bg-blush" },
+    { n: c.consultas.nueva ?? 0, label: "Consultas sin responder", ayuda: "Del formulario de contacto.", href: "/panel/consultas?estado=nueva", fondo: "bg-sage" },
+    { n: c.inscripciones.consulto ?? 0, label: "Reservas al Summit", ayuda: "Consultaron y falta la seña.", href: "/panel/summit?estado=consulto", fondo: "bg-sand" },
+  ];
   const pendientes = [
     { n: r.sinPrecio, label: "sin precio", ayuda: "Se muestran como “Consultar precio”.", href: "/panel/productos?estado=sin-precio" },
     { n: r.sinFoto, label: "sin foto", ayuda: "Sin foto no venden: sumales al menos una.", href: "/panel/productos?estado=sin-foto" },
@@ -67,6 +73,26 @@ export default async function InicioPage() {
   return (
     <div className="flex flex-col gap-12">
       {header}
+
+      {/* Para atender: lo que entró por el sitio y espera respuesta. */}
+      <section aria-labelledby="atender-heading" className="flex flex-col gap-6">
+        <SectionHeading id="atender-heading" eyebrow="Para atender" titulo="Lo que entró por el sitio" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {atender.map((a, i) => (
+            <PanelReveal key={a.href} index={i}>
+              <Link
+                href={a.href}
+                className={`group flex h-full flex-col gap-2 rounded-[var(--radius-md)] border border-line ${a.fondo} p-6 transition-colors hover:border-champagne`}
+              >
+                <span className="font-display text-[length:var(--text-step-5)] font-extrabold leading-[0.85] tabular-nums text-ink">{a.n}</span>
+                <span className="font-medium uppercase tracking-[0.08em] text-ink">{a.label}</span>
+                <span className="text-[length:var(--text-step--1)] text-muted">{a.n === 0 ? "Nada pendiente. ✧" : a.ayuda}</span>
+                <span aria-hidden="true" className="mt-auto pt-2 text-ink transition-transform group-hover:translate-x-1">→</span>
+              </Link>
+            </PanelReveal>
+          ))}
+        </div>
+      </section>
 
       {/* Franja oscura con las cifras del catálogo. */}
       <PanelReveal as="section" className="overflow-hidden rounded-[var(--radius-lg)] bg-botanical text-bone">

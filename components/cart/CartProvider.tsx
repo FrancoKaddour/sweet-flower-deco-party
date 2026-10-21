@@ -38,14 +38,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lastAdded, setLastAdded] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
+  // Hidrata desde localStorage después del primer render (evita mismatch SSR).
   useEffect(() => {
+    let guardado: CartItem[] = [];
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) setItems(JSON.parse(raw));
+      if (raw) guardado = JSON.parse(raw);
     } catch {
       /* sin storage: carrito solo en memoria */
     }
-    setLoaded(true);
+    const id = requestAnimationFrame(() => {
+      if (Array.isArray(guardado) && guardado.length) setItems(guardado);
+      setLoaded(true);
+    });
+    return () => cancelAnimationFrame(id);
   }, []);
 
   useEffect(() => {

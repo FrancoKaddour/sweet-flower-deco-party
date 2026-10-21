@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/panel/Sidebar";
 import { Topbar } from "@/components/panel/Topbar";
-import type { UsuarioSesion } from "@/lib/panel/types";
+import type { Pendientes, UsuarioSesion } from "@/lib/panel/types";
 
 // Shell del panel: arma sidebar + topbar + área de contenido y coordina el estado
 // del sidebar mobile (abrir/cerrar). Es la ÚNICA pieza cliente del layout; las
@@ -14,9 +14,11 @@ import type { UsuarioSesion } from "@/lib/panel/types";
 export function PanelShell({
   children,
   sesion,
+  pendientes = {},
 }: {
   children: React.ReactNode;
   sesion: UsuarioSesion;
+  pendientes?: Pendientes;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -34,7 +36,7 @@ export function PanelShell({
 
   return (
     <div data-area="panel" className="min-h-dvh bg-bone lg:grid lg:grid-cols-[18rem_1fr]">
-      <Sidebar open={open} onClose={() => setOpen(false)} sesion={sesion} />
+      <Sidebar open={open} onClose={() => setOpen(false)} sesion={sesion} pendientes={pendientes} />
       <div className="flex min-w-0 flex-col">
         <Topbar onOpenMenu={() => setOpen(true)} sesion={sesion} />
         <main

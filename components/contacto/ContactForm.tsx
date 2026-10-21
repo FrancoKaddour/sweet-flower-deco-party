@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { registrarConsulta } from "@/modules/ventas/registro";
 import { ButtonInner, buttonClasses } from "@/components/ui/Button";
 import { WHATSAPP_NUMBER } from "@/content/site";
 import { EVENT_WHATSAPP } from "@/content/evento";
@@ -51,6 +52,14 @@ export function ContactForm() {
     }
 
     const telefono = String(data.get("telefono") ?? "").trim();
+    void registrarConsulta({
+      tipo,
+      nombre,
+      email,
+      telefono,
+      mensaje,
+      web: String(data.get("web") ?? ""),
+    }).catch(() => {});
     const msg = [
       `¡Hola! Te escribo desde la web — ${tipo}.`,
       "",
@@ -89,6 +98,8 @@ export function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-8">
+        {/* Honeypot anti-spam: invisible para personas. */}
+        <input type="text" name="web" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       {/* Tipo de consulta */}
       <fieldset>
         <legend className={labelBase}>Tu consulta es sobre</legend>
