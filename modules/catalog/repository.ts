@@ -80,9 +80,27 @@ async function productosDeBase(filtro: { categoriaId?: string; destacados?: bool
   });
 }
 
+/**
+ * Si la base falla (caída, sin migrar, red), se loguea y se usa el respaldo
+ * estático: el sitio público nunca se rompe por la base.
+ */
+async function seguro<T>(fn: () => Promise<T>, respaldo: () => T | Promise<T>): Promise<T> {
+  if (!db) return respaldo();
+  try {
+    return await fn();
+  } catch (e) {
+    console.error("[catalogo] la base falló, uso el respaldo estático:", (e as Error).message);
+    return respaldo();
+  }
+}
+
 /* ── API pública del repositorio ── */
 
-export const getCategorias = cache(async (): Promise<Categoria[]> => {
+export const getCategorias = cache(
+  (): Promise<Categoria[]> => seguro(categoriasDeBase, estaticoCategorias),
+);
+
+async function categoriasDeBase(): Promise<Categoria[]> {
   if (!db) return estaticoCategorias();
   const rows = await db
     .select()
@@ -101,7 +119,7 @@ export const getCategorias = cache(async (): Promise<Categoria[]> => {
     incluye: c.incluye,
     img: c.imagen ?? "",
   }));
-});
+}
 
 export const getCategoria = cache(async (slug: string) =>
   (await getCategorias()).find((c) => c.slug === slug) ?? null,
@@ -113,30 +131,30 @@ export const getProductosDeCategoria = cache(async (slug: string): Promise<Produ
   // Si la categoría viene de la base (id ≠ slug), mandan los productos de la base
   // aunque estén vacíos; si no, el catálogo estático.
   const vieneDeBase = Boolean(db) && cat.id !== cat.slug;
-  const lista = vieneDeBase
-    ? await productosDeBase({ categoriaId: cat.id })
-    : estaticoProductos().filter((p) => p.categoria === slug);
+  const estaticos = () => estaticoProductos().filter((p) => p.categoria === slug);
+  const lista = vieneDeBase ? await seguro(() => productosDeBase({ categoriaId: cat.id }), estaticos) : estaticos();
   // destacados primero
   return [...lista].sort((a, b) => Number(!!b.destacado) - Number(!!a.destacado));
 });
 
 export const getProducto = cache(async (categoria: string, slug: string): Promise<Producto | null> => {
-  if (db) {
+  const estatico = () => estaticoProductos().find((p) => p.slug === slug && p.categoria === categoria) ?? null;
+  return seguro(async () => {
     const [p] = await productosDeBase({ slug });
     if (p) return p.categoria === categoria ? p : null;
-  }
-  return estaticoProductos().find((p) => p.slug === slug && p.categoria === categoria) ?? null;
+    return estatico();
+  }, estatico);
 });
 
 export const getDestacados = cache(async (limite = 18): Promise<Producto[]> => {
-  const desdeBase = db ? await productosDeBase({ destacados: true }) : [];
+  const desdeBase = await seguro(() => productosDeBase({ destacados: true }), () => []);
   const lista = desdeBase.length ? desdeBase : estaticoProductos().filter((p) => p.destacado);
   return lista.filter((p) => p.img).slice(0, limite * 3);
 });
 
 /** Todos los productos visibles (sitemap, estáticos). */
 export const getTodosLosProductos = cache(async (): Promise<Producto[]> => {
-  const desdeBase = db ? await productosDeBase({}) : [];
+  const desdeBase = await seguro(() => productosDeBase({}), () => []);
   return desdeBase.length ? desdeBase : estaticoProductos();
 });
 
