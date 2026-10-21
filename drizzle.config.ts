@@ -6,7 +6,8 @@ export default defineConfig({
   schema: "./db/schema.ts",
   out: "./drizzle",
   dialect: "postgresql",
-  dbCredentials: { url: process.env.DATABASE_URL ?? "" },
+  // Migraciones por la conexión directa (sin pgbouncer); la app usa DATABASE_URL.
+  dbCredentials: { url: process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL ?? "" },
   strict: true,
   verbose: true,
 });
