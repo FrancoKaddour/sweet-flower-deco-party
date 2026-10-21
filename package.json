@@ -23,7 +23,7 @@
     "@neondatabase/serverless": "^1.0.1",
     "@vercel/blob": "^1.1.1",
     "drizzle-orm": "^0.44.5",
-    "next-auth": "5.0.0-beta.29",
+    "next-auth": "beta",
     "server-only": "^0.0.1",
     "zod": "^4.1.5"
   },
