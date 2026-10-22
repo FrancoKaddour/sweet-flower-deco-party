@@ -6,15 +6,14 @@
  * ÚNICA del Loader (components/intro/Loader.tsx) y el estado inicial vive en CSS
  * (body[data-loader="true"] .c-hero__media). Método Villurcann.
  *
- * Es Server Component (sin "use client"): solo markup. TODO(contenido): video real.
+ * Es Server Component (sin "use client"): solo markup.
  */
 
 export function HeroMedia() {
   return (
     <div className="c-hero__media" aria-hidden="true">
-      {/* Placeholder de stock (30s, transiciones en arco). TODO(contenido):
-          reemplazar por video real de Sweet Flowers. Sin autoplay: lo arranca
-          HeroStory cuando el loader agranda el video (texto y video en sync). */}
+      {/* Video real (30s del resumen del Summit, sin audio). Sin autoplay: lo
+          arranca HeroStory cuando el loader agranda el video (texto en sync). */}
       <video
         muted
         loop

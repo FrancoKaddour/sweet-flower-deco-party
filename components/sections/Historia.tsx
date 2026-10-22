@@ -31,7 +31,7 @@ export function Historia() {
             {/* Imagen chica superpuesta (oculta en mobile para no romper) */}
             {/* TODO(contenido): detalle del oficio (manos, piezas, textura). */}
             <Image
-              src="https://picsum.photos/seed/sfdp-flor-2/500/500"
+              src="/img/rio-cuarto/rc-09.webp"
               alt=""
               width={500}
               height={500}

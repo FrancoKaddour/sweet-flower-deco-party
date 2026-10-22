@@ -20,14 +20,14 @@ import { EVENT_NAME, EVENT_CTA_HREF } from "@/content/evento";
  * chica abajo 0 → −50%. Ease = cubic-bezier(0.19, 1, 0.22, 1).
  */
 
-// TODO(contenido): titular, texto y fotos reales del Summit.
+// Fotos reales de la 1ª edición. TODO(contenido): titular y texto definitivos.
 const TITLE_LINES = ["Un día", "para todo", "el rubro"];
 const BODY =
   "Una vez al año, la decoración de eventos se junta en un mismo lugar. Charlas de referentes, proveedores, comunidad y una escena montada por Sweet Flowers para que la vivas desde adentro. Presencial, con cupos contados — y siempre se agota.";
 const IMG = {
-  big: "https://picsum.photos/seed/sfdp-summit-intro-big/1280/1707",
-  top: "https://picsum.photos/seed/sfdp-summit-intro-top/640/853",
-  bottom: "https://picsum.photos/seed/sfdp-summit-intro-bottom/640/853",
+  big: "/img/summit/lg/sum-07.webp",
+  top: "/img/summit/lg/sum-11.webp",
+  bottom: "/img/summit/lg/sum-23.webp",
 };
 
 export function SummitIntro() {

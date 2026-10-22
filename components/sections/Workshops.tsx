@@ -19,9 +19,9 @@ export function Workshops() {
       <div className="mx-auto grid max-w-[87.5rem] items-center gap-14 lg:grid-cols-12 lg:gap-10">
         <FadeUp y={50} className="lg:col-span-5">
           <div className="relative mx-auto aspect-[3/4] w-full max-w-[27.5rem] overflow-hidden rounded-t-full bg-sand">
-            {/* TODO(contenido): foto real de un workshop */}
+            {/* Workshop de Río Cuarto */}
             <Image
-              src="https://picsum.photos/seed/sfdp-home-workshops/900/1200"
+              src="/img/rio-cuarto/rc-12.webp"
               alt=""
               fill
               sizes="(max-width: 768px) 90vw, 440px"

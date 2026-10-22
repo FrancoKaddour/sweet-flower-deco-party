@@ -117,16 +117,18 @@ export const TRAYECTORIA: readonly {
   lugar?: string;
   detalle?: string;
   proxima?: boolean;
+  /** Foto real de esa sede/edición (si no hay, la tarjeta usa un placeholder). */
+  foto?: string;
 }[] = [
   // Sedes de los workshops en orden (§11). El 7º se hizo en un hotel que NO se nombra.
   { etapa: "Workshop 01", titulo: "Centro Naval", lugar: "CABA" },
   { etapa: "Workshop 02", titulo: "Madero Tango", lugar: "Puerto Madero" },
   { etapa: "Workshop 03", titulo: "La Rioja Capital", lugar: "La Rioja" },
-  { etapa: "Workshop 04", titulo: "Río Cuarto", lugar: "Córdoba" },
+  { etapa: "Workshop 04", titulo: "Río Cuarto", lugar: "Córdoba", foto: "/img/rio-cuarto/rc-03.webp" },
   { etapa: "Workshop 05", titulo: "Palacio San Miguel", lugar: "CABA" },
   { etapa: "Workshop 06", titulo: "La Rural", lugar: "CABA" },
   { etapa: "Workshop 07", titulo: "Séptimo workshop" },
-  { etapa: "Event Summit · 1ª edición", titulo: "La Rural", lugar: "18 de septiembre de 2026" },
+  { etapa: "Event Summit · 1ª edición", titulo: "La Rural", lugar: "18 de septiembre de 2026", foto: "/img/summit/lg/sum-28.webp" },
   { etapa: "Event Summit · 2ª edición", titulo: "9 de abril de 2027", detalle: "Preventa abierta", proxima: true },
 ];
 

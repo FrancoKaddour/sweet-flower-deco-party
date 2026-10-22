@@ -100,9 +100,9 @@ export function EdicionesScroll() {
                 key={t.etapa}
                 className="group relative h-[62vh] w-[72vw] shrink-0 overflow-hidden rounded-[var(--radius-lg)] sm:w-[48vw] md:h-[68vh] md:w-[34vw] lg:w-[26vw]"
               >
-                {/* TODO(contenido): foto real de cada workshop / de la 1ª edición. */}
+                {/* TODO(contenido): faltan fotos de los workshops 01–03, 05–07. */}
                 <Image
-                  src={`https://picsum.photos/seed/sfdp-sede-${i}/900/1200`}
+                  src={t.foto ?? `https://picsum.photos/seed/sfdp-sede-${i}/900/1200`}
                   alt=""
                   fill
                   sizes="(max-width: 640px) 72vw, (max-width: 768px) 48vw, (max-width: 1024px) 34vw, 26vw"

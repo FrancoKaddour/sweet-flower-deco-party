@@ -16,15 +16,16 @@ import { gsap, ScrollTrigger, CustomEase, useGSAP } from "@/lib/gsap";
  *  · Layout @1296: fotos grandes en la mitad izquierda a sangre; columna
  *    derecha (cols 8–12) con párrafo arriba (Cormorant itálica 22/1.1), foto
  *    3:2 centrada y contador "1 —— 5" abajo.
- * Contenido = placeholder del Summit (TODO(contenido): textos/fotos reales).
+ * Fotos reales de la 1ª edición. TODO(contenido): texto definitivo.
  */
 
 const ESCENAS = [
-  { titulo: "Charlas", seed: "charlas" },
-  { titulo: "Escena", seed: "escena" },
-  { titulo: "Comunidad", seed: "comunidad" },
-  { titulo: "Proveedores", seed: "proveedores" },
-  { titulo: "Networking", seed: "networking" },
+  // Fotos reales de la 1ª edición: `img` = grande (vertical), `b` = chica (3:2).
+  { titulo: "Charlas", seed: "charlas", img: "/img/summit/lg/sum-30.webp", b: "/img/summit/lg/sum-18.webp" },
+  { titulo: "Escena", seed: "escena", img: "/img/summit/lg/sum-17.webp", b: "/img/summit/lg/sum-10.webp" },
+  { titulo: "Comunidad", seed: "comunidad", img: "/img/summit/lg/sum-13.webp", b: "/img/summit/lg/sum-25.webp" },
+  { titulo: "Proveedores", seed: "proveedores", img: "/img/summit/lg/sum-06.webp", b: "/img/summit/lg/sum-04.webp" },
+  { titulo: "Networking", seed: "networking", img: "/img/summit/lg/sum-36.webp", b: "/img/summit/lg/sum-19.webp" },
 ] as const;
 
 const TEXTO =
@@ -121,7 +122,7 @@ export function SummitEscenas() {
         {ESCENAS.map((e, i) => (
           <figure key={e.seed} className="absolute inset-0 m-0">
             <Image
-              src={`https://picsum.photos/seed/sfdp-sm-esc-${e.seed}/1280/1920`}
+              src={e.img}
               alt=""
               fill
               priority={i === 0}
@@ -148,7 +149,7 @@ export function SummitEscenas() {
               {ESCENAS.map((e) => (
                 <figure key={e.seed} className="absolute inset-0 m-0">
                   <Image
-                    src={`https://picsum.photos/seed/sfdp-sm-esc-${e.seed}-b/960/640`}
+                    src={e.b}
                     alt=""
                     fill
                     sizes="(max-width: 768px) 90vw, 40vw"

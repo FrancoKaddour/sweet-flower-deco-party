@@ -4,27 +4,29 @@ import { useRef } from "react";
 import { gsap, useGSAP, ScrollTrigger } from "@/lib/gsap";
 import { FadeUp } from "@/components/motion/FadeUp";
 
-// Slides del grupo: 5 imágenes verticales superpuestas dentro de un track de ancho fijo.
-// TODO(contenido): reemplazar por fotos reales de escenografías/eventos.
+// Slides del grupo: imágenes superpuestas dentro de un track de ancho fijo.
+// Fotos reales del workshop en Río Cuarto (public/img/rio-cuarto, optimizadas a webp).
 type Slide = {
-  seed: number; // sufijo del seed picsum (sfdp-exp-N)
+  seed: number; // número de foto: /img/rio-cuarto/rc-NN.webp
   w: number;
   h: number;
   className: string; // posición (left/top/bottom) + z-index dentro del grupo
 };
 
 const SLIDES: Slide[] = [
-  { seed: 1, w: 340, h: 480, className: "left-0 bottom-0 z-[1]" },
-  { seed: 2, w: 260, h: 340, className: "left-[15.625rem] top-[1.25rem] z-[3]" },
-  { seed: 3, w: 320, h: 450, className: "left-[29.375rem] bottom-[0.625rem] z-[2]" },
-  { seed: 4, w: 240, h: 320, className: "left-[46.25rem] top-0 z-[4]" },
-  { seed: 5, w: 340, h: 470, className: "left-[58.75rem] bottom-0 z-[1]" },
-  { seed: 6, w: 260, h: 350, className: "left-[75.625rem] top-[1.875rem] z-[3]" },
-  { seed: 7, w: 300, h: 420, className: "left-[86.25rem] bottom-[0.625rem] z-[2]" },
+  { seed: 4, w: 340, h: 480, className: "left-0 bottom-0 z-[1]" },
+  { seed: 7, w: 260, h: 340, className: "left-[15.625rem] top-[1.25rem] z-[3]" },
+  { seed: 9, w: 320, h: 450, className: "left-[29.375rem] bottom-[0.625rem] z-[2]" },
+  { seed: 1, w: 240, h: 320, className: "left-[46.25rem] top-0 z-[4]" },
+  { seed: 6, w: 340, h: 470, className: "left-[58.75rem] bottom-0 z-[1]" },
+  { seed: 8, w: 260, h: 350, className: "left-[75.625rem] top-[1.875rem] z-[3]" },
+  { seed: 3, w: 300, h: 420, className: "left-[86.25rem] bottom-[0.625rem] z-[2]" },
 ];
 
 // Tira mobile simple (block md:hidden) para que el celular no quede vacío.
-const MOBILE_SEEDS = [1, 2, 3, 4];
+const MOBILE_SEEDS = [9, 4, 7, 1, 6, 2];
+
+const foto = (n: number) => `/img/rio-cuarto/rc-${String(n).padStart(2, "0")}.webp`;
 
 // Ancho fijo del grupo (px) = período del loop (coincide con w-[93.75rem] del grupo).
 const GROUP_WIDTH = 1500;
@@ -153,7 +155,9 @@ export function Experiencia() {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={`https://picsum.photos/seed/sfdp-exp-${slide.seed}/${slide.w}/${slide.h}`}
+                    src={foto(slide.seed)}
+                    loading="lazy"
+                    decoding="async"
                     alt=""
                     width={slide.w}
                     height={slide.h}
@@ -174,7 +178,9 @@ export function Experiencia() {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={seed}
-              src={`https://picsum.photos/seed/sfdp-exp-${seed}/600/800`}
+              src={foto(seed)}
+              loading="lazy"
+              decoding="async"
               alt=""
               aria-hidden="true"
               width={600}

@@ -12,12 +12,15 @@ import {
   WORKSHOPS_REALIZADOS,
 } from "@/content/evento";
 
-// TODO(contenido): reemplazar por fotos reales de las ediciones del Summit.
-// Ver docs/16_DECISIONS.md → checklist 03_EVENTOS (fotos/video de ediciones).
-// 9 columnas × 5 fotos (45): antes eran 126 y trababan el scroll. La grilla
-// mantiene su ancho → fotos más grandes, misma cobertura. Mobile se recorta (CSS).
-const COLUMNS: number[][] = Array.from({ length: 9 }, (_, c) =>
-  Array.from({ length: 5 }, (_, i) => c * 12 + i + 1),
+// Fotos reales de la 1ª edición (public/img/summit, 36 webp). 9 columnas × 5:
+// se reparten con salto para que la misma foto no quede pegada a sí misma.
+// Mobile se recorta (CSS).
+const TOTAL_FOTOS = 36;
+const COLUMNS: string[][] = Array.from({ length: 9 }, (_, c) =>
+  Array.from({ length: 5 }, (_, i) => {
+    const n = ((c * 5 + i) * 7) % TOTAL_FOTOS; // 7 es coprimo con 36 → recorre todas
+    return `/img/summit/sum-${String(n + 1).padStart(2, "0")}.webp`;
+  }),
 );
 
 
@@ -106,18 +109,11 @@ export function SummitHome() {
         <div className="wk-grid" ref={grid}>
           {COLUMNS.map((col, ci) => (
             <div className="wk-col" key={ci}>
-              {col.map((n) => (
-                // <img> nativo a propósito: el collage es decorativo (42 imgs),
-                // GSAP anima estos <img> por selector y next/image dispararía 42
-                // pasadas del optimizador sobre placeholders. Migrar a next/image
-                // recién con las fotos reales (imports estáticos). Ver AGENTS/audit.
+              {col.map((src, i) => (
+                // <img> nativo a propósito: collage decorativo de 45 imgs que GSAP
+                // anima por selector. Las fotos ya van optimizadas (webp ~40 KB).
                 // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  key={n}
-                  src={`https://picsum.photos/seed/sfdp-sm-${ci}-${n}/360/540`}
-                  alt=""
-                  loading="lazy"
-                />
+                <img key={`${ci}-${i}`} src={src} alt="" loading="lazy" decoding="async" />
               ))}
             </div>
           ))}

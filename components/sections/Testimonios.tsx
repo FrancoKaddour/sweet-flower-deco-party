@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 
@@ -82,7 +81,7 @@ export function Testimonios() {
           stagger={0.08}
           className="grid grid-cols-1 items-start gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3"
         >
-          {TESTIMONIOS.map((t, i) => (
+          {TESTIMONIOS.map((t) => (
             <figure
               key={t.nombre}
               className="flex flex-col rounded-[var(--radius-md)] bg-cloud p-7 shadow-[0_18px_50px_-26px_rgba(20,17,15,0.22)] md:p-8"
@@ -97,13 +96,13 @@ export function Testimonios() {
                 {t.quote}
               </blockquote>
               <figcaption className="mt-7 flex items-center gap-4">
-                <Image
-                  src={`https://picsum.photos/seed/sfdp-testi-${i + 1}/120/120`}
-                  alt=""
-                  width={48}
-                  height={48}
-                  className="h-12 w-12 shrink-0 rounded-full object-cover"
-                />
+                {/* Iniciales: sin fotos de stock que parezcan clientas reales. */}
+                <span
+                  aria-hidden="true"
+                  className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-sand font-display text-[length:var(--text-step-0)] font-bold uppercase text-ink"
+                >
+                  {t.nombre.split(" ").map((w) => w[0]).join("").slice(0, 2)}
+                </span>
                 <div className="min-w-0">
                   <p className="font-display text-[length:var(--text-step-0)] font-bold uppercase leading-tight text-ink">
                     {t.nombre}

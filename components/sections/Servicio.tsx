@@ -11,31 +11,37 @@ import { FadeUp } from "@/components/motion/FadeUp";
 const SLIDES = [
   {
     seed: "sfdp-serv-1",
+    img: "/img/summit/lg/sum-08.webp",
     titulo: "De 15 a 300 invitados",
     sub: "Un evento, una escenografía.",
   },
   {
     seed: "sfdp-serv-2",
+    img: "/img/summit/lg/sum-06.webp",
     titulo: "Montaje a medida",
     sub: "Nos adaptamos a tu espacio.",
   },
   {
     seed: "sfdp-serv-3",
+    img: "/img/rio-cuarto/rc-05.webp",
     titulo: "En todo el país",
     sub: "Llevamos la decoración a donde sea.",
   },
   {
     seed: "sfdp-serv-4",
+    img: "/img/summit/lg/sum-04.webp",
     titulo: "Diseño & singularidad",
     sub: "Piezas que no se repiten.",
   },
   {
     seed: "sfdp-serv-5",
+    img: "/productos/estanteria-eclipse.jpg",
     titulo: "Producto propio",
     sub: "Hierro, madera y textil.",
   },
   {
     seed: "sfdp-serv-6",
+    img: "/img/summit/lg/sum-28.webp",
     titulo: "Llave en mano",
     sub: "Del boceto al montaje.",
   },
@@ -215,7 +221,7 @@ export function Servicio() {
             className="group relative w-[78vw] shrink-0 snap-center overflow-hidden sm:snap-start rounded-[var(--radius-md)] sm:w-[48%] md:w-[calc((100%-2rem)/3)]"
           >
             <Image
-              src={`https://picsum.photos/seed/${slide.seed}/600/800`}
+              src={slide.img}
               alt=""
               width={600}
               height={800}

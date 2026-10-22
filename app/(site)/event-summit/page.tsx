@@ -82,7 +82,7 @@ export default function EventoPage() {
           <FadeUp y={60} className="lg:col-span-7">
             <div className="relative">
               <Duotone
-                src="https://picsum.photos/seed/sfdp-evento-exp/1200/1400"
+                src="/img/summit/lg/sum-08.webp"
                 sizes="(max-width: 1024px) 100vw, 58vw"
                 scrim="bottom"
                 className="aspect-[4/3] w-full rounded-[var(--radius-lg)] md:aspect-[5/4]"
@@ -156,7 +156,7 @@ export default function EventoPage() {
       >
         {/* Fondo full-bleed con duotono */}
         <Duotone
-          src="https://picsum.photos/seed/sfdp-evento-cierre/1920/1400"
+          src="/img/summit/lg/sum-16.webp"
           sizes="100vw"
           scrim="full"
           className="absolute inset-0"

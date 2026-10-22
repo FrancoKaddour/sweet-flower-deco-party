@@ -1,23 +1,23 @@
 import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
 
-// TODO(contenido): principios, textos y fotos reales (ver docs → 03_PRINCIPIOS).
+// Fotos reales (workshop Río Cuarto). TODO(contenido): textos definitivos.
 // Cada card se apila con position: sticky (CSS puro, sin JS).
 const PRINCIPIOS = [
   {
     titulo: "Hacelo memorable",
     desc: "Cada detalle está pensado para sorprender y crear recuerdos que quedan.",
-    img: "https://picsum.photos/seed/sfdp-prin-1/429/525",
+    img: "/img/rio-cuarto/rc-07.webp",
   },
   {
     titulo: "Cada evento es único",
     desc: "Nada de fórmulas: diseñamos la escena a la medida de cada celebración.",
-    img: "https://picsum.photos/seed/sfdp-prin-2/429/525",
+    img: "/img/rio-cuarto/rc-01.webp",
   },
   {
     titulo: "Detalle artesanal",
     desc: "Piezas hechas a mano, con la calidez y la terminación de un oficio.",
-    img: "https://picsum.photos/seed/sfdp-prin-3/429/525",
+    img: "/img/rio-cuarto/rc-04.webp",
   },
 ];
 
