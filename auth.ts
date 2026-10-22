@@ -14,7 +14,9 @@ import Resend from "next-auth/providers/resend";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-import { accounts, sessions, users, verificationTokens, type Role } from "@/db/schema";
+import { accounts, sessions, subscribers, users, verificationTokens, type Role } from "@/db/schema";
+import { BASE_URL, enviarEmail } from "@/lib/email/enviar";
+import { correoBienvenidaCuenta } from "@/lib/email/plantillas";
 
 const lista = (v?: string) =>
   (v ?? "")
@@ -66,6 +68,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   events: {
+    // Cuenta nueva: mail de bienvenida y, si ya estaba en el club, se vinculan.
+    async createUser({ user }) {
+      if (!db || !user.id || !user.email) return;
+      try {
+        await db
+          .update(subscribers)
+          .set({ userId: user.id })
+          .where(eq(subscribers.email, user.email.toLowerCase()));
+        if (rolDeStaff(user.email)) return; // el staff no recibe el mail de clientes
+        const c = correoBienvenidaCuenta({ base: BASE_URL, nombre: user.name });
+        await enviarEmail({ to: user.email, subject: c.asunto, html: c.html, text: c.texto });
+      } catch (e) {
+        console.error("[auth] bienvenida", e);
+      }
+    },
     // Sincroniza el rol de staff en cada ingreso (alta, baja o cambio por env).
     async signIn({ user }) {
       if (!db || !user.id || !user.email) return;

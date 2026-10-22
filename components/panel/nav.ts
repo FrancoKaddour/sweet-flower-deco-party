@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import { IconInicio, IconCatalogo, IconAjustes, IconVentas, IconConsultas, IconComunidad } from "@/components/panel/icons";
+import { IconInicio, IconCatalogo, IconAjustes, IconVentas, IconConsultas, IconComunidad, IconCampanas } from "@/components/panel/icons";
 
 // Definición única de la navegación del panel. La consumen el Sidebar (nav) y el
 // Topbar (para resolver el título de la sección activa). Un solo lugar donde
@@ -50,6 +50,12 @@ export const PANEL_NAV: NavItem[] = [
     icon: IconComunidad,
     descripcion: "Reservas al Event Summit.",
     pendientes: "inscripciones",
+  },
+  {
+    label: "Newsletter",
+    href: "/panel/newsletter",
+    icon: IconCampanas,
+    descripcion: "Club Sweet Flowers: suscriptores y campañas.",
   },
   {
     label: "Ajustes",

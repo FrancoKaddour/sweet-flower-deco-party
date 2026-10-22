@@ -15,6 +15,13 @@
       "when": 1792592808181,
       "tag": "0001_fase2_pedidos",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792670045327,
+      "tag": "0002_newsletter",
+      "breakpoints": true
     }
   ]
 }

@@ -12,6 +12,7 @@
  * Fase 2: pedidos del carrito, consultas del formulario e inscripciones al
  * Summit. Todo se sigue resolviendo por WhatsApp: estas tablas son el registro
  * para que el equipo haga el seguimiento desde el panel.
+ * Fase 3: newsletter (suscriptos con consentimiento + campañas).
  */
 import { sql } from "drizzle-orm";
 import {
@@ -290,6 +291,73 @@ export const summitRegistrations = pgTable(
   ],
 );
 
+/* ───────────────────────────── Newsletter ───────────────────────────── */
+
+export const subscriberStatusEnum = pgEnum("subscriber_status", ["activo", "baja"]);
+export type SubscriberStatus = (typeof subscriberStatusEnum.enumValues)[number];
+
+/**
+ * Suscriptos al newsletter (con consentimiento explícito). `token` firma el link
+ * de baja; `codigo` es su descuento personal de bienvenida (se valida a mano por
+ * WhatsApp y se marca como usado en el panel).
+ */
+export const subscribers = pgTable(
+  "subscribers",
+  {
+    id: id(),
+    email: text("email").notNull(),
+    nombre: text("nombre"),
+    /** Dónde se suscribió: footer, cuenta, panel… */
+    origen: text("origen").notNull().default("footer"),
+    /** Intereses declarados: productos, summit, workshops. */
+    intereses: jsonb("intereses").$type<string[]>().default([]).notNull(),
+    userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+    estado: subscriberStatusEnum("estado").default("activo").notNull(),
+    token: text("token").notNull(),
+    codigo: text("codigo").notNull(),
+    codigoUsadoAt: timestamp("codigo_usado_at", { withTimezone: true }),
+    /** Último recordatorio automático del código sin usar. */
+    recordatorioAt: timestamp("recordatorio_at", { withTimezone: true }),
+    consentAt: timestamp("consent_at", { withTimezone: true }).defaultNow().notNull(),
+    bajaAt: timestamp("baja_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    uniqueIndex("subscribers_email_idx").on(t.email),
+    uniqueIndex("subscribers_token_idx").on(t.token),
+    uniqueIndex("subscribers_codigo_idx").on(t.codigo),
+    index("subscribers_estado_idx").on(t.estado),
+  ],
+);
+
+export const campaignStatusEnum = pgEnum("campaign_status", ["borrador", "enviando", "enviada"]);
+export type CampaignStatus = (typeof campaignStatusEnum.enumValues)[number];
+
+/** Campañas de email que arma el equipo desde el panel. */
+export const campaigns = pgTable(
+  "campaigns",
+  {
+    id: id(),
+    asunto: text("asunto").notNull(),
+    preheader: text("preheader"),
+    titulo: text("titulo").notNull(),
+    cuerpo: text("cuerpo").notNull(),
+    imagen: text("imagen"),
+    ctaTexto: text("cta_texto"),
+    ctaUrl: text("cta_url"),
+    segmento: text("segmento").notNull().default("todos"),
+    estado: campaignStatusEnum("estado").default("borrador").notNull(),
+    enviados: integer("enviados").default(0).notNull(),
+    fallidos: integer("fallidos").default(0).notNull(),
+    enviadaAt: timestamp("enviada_at", { withTimezone: true }),
+    createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("campaigns_estado_idx").on(t.estado), index("campaigns_created_idx").on(t.createdAt)],
+);
+
 export type DbCategory = typeof categories.$inferSelect;
 export type DbProduct = typeof products.$inferSelect;
 export type DbProductImage = typeof productImages.$inferSelect;
@@ -297,3 +365,5 @@ export type DbUser = typeof users.$inferSelect;
 export type DbOrder = typeof orders.$inferSelect;
 export type DbInquiry = typeof inquiries.$inferSelect;
 export type DbSummitRegistration = typeof summitRegistrations.$inferSelect;
+export type DbSubscriber = typeof subscribers.$inferSelect;
+export type DbCampaign = typeof campaigns.$inferSelect;

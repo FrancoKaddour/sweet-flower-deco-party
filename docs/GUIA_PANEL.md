@@ -32,3 +32,19 @@ Señó → Pagó → Asistió. Arriba ves los lugares confirmados sobre el cupo.
 
 ## Ajustes
 Quién tiene acceso y con qué rol. Para sumar a alguien, se lo pedís a Franco.
+
+## Newsletter (Club Sweet Flowers)
+La gente se suma desde la franja de arriba del footer (en todas las páginas) y
+recibe al instante un código de descuento personal (ej. `CLUB-7KQ4M`).
+- **Suscriptores:** cuando alguien te pase su código por WhatsApp, buscalo y
+  activá "Usado". Así ves quién compró gracias al club. También podés agregar a
+  alguien a mano (solo si te pidió recibir novedades) y descargar todo en CSV.
+- **Campañas:** "Nueva campaña" → elegí una plantilla (lanzamiento, promo,
+  preventa del Summit, empujón a la primera compra, novedad) → editá → mirá la
+  vista previa → "Enviarme una prueba" → "Enviar". Podés mandarla a todos o a
+  un grupo: los que no usaron su código, los que ya compraron, los interesados
+  en el Summit, los que tienen cuenta, los nuevos del último mes.
+- `{nombre}` y `{codigo}` en el texto se reemplazan solos por los de cada persona.
+- **Automático:** al suscribirse llega el mail con el código; a los 7 días, si
+  no lo usó, un recordatorio (una sola vez). Al crear una cuenta llega un mail
+  de bienvenida.

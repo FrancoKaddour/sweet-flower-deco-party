@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
-import { orders } from "@/db/schema";
+import { orders, subscribers } from "@/db/schema";
 import { requireUser } from "@/lib/dal";
 import { salir } from "@/lib/auth/actions";
 import { fechaCorta } from "@/lib/panel/formato";
 import { formatARS } from "@/modules/catalog/types";
 import { ESTADOS_PEDIDO, infoEstado } from "@/modules/ventas/estados";
+import { bajaDesdeCuenta, suscribirDesdeCuenta } from "@/modules/newsletter/publico";
+import { CLUB, DESCUENTO_BIENVENIDA } from "@/content/newsletter";
 
 export const metadata: Metadata = { title: "Mi cuenta", robots: { index: false } };
 
@@ -25,9 +27,23 @@ async function misPedidos(userId: string) {
   }
 }
 
+async function miClub(email: string | null | undefined) {
+  if (!db || !email) return null;
+  try {
+    const [s] = await db
+      .select({ estado: subscribers.estado, codigo: subscribers.codigo, usado: subscribers.codigoUsadoAt })
+      .from(subscribers)
+      .where(eq(subscribers.email, email.toLowerCase()));
+    return s ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export default async function CuentaPage() {
   const user = await requireUser("/cuenta");
-  const pedidos = await misPedidos(user.id);
+  const [pedidos, club] = await Promise.all([misPedidos(user.id), miClub(user.email)]);
+  const enClub = club?.estado === "activo";
   const nombre = (user.name ?? "").split(" ")[0];
 
   return (
@@ -69,6 +85,36 @@ export default async function CuentaPage() {
                 </li>
               ))}
             </ul>
+          )}
+        </section>
+
+        <section aria-labelledby="club-h" className="mt-14 rounded-[var(--radius-lg)] bg-bordeaux p-7 text-bone md:p-9">
+          <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">✧ {CLUB.nombre}</p>
+          <h2 id="club-h" className="mt-3 font-display text-[length:var(--text-step-2)] font-bold uppercase leading-tight">
+            {enClub ? "Sos parte del club" : CLUB.titulo}
+          </h2>
+          {enClub ? (
+            <>
+              <p className="mt-3 text-bone/80">
+                {club?.usado
+                  ? "Ya usaste tu código de bienvenida. Igual vas a recibir primero las preventas y promos."
+                  : <>Tu código de {DESCUENTO_BIENVENIDA}%: <span className="font-mono font-bold tracking-[0.1em] text-champagne">{club?.codigo}</span></>}
+              </p>
+              <form action={bajaDesdeCuenta} className="mt-5">
+                <button type="submit" className="text-[length:var(--text-step--1)] text-bone/60 underline-offset-4 hover:text-bone hover:underline">
+                  Dejar de recibir novedades
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <p className="mt-3 max-w-[48ch] text-bone/80">{CLUB.bajada}</p>
+              <form action={suscribirDesdeCuenta} className="mt-6">
+                <button type="submit" className="min-h-12 rounded-full bg-bone px-7 text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-ink hover:bg-champagne">
+                  Sumarme con {user.email}
+                </button>
+              </form>
+            </>
           )}
         </section>
 

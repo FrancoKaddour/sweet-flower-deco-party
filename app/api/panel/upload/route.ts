@@ -17,7 +17,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       request,
       onBeforeGenerateToken: async (pathname) => {
         await assertStaff();
-        if (!pathname.startsWith("productos/") && !pathname.startsWith("contenido/")) {
+        if (!["productos/", "contenido/", "newsletter/"].some((c) => pathname.startsWith(c))) {
           throw new Error("Carpeta no permitida");
         }
         return {
