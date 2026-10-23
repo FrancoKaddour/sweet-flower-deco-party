@@ -433,10 +433,10 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
   {
     "slug": "jaula",
     "nombre": "Jaula",
-    "categoria": "hierro",
+    "categoria": "catering",
     "precio": 35500,
     "descripcion": "Jaula Colores a elección La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
-    "img": "/productos/jaula.jpg",
+    "img": "/productos/cat-jaula.jpg",
     "destacado": false
   },
   {
@@ -445,7 +445,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "categoria": "catering",
     "precio": 45000,
     "descripcion": "Alzada de hierro p un plato 28cm de diámetro Alto 85cm aprox La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
-    "img": "/productos/alzada-hierro-con-pie-para-un-plato.jpg",
+    "img": "/productos/cat-alzada-de-pie.jpg",
     "destacado": false
   },
   {
@@ -526,7 +526,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "categoria": "catering",
     "precio": 54500,
     "descripcion": "Alzada Colores a elección La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
-    "img": "/productos/alzada-16-lazos-espiralada.jpg",
+    "img": "/productos/cat-16-lazos.jpg",
     "destacado": true
   },
   {
@@ -554,15 +554,6 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "precio": 94000,
     "descripcion": "Pintado $144.000 3 piezas Medidas 180x1 aprox",
     "img": "/productos/porton-merlina-halloween.jpg",
-    "destacado": false
-  },
-  {
-    "slug": "bandeja-hierro-doble-circulo",
-    "nombre": "Bandeja hierro doble circulo",
-    "categoria": "catering",
-    "precio": 19500,
-    "descripcion": "Bandeja hierro doble círculo Colores a elección La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
-    "img": "/productos/bandeja-hierro-doble-circulo.jpg",
     "destacado": false
   },
   {
@@ -625,7 +616,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "categoria": "catering",
     "precio": 34500,
     "descripcion": "Alzada de hierro con madera $49.000 Solo armazon $34.500 Medidas 25cm de diámetro 18 cm de alto La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
-    "img": "/productos/alzada-corona.jpg",
+    "img": "/productos/cat-alzada-corona.jpg",
     "destacado": true
   },
   {
@@ -634,7 +625,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "categoria": "catering",
     "precio": 72000,
     "descripcion": "Eclipse XL Con maderas $192.000 Medida 1m x 58cm Colores a elección",
-    "img": "/productos/eclipse-xl.jpg",
+    "img": "/productos/cat-eclipse-1m.jpg",
     "destacado": false
   },
   {
@@ -787,7 +778,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "categoria": "catering",
     "precio": 348000,
     "descripcion": "Combo x5 mesas de hierro Con maderas $468.000 2cm pintado y barnizado Medidas: 1 mesa central de 1m de alto x 40cm de diametro 4 mesas en los costados de 80cm de alto x 40cm de profundidad El diametro final es de 1.20, cada uno le da la abertura que necesite",
-    "img": "/productos/mesas-isla.jpg",
+    "img": "/productos/cat-mesas-isla.jpg",
     "destacado": true
   },
   {
@@ -958,7 +949,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "categoria": "catering",
     "precio": 57000,
     "descripcion": "Estanteria Star Con maderas $77.000 Medida 60cm aprox Colores a eleccion",
-    "img": "/productos/estanteria-star.jpg",
+    "img": "/productos/cat-estanteria-star.jpg",
     "destacado": false
   },
   {
@@ -1093,7 +1084,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "categoria": "catering",
     "precio": 85000,
     "descripcion": "Combo x 3 alzadas Escandinavas Colores a eleccion Combo x 3 Indiciduales $35.000",
-    "img": "/productos/alzadas-escandinavas-x3.jpg",
+    "img": "/productos/cat-alzadas-escandinavas.jpg",
     "destacado": true
   },
   {
@@ -1228,7 +1219,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "categoria": "catering",
     "precio": 49000,
     "descripcion": "Estanteria Eclipse Medidas: 60cm diametro x 15cm $57.000 (C/madera $77.000 ) 45cm diametro x 15cm $49.000 (C/madera $69.000)",
-    "img": "/productos/estanteria-eclipse.jpg",
+    "img": "/productos/cat-estanteria-eclipse.jpg",
     "destacado": true
   },
   {
@@ -1525,7 +1516,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "categoria": "catering",
     "precio": 57000,
     "descripcion": "Estanteria Sweet Con madera $77.000 Medida 60cm Color a eleccion",
-    "img": "/productos/estanteria-sweet.jpg",
+    "img": "/productos/cat-estanteria-sweet.jpg",
     "destacado": true
   },
   {
@@ -1617,5 +1608,167 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "descripcion": "Medidas: Alto 2.10m Ancho 1.50 extensible hasta 3 metros AGREGARLE ALTURA (opcional) Soporte hasta 3m $22.000 Soporte hasta 4m $32.000",
     "img": "/productos/arco-extensible-esencial.jpg",
     "destacado": true
+  },
+  {
+    "slug": "torre-nativa-60cm",
+    "nombre": "Torre nativa 60cm",
+    "categoria": "catering",
+    "precio": 77000,
+    "descripcion": "Exhibidor de hierro con bandejas de madera, ideal para finger food, coffee breaks y estaciones gourmet. Alto 60cm. Precio con maderas.",
+    "img": "/productos/cat-torre-nativa.jpg",
+    "destacado": true
+  },
+  {
+    "slug": "prisma-x4",
+    "nombre": "Prisma x4",
+    "categoria": "catering",
+    "precio": 98000,
+    "descripcion": "Set de 4 prismas de hierro con tapa de madera. Cada cuadrado mide 25x25cm (ancho y profundidad). Alturas: 1 de 25cm, 2 de 20cm y 1 de 15cm. Precio con maderas.",
+    "medidas": "25x25cm · alturas 25, 20, 20 y 15cm",
+    "img": "/productos/cat-prisma-x4.jpg",
+    "destacado": true
+  },
+  {
+    "slug": "orbita-x3",
+    "nombre": "Órbita x3",
+    "categoria": "catering",
+    "precio": 125000,
+    "descripcion": "Combo de 3 alzadas circulares de hierro. Medidas: 30x25, 25x20 y 20x15cm. Sin maderas $125.000 · Con maderas $160.000.",
+    "img": "/productos/cat-exhibidores-gastronomicos.jpg",
+    "destacado": false,
+    "medidas": "30x25 · 25x20 · 20x15cm",
+    "variantes": [
+      "Sin maderas $125.000",
+      "Con maderas $160.000"
+    ]
+  },
+  {
+    "slug": "estanteria-capsula-60cm",
+    "nombre": "Estantería cápsula 60cm",
+    "categoria": "catering",
+    "precio": 57000,
+    "descripcion": "Estantería cápsula de hierro de 60cm. Sin maderas $57.000 · Con maderas $77.000.",
+    "img": "/productos/cat-estanteria-capsula-60.jpg",
+    "destacado": false,
+    "variantes": [
+      "Sin maderas $57.000",
+      "Con maderas $77.000"
+    ]
+  },
+  {
+    "slug": "estanteria-capsula-xl",
+    "nombre": "Estantería cápsula XL",
+    "categoria": "catering",
+    "precio": 72000,
+    "descripcion": "Estantería cápsula XL de hierro. Sin maderas $72.000 · Con estantes $120.000.",
+    "img": "/productos/cat-estanteria-capsula-60.jpg",
+    "destacado": false,
+    "variantes": [
+      "Sin maderas $72.000",
+      "Con estantes $120.000"
+    ]
+  },
+  {
+    "slug": "estanteria-s-60cm",
+    "nombre": "Estantería S 60cm",
+    "categoria": "catering",
+    "precio": 57000,
+    "descripcion": "Estantería en S de hierro de 60cm. Sin estantes $57.000 · Con estantes $77.000.",
+    "img": "/productos/cat-estanteria-s.jpg",
+    "destacado": false,
+    "variantes": [
+      "Sin estantes $57.000",
+      "Con estantes $77.000"
+    ]
+  },
+  {
+    "slug": "arcoiris-4-estantes",
+    "nombre": "Arcoíris con 4 estantes",
+    "categoria": "catering",
+    "precio": null,
+    "descripcion": "Estructura arcoíris de 1,10m x 50cm con 4 estantes. Con o sin maderas.",
+    "medidas": "1,10m x 50cm",
+    "img": "/productos/cat-arcoiris-4-estantes.jpg",
+    "destacado": false
+  },
+  {
+    "slug": "alzada-separada",
+    "nombre": "Alzada separada",
+    "categoria": "catering",
+    "precio": null,
+    "descripcion": "Alzada de hierro. Precio sin madera. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "img": "/productos/cat-alzada-separada.jpg",
+    "destacado": false
+  },
+  {
+    "slug": "alzada-triangular",
+    "nombre": "Alzada triangular",
+    "categoria": "catering",
+    "precio": null,
+    "descripcion": "Alzada de hierro con tapa de madera. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "img": "/productos/cat-alzada-triangular.jpg",
+    "destacado": false
+  },
+  {
+    "slug": "bandeja-circular",
+    "nombre": "Bandeja circular",
+    "categoria": "catering",
+    "precio": 19500,
+    "descripcion": "Bandeja circular de hierro. Precio sin maderas. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "img": "/productos/cat-bandeja-circular.jpg",
+    "destacado": false
+  },
+  {
+    "slug": "gota",
+    "nombre": "Gota",
+    "categoria": "catering",
+    "precio": 65000,
+    "descripcion": "Gota de hierro. Solo estructura $65.000 · Con maderas $89.000. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "variantes": [
+      "Solo estructura $65.000",
+      "Con maderas $89.000"
+    ],
+    "img": "/productos/cat-gota-luna-torre.jpg",
+    "destacado": false
+  },
+  {
+    "slug": "luna-nova",
+    "nombre": "Luna Nova",
+    "categoria": "catering",
+    "precio": 70000,
+    "descripcion": "Luna Nova de hierro. Solo estructura $70.000 · Con maderas $130.000. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "variantes": [
+      "Solo estructura $70.000",
+      "Con maderas $130.000"
+    ],
+    "img": "/productos/cat-gota-luna-torre.jpg",
+    "destacado": false
+  },
+  {
+    "slug": "torre-verona",
+    "nombre": "Torre Verona",
+    "categoria": "catering",
+    "precio": 65000,
+    "descripcion": "Torre Verona de hierro. Solo estructura $65.000 · Con maderas $120.000. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "variantes": [
+      "Solo estructura $65.000",
+      "Con maderas $120.000"
+    ],
+    "img": "/productos/cat-gota-luna-torre.jpg",
+    "destacado": false
+  },
+  {
+    "slug": "estanteria-s-xl",
+    "nombre": "Estantería S XL",
+    "categoria": "catering",
+    "precio": 72000,
+    "descripcion": "Estantería en S de hierro, 1m x 40cm. Sin estantes $72.000 · Con estantes $192.000.",
+    "medidas": "1m x 40cm",
+    "variantes": [
+      "Sin estantes $72.000",
+      "Con estantes $192.000"
+    ],
+    "img": "/productos/cat-estanteria-s-xl.jpg",
+    "destacado": false
   }
 ];

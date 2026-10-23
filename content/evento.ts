@@ -61,6 +61,7 @@ export const PASES: readonly { id: PaseId; nombre: string; incluye: readonly str
     incluye: [
       "Ingreso al auditorio del Event Summit",
       "Regalos",
+      "Sorteos",
       "Coffee break",
       "Certificado de asistencia",
       "Ingreso a Expo Hobby",
