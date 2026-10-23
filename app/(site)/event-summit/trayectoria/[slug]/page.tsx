@@ -9,7 +9,7 @@ import { RevealText } from "@/components/motion/RevealText";
 import { Button } from "@/components/ui/Button";
 import { WorkshopHero } from "@/components/trayectoria/WorkshopHero";
 import { Galeria } from "@/components/trayectoria/Galeria";
-import { EDICION_LABEL, ETAPAS_CON_PAGINA, EVENT_NAME, EVENT_WHEN, TRAYECTORIA } from "@/content/evento";
+import { EDICION_LABEL, ETAPAS_CON_PAGINA, EVENT_NAME, EVENT_WHEN, TRAYECTORIA, type Etapa } from "@/content/evento";
 import { galeriaDe, portadaDe } from "@/content/galerias";
 
 export function generateStaticParams() {
@@ -32,13 +32,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   });
 }
 
-/** Texto provisorio mientras no esté el real de cada encuentro. */
-function resumenDe(e: { etapa: string; titulo: string; resumen?: string }) {
-  return (
-    e.resumen ??
-    `Una jornada de taller en ${e.titulo}: técnicas de montaje, ambientación y producto, mano a mano con el equipo de Sweet Flowers y decoradoras de todo el país. Así se vivió el encuentro.`
-  );
+/** Bajada: la propia o una armada con los datos del encuentro. */
+function resumenDe(e: Etapa) {
+  if (e.resumen) return e.resumen;
+  const quien = e.participantes ? `${e.participantes} decoradoras, organizadoras y emprendedoras` : "decoradoras y organizadoras de todo el país";
+  const inicio = e.fecha ? `El ${e.fecha}, ${quien}` : quien.charAt(0).toUpperCase() + quien.slice(1);
+  const temas = e.temas?.length ? `${e.temas.length} temas` : "charlas";
+  return `${inicio} se juntaron en ${e.titulo} para un día de taller intensivo con el equipo de Sweet Flowers: ${temas}, práctica en vivo y comunidad.`;
 }
+
+const INSTAGRAM = "https://www.instagram.com/sweetflowersdecoparty/";
 
 export default async function EtapaPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -66,7 +69,7 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       <WorkshopHero
         etapa={e.etapa}
         titulo={e.titulo}
-        lugar={e.lugar}
+        lugar={[e.lugar, e.fecha].filter(Boolean).join(" · ") || undefined}
         numero={e.numero}
         portada={portada.src}
         placeholder={portada.placeholder}
@@ -88,12 +91,20 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
           <FadeUp y={50} className="flex flex-col justify-end gap-10 lg:col-span-4 lg:col-start-9">
             <p className="text-[length:var(--text-step-1)] leading-snug text-bone/80">{resumenDe(e)}</p>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-6 border-t border-bone/15 pt-8">
-              {[
-                ["Etapa", e.etapa],
-                ["Sede", e.titulo],
-                [slug === "primera-edicion" ? "Fecha" : "Ciudad", e.lugar ?? "—"],
-                ["Fotos", String(fotos.length).padStart(2, "0")],
-              ].map(([k, v]) => (
+              {(e.fecha
+                ? [
+                    ["Fecha", e.fecha],
+                    ["Participantes", e.participantes ? String(e.participantes) : "—"],
+                    ["Sede", e.lugar ? `${e.titulo} · ${e.lugar}` : e.titulo],
+                    ["Temas", e.temas ? String(e.temas.length).padStart(2, "0") : "—"],
+                  ]
+                : [
+                    ["Etapa", e.etapa],
+                    ["Sede", e.titulo],
+                    ["Fecha", e.lugar ?? "—"],
+                    ["Fotos", String(fotos.length).padStart(2, "0")],
+                  ]
+              ).map(([k, v]) => (
                 <div key={k}>
                   <dt className="text-[0.7rem] uppercase tracking-[0.16em] text-bone/45">{k}</dt>
                   <dd className="mt-2 font-display text-[length:var(--text-step-1)] font-bold leading-tight">{v}</dd>
@@ -103,6 +114,87 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
           </FadeUp>
         </div>
       </section>
+
+      {/* LO QUE VIMOS — temas del encuentro */}
+      {e.temas?.length ? (
+        <section data-theme="dark" aria-labelledby="temas-h" className="px-6 pb-24 md:px-10 md:pb-36">
+          <div className="mx-auto grid max-w-[87.5rem] gap-12 lg:grid-cols-12 lg:gap-10">
+            <div className="lg:col-span-4">
+              <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ Programa</p>
+              <h2 id="temas-h" className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] text-bone">
+                Lo que vimos
+              </h2>
+              {e.participantes && (
+                <p className="mt-6 max-w-[30ch] text-bone/65">
+                  {e.participantes} participantes, {e.temas.length} temas y un día entero de taller.
+                </p>
+              )}
+            </div>
+            <FadeUp as="ol" y={40} stagger={0.06} className="lg:col-span-7 lg:col-start-6">
+              {e.temas.map((t, n) => (
+                <li
+                  key={t}
+                  className="group flex items-baseline gap-6 border-b border-bone/10 py-5 first:border-t md:gap-10 md:py-6"
+                >
+                  <span className="w-10 shrink-0 font-display text-[length:var(--text-step-0)] tabular-nums text-champagne">
+                    {String(n + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-tight text-bone transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:translate-x-2 md:text-[length:var(--text-step-3)]">
+                    {t}
+                  </span>
+                </li>
+              ))}
+            </FadeUp>
+          </div>
+        </section>
+      ) : null}
+
+      {/* REEL — así se vivió (Instagram) */}
+      {e.reel && (
+        <section data-theme="dark" aria-labelledby="reel-h" className="relative overflow-hidden bg-bordeaux px-6 py-24 md:px-10 md:py-32">
+          <div className="evt-grain pointer-events-none absolute inset-0" />
+          <div className="relative mx-auto grid max-w-[87.5rem] items-center gap-12 lg:grid-cols-12 lg:gap-10">
+            <div className="lg:col-span-6">
+              <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ En Instagram</p>
+              <h2 id="reel-h" className="max-w-[12ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] text-bone">
+                Así se vivió
+              </h2>
+              <p className="mt-6 max-w-[40ch] text-[length:var(--text-step-1)] leading-snug text-bone/80">
+                El resumen del {e.etapa.toLowerCase()} en {e.titulo}, contado por las que estuvieron ahí.
+              </p>
+              <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
+                <a
+                  href={`https://www.instagram.com/reel/${e.reel}/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-14 items-center gap-3 rounded-full bg-bone px-8 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink transition-colors hover:bg-champagne"
+                >
+                  Ver el reel <span aria-hidden="true">↗</span>
+                </a>
+                <a
+                  href={INSTAGRAM}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center border-b border-bone pb-1 text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone"
+                >
+                  @sweetflowersdecoparty
+                </a>
+              </div>
+            </div>
+            <div className="flex justify-center lg:col-span-5 lg:col-start-8 lg:justify-end">
+              <div className="w-full max-w-[400px] overflow-hidden rounded-[var(--radius-lg)] border border-bone/15 bg-ink shadow-[0_40px_80px_-40px_rgb(20_17_15/0.8)]">
+                <iframe
+                  src={`https://www.instagram.com/reel/${e.reel}/embed/`}
+                  title={`Reel de Instagram: ${e.etapa} en ${e.titulo}`}
+                  loading="lazy"
+                  allow="encrypted-media; picture-in-picture; clipboard-write"
+                  className="block h-[640px] w-full border-0 bg-cloud"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CINTA — marquesina gigante */}
       <div aria-hidden="true" className="overflow-hidden border-y border-bone/10 py-6 md:py-8">

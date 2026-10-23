@@ -129,6 +129,11 @@ export function EdicionesScroll() {
                       {t.lugar}
                     </p>
                   )}
+                  {(t.fecha || t.participantes) && (
+                    <p className="mt-1 text-[length:var(--text-step--1)] text-bone/55">
+                      {[t.fecha, t.participantes ? `${t.participantes} participantes` : null].filter(Boolean).join(" · ")}
+                    </p>
+                  )}
                   <span className="mt-5 inline-flex items-center gap-2 border-b border-bone/60 pb-1 text-[0.7rem] font-medium uppercase tracking-[0.14em] text-bone transition-colors duration-300 group-hover:border-champagne group-hover:text-champagne">
                     Ver el encuentro
                     <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>

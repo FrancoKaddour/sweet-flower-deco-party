@@ -130,19 +130,26 @@ export type Etapa = {
   slug?: string;
   /** Número grande de la página (01, 02… o "I"). */
   numero?: string;
-  /** Bajada de la página. TODO(contenido): texto real de cada encuentro. */
+  /** Bajada de la página. */
   resumen?: string;
+  /** Fecha del encuentro (texto). */
+  fecha?: string;
+  participantes?: number;
+  /** Temas / charlas del encuentro. */
+  temas?: readonly string[];
+  /** Reel de Instagram del encuentro (id de la URL /reel/<id>/). */
+  reel?: string;
 };
 
 export const TRAYECTORIA: readonly Etapa[] = [
   // Sedes de los workshops en orden (§11). El 7º se hizo en un hotel que NO se nombra.
-  { etapa: "Workshop 01", titulo: "Centro Naval", lugar: "CABA", slug: "centro-naval", numero: "01" },
-  { etapa: "Workshop 02", titulo: "Madero Tango", lugar: "Puerto Madero", slug: "madero-tango", numero: "02" },
-  { etapa: "Workshop 03", titulo: "La Rioja Capital", lugar: "La Rioja", slug: "la-rioja", numero: "03" },
-  { etapa: "Workshop 04", titulo: "Río Cuarto", lugar: "Córdoba", foto: "/img/rio-cuarto/rc-03.webp", slug: "rio-cuarto", numero: "04" },
-  { etapa: "Workshop 05", titulo: "Palacio San Miguel", lugar: "CABA", slug: "palacio-san-miguel", numero: "05" },
-  { etapa: "Workshop 06", titulo: "La Rural", lugar: "CABA", slug: "la-rural", numero: "06" },
-  { etapa: "Workshop 07", titulo: "Séptimo workshop", slug: "septimo-workshop", numero: "07" },
+  { etapa: "Workshop 01", titulo: "Centro Naval", lugar: "CABA", slug: "centro-naval", numero: "01", fecha: "16 de abril de 2024", participantes: 80, temas: ["Globología", "Redes sociales", "Flores gigantes", "Ambientación y organización"], reel: "C6cfHqhNybc" },
+  { etapa: "Workshop 02", titulo: "Madero Tango", lugar: "Puerto Madero", slug: "madero-tango", numero: "02", fecha: "29 y 30 de octubre de 2024", participantes: 40, temas: ["Globología", "Creación de contenido", "Organización de eventos", "Protocolo y ceremonial", "Cookies express", "Seteo de mesa", "Ceremonia del té", "Tu cliente ideal", "Flores"], reel: "DB9tZrKy0bg" },
+  { etapa: "Workshop 03", titulo: "La Rioja Capital", lugar: "La Rioja", slug: "la-rioja", numero: "03", fecha: "11 de abril de 2025", participantes: 40, temas: ["Globología", "Redes sociales", "Organización de eventos"], reel: "DImcgKISos5" },
+  { etapa: "Workshop 04", titulo: "Río Cuarto", lugar: "Córdoba", foto: "/img/rio-cuarto/rc-03.webp", slug: "rio-cuarto", numero: "04", fecha: "2 de julio de 2025", participantes: 40, temas: ["Tendencia e inspiración", "Redes sociales", "Pastelería", "Contratos", "Tendencia en barras", "Armado en vivo del salón"], reel: "DLvv52Os4je" },
+  { etapa: "Workshop 05", titulo: "Palacio San Miguel", lugar: "CABA", slug: "palacio-san-miguel", numero: "05", fecha: "8 de octubre de 2025", participantes: 60, temas: ["Ambientación y organización", "Propuestas infantiles", "Bodas de destino", "Redes sociales e IA", "Contratos para eventos", "Pastelería", "Manejo de emociones", "Sommelier"], reel: "DQSvf6EDNwg" },
+  { etapa: "Workshop 06", titulo: "La Rural", lugar: "CABA", slug: "la-rural", numero: "06", fecha: "10 de abril de 2026", participantes: 50, temas: ["Vender tu imagen", "Propuestas de decoración", "Inspiración y tendencias", "Looks pastelería 2026", "Neurofinanzas y costos"], reel: "DXhzBnCiS_o" },
+  { etapa: "Workshop 07", titulo: "Séptimo workshop", lugar: "Salón de hotel", slug: "septimo-workshop", numero: "07", fecha: "8 y 9 de julio de 2026", participantes: 30, temas: ["Bodas vs. 15 años", "Iluminación", "Arte floral", "Presupuestos que venden", "Inclusión en eventos", "Seguridad e higiene"], reel: "DaToDjGM8Tg" },
   {
     etapa: "Event Summit · 1ª edición",
     titulo: "La Rural",
