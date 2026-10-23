@@ -49,8 +49,8 @@ Catálogo completo: ${SITE_URL}/productos
 - Trayectoria: ${WORKSHOPS_REALIZADOS} workshops presenciales (Centro Naval, Madero Tango en Puerto Madero, La Rioja, Río Cuarto, Palacio San Miguel y La Rural, entre otras sedes) y la 1ª edición del Summit (septiembre de 2026). Más de 180 asistentes y más de 20 disertantes en total.
 - Próxima edición: ${EDICION_LABEL}, ${EVENT_WHEN}, de ${EVENT_HORARIO}, en ${EVENT_SEDE}.
 - Pases: ${PASES.map((p) => `${p.nombre} (incluye: ${p.incluye.join(", ").toLowerCase()})`).join("; ")}.
-- Precios de preventa (ARS): ${PREVENTAS.map((pv) => `${pv.nombre} ${pv.hastaLabel}: ${PASES.map((p) => `${p.nombre} $${pv.precios[p.id].transferencia.toLocaleString("es-AR")} por transferencia o $${pv.precios[p.id].mp.toLocaleString("es-AR")} por link de Mercado Pago`).join(", ")}`).join(". ")}.
-- Actividades extra el 7 y 8 de abril, que se abonan aparte. La reserva y el pago se coordinan por WhatsApp.
+- Precios de preventa (ARS): ${PREVENTAS.map((pv) => `${pv.nombre} ${pv.hastaLabel}: ${PASES.map((p) => `${p.nombre} $${pv.precios[p.id].toLocaleString("es-AR")}`).join(", ")}`).join(". ")}.
+- Actividades extra el 7 y 8 de abril, que se abonan aparte. La inscripción se paga online con Mercado Pago (tarjeta, cuotas, débito o efectivo).
 - Más info e inscripción: ${SITE_URL}/event-summit
 
 ## Contacto

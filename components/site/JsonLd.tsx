@@ -104,7 +104,7 @@ export function JsonLd() {
             PASES.map((p) => ({
               "@type": "Offer",
               name: `${p.nombre} · ${pv.nombre}`,
-              price: pv.precios[p.id].transferencia,
+              price: pv.precios[p.id],
               priceCurrency: "ARS",
               validThrough: pv.hasta,
               url: `${SITE_URL}/event-summit#pases`,

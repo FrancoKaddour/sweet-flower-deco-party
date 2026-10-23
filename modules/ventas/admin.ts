@@ -57,7 +57,14 @@ export async function listarInscripciones(f: { q?: string; estado?: EstadoInscri
         isNull(summitRegistrations.deletedAt),
         f.estado ? eq(summitRegistrations.estado, f.estado) : undefined,
         f.pase ? eq(summitRegistrations.pase, f.pase) : undefined,
-        busqueda(f.q, summitRegistrations.codigo, summitRegistrations.nombre, summitRegistrations.ciudad),
+        busqueda(
+          f.q,
+          summitRegistrations.codigo,
+          summitRegistrations.nombre,
+          summitRegistrations.ciudad,
+          summitRegistrations.email,
+          summitRegistrations.dni,
+        ),
       ),
     )
     .orderBy(desc(summitRegistrations.createdAt));

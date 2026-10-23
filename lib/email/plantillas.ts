@@ -186,3 +186,40 @@ export function correoCampana(v: {
     texto: `${per(v.titulo)}\n\n${per(v.cuerpo).replace(/\*\*/g, "")}${cta ? `\n\n${per(v.ctaTexto ?? "")}: ${abs(v.base, v.ctaUrl ?? "/")}` : ""}\n\nDarte de baja: ${v.bajaUrl}`,
   };
 }
+
+/* ─────────────── Event Summit ─────────────── */
+
+export function correoEntradaSummit(v: {
+  base: string;
+  nombre: string;
+  codigo: string;
+  pase: string;
+  monto: number;
+  evento: string;
+  edicion: string;
+  fecha: string;
+  horario: string;
+  sede: string | null;
+}): Correo {
+  const nombre = v.nombre.trim().split(" ")[0];
+  const fila = (k: string, val: string) =>
+    `<tr><td style="padding:10px 0;border-bottom:1px solid ${C.line};font-family:${SANS};font-size:13px;letter-spacing:1px;text-transform:uppercase;color:${C.muted};">${esc(k)}</td><td align="right" style="padding:10px 0;border-bottom:1px solid ${C.line};font-family:${SANS};font-size:15px;color:${C.ink};font-weight:600;">${esc(val)}</td></tr>`;
+  const monto = `$ ${v.monto.toLocaleString("es-AR")}`;
+  const contenido = `${eyebrow(`${v.evento} · ${v.edicion}`)}
+${h1(`¡${nombre}, tu lugar está confirmado!`)}
+<p style="margin:0 0 24px;font-family:${SANS};font-size:16px;line-height:1.65;color:${C.ink};">Recibimos tu pago. Guardá este mail: es tu comprobante de inscripción.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;"><tr><td align="center" style="background:${C.ink};border-radius:16px;padding:26px 16px;">
+<p style="margin:0 0 6px;font-family:${SANS};font-size:12px;letter-spacing:3px;text-transform:uppercase;color:${C.champagne};">${esc(v.pase)}</p>
+<p style="margin:0;font-family:'Courier New',monospace;font-size:30px;font-weight:700;letter-spacing:4px;color:${C.bone};">${esc(v.codigo)}</p>
+</td></tr></table>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
+${fila("Fecha", v.fecha)}${fila("Horario", v.horario)}${v.sede ? fila("Lugar", v.sede) : ""}${fila("Pagaste", monto)}
+</table>
+${cuerpoHtml("Unos días antes del evento te escribimos por WhatsApp con todos los detalles. Si tenés alguna duda, respondé este mail o escribinos.")}
+${boton("Ver el Event Summit", `${v.base}/event-summit`)}`;
+  return {
+    asunto: `Tu lugar en el ${v.evento} está confirmado (${v.codigo})`,
+    html: layout({ base: v.base, preheader: `${v.pase} · ${v.fecha} · código ${v.codigo}`, contenido, motivo: "Recibís este mail porque te inscribiste al Sweet Flowers Event Summit." }),
+    texto: `¡Tu lugar está confirmado!\n\n${v.pase} · Código ${v.codigo}\n${v.fecha} · ${v.horario}${v.sede ? `\n${v.sede}` : ""}\nPagaste ${monto}\n\n${v.base}/event-summit`,
+  };
+}

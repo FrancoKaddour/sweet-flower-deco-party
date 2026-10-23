@@ -27,13 +27,13 @@ export const EVENT_SEDE: string | null = "La Rural · Palermo, Buenos Aires"; //
 export const EVENT_CUPO = 80; // ✅ "por el momento"
 
 // Inscripción: TODO por WhatsApp (sin pago en el sitio — decisión oct-2026).
-// El formulario de /event-summit#inscripcion abre la línea de capacitaciones.
+// El formulario de /event-summit#inscripcion cobra el pase con Mercado Pago.
 export const EVENT_CTA_HREF = "/event-summit#inscripcion";
 /** Precio de referencia (el más bajo vigente) para resúmenes. */
-export const EVENT_PRECIO: string | null = "Desde $150.000";
+export const EVENT_PRECIO: string | null = "Desde $180.000";
 
-// PASES y PREVENTAS ✅ (Flor, 20/10/2026). Precios en ARS: transferencia y por
-// link de Mercado Pago (el link lo mandan por WhatsApp; no se paga en el sitio).
+// PASES y PREVENTAS ✅ (Flor, 20/10/2026 · 23/10/2026: se paga TODO online con
+// Mercado Pago, precio fijo por pase; tarjeta, cuotas, débito o efectivo).
 export type PaseId = "vip" | "general";
 
 export const PASES: readonly { id: PaseId; nombre: string; incluye: readonly string[] }[] = [
@@ -75,7 +75,8 @@ export type Preventa = {
   /** Último día válido (inclusive), ISO yyyy-mm-dd. */
   hasta: string;
   hastaLabel: string;
-  precios: Record<PaseId, { transferencia: number; mp: number }>;
+  /** Precio final en ARS (se cobra por Mercado Pago). */
+  precios: Record<PaseId, number>;
 };
 
 export const PREVENTAS: readonly Preventa[] = [
@@ -85,8 +86,8 @@ export const PREVENTAS: readonly Preventa[] = [
     hasta: "2026-11-10",
     hastaLabel: "hasta el 10/11",
     precios: {
-      vip: { transferencia: 280000, mp: 330000 },
-      general: { transferencia: 150000, mp: 180000 },
+      vip: 330000,
+      general: 180000,
     },
   },
   {
@@ -95,16 +96,21 @@ export const PREVENTAS: readonly Preventa[] = [
     hasta: "2026-12-15",
     hastaLabel: "hasta el 15/12",
     precios: {
-      vip: { transferencia: 320000, mp: 370000 },
-      general: { transferencia: 220000, mp: 260000 },
+      vip: 370000,
+      general: 260000,
     },
   },
 ];
 
-/** Preventa vigente hoy (o null si ya pasaron todas). */
+/** Preventa vigente hoy (o null si ya pasaron todas). Fecha de Argentina. */
 export function preventaVigente(hoy = new Date()): Preventa | null {
-  const d = hoy.toISOString().slice(0, 10);
+  const d = new Date(hoy.getTime() - 3 * 3600e3).toISOString().slice(0, 10);
   return PREVENTAS.find((p) => d <= p.hasta) ?? null;
+}
+
+/** Tarifa con la que se cobra hoy: la preventa vigente o, si ya pasaron, la última. */
+export function tarifaVigente(hoy = new Date()): Preventa {
+  return preventaVigente(hoy) ?? PREVENTAS[PREVENTAS.length - 1];
 }
 
 export const EXTRAS_NOTA = "Actividades extra el 7 y 8 de abril: se abonan aparte.";
@@ -112,26 +118,47 @@ export const EXTRAS_NOTA = "Actividades extra el 7 y 8 de abril: se abonan apart
 export const EVENT_WHATSAPP = "5491155127508";
 
 /** El camino hasta acá: 7 workshops → 1ª edición → 2ª edición. */
-export const TRAYECTORIA: readonly {
+export type Etapa = {
   etapa: string;
   titulo: string;
   lugar?: string;
   detalle?: string;
   proxima?: boolean;
-  /** Foto real de esa sede/edición (si no hay, la tarjeta usa un placeholder). */
+  /** Foto de la tarjeta (si no hay, la tarjeta usa un placeholder). */
   foto?: string;
-}[] = [
+  /** Página propia: /event-summit/trayectoria/<slug>. */
+  slug?: string;
+  /** Número grande de la página (01, 02… o "I"). */
+  numero?: string;
+  /** Bajada de la página. TODO(contenido): texto real de cada encuentro. */
+  resumen?: string;
+};
+
+export const TRAYECTORIA: readonly Etapa[] = [
   // Sedes de los workshops en orden (§11). El 7º se hizo en un hotel que NO se nombra.
-  { etapa: "Workshop 01", titulo: "Centro Naval", lugar: "CABA" },
-  { etapa: "Workshop 02", titulo: "Madero Tango", lugar: "Puerto Madero" },
-  { etapa: "Workshop 03", titulo: "La Rioja Capital", lugar: "La Rioja" },
-  { etapa: "Workshop 04", titulo: "Río Cuarto", lugar: "Córdoba", foto: "/img/rio-cuarto/rc-03.webp" },
-  { etapa: "Workshop 05", titulo: "Palacio San Miguel", lugar: "CABA" },
-  { etapa: "Workshop 06", titulo: "La Rural", lugar: "CABA" },
-  { etapa: "Workshop 07", titulo: "Séptimo workshop" },
-  { etapa: "Event Summit · 1ª edición", titulo: "La Rural", lugar: "18 de septiembre de 2026", foto: "/img/summit/lg/sum-28.webp" },
+  { etapa: "Workshop 01", titulo: "Centro Naval", lugar: "CABA", slug: "centro-naval", numero: "01" },
+  { etapa: "Workshop 02", titulo: "Madero Tango", lugar: "Puerto Madero", slug: "madero-tango", numero: "02" },
+  { etapa: "Workshop 03", titulo: "La Rioja Capital", lugar: "La Rioja", slug: "la-rioja", numero: "03" },
+  { etapa: "Workshop 04", titulo: "Río Cuarto", lugar: "Córdoba", foto: "/img/rio-cuarto/rc-03.webp", slug: "rio-cuarto", numero: "04" },
+  { etapa: "Workshop 05", titulo: "Palacio San Miguel", lugar: "CABA", slug: "palacio-san-miguel", numero: "05" },
+  { etapa: "Workshop 06", titulo: "La Rural", lugar: "CABA", slug: "la-rural", numero: "06" },
+  { etapa: "Workshop 07", titulo: "Séptimo workshop", slug: "septimo-workshop", numero: "07" },
+  {
+    etapa: "Event Summit · 1ª edición",
+    titulo: "La Rural",
+    lugar: "18 de septiembre de 2026",
+    foto: "/img/summit/lg/sum-28.webp",
+    slug: "primera-edicion",
+    numero: "I",
+    resumen:
+      "La primera edición del Sweet Flowers Event Summit: una jornada entera de charlas, escena montada, pasarela y comunidad. El día en que el rubro se juntó en un mismo lugar.",
+  },
   { etapa: "Event Summit · 2ª edición", titulo: "9 de abril de 2027", detalle: "Preventa abierta", proxima: true },
 ];
+
+/** Etapas con página propia (workshops + ediciones pasadas). */
+export const ETAPAS_CON_PAGINA = TRAYECTORIA.filter((t): t is Etapa & { slug: string } => Boolean(t.slug));
+
 
 // Qué incluye — TODOS ✅ (§10).
 export const INCLUYE = [

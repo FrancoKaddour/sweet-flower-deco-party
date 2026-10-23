@@ -3,12 +3,12 @@
 import { inArray, isNull, and } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
-import { inquiries, orders, products, summitRegistrations, type ItemPedido } from "@/db/schema";
+import { inquiries, orders, products, type ItemPedido } from "@/db/schema";
 import { getSession } from "@/lib/dal";
-import { EDICION_LABEL, preventaVigente } from "@/content/evento";
 
 /**
- * Registro de lo que entra por el sitio (carrito, contacto, Summit). Son
+ * Registro de lo que entra por el sitio (carrito y contacto; el Summit se
+ * cobra online, ver modules/summit). Son
  * acciones PÚBLICAS: la venta igual se cierra por WhatsApp, así que si algo
  * falla acá no se rompe nada para el cliente (best-effort, nunca tiran error).
  * Defensas: zod con largos máximos, honeypot `web` y precios recalculados
@@ -94,35 +94,5 @@ export async function registrarConsulta(input: unknown): Promise<void> {
     await db.insert(inquiries).values(v);
   } catch (e) {
     console.error("[registrarConsulta]", e);
-  }
-}
-
-const inscripcionSchema = z.object({
-  codigo,
-  pase: z.enum(["vip", "general"]),
-  nombre: z.string().trim().min(1).max(120),
-  ciudad: txt(120),
-  formaPago: txt(80),
-  mensaje: txt(1000),
-  telefono: txt(40),
-  web: z.string().max(0).optional(),
-});
-
-export async function registrarInscripcion(input: unknown): Promise<void> {
-  if (!db) return;
-  const p = inscripcionSchema.safeParse(input);
-  if (!p.success) return;
-  const { web: _web, ...v } = p.data;
-  void _web;
-  try {
-    const pv = preventaVigente();
-    const conMp = /mercado pago/i.test(v.formaPago ?? "");
-    const precio = pv ? pv.precios[v.pase][conMp ? "mp" : "transferencia"] : null;
-    await db
-      .insert(summitRegistrations)
-      .values({ ...v, edicion: EDICION_LABEL, precioReferencia: precio })
-      .onConflictDoNothing();
-  } catch (e) {
-    console.error("[registrarInscripcion]", e);
   }
 }

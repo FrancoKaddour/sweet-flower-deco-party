@@ -1,20 +1,13 @@
 import { FadeUp } from "@/components/motion/FadeUp";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { formatARS } from "@/content/productos";
-import {
-  EVENT_NAME,
-  EDICION_LABEL,
-  EVENT_WHEN,
-  EVENT_WHATSAPP,
-  EXTRAS_NOTA,
-  PASES,
-  PREVENTAS,
-} from "@/content/evento";
+import { EXTRAS_NOTA, PASES, PREVENTAS } from "@/content/evento";
+import { BotonPase } from "./BotonPase";
 
 /**
- * PASES del Summit (VIP / General) con las dos preventas y sus precios
- * (transferencia y link de Mercado Pago). Cada pase lleva a WhatsApp con el
- * mensaje escrito — no se paga en el sitio.
+ * PASES del Summit (VIP / General) con las dos tarifas (preventa y general).
+ * Se paga online con Mercado Pago: cada pase baja al formulario de inscripción
+ * con ese pase ya elegido.
  */
 export function Pases() {
   return (
@@ -34,8 +27,6 @@ export function Pases() {
         <FadeUp y={40} stagger={0.1} className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
           {PASES.map((pase) => {
             const vip = pase.id === "vip";
-            const msg = `¡Hola! Quiero el ${pase.nombre} para el ${EVENT_NAME} (${EDICION_LABEL}, ${EVENT_WHEN}).`;
-            const wa = `https://wa.me/${EVENT_WHATSAPP}?text=${encodeURIComponent(msg)}`;
             return (
               <article
                 key={pase.id}
@@ -64,13 +55,8 @@ export function Pases() {
                           {pv.hastaLabel}
                         </span>
                       </dt>
-                      <dd className="text-right">
-                        <span className="block font-display text-[length:var(--text-step-3)] font-bold leading-none">
-                          {formatARS(pv.precios[pase.id].transferencia)}
-                        </span>
-                        <span className="text-[length:var(--text-step--1)] opacity-65">
-                          transferencia · {formatARS(pv.precios[pase.id].mp)} por link de Mercado Pago
-                        </span>
+                      <dd className="text-right font-display text-[length:var(--text-step-3)] font-bold leading-none tabular-nums">
+                        {formatARS(pv.precios[pase.id])}
                       </dd>
                     </div>
                   ))}
@@ -88,24 +74,22 @@ export function Pases() {
                   ))}
                 </ul>
 
-                <a
-                  href={wa}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <BotonPase
+                  pase={pase.id}
                   className={`mt-auto flex min-h-14 items-center justify-center gap-2 rounded-full px-6 text-[0.8rem] font-medium uppercase tracking-[0.14em] transition-colors duration-300 ${
                     vip ? "bg-bone text-ink hover:bg-champagne" : "bg-ink text-bone hover:bg-bordeaux"
                   }`}
                 >
                   Quiero el {pase.nombre}
                   <span aria-hidden="true">→</span>
-                </a>
+                </BotonPase>
               </article>
             );
           })}
         </FadeUp>
 
         <p className="mt-8 text-center text-[length:var(--text-step--1)] text-ink/60">
-          {EXTRAS_NOTA} La reserva y el pago se coordinan por WhatsApp.
+          Pagás online con Mercado Pago: tarjeta de crédito en cuotas, débito, dinero en cuenta o efectivo. {EXTRAS_NOTA}
         </p>
       </div>
     </section>

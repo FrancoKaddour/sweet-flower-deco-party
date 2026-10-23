@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { TRAYECTORIA, WORKSHOPS_REALIZADOS, EDICION_LABEL } from "@/content/evento";
@@ -64,7 +65,7 @@ export function EdicionesScroll() {
             </h2>
             <p className="mt-6 max-w-[38ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-bone/70">
               {WORKSHOPS_REALIZADOS} workshops, una primera edición del Summit y
-              ahora vamos por la {EDICION_LABEL}. Deslizá para recorrerlo.
+              ahora vamos por la {EDICION_LABEL}. Deslizá y entrá a cada encuentro.
             </p>
           </div>
 
@@ -96,9 +97,11 @@ export function EdicionesScroll() {
                 </div>
               </a>
             ) : (
-              <article
+              <Link
                 key={t.etapa}
-                className="group relative h-[62vh] w-[72vw] shrink-0 overflow-hidden rounded-[var(--radius-lg)] sm:w-[48vw] md:h-[68vh] md:w-[34vw] lg:w-[26vw]"
+                href={t.slug ? `/event-summit/trayectoria/${t.slug}` : "/event-summit#trayectoria"}
+                aria-label={`Ver ${t.etapa}: ${t.titulo}`}
+                className="group relative h-[62vh] w-[72vw] shrink-0 overflow-hidden rounded-[var(--radius-lg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne sm:w-[48vw] md:h-[68vh] md:w-[34vw] lg:w-[26vw]"
               >
                 {/* TODO(contenido): faltan fotos de los workshops 01–03, 05–07. */}
                 <Image
@@ -126,8 +129,21 @@ export function EdicionesScroll() {
                       {t.lugar}
                     </p>
                   )}
+                  <span className="mt-5 inline-flex items-center gap-2 border-b border-bone/60 pb-1 text-[0.7rem] font-medium uppercase tracking-[0.14em] text-bone transition-colors duration-300 group-hover:border-champagne group-hover:text-champagne">
+                    Ver el encuentro
+                    <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </span>
                 </div>
-              </article>
+                {/* Número calado de la etapa */}
+                {t.numero && (
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute right-4 top-3 font-display text-[clamp(3rem,6vw,5.5rem)] font-extrabold leading-none text-transparent opacity-70 transition-opacity duration-500 [-webkit-text-stroke:1px_rgb(198_161_91/0.7)] group-hover:opacity-100"
+                  >
+                    {t.numero}
+                  </span>
+                )}
+              </Link>
             ),
           )}
 

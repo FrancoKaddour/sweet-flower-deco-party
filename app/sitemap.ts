@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
+import { ETAPAS_CON_PAGINA } from "@/content/evento";
 import { getCategorias, getTodosLosProductos } from "@/modules/catalog/repository";
 
 /**
@@ -23,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...CATEGORIAS.map((c) => page(`/productos/${c.slug}`, 0.8, "weekly")),
     ...PRODUCTOS.map((p) => page(`/productos/${p.categoria}/${p.slug}`, 0.6, "weekly")),
     page("/event-summit", 0.9, "weekly"),
+    ...ETAPAS_CON_PAGINA.map((e) => page(`/event-summit/trayectoria/${e.slug}`, 0.6, "monthly")),
     page("/contacto", 0.7, "monthly"),
     page("/historia", 0.5, "yearly"),
   ];

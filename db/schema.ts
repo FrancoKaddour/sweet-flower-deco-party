@@ -275,8 +275,15 @@ export const summitRegistrations = pgTable(
     ciudad: text("ciudad"),
     formaPago: text("forma_pago"),
     mensaje: text("mensaje"),
-    /** Precio de la preventa vigente al reservar (referencia, en pesos). */
+    /** Precio cobrado (tarifa vigente al iniciar el pago, en pesos). */
     precioReferencia: integer("precio_referencia"),
+    email: text("email"),
+    dni: text("dni"),
+    /** Estado del pago en Mercado Pago: pendiente | aprobado | en_proceso | rechazado | devuelto. */
+    pagoEstado: text("pago_estado"),
+    mpPreferenceId: text("mp_preference_id"),
+    mpPaymentId: text("mp_payment_id"),
+    pagadoAt: timestamp("pagado_at", { withTimezone: true }),
     estado: registrationStatusEnum("estado").default("consulto").notNull(),
     telefono: text("telefono"),
     notaInterna: text("nota_interna"),
@@ -288,6 +295,7 @@ export const summitRegistrations = pgTable(
     uniqueIndex("summit_registrations_codigo_idx").on(t.codigo),
     index("summit_registrations_estado_idx").on(t.estado),
     index("summit_registrations_edicion_idx").on(t.edicion),
+    index("summit_registrations_pago_idx").on(t.pagoEstado),
   ],
 );
 

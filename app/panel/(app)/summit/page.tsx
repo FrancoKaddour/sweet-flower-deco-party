@@ -14,11 +14,22 @@ import { fechaCorta, linkWhatsApp } from "@/lib/panel/formato";
 import { formatARS } from "@/modules/catalog/types";
 import { conteos, listarInscripciones } from "@/modules/ventas/admin";
 import { ESTADOS_INSCRIPCION, telefonoWhatsApp, type EstadoInscripcion } from "@/modules/ventas/estados";
-import { EDICION_LABEL, EVENT_CUPO, EVENT_WHEN, PASES, preventaVigente } from "@/content/evento";
+import { EDICION_LABEL, EVENT_CUPO, EVENT_WHEN, PASES, tarifaVigente } from "@/content/evento";
+import { Badge } from "@/components/panel/Badge";
+import { pagosHabilitados } from "@/lib/mercadopago";
 
 export const metadata: Metadata = { title: "Event Summit" };
 
 const CONFIRMADOS = new Set(["seno", "pago", "asistio"]);
+
+/** Estado del pago en Mercado Pago (lo actualiza solo el aviso de MP). */
+const PAGO: Record<string, { l: string; v: "neutral" | "success" | "warning" | "danger" | "info" }> = {
+  pendiente: { l: "MP: sin pagar", v: "neutral" },
+  en_proceso: { l: "MP: en proceso", v: "warning" },
+  aprobado: { l: "MP: pagado", v: "success" },
+  rechazado: { l: "MP: rechazado", v: "danger" },
+  devuelto: { l: "MP: devuelto", v: "danger" },
+};
 
 export default async function SummitPage({
   searchParams,
@@ -27,12 +38,12 @@ export default async function SummitPage({
 }) {
   const user = await requireStaff();
   const sp = await searchParams;
-  const pv = preventaVigente();
+  const pv = tarifaVigente();
   const header = (
     <PageHeader
       seccion="Event Summit"
       titulo={`Summit · ${EDICION_LABEL}`}
-      descripcion={`${EVENT_WHEN}. Cada reserva del formulario del sitio queda acá con su código (ej. SUM-4HXQ2), para seguirla hasta el pago.`}
+      descripcion={`${EVENT_WHEN}. Las inscripciones se pagan online con Mercado Pago: cuando el pago se aprueba, pasan solas a "Pagó" y la persona recibe su comprobante.`}
       accion={<PanelButton href="/event-summit" target="_blank" variant="outline">Ver la página ↗</PanelButton>}
     />
   );
@@ -56,13 +67,13 @@ export default async function SummitPage({
       <PanelReveal as="section" className="overflow-hidden rounded-[var(--radius-lg)] bg-botanical text-bone">
         <div className="flex flex-col gap-8 px-7 py-9 md:px-12 md:py-12">
           <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">
-            ✧ {pv ? `${pv.nombre} · ${pv.hastaLabel}` : "Preventas cerradas"}
+            ✧ Precio vigente: {pv.nombre} · VIP {formatARS(pv.precios.vip)} · General {formatARS(pv.precios.general)}
           </p>
           <dl className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-6">
             {[
               { l: "Lugares confirmados", v: `${ocupados}/${EVENT_CUPO}`, a: "Señaron, pagaron o asistieron." },
               ...PASES.map((p) => ({ l: `Pase ${p.nombre}`, v: String(confirmados(p.id)), a: "Confirmados." })),
-              { l: "Por cerrar", v: String(interesados), a: "Consultaron y falta la seña." },
+              { l: "Sin pagar", v: String(interesados), a: "Empezaron la inscripción y no pagaron." },
             ].map((m) => (
               <div key={m.l} className="flex flex-col gap-2">
                 <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/60">{m.l}</dt>
@@ -76,6 +87,13 @@ export default async function SummitPage({
           </div>
         </div>
       </PanelReveal>
+
+      {!pagosHabilitados() && (
+        <p className="rounded-[var(--radius-md)] border border-champagne/50 bg-champagne/10 px-4 py-3 text-[length:var(--text-step--1)] text-ink">
+          <strong>Pago online desactivado:</strong> falta cargar las credenciales de Mercado Pago (ver docs/MERCADOPAGO.md).
+          Mientras tanto el formulario del sitio avisa que escriban por WhatsApp.
+        </p>
+      )}
 
       <FiltroEstados base="/panel/summit" activo={estado} opciones={ESTADOS_INSCRIPCION} conteos={c.inscripciones} extra={{ q, pase }} />
       <form className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_auto]" role="search">
@@ -112,13 +130,19 @@ export default async function SummitPage({
                       <span className="font-mono">{r.codigo}</span> · {fechaCorta(r.createdAt)}
                       {r.ciudad ? ` · ${r.ciudad}` : ""}
                     </p>
+                    <p className="text-[length:var(--text-step--1)] text-muted">
+                      {[r.email, r.telefono, r.dni ? `DNI ${r.dni}` : null].filter(Boolean).join(" · ")}
+                    </p>
                   </div>
                   <div className="text-[length:var(--text-step--1)]">
                     <p className="font-medium uppercase tracking-[0.1em] text-ink">Pase {nombrePase}</p>
                     <p className="text-muted">
-                      {r.precioReferencia != null ? formatARS(r.precioReferencia) : "Sin preventa"}
+                      {r.precioReferencia != null ? formatARS(r.precioReferencia) : "—"}
                       {r.formaPago ? ` · ${r.formaPago}` : ""}
                     </p>
+                    {r.pagoEstado && (
+                      <Badge variant={PAGO[r.pagoEstado]?.v ?? "neutral"}>{PAGO[r.pagoEstado]?.l ?? r.pagoEstado}</Badge>
+                    )}
                   </div>
                   <EstadoSelect tipo="inscripcion" id={r.id} valor={r.estado} opciones={ESTADOS_INSCRIPCION} etiqueta={`Estado de la reserva de ${r.nombre}`} />
                 </div>

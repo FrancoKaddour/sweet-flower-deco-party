@@ -177,8 +177,8 @@ export default function EventoPage() {
               </RevealText>
               <p className="mt-8 max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/80">
                 {EDICION_LABEL} · {EVENT_WHEN} · {EVENT_HORARIO}
-                {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}. Dejanos tus datos y
-                coordinamos tu pase y el pago de la preventa por WhatsApp.
+                {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}. Elegí tu pase, pagá
+                online con Mercado Pago y tu lugar queda confirmado al instante.
               </p>
             </div>
 
