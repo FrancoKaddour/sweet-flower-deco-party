@@ -9,6 +9,7 @@ import { RevealText } from "@/components/motion/RevealText";
 import { Button } from "@/components/ui/Button";
 import { WorkshopHero } from "@/components/trayectoria/WorkshopHero";
 import { Galeria } from "@/components/trayectoria/Galeria";
+import { InstagramReel } from "@/components/trayectoria/InstagramReel";
 import { EDICION_LABEL, ETAPAS_CON_PAGINA, EVENT_NAME, EVENT_WHEN, TRAYECTORIA, type Etapa } from "@/content/evento";
 import { galeriaDe, portadaDe } from "@/content/galerias";
 
@@ -182,17 +183,10 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
               </div>
             </div>
             <div className="flex justify-center lg:col-span-5 lg:col-start-8 lg:justify-end">
-              {/* El embed de Instagram mide: cabecera ~54px + video 4:5 + pie ~150px.
-                  El alto se calcula del ancho real (cqw) → sin scroll interno
-                  ni franjas vacías en ningún ancho. */}
+              {/* El embed se ajusta al alto real que informa Instagram → sin barra
+                  de scroll interna en ningún ancho. */}
               <div className="w-full max-w-[25rem] overflow-hidden rounded-[var(--radius-lg)] border border-bone/15 bg-ink shadow-[0_40px_80px_-40px_rgb(20_17_15/0.8)] [container-type:inline-size]">
-                <iframe
-                  src={`https://www.instagram.com/reel/${e.reel}/embed/`}
-                  title={`Reel de Instagram: ${e.etapa} en ${e.titulo}`}
-                  loading="lazy"
-                  allow="encrypted-media; picture-in-picture; clipboard-write"
-                  className="block h-[calc(125cqw+208px)] w-full border-0 bg-cloud"
-                />
+                <InstagramReel id={e.reel} titulo={`Reel de Instagram: ${e.etapa} en ${e.titulo}`} />
               </div>
             </div>
           </div>

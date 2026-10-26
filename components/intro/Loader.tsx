@@ -142,6 +142,24 @@ export function Loader() {
         return offset;
       };
 
+      // Ajuste fino del tamaño del nombre: en vertical (celular/tablet parados)
+      // la palabra más ancha ("FLOWERS") tiene que entrar SIEMPRE con aire a los
+      // costados, sea cual sea el ancho del teléfono, la fuente o el zoom del
+      // sistema. Se mide la palabra real y, si no entra, se achica la letra.
+      const ajustarNombre = () => {
+        nameEl.style.fontSize = "";
+        if (getComputedStyle(nameEl).flexDirection !== "column") return;
+        const disponible = window.innerWidth * 0.86;
+        const ancho = Math.max(...Array.from(spans, (s) => s.scrollWidth));
+        if (ancho > disponible) {
+          const fs = parseFloat(getComputedStyle(nameEl).fontSize);
+          nameEl.style.fontSize = `${Math.floor(fs * (disponible / ancho))}px`;
+        }
+      };
+      ajustarNombre();
+      document.fonts?.ready.then(ajustarNombre);
+      window.addEventListener("resize", ajustarNombre);
+
       // Scroll bloqueado y en el top mientras corre la intro.
       stopLenis();
       window.scrollTo(0, 0);
@@ -237,7 +255,10 @@ export function Loader() {
           "<+0.75",
         );
 
-      return () => window.clearTimeout(safety);
+      return () => {
+        window.clearTimeout(safety);
+        window.removeEventListener("resize", ajustarNombre);
+      };
     },
     { scope: root, dependencies: [pathname], revertOnUpdate: true },
   );
