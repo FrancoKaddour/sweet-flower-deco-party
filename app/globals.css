@@ -359,14 +359,20 @@ html.lenis body {
 }
 
 /* hover (solo después de que cayó) */
-.clip-card:hover .clip-figure.is-complete img {
-  transform: scale(1.075);
+@media (hover: hover) {
+  .clip-card:hover .clip-figure.is-complete img {
+    transform: scale(1.075);
+  }
 }
-.clip-card:hover .clip-figure.is-complete .clip-overlay {
-  background: rgba(20, 17, 15, 0.46);
+@media (hover: hover) {
+  .clip-card:hover .clip-figure.is-complete .clip-overlay {
+    background: rgba(20, 17, 15, 0.46);
+  }
 }
-.clip-card:hover .clip-cta span {
-  transform: translate(2px, -2px);
+@media (hover: hover) {
+  .clip-card:hover .clip-cta span {
+    transform: translate(2px, -2px);
+  }
 }
 
 /* ---- Panel /panel: stagger de entrada sutil (fade + translateY) ----
@@ -629,20 +635,32 @@ body[data-loader="true"] .c-site-header {
 .sf-btn__text--copy {
   transform: translateY(115%);
 }
-.sf-btn:hover .sf-btn__text,
 .sf-btn:focus-visible .sf-btn__text {
   transform: translateY(-115%);
 }
-.sf-btn:hover .sf-btn__text--copy,
+@media (hover: hover) {
+  .sf-btn:hover .sf-btn__text {
+    transform: translateY(-115%);
+  }
+}
 .sf-btn:focus-visible .sf-btn__text--copy {
   transform: translateY(0);
+}
+@media (hover: hover) {
+  .sf-btn:hover .sf-btn__text--copy {
+    transform: translateY(0);
+  }
 }
 .sf-btn__line {
   transform-origin: left center;
 }
-.sf-btn:hover .sf-btn__line,
 .sf-btn:focus-visible .sf-btn__line {
   animation: sf-btn-line 0.8s var(--ease-in-out-hard);
+}
+@media (hover: hover) {
+  .sf-btn:hover .sf-btn__line {
+    animation: sf-btn-line 0.8s var(--ease-in-out-hard);
+  }
 }
 @keyframes sf-btn-line {
   0% { transform: scaleX(1); transform-origin: right center; }
@@ -653,10 +671,15 @@ body[data-loader="true"] .c-site-header {
 .sf-btn__dot {
   transition: background-color 0.5s var(--ease-out-expo), border-color 0.5s var(--ease-out-expo), color 0.5s var(--ease-out-expo);
 }
-.sf-btn:hover .sf-btn__dot,
 .sf-btn:focus-visible .sf-btn__dot {
   background-color: currentColor;
   border-color: currentColor;
+}
+@media (hover: hover) {
+  .sf-btn:hover .sf-btn__dot {
+    background-color: currentColor;
+    border-color: currentColor;
+  }
 }
 .sf-btn__arrow {
   grid-area: 1 / 1;
@@ -667,26 +690,43 @@ body[data-loader="true"] .c-site-header {
 .sf-btn__arrow--in {
   transform: translate(-160%, 160%);
 }
-.sf-btn:hover .sf-btn__arrow,
 .sf-btn:focus-visible .sf-btn__arrow {
   transform: translate(160%, -160%);
 }
-.sf-btn:hover .sf-btn__arrow--in,
+@media (hover: hover) {
+  .sf-btn:hover .sf-btn__arrow {
+    transform: translate(160%, -160%);
+  }
+}
 .sf-btn:focus-visible .sf-btn__arrow--in {
   transform: translate(0, 0);
   transition-delay: 0.08s;
 }
+@media (hover: hover) {
+  .sf-btn:hover .sf-btn__arrow--in {
+    transform: translate(0, 0);
+    transition-delay: 0.08s;
+  }
+}
 /* La flecha toma el color del fondo al rellenarse el círculo. */
-.sf-btn:hover .sf-btn__dot--dark .sf-btn__arrow,
 .sf-btn:focus-visible .sf-btn__dot--dark .sf-btn__arrow { color: var(--color-bone); }
-.sf-btn:hover .sf-btn__dot--light .sf-btn__arrow,
+@media (hover: hover) {
+  .sf-btn:hover .sf-btn__dot--dark .sf-btn__arrow { color: var(--color-bone); }
+}
 .sf-btn:focus-visible .sf-btn__dot--light .sf-btn__arrow { color: var(--color-ink); }
+@media (hover: hover) {
+  .sf-btn:hover .sf-btn__dot--light .sf-btn__arrow { color: var(--color-ink); }
+}
 .sf-btn__plus {
   transition: transform 0.5s var(--ease-out-expo);
 }
-.sf-btn:hover .sf-btn__plus,
 .sf-btn:focus-visible .sf-btn__plus {
   transform: rotate(90deg);
+}
+@media (hover: hover) {
+  .sf-btn:hover .sf-btn__plus {
+    transform: rotate(90deg);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .sf-btn__text, .sf-btn__arrow, .sf-btn__plus { transition: none; }
@@ -754,4 +794,28 @@ body:has(form[data-oculta-flotantes]:focus-within) .c-wa {
   opacity: 0;
   pointer-events: none;
   translate: 0 1rem;
+}
+
+/* ---- iOS / Safari: formularios ----
+   En @layer base para que cualquier utilidad de Tailwind lo pise.
+   - Sin la sombra interna / esquinas nativas de iOS en campos de texto.
+   - type="search" de Safari ignora padding/borde si no se le quita la apariencia.
+   (Los <select> conservan el aspecto nativo: el selector de iOS es el mejor.) */
+@layer base {
+  input:is([type="text"], [type="email"], [type="tel"], [type="search"], [type="url"], [type="number"], [type="password"], :not([type])),
+  textarea {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+}
+
+/* ---- Safari < 15.4: sin unidades svh/dvh ----
+   Fallback a 100vh para las utilidades de alto de pantalla (si no, esos
+   bloques quedan sin alto mínimo y el hero colapsa). */
+@supports not (height: 1svh) {
+  .min-h-svh, .min-h-dvh { min-height: 100vh; }
+  .h-svh, .h-dvh { height: 100vh; }
 }

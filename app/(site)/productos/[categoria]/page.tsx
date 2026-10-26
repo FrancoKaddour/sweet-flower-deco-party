@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/site";
-import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
+import { BreadcrumbJsonLd, ItemListJsonLd } from "@/components/site/JsonLd";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,6 +48,10 @@ export default async function CategoriaPage({ params }: Props) {
           { name: "Productos", path: "/productos" },
           { name: cat.nombre, path: `/productos/${cat.slug}` },
         ]}
+      />
+      <ItemListJsonLd
+        name={`${cat.nombre} para eventos`}
+        items={productos.map((p) => ({ nombre: p.nombre, path: `/productos/${p.categoria}/${p.slug}`, img: p.img }))}
       />
       {/* Intro de la categoría */}
       <section
@@ -123,7 +127,7 @@ export default async function CategoriaPage({ params }: Props) {
                 {/* TODO(contenido): foto real de la categoría */}
                 <Image
                   src={cat.img}
-                  alt=""
+                  alt={cat.nombre}
                   fill
                   sizes="(max-width: 1024px) 90vw, 420px"
                   className="object-cover"

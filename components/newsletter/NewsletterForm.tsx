@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import Link from "next/link";
 import { CLUB, DESCUENTO_BIENVENIDA, INTERESES } from "@/content/newsletter";
 import { suscribirNewsletter, type EstadoSuscripcion } from "@/modules/newsletter/publico";
@@ -11,6 +11,14 @@ const campo =
 export function NewsletterForm() {
   const [estado, accion, pendiente] = useActionState<EstadoSuscripcion, FormData>(suscribirNewsletter, null);
   const [copiado, setCopiado] = useState(false);
+  // Con JS enviamos a mano: React 19 resetea el form tras la action y, ante un
+  // error (email mal escrito), se borraba lo tipeado. action={accion} queda
+  // para el envío sin JS.
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const datos = new FormData(e.currentTarget);
+    startTransition(() => accion(datos));
+  };
 
   if (estado?.ok && estado.tipo === "nuevo") {
     const copiar = async () => {
@@ -68,11 +76,11 @@ export function NewsletterForm() {
   }
 
   return (
-    <form action={accion} className="flex flex-col gap-6" aria-describedby="club-legal">
+    <form action={accion} onSubmit={onSubmit} className="flex flex-col gap-6" aria-describedby="club-legal">
       <input type="text" name="web" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       <label className="flex flex-col gap-1">
         <span className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/60">Tu nombre</span>
-        <input name="nombre" autoComplete="given-name" maxLength={80} placeholder="Opcional" className={campo} />
+        <input name="nombre" autoComplete="given-name" autoCapitalize="words" enterKeyHint="next" maxLength={80} placeholder="Opcional" className={campo} />
       </label>
       <label className="flex flex-col gap-1">
         <span className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/60">Tu email</span>
@@ -82,6 +90,9 @@ export function NewsletterForm() {
           required
           autoComplete="email"
           inputMode="email"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           maxLength={200}
           placeholder="nombre@email.com"
           aria-invalid={estado?.ok === false ? true : undefined}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { getImageProps } from "next/image";
 import { gsap, useGSAP, ScrollTrigger } from "@/lib/gsap";
 import { FadeUp } from "@/components/motion/FadeUp";
 
@@ -27,6 +28,12 @@ const SLIDES: Slide[] = [
 const MOBILE_SEEDS = [9, 4, 7, 1, 6, 2];
 
 const foto = (n: number) => `/img/rio-cuarto/rc-${String(n).padStart(2, "0")}.webp`;
+
+// Las fotos originales miden 1500px y se muestran a 240–340px: pasan por el
+// optimizador de next/image (AVIF/WebP al tamaño justo, 1x/2x) pero siguen
+// siendo <img> nativos (GSAP mueve el track, no necesita el wrapper de Image).
+const fotoProps = (n: number, w: number, h: number, sizes?: string) =>
+  getImageProps({ src: foto(n), alt: "", width: w, height: h, sizes, loading: "lazy" }).props;
 
 // Ancho fijo del grupo (px) = período del loop (coincide con w-[93.75rem] del grupo).
 const GROUP_WIDTH = 1500;
@@ -79,7 +86,7 @@ export function Experiencia() {
           };
           ScrollTrigger.addEventListener("refreshInit", onRefresh);
           const marquee = gsap.to(trackEl, {
-            x: -group * 1.2, // recorrido suave; el wrap lo recicla infinitamente
+            x: () => -group * 1.2, // recorrido suave; el wrap lo recicla infinitamente
             ease: "none",
             force3D: true, // capa GPU fija: la tira no se re-pinta en cada frame
             scrollTrigger: {
@@ -87,6 +94,7 @@ export function Experiencia() {
               start: "top bottom",
               end: "bottom top",
               scrub: 2.5, // mucho más suave: sigue al scroll con inercia (nada agresivo)
+              invalidateOnRefresh: true,
             },
             modifiers: {
               x: (x: string) => `${wrapX(parseFloat(x))}px`,
@@ -106,6 +114,7 @@ export function Experiencia() {
                 start: "top bottom",
                 end: "bottom top",
                 scrub: true,
+                invalidateOnRefresh: true,
               },
             },
           );
@@ -171,12 +180,8 @@ export function Experiencia() {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={foto(slide.seed)}
-                    loading="lazy"
-                    decoding="async"
+                    {...fotoProps(slide.seed, slide.w, slide.h)}
                     alt=""
-                    width={slide.w}
-                    height={slide.h}
                     className="rounded-[var(--radius-sm)] object-cover"
                     style={{ width: `${slide.w / 16}rem`, height: `${slide.h / 16}rem` }}
                   />
@@ -195,13 +200,9 @@ export function Experiencia() {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={seed}
-              src={foto(seed)}
-              loading="lazy"
-              decoding="async"
+              {...fotoProps(seed, 600, 800, "(max-width: 548px) 70vw, 384px")}
               alt=""
               aria-hidden="true"
-              width={600}
-              height={800}
               className="aspect-[3/4] w-[min(70vw,24rem)] shrink-0 snap-start rounded-[var(--radius-sm)] object-cover [@media(max-height:500px)_and_(orientation:landscape)]:w-[min(40vw,48svh)]"
             />
           ))}

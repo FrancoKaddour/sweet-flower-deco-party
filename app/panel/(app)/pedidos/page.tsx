@@ -58,7 +58,7 @@ export default async function PedidosPage({
       <FiltroEstados base="/panel/pedidos" activo={estado} opciones={ESTADOS_PEDIDO} conteos={c.pedidos} extra={{ q }} />
       <form className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]" role="search">
         {estado && <input type="hidden" name="estado" value={estado} />}
-        <input name="q" defaultValue={q} placeholder="Buscar por código, nombre o localidad…" className={inputCls} aria-label="Buscar" />
+        <input name="q" type="search" enterKeyHint="search" autoCorrect="off" defaultValue={q} placeholder="Buscar por código, nombre o localidad…" className={inputCls} aria-label="Buscar" />
         <PanelButton type="submit" variant="outline">
           Buscar
         </PanelButton>

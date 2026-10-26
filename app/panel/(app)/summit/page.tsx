@@ -98,7 +98,7 @@ export default async function SummitPage({
       <FiltroEstados base="/panel/summit" activo={estado} opciones={ESTADOS_INSCRIPCION} conteos={c.inscripciones} extra={{ q, pase }} />
       <form className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 md:grid-cols-[1fr_auto_auto]" role="search">
         {estado && <input type="hidden" name="estado" value={estado} />}
-        <input name="q" defaultValue={q} placeholder="Buscar por código, nombre o ciudad…" className={`${inputCls} col-span-2 md:col-span-1`} aria-label="Buscar" />
+        <input name="q" type="search" enterKeyHint="search" autoCorrect="off" defaultValue={q} placeholder="Buscar por código, nombre o ciudad…" className={`${inputCls} col-span-2 md:col-span-1`} aria-label="Buscar" />
         <select name="pase" defaultValue={pase ?? ""} className={inputCls} aria-label="Pase">
           <option value="">Todos los pases</option>
           {PASES.map((p) => (

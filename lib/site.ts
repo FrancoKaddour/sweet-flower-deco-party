@@ -65,10 +65,14 @@ export function pageMetadata({
   ogTitle?: string;
 }): Metadata {
   const shareTitle = ogTitle ?? `${title} · ${SITE_NAME}`;
+  // Imagen por defecto = la del sitio (app/opengraph-image.tsx). Sin esto, al
+  // definir openGraph acá la página se queda SIN og:image. Las páginas con su
+  // propio opengraph-image.tsx (Summit, landings) la pisan solas.
+  const images = [{ url: "/opengraph-image", width: 1200, height: 630, alt: shareTitle }];
   return {
     title,
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: path, languages: { "es-AR": path, "x-default": path } },
     openGraph: {
       type: "website",
       locale: "es_AR",
@@ -76,7 +80,8 @@ export function pageMetadata({
       url: path,
       title: shareTitle,
       description,
+      images,
     },
-    twitter: { card: "summary_large_image", title: shareTitle, description },
+    twitter: { card: "summary_large_image", title: shareTitle, description, images },
   };
 }

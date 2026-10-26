@@ -59,6 +59,9 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       lenis = new Lenis({
         lerp: 0.1, // scroll "con peso" — ver docs/07
         smoothWheel: true,
+        // Táctil = scroll NATIVO (inercia del sistema, cero trabajo en JS por
+        // frame, sin peleas con la barra de Safari iOS). Explícito a propósito.
+        syncTouch: false,
       });
       // Exponemos la instancia para poder pausarla/reanudarla desde fuera.
       lenisInstance = lenis;

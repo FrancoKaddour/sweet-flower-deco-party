@@ -36,7 +36,8 @@ export const CONTACTO_LINKS: readonly NavLink[] = [
 
 /** Enlaces informativos / legales (Footer). */
 export const INFO_LINKS: readonly NavLink[] = [
-  { label: "Envíos", href: "#" },
+  { label: "Envíos", href: "/envios-a-todo-el-pais" },
+  { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
   { label: "Cambios", href: "#" },
   { label: "Términos", href: "#" },
   { label: "Privacidad", href: "#" },

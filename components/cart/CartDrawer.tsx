@@ -13,6 +13,7 @@ import { WHATSAPP_NUMBER } from "@/content/site";
 import { nuevoCodigo } from "@/lib/codigo";
 import { registrarPedido } from "@/modules/ventas/registro";
 import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
+import { lockScroll } from "@/lib/scroll-lock";
 
 export function CartDrawer() {
   const { items, count, setQty, remove, clear, open, setOpen } = useCart();
@@ -32,9 +33,8 @@ export function CartDrawer() {
     previousFocus.current = document.activeElement as HTMLElement | null;
     const focusTimer = window.setTimeout(() => closeRef.current?.focus({ preventScroll: true }), 60);
     stopLenis();
-    const html = document.documentElement;
-    const prevOverflow = html.style.overflow;
-    html.style.overflow = "hidden";
+    // iOS: overflow:hidden solo no frena el arrastre táctil de la página.
+    const liberarScroll = lockScroll();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
@@ -61,7 +61,7 @@ export function CartDrawer() {
     return () => {
       window.clearTimeout(focusTimer);
       window.removeEventListener("keydown", onKey);
-      html.style.overflow = prevOverflow;
+      liberarScroll();
       startLenis();
       previousFocus.current?.focus?.({ preventScroll: true });
     };

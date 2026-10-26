@@ -25,7 +25,7 @@ const CSS = `
 .edc-panel{height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 .edc-track{display:flex;align-items:center;gap:2rem;padding-inline:2.5rem}
 .edc-intro{flex:none;width:40vw}
-.edc-card{--w:44vw;flex:none;width:var(--w);height:min(68vh,calc(var(--w)*1.55))}
+.edc-card{--w:44vw;flex:none;width:var(--w);height:min(68svh,calc(var(--w)*1.55))}
 @media (min-width:1024px){.edc-intro{width:34vw}.edc-card{--w:26vw}}
 @media (max-width:767px),(max-height:520px),(prefers-reduced-motion:reduce){
   .edc{padding-block:6rem 5rem}

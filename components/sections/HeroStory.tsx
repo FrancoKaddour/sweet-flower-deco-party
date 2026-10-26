@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
+import { heroEnModoLiviano } from "@/components/sections/HeroMedia";
 
 /**
  * HeroStory — frases cinéticas sincronizadas con el video del hero.
@@ -68,26 +69,57 @@ export function HeroStory() {
       });
       tl.set({}, {}, DURATION); // largo exacto = video
 
-      // El video es el reloj.
+      // Reloj propio (mismo guion de 30s, en loop) cuando NO hay video que mire:
+      // modo liviano (ahorro de datos / red lenta → solo póster) o iOS en modo
+      // bajo consumo, que rechaza play() aunque el video sea muted.
+      let relojPropio = heroEnModoLiviano() || video.dataset.lite === "true";
+      let started = false;
+
+      // El video es el reloj. Solo se re-posiciona mientras el video corre
+      // (pausado fuera de pantalla → cero trabajo por frame).
       const sync = () => {
-        tl.time(video.currentTime % DURATION);
+        if (!video.paused) tl.time(video.currentTime % DURATION);
       };
-      gsap.ticker.add(sync);
+      const usarRelojPropio = () => {
+        gsap.ticker.remove(sync);
+        relojPropio = true;
+        started = true;
+        tl.repeat(-1).play();
+      };
+      if (!relojPropio) gsap.ticker.add(sync);
+
+      // iOS: muted/playsInline como PROPIEDADES justo antes de play() (el
+      // atributo de React no alcanza en todas las versiones de Safari).
+      const reproducir = () => {
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+        video.play().catch((err: unknown) => {
+          // Solo si el sistema NO deja reproducir (bajo consumo); un AbortError
+          // (pausa/cambio de src a mitad de carga) no debe desenganchar el reloj.
+          if ((err as { name?: string } | null)?.name === "NotAllowedError") usarRelojPropio();
+        });
+      };
 
       // Arranca cuando el video nace en el loader (evento del Loader, que corre
       // SIEMPRE al entrar al inicio — carga directa o navegación cliente).
       const start = () => {
-        video.play().catch(() => {});
+        if (relojPropio) usarRelojPropio();
+        else reproducir();
       };
       window.addEventListener("sf:hero-start", start, { once: true });
+      // Si la intro ya terminó antes de montar (F5 sin intro), arrancar directo.
+      if (document.body.getAttribute("data-loader") === "false") start();
 
-      // Performance: fuera de pantalla, el video se pausa.
-      let started = false;
+      // Performance: fuera de pantalla, el video (o el reloj propio) se pausa.
       const onPlay = () => (started = true);
       video.addEventListener("play", onPlay);
       const io = new IntersectionObserver(([entry]) => {
         if (!started) return;
-        if (entry.isIntersecting) video.play().catch(() => {});
+        if (relojPropio) {
+          if (entry.isIntersecting) tl.play();
+          else tl.pause();
+        } else if (entry.isIntersecting) reproducir();
         else video.pause();
       });
       io.observe(video);
@@ -97,6 +129,7 @@ export function HeroStory() {
         window.removeEventListener("sf:hero-start", start);
         video.removeEventListener("play", onPlay);
         io.disconnect();
+        tl.kill();
       };
     },
     { scope: root },

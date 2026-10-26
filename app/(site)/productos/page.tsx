@@ -102,7 +102,7 @@ export default async function ProductosPage() {
                       {/* TODO(contenido): foto real representativa de la categoría */}
                       <Image
                         src={cat.img}
-                        alt=""
+                        alt={cat.nombre}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 58vw"
                         className="object-cover transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"

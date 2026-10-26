@@ -81,7 +81,7 @@ export default async function ProductosPage({
 
       {/* Filtros (GET → se pueden compartir/guardar como link) */}
       <form className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto_auto]" role="search">
-        <input name="q" defaultValue={sp.q} placeholder="Buscar por nombre o descripción…" className={`${inputCls} col-span-2 md:col-span-1`} aria-label="Buscar" />
+        <input name="q" type="search" enterKeyHint="search" autoCorrect="off" defaultValue={sp.q} placeholder="Buscar por nombre o descripción…" className={`${inputCls} col-span-2 md:col-span-1`} aria-label="Buscar" />
         <select name="cat" defaultValue={sp.cat ?? ""} className={inputCls} aria-label="Categoría">
           <option value="">Todas las categorías</option>
           {categorias.map((c) => (

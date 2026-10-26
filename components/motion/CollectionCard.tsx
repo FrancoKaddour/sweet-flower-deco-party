@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { getImageProps } from "next/image";
 
 type CollectionCardProps = {
   href: string;
@@ -106,8 +107,24 @@ export function CollectionCard({
         {/* <img> nativo a propósito: la "caída" clip-path está afinada sobre
             .clip-figure img en globals.css y el wrapper de next/image pelearía
             con ese layout. Migrar recién con las fotos reales. Ver audit. */}
+        {/* Rendimiento: sigue siendo <img> nativo pero servido por el optimizador
+            de next/image (AVIF/WebP al ancho de la card, no la foto cruda de
+            1280px). Eager (la caída espera a que cargue) pero con prioridad baja
+            para no competir con el hero. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={img} alt="" loading="eager" decoding="async" />
+        <img
+          {...getImageProps({
+            src: img,
+            alt: "",
+            width: 800,
+            height: 1100, // .clip-figure es 8/11
+            sizes: "(max-width: 639px) 80vw, (max-width: 767px) 46vw, 33vw",
+            loading: "eager",
+          }).props}
+          alt=""
+          fetchPriority="low"
+          style={undefined}
+        />
         <div className="clip-overlay" />
         <div className="clip-content">
           <span className="clip-index">{index}</span>

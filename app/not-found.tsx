@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -44,6 +45,30 @@ export default function NotFound() {
                 Ver el catálogo
               </Button>
             </nav>
+          </div>
+
+          {/* Lo más buscado: salidas útiles (y enlazado interno) */}
+          <div className="mt-16 border-t border-line pt-8">
+            <h2 className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-ink/50">Lo más buscado</h2>
+            <ul className="mt-4 flex flex-wrap gap-x-3 gap-y-2">
+              {[
+                ["/estructuras-de-hierro-para-eventos", "Estructuras de hierro"],
+                ["/arcos-para-eventos", "Arcos para eventos"],
+                ["/exhibidores-para-catering", "Exhibidores para catering"],
+                ["/event-summit", "Event Summit"],
+                ["/preguntas-frecuentes", "Preguntas frecuentes"],
+                ["/contacto", "Contacto"],
+              ].map(([href, label]) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="inline-flex min-h-11 items-center rounded-[var(--radius-pill)] border border-line px-5 text-[length:var(--text-step--1)] text-ink/70 transition-colors hover:border-ink hover:text-ink"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </main>

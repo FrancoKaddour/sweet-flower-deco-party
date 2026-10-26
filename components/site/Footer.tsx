@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { MAIN_NAV, CONTACTO_LINKS, INFO_LINKS } from "@/content/site";
+import { LinksSeo } from "@/components/seo/LinksSeo";
 
 // TODO(contenido): datos reales de contacto, redes y legales (ver docs).
 // Footer oscuro premium — mood editorial cálido para Sweet Flowers Deco Party.
@@ -80,8 +81,10 @@ export function Footer() {
           <div className="flex items-center gap-4 md:gap-6">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/brand/logo-mark-full.png"
+              src="/brand/logo-mark-520.webp"
               alt="Sweet Flowers Deco Party"
+              width={520}
+              height={511}
               className="h-[clamp(3.5rem,8vw,7.5rem)] w-auto brightness-0 invert"
             />
             <div className="flex flex-col leading-none">
@@ -161,6 +164,9 @@ export function Footer() {
           </ul>
         </div>
       </div>
+
+      {/* 2b) Links SEO (landings por intención y zona) — components/seo/LinksSeo */}
+      <LinksSeo />
 
       {/* 3) Barra inferior */}
       <div className="mx-auto flex max-w-[87.5rem] flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-8 text-[length:var(--text-step--1)] text-muted md:px-10 md:pb-28">

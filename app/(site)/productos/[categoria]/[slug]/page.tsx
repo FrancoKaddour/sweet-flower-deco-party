@@ -79,6 +79,8 @@ export default async function ProductoPage({ params }: Props) {
           image: p.imagenes.map((i) => (i.url.startsWith("http") ? i.url : `${SITE_URL}${i.url}`)),
           category: cat.nombre,
           brand: { "@type": "Brand", name: SITE_NAME },
+          manufacturer: { "@id": `${SITE_URL}/#organization` },
+          sku: p.slug,
           url: `${SITE_URL}/productos/${cat.slug}/${p.slug}`,
           ...(p.precio != null
             ? {
@@ -87,8 +89,9 @@ export default async function ProductoPage({ params }: Props) {
                   price: p.precio,
                   priceCurrency: "ARS",
                   availability: "https://schema.org/MadeToOrder",
+                  itemCondition: "https://schema.org/NewCondition",
                   url: `${SITE_URL}/productos/${cat.slug}/${p.slug}`,
-                  seller: { "@type": "Organization", name: SITE_NAME },
+                  seller: { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: SITE_NAME },
                 },
               }
             : {}),

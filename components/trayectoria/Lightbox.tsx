@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import type { Foto } from "@/content/galerias";
 import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
+import { lockScroll } from "@/lib/scroll-lock";
 
 /**
  * Visor a pantalla completa sobre <dialog> nativo (foco atrapado, Esc cierra).
@@ -24,6 +25,13 @@ export function Lightbox({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const toque = useRef<number | null>(null);
+  // <dialog> modal NO bloquea el scroll táctil de la página en iOS → lockScroll.
+  const liberarScroll = useRef<(() => void) | null>(null);
+  const liberar = () => {
+    liberarScroll.current?.();
+    liberarScroll.current = null;
+    startLenis();
+  };
   const abierto = indice !== null;
 
   useEffect(() => {
@@ -32,16 +40,23 @@ export function Lightbox({
     if (abierto && !d.open) {
       d.showModal();
       stopLenis();
+      if (!liberarScroll.current) liberarScroll.current = lockScroll();
     }
     if (!abierto && d.open) {
       d.close();
-      startLenis();
+      liberar();
     }
   }, [abierto]);
 
+  // Desmontaje con el visor abierto (p. ej. navegación): no dejar la página trabada.
+  useEffect(() => () => {
+    liberarScroll.current?.();
+    liberarScroll.current = null;
+  }, []);
+
   // Cierre por Esc / click afuera: el <dialog> ya se cerró solo → reanudar.
   const alCerrar = () => {
-    startLenis();
+    liberar();
     onCambiar(null);
   };
 
@@ -68,6 +83,11 @@ export function Lightbox({
       onPointerCancel={() => (toque.current = null)}
       onPointerUp={(e) => {
         if (toque.current === null) return;
+        // Con la foto ampliada (pinch-zoom) el arrastre es para recorrerla, no para cambiar de foto.
+        if ((window.visualViewport?.scale ?? 1) > 1.05) {
+          toque.current = null;
+          return;
+        }
         const dx = e.clientX - toque.current;
         toque.current = null;
         if (Math.abs(dx) > 60) mover(dx < 0 ? 1 : -1);

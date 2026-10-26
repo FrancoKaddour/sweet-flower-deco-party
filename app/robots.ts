@@ -9,6 +9,16 @@ import { SITE_URL } from "@/lib/site";
  */
 const AI_BOTS = [
   "GPTBot",
+  "Googlebot",
+  "Googlebot-Image",
+  "DuckDuckBot",
+  "YandexBot",
+  "Applebot",
+  "Amazonbot",
+  "meta-externalagent",
+  "MistralAI-User",
+  "DuckAssistBot",
+  "cohere-ai",
   "OAI-SearchBot",
   "ChatGPT-User",
   "ClaudeBot",
@@ -22,14 +32,17 @@ const AI_BOTS = [
   "CCBot",
 ];
 
+/** Zonas privadas o sin valor para buscadores (además llevan noindex). */
+const PRIVADO = ["/panel", "/api/", "/cuenta", "/ingresar", "/event-summit/inscripcion", "/newsletter/baja"];
+
 export default function robots(): MetadataRoute.Robots {
   // Siempre abierto al rastreo (si se bloquea, WhatsApp e Instagram no pueden
   // armar la vista previa del link). Mientras IS_INDEXABLE sea false, cada
   // página lleva <meta name="robots" content="noindex"> (ver app/layout.tsx).
   return {
     rules: [
-      { userAgent: "*", allow: "/", disallow: ["/panel", "/api/"] },
-      { userAgent: AI_BOTS, allow: "/", disallow: ["/panel", "/api/"] },
+      { userAgent: "*", allow: "/", disallow: PRIVADO },
+      { userAgent: AI_BOTS, allow: "/", disallow: PRIVADO },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,

@@ -39,6 +39,7 @@ export default async function SuscriptoresPage({
       titulo="Suscriptores"
       descripcion="Cuando alguien te pase su código por WhatsApp, buscalo acá y marcalo como usado: así sabés quién compró gracias al club."
       accion={
+        // eslint-disable-next-line @next/next/no-html-link-for-pages -- descarga de archivo
         <a
           href="/api/panel/newsletter/export"
           className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-pill)] border border-ink px-5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink hover:bg-ink hover:text-bone"
@@ -73,7 +74,7 @@ export default async function SuscriptoresPage({
       <TabsNewsletter activa="suscriptores" />
 
       <form className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 md:grid-cols-[1fr_auto_auto]" role="search">
-        <input name="q" defaultValue={q} placeholder="Buscar por email, nombre o código (CLUB-…)" className={`${inputCls} col-span-2 md:col-span-1`} aria-label="Buscar" />
+        <input name="q" type="search" enterKeyHint="search" autoCorrect="off" defaultValue={q} placeholder="Buscar por email, nombre o código (CLUB-…)" className={`${inputCls} col-span-2 md:col-span-1`} aria-label="Buscar" />
         <select name="estado" defaultValue={estado ?? ""} className={inputCls} aria-label="Filtro">
           <option value="">Todos</option>
           {FILTROS.map((f) => (

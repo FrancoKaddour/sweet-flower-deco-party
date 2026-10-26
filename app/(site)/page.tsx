@@ -23,7 +23,9 @@ const BLUSH = "var(--color-blush)";
 const SAND = "var(--color-sand)";
 
 // La home usa título/OG del layout; solo fija su canonical.
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+export const metadata: Metadata = {
+  alternates: { canonical: "/", languages: { "es-AR": "/", "x-default": "/" } },
+};
 
 // Se regenera cada 5 min y al instante cuando se edita el catálogo en el panel.
 export const revalidate = 300;

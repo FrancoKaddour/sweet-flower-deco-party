@@ -13,26 +13,36 @@ import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, IS_INDEXABLE } from "@/lib/site"
 
 // Display grotesca con carácter — equivalente LIBRE al espíritu de "Snaskface".
 // Alternativa self-hosted con más punch: Clash Display (Fontshare). Ver docs/06 + ADR-012.
+// Rendimiento: hoy solo la usa el panel ([data-area="panel"] .font-display) →
+// sin preload (antes se bajaban ~41 KB en TODAS las páginas públicas sin usarse).
+// El navegador la baja recién cuando algún texto la usa.
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 // Cuerpo grotesca limpia — equivalente LIBRE a "Apercu" (la de snask.com).
+// Variable (un solo archivo para todos los pesos). Sin preload: se descubre con
+// el CSS del <head> y mientras tanto display:swap muestra el fallback métrico.
 const hanken = Hanken_Grotesk({
   variable: "--font-hanken",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 // Logotipo — serif editorial FINA y elegante para el texto del logo del header
 // ("Sweet Flowers"). Pesos ligeros para un registro premium, menos "simple".
+// Es también la de TODOS los títulos (--font-display) → la única con preload.
+// Variable (wght 300–700 en un solo archivo) en vez de 5 archivos estáticos:
+// el sitio usa 300/400/500/600 (los "bold" de display se normalizan a 600).
 const cormorant = Cormorant_Garamond({
   variable: "--font-logo",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -88,6 +98,7 @@ export const metadata: Metadata = {
         googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
       }
     : { index: false, follow: false },
+  appleWebApp: { title: "Sweet Flowers", statusBarStyle: "default" },
   // TODO(lanzamiento): pegar acá el código de Google Search Console.
   // verification: { google: "" },
 };

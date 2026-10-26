@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { getImageProps } from "next/image";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { RevealText } from "@/components/motion/RevealText";
 import { Button } from "@/components/ui/Button";
@@ -60,6 +61,8 @@ export function SummitHome() {
         end: "clamp(bottom top)",
         // Mobile: menos inercia → menos frames de "arrastre" con el dedo.
         scrub: mobile ? 1.2 : 2.8,
+        // iOS: la barra de URL cambia el alto al scrollear → recalcular valores.
+        invalidateOnRefresh: true,
       } as const;
 
       // 1) Tilt 3D: de inclinado → casi de frente.
@@ -123,9 +126,23 @@ export function SummitHome() {
             <div className="wk-col" key={ci}>
               {col.map((src, i) => (
                 // <img> nativo a propósito: collage decorativo de 45 imgs que GSAP
-                // anima por selector. Las fotos ya van optimizadas (webp ~40 KB).
+                // anima por selector. Pasan por el optimizador de next/image
+                // (AVIF al ancho real de la columna: ~1/9 del ancho ×1.4 de escala
+                // en desktop, ~1/5 ×1.3 en celular) en vez del webp de 600–900px.
                 // eslint-disable-next-line @next/next/no-img-element
-                <img key={`${ci}-${i}`} src={src} alt="" loading="lazy" decoding="async" />
+                <img
+                  key={`${ci}-${i}`}
+                  {...getImageProps({
+                    src,
+                    alt: "",
+                    width: 600,
+                    height: 900,
+                    sizes: "(max-width: 767px) 34vw, 18vw",
+                    loading: "lazy",
+                  }).props}
+                  alt=""
+                  style={undefined}
+                />
               ))}
             </div>
           ))}

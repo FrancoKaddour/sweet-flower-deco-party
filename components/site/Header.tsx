@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
+import { lockScroll } from "@/lib/scroll-lock";
 import { MAIN_NAV, CONTACTO_LINK } from "@/content/site";
 
 // Menú del Header = navegación principal + Contacto al final.
@@ -137,6 +138,8 @@ export function Header() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const menuTl = useRef<gsap.core.Timeline | null>(null);
+  // Libera el bloqueo de scroll del menú (lib/scroll-lock); null = no bloqueado.
+  const liberarScroll = useRef<(() => void) | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
   const mounted = useRef(false);
@@ -174,12 +177,14 @@ export function Header() {
     if (!scrolled) hoverTl.current?.reverse();
   }, [scrolled]);
 
-  const handleLogoHoverIn = () => {
-    if (!scrolled) return;
+  // Solo con mouse: en iOS el tap dispara un "mouseenter" emulado y el hover
+  // quedaba pegado (nunca llega el mouseleave).
+  const handleLogoHoverIn = (e: React.PointerEvent) => {
+    if (!scrolled || e.pointerType !== "mouse") return;
     hoverTl.current?.play();
   };
-  const handleLogoHoverOut = () => {
-    if (!scrolled) return;
+  const handleLogoHoverOut = (e: React.PointerEvent) => {
+    if (!scrolled || e.pointerType !== "mouse") return;
     hoverTl.current?.reverse();
   };
 
@@ -344,8 +349,8 @@ export function Header() {
     tl.eventCallback("onReverseComplete", () => {
       // Recién con el menú totalmente retirado se libera el scroll (sin saltos
       // de layout a mitad de la animación).
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
+      liberarScroll.current?.();
+      liberarScroll.current = null;
       startLenis();
     });
     return tl;
@@ -363,8 +368,8 @@ export function Header() {
     }
 
     if (open) {
-      document.body.style.overflow = "hidden";
-      document.documentElement.style.overflow = "hidden";
+      // iOS: overflow:hidden solo no frena el arrastre táctil → lockScroll.
+      if (!liberarScroll.current) liberarScroll.current = lockScroll();
       stopLenis();
       // Si estaba cerrándose, retoma desde ahí; si no, se arma de cero
       // (recalcula la posición del botón por si cambió el viewport).
@@ -379,14 +384,23 @@ export function Header() {
     } else {
       const tl = menuTl.current;
       if (!tl) return;
-      if (reduce) tl.progress(0);
+      if (reduce) {
+        tl.progress(0);
+        liberarScroll.current?.();
+        liberarScroll.current = null;
+        startLenis();
+      }
       // Cierre = la misma coreografía en reversa, un poco más ágil.
       else tl.timeScale(1.3).reverse();
     }
     // buildMenuTimeline lee solo refs → no necesita ser dependencia.
   }, [open]);
 
-  useEffect(() => () => { menuTl.current?.kill(); }, []);
+  useEffect(() => () => {
+    menuTl.current?.kill();
+    liberarScroll.current?.();
+    liberarScroll.current = null;
+  }, []);
 
   // 3) Gestión de foco: al abrir movemos el foco dentro del overlay y al
   //    cerrar lo devolvemos al botón "Menú" que lo disparó.
@@ -516,8 +530,8 @@ export function Header() {
             ref={logoWrapRef}
             data-tone={toneC}
             href="/"
-            onMouseEnter={handleLogoHoverIn}
-            onMouseLeave={handleLogoHoverOut}
+            onPointerEnter={handleLogoHoverIn}
+            onPointerLeave={handleLogoHoverOut}
             className="relative flex flex-col items-center justify-self-center gap-0.5"
             aria-label="Sweet Flowers Deco Party — inicio"
           >
@@ -530,7 +544,7 @@ export function Header() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/brand/logo-mark-full.png"
+                src="/brand/logo-mark-520.webp"
                 alt="Sweet Flowers Deco Party"
                 className="block h-full w-auto"
               />
@@ -677,7 +691,7 @@ export function Header() {
               <div className="overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/brand/logo-mark-full.png"
+                  src="/brand/logo-mark-520.webp"
                   alt=""
                   aria-hidden="true"
                   className="menu-logo-img block h-[clamp(9rem,18vw,16rem)] w-auto brightness-0 invert [@media(max-height:30rem)]:h-[min(9rem,45svh)]"

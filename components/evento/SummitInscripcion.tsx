@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import { EVENT_NAME, EVENT_WHATSAPP, PASES, tarifaVigente, type PaseId } from "@/content/evento";
 import { formatARS } from "@/content/productos";
 import { iniciarPagoSummit, type EstadoPagoSummit } from "@/modules/summit/pago";
@@ -28,10 +28,36 @@ export function SummitInscripcion() {
     return () => window.removeEventListener(EVENTO_ELEGIR_PASE, elegir);
   }, []);
 
-  // Pago creado → al checkout de Mercado Pago.
+  // Pago creado → al checkout de Mercado Pago. Es una navegación en la misma
+  // pestaña (no window.open después de un await, que Safari bloquea).
+  const estadoRef = useRef(estado);
   useEffect(() => {
+    estadoRef.current = estado;
     if (estado?.ok) window.location.assign(estado.url);
   }, [estado]);
+
+  // Safari guarda la página en el bfcache: si desde Mercado Pago tocan "Atrás",
+  // vuelve con el botón trabado en "Yendo a Mercado Pago…". Al restaurarse,
+  // ese estado deja de contar y el botón se rehabilita.
+  const [estadoVuelto, setEstadoVuelto] = useState<EstadoPagoSummit>(null);
+  useEffect(() => {
+    const onShow = (e: PageTransitionEvent) => {
+      if (e.persisted) setEstadoVuelto(estadoRef.current);
+    };
+    window.addEventListener("pageshow", onShow);
+    return () => window.removeEventListener("pageshow", onShow);
+  }, []);
+  const yendo = Boolean(estado?.ok) && estado !== estadoVuelto;
+
+  // Con JS enviamos a mano (sin action nativa): React 19 resetea el formulario
+  // tras cada action y, si el servidor devolvía un error, se borraba todo lo
+  // tipeado (en el celular, tener que reescribir 5 campos). El action={accion}
+  // queda para el envío sin JS.
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const datos = new FormData(e.currentTarget);
+    startTransition(() => accion(datos));
+  };
 
   const field =
     "w-full scroll-mb-28 scroll-mt-28 rounded-none border-b border-bone/30 bg-transparent py-3 text-[max(16px,var(--text-step-0))] text-bone placeholder:text-bone/40 focus:border-champagne focus:outline-none aria-[invalid=true]:border-champagne";
@@ -41,7 +67,7 @@ export function SummitInscripcion() {
   const wa = `https://wa.me/${EVENT_WHATSAPP}?text=${encodeURIComponent(`¡Hola! Tengo una consulta sobre la inscripción al ${EVENT_NAME}.`)}`;
 
   return (
-    <form action={accion} data-oculta-flotantes className="flex flex-col gap-6" aria-label="Inscripción y pago">
+    <form action={accion} onSubmit={onSubmit} data-oculta-flotantes className="flex flex-col gap-6" aria-label="Inscripción y pago">
       <input type="text" name="web" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
       <fieldset className="flex flex-col gap-2">
@@ -72,24 +98,24 @@ export function SummitInscripcion() {
 
       <label className="flex flex-col gap-1">
         <span className={label}>Nombre y apellido</span>
-        <input name="nombre" required minLength={3} autoComplete="name" aria-invalid={inv("nombre")} className={field} />
+        <input name="nombre" required minLength={3} autoComplete="name" autoCapitalize="words" enterKeyHint="next" aria-invalid={inv("nombre")} className={field} />
       </label>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <label className="flex flex-col gap-1">
           <span className={label}>Email</span>
-          <input name="email" type="email" required autoComplete="email" inputMode="email" aria-invalid={inv("email")} className={field} />
+          <input name="email" type="email" required autoComplete="email" inputMode="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} enterKeyHint="next" aria-invalid={inv("email")} className={field} />
         </label>
         <label className="flex flex-col gap-1">
           <span className={label}>Celular</span>
-          <input name="telefono" type="tel" required autoComplete="tel" inputMode="tel" placeholder="11 5555 5555" aria-invalid={inv("telefono")} className={field} />
+          <input name="telefono" type="tel" required autoComplete="tel" inputMode="tel" enterKeyHint="next" placeholder="11 5555 5555" aria-invalid={inv("telefono")} className={field} />
         </label>
         <label className="flex flex-col gap-1">
           <span className={label}>DNI</span>
-          <input name="dni" required inputMode="numeric" autoComplete="off" aria-invalid={inv("dni")} className={field} />
+          <input name="dni" required inputMode="numeric" autoComplete="off" enterKeyHint="next" aria-invalid={inv("dni")} className={field} />
         </label>
         <label className="flex flex-col gap-1">
           <span className={label}>Ciudad</span>
-          <input name="ciudad" required autoComplete="address-level2" aria-invalid={inv("ciudad")} className={field} />
+          <input name="ciudad" required autoComplete="address-level2" autoCapitalize="words" enterKeyHint="done" aria-invalid={inv("ciudad")} className={field} />
         </label>
       </div>
 
@@ -101,10 +127,10 @@ export function SummitInscripcion() {
 
       <button
         type="submit"
-        disabled={pendiente || Boolean(estado?.ok)}
+        disabled={pendiente || yendo}
         className="group mt-2 flex min-h-14 w-full scroll-mb-28 items-center justify-center gap-3 rounded-full bg-bone px-6 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink transition-colors duration-300 hover:bg-champagne disabled:opacity-70"
       >
-        {pendiente || estado?.ok ? "Yendo a Mercado Pago…" : `Pagar ${formatARS(precio)}`}
+        {pendiente || yendo ? "Yendo a Mercado Pago…" : `Pagar ${formatARS(precio)}`}
         <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
       </button>
       <p className="text-center text-[length:var(--text-step--1)] leading-relaxed text-bone/55">

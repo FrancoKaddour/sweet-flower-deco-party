@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pageMetadata } from "@/lib/site";
-import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
+import { BreadcrumbJsonLd, WorkshopEventJsonLd } from "@/components/site/JsonLd";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
 import { Button } from "@/components/ui/Button";
@@ -67,6 +67,7 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
           { name: `${e.etapa} · ${e.titulo}`, path: `/event-summit/trayectoria/${slug}` },
         ]}
       />
+      <WorkshopEventJsonLd etapa={e} imagen={esReal ? portada.src : undefined} />
       <WorkshopHero
         etapa={e.etapa}
         titulo={e.titulo}
