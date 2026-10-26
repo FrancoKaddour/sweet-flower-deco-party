@@ -116,7 +116,7 @@ export function EdicionesScroll() {
       <div className="edc-head px-6 md:px-10">
         <Intro titleId="trayectoria-h" />
       </div>
-      <div ref={panel} className="edc-panel">
+      <div ref={panel} className="edc-panel" data-theme="dark">
         <div ref={track} className="edc-track">
           {/* Intro como primer panel (solo modo pineado) */}
           <div className="edc-intro flex flex-col justify-center">

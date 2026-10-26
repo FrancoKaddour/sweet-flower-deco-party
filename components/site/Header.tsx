@@ -85,10 +85,20 @@ function toneAt(x: number, y: number, header: HTMLElement): Tone | null {
       !(el as HTMLElement).closest?.("[data-header-ignore]"),
   );
   let el: Element | null = hit ?? document.body;
-  while (el && el !== document.documentElement) {
+  // Spacers ya visitados: sin esto, un hijo pineado sin data-theme ni fondo
+  // sube al spacer, vuelve a bajar al hijo… y el bucle no termina nunca
+  // (congelaba /event-summit en "El camino hasta acá").
+  const spacers = new Set<Element>();
+  let guard = 0;
+  while (el && el !== document.documentElement && guard++ < 64) {
     // Sección pineada por ScrollTrigger: el hueco que se ve es el pin-spacer;
     // el tono es el de la sección pineada (su primer hijo).
-    if (el.classList.contains("pin-spacer") && el.firstElementChild) {
+    if (
+      el.classList.contains("pin-spacer") &&
+      el.firstElementChild &&
+      !spacers.has(el)
+    ) {
+      spacers.add(el);
       el = el.firstElementChild;
     }
     const theme = el.getAttribute("data-theme");
