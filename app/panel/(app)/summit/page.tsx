@@ -69,15 +69,15 @@ export default async function SummitPage({
           <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">
             ✧ Precio vigente: {pv.nombre} · VIP {formatARS(pv.precios.vip)} · General {formatARS(pv.precios.general)}
           </p>
-          <dl className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-6">
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-8 xl:grid-cols-4">
             {[
               { l: "Lugares confirmados", v: `${ocupados}/${EVENT_CUPO}`, a: "Señaron, pagaron o asistieron." },
               ...PASES.map((p) => ({ l: `Pase ${p.nombre}`, v: String(confirmados(p.id)), a: "Confirmados." })),
               { l: "Sin pagar", v: String(interesados), a: "Empezaron la inscripción y no pagaron." },
             ].map((m) => (
-              <div key={m.l} className="flex flex-col gap-2">
+              <div key={m.l} className="@container flex min-w-0 flex-col gap-2">
                 <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/60">{m.l}</dt>
-                <dd className="font-display text-[length:var(--text-step-5)] font-extrabold leading-[0.85] tabular-nums text-bone">{m.v}</dd>
+                <dd className="font-display text-[length:min(var(--text-step-5),30cqi)] font-extrabold leading-[0.85] tabular-nums text-bone">{m.v}</dd>
                 <p className="text-[length:var(--text-step--1)] text-bone/55">{m.a}</p>
               </div>
             ))}
@@ -96,9 +96,9 @@ export default async function SummitPage({
       )}
 
       <FiltroEstados base="/panel/summit" activo={estado} opciones={ESTADOS_INSCRIPCION} conteos={c.inscripciones} extra={{ q, pase }} />
-      <form className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_auto]" role="search">
+      <form className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 md:grid-cols-[1fr_auto_auto]" role="search">
         {estado && <input type="hidden" name="estado" value={estado} />}
-        <input name="q" defaultValue={q} placeholder="Buscar por código, nombre o ciudad…" className={inputCls} aria-label="Buscar" />
+        <input name="q" defaultValue={q} placeholder="Buscar por código, nombre o ciudad…" className={`${inputCls} col-span-2 md:col-span-1`} aria-label="Buscar" />
         <select name="pase" defaultValue={pase ?? ""} className={inputCls} aria-label="Pase">
           <option value="">Todos los pases</option>
           {PASES.map((p) => (
@@ -124,13 +124,13 @@ export default async function SummitPage({
             return (
               <li key={r.id} className="p-5">
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-                  <div className="min-w-[10rem] flex-1">
+                  <div className="min-w-0 flex-1 basis-60">
                     <p className="font-medium text-ink">{r.nombre}</p>
                     <p className="text-[length:var(--text-step--1)] text-muted">
                       <span className="font-mono">{r.codigo}</span> · {fechaCorta(r.createdAt)}
                       {r.ciudad ? ` · ${r.ciudad}` : ""}
                     </p>
-                    <p className="text-[length:var(--text-step--1)] text-muted">
+                    <p className="break-words text-[length:var(--text-step--1)] text-muted">
                       {[r.email, r.telefono, r.dni ? `DNI ${r.dni}` : null].filter(Boolean).join(" · ")}
                     </p>
                   </div>
@@ -147,8 +147,8 @@ export default async function SummitPage({
                   <EstadoSelect tipo="inscripcion" id={r.id} valor={r.estado} opciones={ESTADOS_INSCRIPCION} etiqueta={`Estado de la reserva de ${r.nombre}`} />
                 </div>
                 {r.mensaje && <p className="mt-3 whitespace-pre-line text-[length:var(--text-step--1)] text-ink">“{r.mensaje}”</p>}
-                <details className="group mt-3">
-                  <summary className="cursor-pointer list-none text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-muted hover:text-ink">
+                <details className="group mt-2">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-muted hover:text-ink [&::-webkit-details-marker]:hidden">
                     <span className="group-open:hidden">+ Seguimiento{r.notaInterna ? " (tiene nota)" : ""}</span>
                     <span className="hidden group-open:inline">− Seguimiento</span>
                   </summary>

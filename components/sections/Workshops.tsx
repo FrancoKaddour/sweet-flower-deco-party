@@ -30,7 +30,7 @@ export function Workshops() {
           </div>
         </FadeUp>
 
-        <div className="lg:col-span-6 lg:col-start-7">
+        <div className="mx-auto w-full max-w-[27.5rem] md:max-w-[36rem] lg:col-span-6 lg:col-start-7 lg:mx-0 lg:max-w-none">
           <Eyebrow className="mb-6">Trayectoria</Eyebrow>
           <RevealText
             as="h2"

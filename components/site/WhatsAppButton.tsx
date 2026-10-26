@@ -13,7 +13,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribinos por WhatsApp"
-      className="c-wa group fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-40 flex h-13 items-center overflow-hidden rounded-full bg-ink px-[0.95rem] text-bone shadow-[0_10px_30px_-10px_rgb(20_17_15/0.55)] duration-500 ease-(--ease-out-quart) hover:bg-bordeaux md:bottom-8 md:right-8"
+      className="c-wa group fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1.25rem,env(safe-area-inset-right))] z-40 flex h-13 items-center overflow-hidden rounded-full bg-ink px-[0.95rem] text-bone shadow-[0_10px_30px_-10px_rgb(20_17_15/0.55)] duration-500 ease-(--ease-out-quart) hover:bg-bordeaux md:bottom-[max(2rem,env(safe-area-inset-bottom))] md:right-[max(2rem,env(safe-area-inset-right))]"
     >
       <svg viewBox="0 0 24 24" className="size-[1.35rem] shrink-0" aria-hidden="true">
         <path

@@ -34,14 +34,14 @@ export function SummitInscripcion() {
   }, [estado]);
 
   const field =
-    "w-full border-b border-bone/30 bg-transparent py-3 text-[length:var(--text-step-0)] text-bone placeholder:text-bone/40 focus:border-champagne focus:outline-none aria-[invalid=true]:border-champagne";
-  const label = "text-[0.7rem] uppercase tracking-[0.16em] text-bone/55";
+    "w-full scroll-mb-28 scroll-mt-28 rounded-none border-b border-bone/30 bg-transparent py-3 text-[max(16px,var(--text-step-0))] text-bone placeholder:text-bone/40 focus:border-champagne focus:outline-none aria-[invalid=true]:border-champagne";
+  const label = "text-[0.7rem] uppercase tracking-[0.16em] text-bone/65";
   const error = estado && !estado.ok ? estado : null;
   const inv = (c: string) => (error?.campo === c ? true : undefined);
   const wa = `https://wa.me/${EVENT_WHATSAPP}?text=${encodeURIComponent(`¡Hola! Tengo una consulta sobre la inscripción al ${EVENT_NAME}.`)}`;
 
   return (
-    <form action={accion} className="flex flex-col gap-6" aria-label="Inscripción y pago">
+    <form action={accion} data-oculta-flotantes className="flex flex-col gap-6" aria-label="Inscripción y pago">
       <input type="text" name="web" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
       <fieldset className="flex flex-col gap-2">
@@ -62,12 +62,12 @@ export function SummitInscripcion() {
       </fieldset>
 
       {/* Precio vigente, bien grande */}
-      <div className="flex items-baseline justify-between gap-4 border-y border-bone/15 py-5">
+      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2 border-y border-bone/15 py-5">
         <div>
           <p className="text-[0.7rem] uppercase tracking-[0.16em] text-champagne">{tarifa.nombre}</p>
           <p className="text-[length:var(--text-step--1)] text-bone/55">{tarifa.hastaLabel}</p>
         </div>
-        <p className="font-display text-[length:var(--text-step-4)] font-extrabold leading-none tabular-nums">{formatARS(precio)}</p>
+        <p className="shrink-0 font-display text-[length:var(--text-step-4)] font-extrabold leading-none tabular-nums">{formatARS(precio)}</p>
       </div>
 
       <label className="flex flex-col gap-1">
@@ -102,7 +102,7 @@ export function SummitInscripcion() {
       <button
         type="submit"
         disabled={pendiente || Boolean(estado?.ok)}
-        className="group mt-2 flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-bone px-6 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink transition-colors duration-300 hover:bg-champagne disabled:opacity-70"
+        className="group mt-2 flex min-h-14 w-full scroll-mb-28 items-center justify-center gap-3 rounded-full bg-bone px-6 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink transition-colors duration-300 hover:bg-champagne disabled:opacity-70"
       >
         {pendiente || estado?.ok ? "Yendo a Mercado Pago…" : `Pagar ${formatARS(precio)}`}
         <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>

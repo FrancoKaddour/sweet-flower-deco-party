@@ -11,12 +11,12 @@ export function Archivar({ tipo, id, volverA }: { tipo: TipoRegistro; id: string
   const router = useRouter();
   if (!seguro)
     return (
-      <button type="button" onClick={() => setSeguro(true)} className="text-[length:var(--text-step--1)] text-muted underline-offset-4 hover:text-bordeaux hover:underline">
+      <button type="button" onClick={() => setSeguro(true)} className="inline-flex min-h-11 items-center text-[length:var(--text-step--1)] text-muted underline-offset-4 hover:text-bordeaux hover:underline">
         Archivar
       </button>
     );
   return (
-    <span className="inline-flex items-center gap-3 text-[length:var(--text-step--1)]">
+    <span className="inline-flex flex-wrap items-center gap-x-4 text-[length:var(--text-step--1)]">
       <span className="text-muted">¿Seguro?</span>
       <button
         type="button"
@@ -27,11 +27,11 @@ export function Archivar({ tipo, id, volverA }: { tipo: TipoRegistro; id: string
             if (volverA) router.push(volverA);
           })
         }
-        className="font-medium text-bordeaux hover:underline"
+        className="inline-flex min-h-11 items-center font-medium text-bordeaux hover:underline disabled:opacity-50"
       >
         {pendiente ? "Archivando…" : "Sí, archivar"}
       </button>
-      <button type="button" onClick={() => setSeguro(false)} className="text-muted hover:text-ink">
+      <button type="button" onClick={() => setSeguro(false)} className="inline-flex min-h-11 items-center text-muted hover:text-ink">
         Cancelar
       </button>
     </span>

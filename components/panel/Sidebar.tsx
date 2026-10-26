@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PANEL_NAV, esRutaActiva } from "@/components/panel/nav";
@@ -26,14 +27,28 @@ type SidebarProps = {
   pendientes: Pendientes;
 };
 
+// ¿Estamos en lg+ (sidebar persistente)? En el server asumimos que sí: así el
+// HTML inicial nunca queda `inert` en desktop (en mobile el drawer arranca
+// fuera de pantalla igual).
+const LG = "(min-width: 64rem)";
+const suscribir = (cb: () => void) => {
+  const mq = window.matchMedia(LG);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+const esDesktop = () => window.matchMedia(LG).matches;
+
 export function Sidebar({ open, onClose, sesion, pendientes }: SidebarProps) {
   const pathname = usePathname();
+  const desktop = useSyncExternalStore(suscribir, esDesktop, () => true);
+  // Cerrado en mobile = fuera de pantalla: que no reciba foco ni lo lean los lectores.
+  const oculto = !desktop && !open;
 
   return (
     <>
       {/* Scrim mobile */}
       <div
-        className={`fixed inset-0 z-40 bg-ink/40 transition-opacity duration-200 lg:hidden ${
+        className={`fixed inset-0 z-40 bg-ink/40 backdrop-blur-[2px] transition-opacity duration-200 lg:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={onClose}
@@ -41,13 +56,15 @@ export function Sidebar({ open, onClose, sesion, pendientes }: SidebarProps) {
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-ink text-bone transition-transform duration-300 ease-[var(--ease-out-expo)] lg:sticky lg:top-0 lg:h-dvh lg:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full"
+        id="panel-sidebar"
+        inert={oculto}
+        className={`fixed inset-y-0 left-0 z-50 flex w-[min(18rem,86vw)] flex-col overflow-y-auto overscroll-contain bg-ink pl-[env(safe-area-inset-left)] text-bone transition-[translate,box-shadow] duration-300 ease-[var(--ease-out-expo)] [scrollbar-width:thin] lg:sticky lg:top-0 lg:h-dvh lg:w-auto lg:translate-x-0 lg:shadow-none motion-reduce:transition-none ${
+          open ? "translate-x-0 shadow-2xl shadow-ink/40" : "-translate-x-full"
         }`}
         aria-label="Navegación del panel"
       >
         {/* Marca — wordmark display, como el Header del sitio. + cerrar (mobile) */}
-        <div className="flex items-start justify-between px-7 pt-8 pb-6">
+        <div className="flex items-start justify-between px-7 pt-[max(2rem,env(safe-area-inset-top))] pb-6 max-lg:pt-[max(1.25rem,env(safe-area-inset-top))]">
           <Link
             href="/panel"
             onClick={onClose}
@@ -60,6 +77,7 @@ export function Sidebar({ open, onClose, sesion, pendientes }: SidebarProps) {
           </Link>
           <button
             type="button"
+            id="panel-sidebar-cerrar"
             onClick={onClose}
             aria-label="Cerrar navegación"
             className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] text-bone/70 transition-colors hover:text-bone lg:hidden"
@@ -72,7 +90,7 @@ export function Sidebar({ open, onClose, sesion, pendientes }: SidebarProps) {
           Centro de operaciones
         </p>
 
-        <nav className="flex-1 overflow-y-auto px-4">
+        <nav className="flex-1 px-4">
           <ul className="flex flex-col gap-0.5">
             {PANEL_NAV.map((item, i) => {
               const activo = esRutaActiva(item.href, pathname);
@@ -83,7 +101,7 @@ export function Sidebar({ open, onClose, sesion, pendientes }: SidebarProps) {
                     href={item.href}
                     onClick={onClose}
                     aria-current={activo ? "page" : undefined}
-                    className={`group relative flex min-h-11 items-center gap-3 rounded-[var(--radius-sm)] py-2.5 pl-4 pr-3 transition-colors duration-200 ${
+                    className={`group relative flex min-h-12 items-center gap-3 lg:min-h-11 rounded-[var(--radius-sm)] py-2.5 pl-4 pr-3 transition-colors duration-200 ${
                       activo
                         ? "bg-bone/[0.07] text-bone"
                         : "text-bone/60 hover:bg-bone/[0.04] hover:text-bone"
@@ -124,7 +142,7 @@ export function Sidebar({ open, onClose, sesion, pendientes }: SidebarProps) {
         </nav>
 
         {/* Sesión — pb-16 para no quedar tapado por el badge de dev de Next. */}
-        <div className="mt-auto border-t border-bone/10 px-7 pt-6 pb-16">
+        <div className="mt-auto border-t border-bone/10 px-7 pt-6 pb-[max(4rem,calc(env(safe-area-inset-bottom)+1.5rem))] max-lg:mt-6">
           <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/45">
             Sesión
           </p>

@@ -27,7 +27,7 @@ export async function Newsletter() {
     <section
       aria-labelledby="club-titulo"
       data-theme="dark"
-      className="relative overflow-hidden bg-bordeaux px-6 py-20 text-bone md:px-10 md:py-28"
+      className="relative overflow-hidden bg-bordeaux px-6 py-16 text-bone sm:py-20 md:px-10 md:py-28"
     >
       {/* Arco decorativo (identidad El Arco) */}
       <div
@@ -39,7 +39,7 @@ export async function Newsletter() {
         className="pointer-events-none absolute -right-10 -top-10 h-[20rem] w-[20rem] rounded-full border border-champagne/15 md:right-6 md:h-[28rem] md:w-[28rem]"
       />
 
-      <div className="relative mx-auto grid max-w-[87.5rem] items-center gap-12 lg:grid-cols-12 lg:gap-10">
+      <div className="relative mx-auto grid max-w-[87.5rem] items-center gap-10 md:gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-6">
           <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ {CLUB.nombre}</p>
           <h2
@@ -64,7 +64,7 @@ export async function Newsletter() {
           )}
         </div>
 
-        <div className="lg:col-span-5 lg:col-start-8">
+        <div className="w-full max-w-xl lg:col-span-5 lg:col-start-8 lg:max-w-none">
           <NewsletterForm />
         </div>
       </div>

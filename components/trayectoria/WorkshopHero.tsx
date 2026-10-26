@@ -69,7 +69,7 @@ export function WorkshopHero({ etapa, titulo, lugar, numero, portada, placeholde
     <section
       ref={root}
       data-theme="dark"
-      className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ink px-6 pb-16 pt-32 text-bone md:px-10 md:pb-20"
+      className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ink px-6 pb-16 pt-32 text-bone md:px-10 md:pb-20 [@media(max-height:520px)]:pb-10 [@media(max-height:520px)]:pt-28"
     >
       <div ref={bg} className="absolute inset-0 -z-10">
         <Image
@@ -96,33 +96,33 @@ export function WorkshopHero({ etapa, titulo, lugar, numero, portada, placeholde
         <span
           ref={num}
           aria-hidden="true"
-          className="invisible pointer-events-none absolute -right-[2vw] top-[12vh] select-none font-display text-[clamp(10rem,32vw,30rem)] font-extrabold leading-[0.8] text-transparent [-webkit-text-stroke:1px_rgb(198_161_91/0.55)]"
+          className="invisible pointer-events-none absolute -right-[2vw] top-[12vh] select-none font-display text-[clamp(8rem,min(32vw,60svh),30rem)] font-extrabold leading-[0.8] text-transparent [-webkit-text-stroke:1px_rgb(198_161_91/0.55)]"
         >
           {numero}
         </span>
       )}
 
       <div className="relative mx-auto w-full max-w-[87.5rem]">
-        <nav data-reveal aria-label="Migas" className="mb-10 text-[0.7rem] uppercase tracking-[0.18em] text-bone/55">
-          <Link href="/event-summit" className="hover:text-bone">Event Summit</Link>
+        <nav data-reveal aria-label="Migas" className="mb-7 flex flex-wrap items-center text-[0.7rem] uppercase tracking-[0.18em] text-bone/55 [@media(max-height:520px)]:mb-4">
+          <Link href="/event-summit" className="inline-flex min-h-11 items-center hover:text-bone">Event Summit</Link>
           <span aria-hidden="true" className="mx-3 text-champagne">/</span>
-          <Link href="/event-summit#trayectoria" className="hover:text-bone">Trayectoria</Link>
+          <Link href="/event-summit#trayectoria" className="inline-flex min-h-11 items-center hover:text-bone">Trayectoria</Link>
         </nav>
-        <p data-reveal className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.22em] text-champagne">
+        <p data-reveal className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.22em] text-champagne [@media(max-height:520px)]:mb-4">
           ✧ {etapa}
         </p>
         <h1
           ref={title}
-          className="invisible max-w-[12ch] font-display text-[length:var(--text-step-7)] font-extrabold uppercase leading-[0.82] tracking-[-0.03em] text-bone [overflow-wrap:anywhere]"
+          className="invisible max-w-[12ch] font-display text-[length:min(var(--text-step-7),18svh,calc((100vw-3rem)/5.9))] font-extrabold uppercase leading-[0.82] tracking-[-0.03em] text-bone [overflow-wrap:anywhere] [text-wrap:balance]"
         >
           {titulo}
         </h1>
         {lugar && (
-          <p data-reveal className="mt-8 text-[length:var(--text-step-1)] uppercase tracking-[0.12em] text-bone/75">
+          <p data-reveal className="mt-8 text-[length:var(--text-step-1)] uppercase tracking-[0.12em] text-bone/75 [@media(max-height:520px)]:mt-5">
             {lugar}
           </p>
         )}
-        <div data-reveal className="mt-14 flex items-center gap-4 text-[0.7rem] uppercase tracking-[0.2em] text-bone/50">
+        <div data-reveal className="mt-14 flex items-center gap-4 text-[0.7rem] uppercase tracking-[0.2em] text-bone/50 [@media(max-height:520px)]:hidden">
           <span className="h-px w-16 bg-bone/30" aria-hidden="true" />
           Deslizá para ver el encuentro
         </div>

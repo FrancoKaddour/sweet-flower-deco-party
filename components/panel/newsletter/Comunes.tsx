@@ -13,7 +13,7 @@ export function TabsNewsletter({ activa }: { activa: "campanas" | "suscriptores"
           key={t.id}
           href={t.href}
           aria-current={activa === t.id ? "page" : undefined}
-          className={`inline-flex min-h-10 items-center rounded-[var(--radius-pill)] border px-5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] transition-colors ${
+          className={`inline-flex min-h-11 items-center rounded-[var(--radius-pill)] border px-5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] transition-colors ${
             activa === t.id ? "border-ink bg-ink text-bone" : "border-line bg-cloud text-muted hover:text-ink"
           }`}
         >

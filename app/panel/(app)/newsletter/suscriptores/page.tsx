@@ -23,6 +23,9 @@ const FILTROS: { v: NonNullable<FiltroSuscriptores["estado"]>; l: string }[] = [
 ];
 const POR_PAGINA = 30;
 
+/** Rótulo de celda que sólo se ve en la vista de tarjetas (< md). */
+const ETQ = "text-[0.7rem] uppercase tracking-[0.12em] text-muted md:hidden";
+
 export default async function SuscriptoresPage({
   searchParams,
 }: {
@@ -69,8 +72,8 @@ export default async function SuscriptoresPage({
       <AvisoEnvio />
       <TabsNewsletter activa="suscriptores" />
 
-      <form className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto_auto]" role="search">
-        <input name="q" defaultValue={q} placeholder="Buscar por email, nombre o código (CLUB-…)" className={inputCls} aria-label="Buscar" />
+      <form className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 md:grid-cols-[1fr_auto_auto]" role="search">
+        <input name="q" defaultValue={q} placeholder="Buscar por email, nombre o código (CLUB-…)" className={`${inputCls} col-span-2 md:col-span-1`} aria-label="Buscar" />
         <select name="estado" defaultValue={estado ?? ""} className={inputCls} aria-label="Filtro">
           <option value="">Todos</option>
           {FILTROS.map((f) => (
@@ -85,40 +88,60 @@ export default async function SuscriptoresPage({
         {totalPaginas > 1 && ` · página ${pagina} de ${totalPaginas}`}
       </p>
 
-      <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-line bg-cloud">
-        <table className="w-full min-w-[760px] text-left text-[length:var(--text-step--1)]">
+      {/* Tabla en md+; en celular cada persona es una tarjeta (sin scroll horizontal). */}
+      <div className="relative overflow-hidden rounded-[var(--radius-lg)] border border-line bg-cloud md:overflow-x-auto">
+        <table className={`w-full text-left text-[length:var(--text-step--1)] md:min-w-[640px] ${filas.length === 0 ? "hidden" : "max-md:block"}`}>
           <caption className="sr-only">Suscriptores del newsletter</caption>
-          <thead className="border-b border-line text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+          <thead className="border-b border-line text-[0.7rem] uppercase tracking-[0.1em] text-muted max-md:sr-only">
             <tr>
               <th className="px-4 py-3 font-medium">Persona</th>
-              <th className="px-4 py-3 font-medium">Intereses</th>
+              <th className="px-4 py-3 font-medium md:max-xl:hidden">Intereses</th>
               <th className="px-4 py-3 font-medium">Código</th>
               <th className="px-4 py-3 text-center font-medium">Usado</th>
               <th className="px-4 py-3 font-medium">Alta</th>
               <th className="px-4 py-3 text-right font-medium"><span className="sr-only">Acciones</span></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-y divide-line max-md:block">
             {filas.map((s) => (
-              <tr key={s.id} className="hover:bg-bone/60">
-                <td className="px-4 py-3">
-                  <span className="block font-medium text-ink">{s.nombre ?? "—"}</span>
-                  <span className="block text-muted">{s.email}</span>
-                  {s.estado === "baja" && <Badge variant="danger">Baja</Badge>}
-                  {s.userId && <Badge variant="info">Tiene cuenta</Badge>}
+              <tr
+                key={s.id}
+                className="hover:bg-bone/60 max-md:grid max-md:grid-cols-[minmax(0,1fr)_auto] max-md:items-center max-md:gap-x-4 max-md:gap-y-3 max-md:p-4"
+              >
+                <td className="px-4 py-3 max-md:col-span-2 max-md:block max-md:p-0">
+                  <span className="block font-medium text-ink max-md:text-[length:var(--text-step-0)]">{s.nombre ?? "—"}</span>
+                  <span className="block break-all text-muted">{s.email}</span>
+                  {/* md–xl: la columna Intereses se oculta para que la tabla entre sin scroll; va acá. */}
+                  {s.intereses.length > 0 && (
+                    <span className="hidden text-muted md:max-xl:block">
+                      {s.intereses.map((i) => INTERESES.find((x) => x.v === i)?.l ?? i).join(", ")}
+                    </span>
+                  )}
+                  {(s.estado === "baja" || s.userId) && (
+                    <span className="mt-1.5 flex flex-wrap gap-1.5">
+                      {s.estado === "baja" && <Badge variant="danger">Baja</Badge>}
+                      {s.userId && <Badge variant="info">Tiene cuenta</Badge>}
+                    </span>
+                  )}
                 </td>
-                <td className="px-4 py-3 text-muted">
+                <td className="px-4 py-3 text-muted max-md:col-span-2 max-md:row-start-3 max-md:block max-md:p-0 md:max-xl:hidden">
+                  <span className={`${ETQ} block`} aria-hidden="true">Intereses</span>
                   {s.intereses.length ? s.intereses.map((i) => INTERESES.find((x) => x.v === i)?.l ?? i).join(", ") : "—"}
                 </td>
-                <td className="px-4 py-3 font-mono text-ink">{s.codigo}</td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-3 font-mono text-ink max-md:col-start-1 max-md:row-start-2 max-md:block max-md:p-0 max-md:text-[length:var(--text-step-0)]">
+                  <span className={`${ETQ} block font-sans`} aria-hidden="true">Código</span>
+                  {s.codigo}
+                </td>
+                <td className="px-4 py-3 text-center max-md:col-start-2 max-md:row-start-2 max-md:flex max-md:min-h-11 max-md:items-center max-md:gap-3 max-md:rounded-[var(--radius-md)] max-md:bg-bone/70 max-md:p-0 max-md:px-3">
+                  <span className={ETQ} aria-hidden="true">Usado</span>
                   <CodigoUsado id={s.id} usado={Boolean(s.codigoUsadoAt)} codigo={s.codigo} />
                 </td>
-                <td className="px-4 py-3 text-muted">
+                <td className="px-4 py-3 text-muted max-md:col-start-1 max-md:row-start-4 max-md:block max-md:p-0">
+                  <span className={`${ETQ} block`} aria-hidden="true">Alta</span>
                   {fechaCorta(s.createdAt)}
                   <span className="block text-[0.7rem] uppercase tracking-[0.1em]">{s.origen}</span>
                 </td>
-                <td className="px-4 py-3 text-right">{esAdmin && <EstadoSuscriptor id={s.id} activo={s.estado === "activo"} />}</td>
+                <td className="px-4 py-3 text-right max-md:col-start-2 max-md:row-start-4 max-md:block max-md:p-0 max-md:empty:hidden">{esAdmin && <EstadoSuscriptor id={s.id} activo={s.estado === "activo"} />}</td>
               </tr>
             ))}
           </tbody>

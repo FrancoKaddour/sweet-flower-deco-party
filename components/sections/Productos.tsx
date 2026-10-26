@@ -15,7 +15,7 @@ import { getCategorias } from "@/modules/catalog/repository";
 export async function Productos() {
   const COLECCIONES = (await getCategorias()).slice(0, 3);
   return (
-    <section id="productos" className="bg-bone px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-40">
+    <section id="productos" data-theme="light" className="bg-bone px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-40">
       <div className="mx-auto max-w-[87.5rem]">
         {/* Encabezado (centrado) */}
         <div className="mb-16 text-center md:mb-20">
@@ -38,7 +38,7 @@ export async function Productos() {
           className="-mx-6 flex snap-x snap-mandatory scroll-px-6 gap-4 overflow-x-auto px-6 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
         >
           {COLECCIONES.map((c, i) => (
-            <div key={c.slug} className="w-[80%] shrink-0 snap-center md:w-auto">
+            <div key={c.slug} className="w-[80%] max-w-[22rem] shrink-0 snap-center sm:w-[46%] md:w-auto md:max-w-none">
               <CollectionCard
                 href={`/productos/${c.slug}`}
                 index={c.index}

@@ -79,7 +79,28 @@ export function Loader() {
       const revealFinal = [heroContent, header].filter(
         (el): el is HTMLElement => el !== null,
       );
-      if (!media || !mediaInner) return;
+      // Estado final (sitio usable): lo usan reduced-motion, la falta de
+      // elementos y la red de seguridad. Nunca queda el scroll bloqueado.
+      const finish = () => {
+        if (document.body.getAttribute("data-loader") === "false") return;
+        gsap.set(spans, { autoAlpha: 0 });
+        if (media) {
+          gsap.set(media, {
+            autoAlpha: 1,
+            clearProps: "width,height,transform,borderRadius",
+          });
+        }
+        if (mediaInner) gsap.set(mediaInner, { scale: 1 });
+        if (overlay) gsap.set(overlay, { autoAlpha: 1 });
+        gsap.set(revealFinal, { autoAlpha: 1 });
+        document.body.setAttribute("data-loader", "false");
+        startLenis();
+        window.dispatchEvent(new Event("sf:hero-start"));
+      };
+      if (!media || !mediaInner) {
+        finish();
+        return;
+      }
 
       // Easing del doc.
       if (!gsap.parseEase("easeDefault")) {
@@ -92,38 +113,64 @@ export function Loader() {
 
       // --- reduced-motion: saltar la intro, estado final directo ---------------
       if (reduce) {
-        gsap.set(spans, { autoAlpha: 0 });
-        gsap.set(media, {
-          autoAlpha: 1,
-          clearProps: "width,height,transform",
-        });
-        gsap.set(mediaInner, { scale: 1 });
-        gsap.set(overlay, { autoAlpha: 1 });
-        gsap.set(revealFinal, { autoAlpha: 1 });
-        document.body.setAttribute("data-loader", "false");
-        startLenis();
+        finish();
         return;
       }
 
-      // El video nace en el HUECO entre las palabras, no en el centro de la
-      // pantalla: con el bloque centrado, el hueco queda desplazado
-      // (anchoSWEET − anchoFLOWERS) / 2. Al expandirse vuelve a x: 0.
-      const gapOffset =
-        spans.length === 2 ? (spans[0].offsetWidth - spans[1].offsetWidth) / 2 : 0;
+      // El video nace en el HUECO entre las palabras, no necesariamente en el
+      // centro de la caja del hero: (1) con el bloque centrado, el hueco queda
+      // corrido (anchoSWEET − anchoFLOWERS) / 2 en horizontal; (2) si el hero es
+      // más alto que la pantalla (celular apaisado), su centro cae más abajo que
+      // el del loader. Se mide al NACER (fuentes ya cargadas) y se vuelve a 0
+      // al expandirse.
+      let offset: { x: number; y: number } | null = null;
+      const measure = () => {
+        if (offset) return offset;
+        offset = { x: 0, y: 0 };
+        if (spans.length !== 2) return offset;
+        const a = spans[0].getBoundingClientRect();
+        const b = spans[1].getBoundingClientRect();
+        const m = media.getBoundingClientRect();
+        const mx = m.left + m.width / 2;
+        const my = m.top + m.height / 2;
+        const vertical = getComputedStyle(nameEl).flexDirection === "column";
+        const holeX = vertical
+          ? nameEl.getBoundingClientRect().left + nameEl.getBoundingClientRect().width / 2
+          : (a.right + b.left) / 2;
+        const holeY = vertical ? (a.bottom + b.top) / 2 : (a.top + a.bottom) / 2;
+        offset = { x: holeX - mx, y: holeY - my };
+        return offset;
+      };
 
       // Scroll bloqueado y en el top mientras corre la intro.
       stopLenis();
       window.scrollTo(0, 0);
 
+      // Red de seguridad: si la pestaña quedó en segundo plano o algo trabó la
+      // timeline, a los 9s el sitio queda usable igual.
+      // (Salta la timeline a su final → mismo estado que una intro completa.)
+      let tlRef: gsap.core.Timeline | null = null;
+      const safety = window.setTimeout(() => {
+        if (tlRef) tlRef.progress(1);
+        finish();
+      }, 9000);
+
+      // Si se llega al inicio con la cortina de PageTransition encima, la intro
+      // espera a que la cortina se retire (si no, el nombre aparecía tapado).
+      const curtain = document.querySelector<HTMLElement>(".c-pt");
+      const curtainUp = !!curtain && getComputedStyle(curtain).visibility === "visible";
+
       const tl = gsap.timeline({
-        delay: 0.75,
+        delay: curtainUp ? 1.6 : 0.75,
         defaults: { ease: "easeDefault" },
         onComplete: () => {
+          window.clearTimeout(safety);
           document.body.setAttribute("data-loader", "false");
           startLenis();
         },
       });
 
+      tlRef = tl;
       tl
         // 1) "SWEET FLOWERS" aparece (juntas, sin stagger), gap chico.
         .to(spans, { autoAlpha: 1, duration: 0.5 })
@@ -140,8 +187,30 @@ export function Loader() {
         // 3) El video (retrato) nace en el hueco central: scale 0.5→1, rota a 7.5°.
         .fromTo(
           media,
-          { autoAlpha: 0, scale: 0.5, borderRadius: 22, x: gapOffset },
-          { autoAlpha: 1, scale: 1, rotate: 7.5, borderRadius: 22, x: gapOffset, duration: 1 },
+          {
+            autoAlpha: 0,
+            scale: 0.5,
+            borderRadius: 22,
+            // El centrado (translate −50% −50% del CSS) se declara explícito:
+            // si la caja mide un ancho fraccionario, GSAP lo leía como px y al
+            // crecer a 100% el video quedaba corrido medio ancho.
+            xPercent: -50,
+            yPercent: -50,
+            x: () => measure().x,
+            y: () => measure().y,
+          },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            rotate: 7.5,
+            borderRadius: 22,
+            xPercent: -50,
+            yPercent: -50,
+            x: () => measure().x,
+            y: () => measure().y,
+            duration: 1,
+            immediateRender: false,
+          },
           "<",
         )
         // 4) El nombre desaparece (no reaparece).
@@ -154,6 +223,7 @@ export function Loader() {
           height: "100%",
           rotate: 0,
           x: 0, // del hueco al centro, acompañando la expansión
+          y: 0,
           borderRadius: 0, // las esquinas se enderezan acompañando la expansión
           duration: 1.5,
         })
@@ -166,6 +236,8 @@ export function Loader() {
           { autoAlpha: 1, duration: 0.6, immediateRender: false },
           "<+0.75",
         );
+
+      return () => window.clearTimeout(safety);
     },
     { scope: root, dependencies: [pathname], revertOnUpdate: true },
   );

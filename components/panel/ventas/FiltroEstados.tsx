@@ -25,7 +25,12 @@ export function FiltroEstados({
   };
   const items = [{ v: undefined as string | undefined, l: "Todos", n: total }, ...opciones.map((o) => ({ ...o, n: conteos[o.v] ?? 0 }))];
   return (
-    <nav aria-label="Filtrar por estado" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+    // En celular la fila se desliza con el dedo (sin barra visible) y llega hasta el
+    // borde de la pantalla; en md+ se acomoda en varias líneas si no entra.
+    <nav
+      aria-label="Filtrar por estado"
+      className="-mx-4 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
+    >
       {items.map((o) => {
         const on = (o.v ?? "") === (activo ?? "");
         return (
@@ -33,7 +38,7 @@ export function FiltroEstados({
             key={o.l}
             href={href(o.v)}
             aria-current={on ? "page" : undefined}
-            className={`inline-flex shrink-0 items-center gap-2 rounded-[var(--radius-pill)] border px-4 py-2 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] transition-colors ${
+            className={`inline-flex min-h-11 shrink-0 snap-start items-center gap-2 rounded-[var(--radius-pill)] border px-4 py-2 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] transition-colors ${
               on ? "border-ink bg-ink text-bone" : "border-line bg-cloud text-muted hover:border-ink/40 hover:text-ink"
             }`}
           >

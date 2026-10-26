@@ -86,7 +86,7 @@ export default function HistoriaPage() {
         <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-10 lg:grid-cols-12">
           <FadeUp
             y={60}
-            className="space-y-6 font-sans text-[length:var(--text-step-1)] leading-relaxed text-ink/80 lg:col-span-7 lg:col-start-4"
+            className="w-full max-w-[40rem] space-y-6 justify-self-center font-sans text-[length:var(--text-step-1)] leading-relaxed text-ink/80 lg:col-span-7 lg:col-start-4 lg:max-w-none lg:justify-self-stretch"
           >
             {/* TODO(contenido): la historia REAL la escribe Flor (⬜ pendiente —
                 docs/CONTENIDO_FLOR.md §9). Este relato es placeholder. */}

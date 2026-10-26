@@ -77,18 +77,18 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
 
       {/* INTRO — declaración + ficha */}
       <section data-theme="dark" className="px-6 py-24 md:px-10 md:py-36">
-        <div className="mx-auto grid max-w-[87.5rem] gap-14 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-7">
+        <div className="mx-auto grid max-w-[87.5rem] gap-14 md:grid-cols-12 md:gap-10">
+          <div className="md:col-span-6 lg:col-span-7">
             <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ El encuentro</p>
             <RevealText
               as="h2"
               onScroll
-              className="max-w-[18ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone"
+              className="max-w-[18ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone [text-wrap:balance]"
             >
               {slug === "primera-edicion" ? "El día que el rubro se juntó" : "Aprender haciendo, juntas"}
             </RevealText>
           </div>
-          <FadeUp y={50} className="flex flex-col justify-end gap-10 lg:col-span-4 lg:col-start-9">
+          <FadeUp y={50} className="flex flex-col justify-end gap-10 md:col-span-6 lg:col-span-4 lg:col-start-9">
             <p className="text-[length:var(--text-step-1)] leading-snug text-bone/80">{resumenDe(e)}</p>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-6 border-t border-bone/15 pt-8">
               {(e.fecha
@@ -107,7 +107,7 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
               ).map(([k, v]) => (
                 <div key={k}>
                   <dt className="text-[0.7rem] uppercase tracking-[0.16em] text-bone/45">{k}</dt>
-                  <dd className="mt-2 font-display text-[length:var(--text-step-1)] font-bold leading-tight">{v}</dd>
+                  <dd className="mt-2 font-display text-[length:var(--text-step-1)] font-bold leading-tight [overflow-wrap:anywhere]">{v}</dd>
                 </div>
               ))}
             </dl>
@@ -182,13 +182,16 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
               </div>
             </div>
             <div className="flex justify-center lg:col-span-5 lg:col-start-8 lg:justify-end">
-              <div className="w-full max-w-[400px] overflow-hidden rounded-[var(--radius-lg)] border border-bone/15 bg-ink shadow-[0_40px_80px_-40px_rgb(20_17_15/0.8)]">
+              {/* El embed de Instagram mide: cabecera ~54px + video 4:5 + pie ~150px.
+                  El alto se calcula del ancho real (cqw) → sin scroll interno
+                  ni franjas vacías en ningún ancho. */}
+              <div className="w-full max-w-[25rem] overflow-hidden rounded-[var(--radius-lg)] border border-bone/15 bg-ink shadow-[0_40px_80px_-40px_rgb(20_17_15/0.8)] [container-type:inline-size]">
                 <iframe
                   src={`https://www.instagram.com/reel/${e.reel}/embed/`}
                   title={`Reel de Instagram: ${e.etapa} en ${e.titulo}`}
                   loading="lazy"
                   allow="encrypted-media; picture-in-picture; clipboard-write"
-                  className="block h-[640px] w-full border-0 bg-cloud"
+                  className="block h-[calc(125cqw+208px)] w-full border-0 bg-cloud"
                 />
               </div>
             </div>
@@ -197,7 +200,7 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       )}
 
       {/* CINTA — marquesina gigante */}
-      <div aria-hidden="true" className="overflow-hidden border-y border-bone/10 py-6 md:py-8">
+      <div aria-hidden="true" data-theme="dark" className="overflow-hidden border-y border-bone/10 py-6 md:py-8">
         <div className="flex w-max animate-[sfCinta_38s_linear_infinite] motion-reduce:animate-none">
           {[0, 1].map((k) => (
             <span
@@ -217,7 +220,7 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
           <div className="mb-14 flex flex-wrap items-end justify-between gap-6 md:mb-20">
             <h2
               id="galeria-h"
-              className="max-w-[14ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] text-bone"
+              className="max-w-[14ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] text-bone [text-wrap:balance]"
             >
               El encuentro en imágenes
             </h2>
@@ -232,7 +235,9 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       {/* SIGUIENTE PARADA */}
       <section data-theme="dark" aria-label="Siguiente etapa" className="border-t border-bone/10">
         <Link href={sigHref} className="group relative block overflow-hidden px-6 py-24 md:px-10 md:py-36">
-          <div className="absolute inset-0 -z-0 scale-110 opacity-0 transition-all duration-[1200ms] ease-[var(--ease-out-expo)] group-hover:scale-100 group-hover:opacity-100">
+          {/* Mouse: la foto aparece al pasar. Táctil (sin hover): visible siempre,
+              más tenue, para que la tarjeta no quede vacía. */}
+          <div className="absolute inset-0 -z-0 scale-110 opacity-0 transition-all duration-[1200ms] ease-[var(--ease-out-expo)] group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100 [@media(hover:none)]:scale-100 [@media(hover:none)]:opacity-60">
             <Image
               src={sigFoto.src}
               alt=""
@@ -249,7 +254,7 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
                 {sig?.slug ? "Siguiente parada" : "Lo que viene"}
               </p>
               <p className="mt-2 text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">{sig?.etapa}</p>
-              <p className="mt-6 max-w-[14ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.85] tracking-[-0.02em] text-bone transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:translate-x-3">
+              <p className="mt-6 max-w-[14ch] font-display text-[length:min(var(--text-step-6),calc((100vw-3rem)/5.9))] font-extrabold uppercase leading-[0.85] tracking-[-0.02em] text-bone [overflow-wrap:anywhere] [text-wrap:balance] transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:translate-x-3">
                 {sig?.slug ? sig.titulo : EVENT_WHEN}
               </p>
             </div>
@@ -265,7 +270,7 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
           <div className="mx-auto max-w-[87.5rem] px-6 pb-12 md:px-10">
             <Link
               href={`/event-summit/trayectoria/${ant.slug}`}
-              className="text-[0.75rem] uppercase tracking-[0.16em] text-bone/50 hover:text-bone"
+              className="inline-flex min-h-11 items-center text-[0.75rem] uppercase tracking-[0.16em] text-bone/60 hover:text-bone"
             >
               ← {ant.etapa} · {ant.titulo}
             </Link>
@@ -276,17 +281,17 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       {/* CTA — 2ª edición */}
       <section data-theme="dark" className="relative overflow-hidden bg-bordeaux px-6 py-24 md:px-10 md:py-32">
         <div className="evt-grain pointer-events-none absolute inset-0" />
-        <div className="relative mx-auto flex max-w-[87.5rem] flex-col gap-10 md:flex-row md:items-end md:justify-between">
+        <div className="relative mx-auto flex max-w-[87.5rem] flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">
               ✧ {EVENT_NAME} · {EDICION_LABEL}
             </p>
-            <h2 className="max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] text-bone">
+            <h2 className="max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] text-bone [text-wrap:balance]">
               La próxima la vivís vos
             </h2>
             <p className="mt-5 text-[length:var(--text-step-1)] text-bone/80">{EVENT_WHEN} · Preventa abierta</p>
           </div>
-          <div className="flex flex-wrap gap-x-10 gap-y-4">
+          <div className="flex shrink-0 flex-wrap gap-x-10 gap-y-4">
             <Button href="/event-summit#inscripcion" variant="inverse">
               Quiero mi lugar
             </Button>

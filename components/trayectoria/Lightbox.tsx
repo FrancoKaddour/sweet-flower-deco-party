@@ -3,10 +3,13 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import type { Foto } from "@/content/galerias";
+import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
 
 /**
  * Visor a pantalla completa sobre <dialog> nativo (foco atrapado, Esc cierra).
- * Flechas del teclado y swipe para navegar.
+ * Flechas del teclado y swipe para navegar. En táctil hay además botones
+ * anterior/siguiente abajo (al alcance del pulgar). Con el visor abierto se
+ * pausa el scroll suave de la página.
  */
 export function Lightbox({
   fotos,
@@ -26,9 +29,21 @@ export function Lightbox({
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (abierto && !d.open) d.showModal();
-    if (!abierto && d.open) d.close();
+    if (abierto && !d.open) {
+      d.showModal();
+      stopLenis();
+    }
+    if (!abierto && d.open) {
+      d.close();
+      startLenis();
+    }
   }, [abierto]);
+
+  // Cierre por Esc / click afuera: el <dialog> ya se cerró solo → reanudar.
+  const alCerrar = () => {
+    startLenis();
+    onCambiar(null);
+  };
 
   useEffect(() => {
     if (!abierto) return;
@@ -47,21 +62,22 @@ export function Lightbox({
     <dialog
       ref={ref}
       aria-label={`Fotos de ${titulo}`}
-      onClose={() => onCambiar(null)}
+      onClose={alCerrar}
       onClick={(e) => e.target === e.currentTarget && onCambiar(null)}
-      onPointerDown={(e) => (toque.current = e.clientX)}
+      onPointerDown={(e) => (toque.current = e.isPrimary ? e.clientX : null)}
+      onPointerCancel={() => (toque.current = null)}
       onPointerUp={(e) => {
         if (toque.current === null) return;
         const dx = e.clientX - toque.current;
         toque.current = null;
         if (Math.abs(dx) > 60) mover(dx < 0 ? 1 : -1);
       }}
-      className="m-0 h-dvh max-h-none w-screen max-w-none bg-ink/95 p-0 text-bone backdrop:bg-ink/80 backdrop:backdrop-blur-sm"
+      className="m-0 h-dvh max-h-none w-screen max-w-none overscroll-contain bg-ink/95 p-0 text-bone [touch-action:pan-y_pinch-zoom] backdrop:bg-ink/80 backdrop:backdrop-blur-sm"
     >
       {foto && (
-        <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between px-5 py-4 md:px-8">
-            <p className="text-[0.75rem] uppercase tracking-[0.18em] text-bone/60">
+        <div className="flex h-full flex-col pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]">
+          <div className="flex items-center justify-between gap-4 px-5 py-3 md:px-8 md:py-4">
+            <p className="min-w-0 truncate text-[0.75rem] uppercase tracking-[0.18em] text-bone/60">
               {titulo} · <span className="tabular-nums text-champagne">{String((indice ?? 0) + 1).padStart(2, "0")}</span>
               <span className="tabular-nums"> / {String(fotos.length).padStart(2, "0")}</span>
             </p>
@@ -69,12 +85,12 @@ export function Lightbox({
               type="button"
               onClick={() => onCambiar(null)}
               aria-label="Cerrar"
-              className="grid h-11 w-11 place-items-center rounded-full border border-bone/25 text-[1.3rem] leading-none hover:border-bone"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-bone/25 text-[1.3rem] leading-none hover:border-bone focus-visible:outline focus-visible:outline-2 focus-visible:outline-champagne"
             >
               ×
             </button>
           </div>
-          <div className="relative min-h-0 flex-1 px-4 pb-4 md:px-20">
+          <div className="relative min-h-0 flex-1 px-4 pb-2 md:px-20 md:pb-6">
             <Image
               key={foto.src}
               src={foto.src}
@@ -96,6 +112,26 @@ export function Lightbox({
               onClick={() => mover(1)}
               aria-label="Foto siguiente"
               className="absolute right-3 top-1/2 hidden h-14 w-14 -translate-y-1/2 place-items-center rounded-full border border-bone/25 bg-ink/40 text-xl hover:border-bone md:grid"
+            >
+              →
+            </button>
+          </div>
+          {/* Táctil / angosto: navegación abajo, al alcance del pulgar */}
+          <div className="flex items-center justify-center gap-6 px-5 pb-4 pt-2 md:hidden">
+            <button
+              type="button"
+              onClick={() => mover(-1)}
+              aria-label="Foto anterior"
+              className="grid h-12 w-12 place-items-center rounded-full border border-bone/25 text-xl active:border-bone"
+            >
+              ←
+            </button>
+            <span className="text-[0.7rem] uppercase tracking-[0.18em] text-bone/45">Deslizá</span>
+            <button
+              type="button"
+              onClick={() => mover(1)}
+              aria-label="Foto siguiente"
+              className="grid h-12 w-12 place-items-center rounded-full border border-bone/25 text-xl active:border-bone"
             >
               →
             </button>

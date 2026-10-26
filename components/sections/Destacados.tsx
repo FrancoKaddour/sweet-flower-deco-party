@@ -88,7 +88,7 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
   );
 
   return (
-    <section ref={sectionRef} id="destacados" className="bg-bone px-6 pb-24 pt-0 md:px-10 md:pb-32">
+    <section ref={sectionRef} id="destacados" data-theme="light" className="bg-bone px-6 pb-24 pt-0 md:px-10 md:pb-32">
       <div className="mx-auto max-w-[87.5rem]">
         {/* Encabezado: título a la izquierda + CTA a la derecha */}
         <FadeUp
@@ -119,12 +119,12 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
         </FadeUp>
 
         {/* Grilla de productos — mobile: 2 páginas deslizables de 2×3 (12
-            piezas; el resto en "Ver toda la tienda"). md+: grilla de 18.
+            piezas; el resto en "Ver toda la tienda"). md: 3 col × 4 filas (12); lg: 4 × 3 (12); xl+: 6 × 3 (18).
             Las "páginas" usan md:contents → en desktop desaparecen y las cards
             quedan como hijos directos de la grilla. */}
         <div
           id="destacados-track"
-          className="dest-grid -mx-6 flex snap-x snap-mandatory scroll-px-6 gap-6 overflow-x-auto px-6 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-x-5 md:gap-y-10 md:overflow-visible md:px-0 lg:grid-cols-6 lg:gap-x-5 lg:gap-y-12 [&::-webkit-scrollbar]:hidden"
+          className="dest-grid -mx-6 flex snap-x snap-mandatory scroll-px-6 gap-6 overflow-x-auto px-6 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-x-5 md:gap-y-10 md:overflow-visible md:px-0 lg:grid-cols-4 lg:gap-x-5 lg:gap-y-12 xl:grid-cols-6 [&::-webkit-scrollbar]:hidden"
         >
           {PAGINAS.map((pagina, pi) => (
             <div
@@ -132,7 +132,7 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
               className={
                 pi < PAGINAS_MOBILE
                   ? "grid w-full shrink-0 snap-start grid-cols-2 content-start gap-x-4 gap-y-8 md:contents"
-                  : "hidden md:contents"
+                  : "hidden xl:contents" /* md/lg: 12 piezas en filas parejas */
               }
             >
               {pagina.map((p) => (
@@ -144,7 +144,7 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
                       src={p.img}
                       alt={p.nombre}
                       fill
-                      sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 230px"
+                      sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, (max-width: 1280px) 23vw, 15vw"
                       className="object-cover transition-transform duration-[800ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
                     />
                    </div>
@@ -153,12 +153,12 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
                     </span>
                   </div>
     
-                  <div className="dest-info mt-3 flex items-baseline justify-between gap-2">
+                  <div className="dest-info mt-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-2">
                     <div className="min-w-0">
                       <p className="text-[0.7rem] uppercase tracking-[0.12em] text-champagne">
                         {p.material}
                       </p>
-                      <h3 className="font-display text-[length:var(--text-step-0)] font-bold uppercase leading-tight text-ink">
+                      <h3 className="font-display text-[length:var(--text-step-0)] font-bold uppercase leading-tight text-ink [overflow-wrap:anywhere]">
                         {p.nombre}
                       </h3>
                     </div>

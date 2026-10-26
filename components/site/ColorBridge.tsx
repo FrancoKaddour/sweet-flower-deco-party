@@ -23,6 +23,9 @@ export function ColorBridge({
   return (
     <div
       aria-hidden="true"
+      // El header lee estos colores para invertirse sobre el degradado.
+      data-bridge-from={from}
+      data-bridge-to={to}
       className={
         tall
           ? "relative h-[clamp(220px,36vh,480px)] w-full"

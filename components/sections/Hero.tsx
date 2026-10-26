@@ -12,12 +12,15 @@ import { Button } from "@/components/ui/Button";
  */
 export function Hero() {
   return (
-    <section className="c-hero relative flex bg-ink min-h-svh flex-col items-center justify-end gap-8 overflow-hidden px-6 pb-[max(4.5rem,9svh)] pt-40 md:pb-[12svh] text-center md:px-10 md:pt-44">
+    <section
+      data-theme="dark"
+      className="c-hero relative flex bg-ink min-h-svh flex-col items-center justify-end gap-8 overflow-hidden px-6 pb-[max(5.5rem,10svh,calc(env(safe-area-inset-bottom)+5rem))] pt-40 text-center md:px-10 md:pb-[12svh] md:pt-44 [@media(max-height:500px)_and_(orientation:landscape)]:gap-4 [@media(max-height:500px)_and_(orientation:landscape)]:pb-6 [@media(max-height:500px)_and_(orientation:landscape)]:pt-24"
+    >
       {/* Media del hero (video + overlay). TODO(contenido): video real. */}
       <HeroMedia />
 
       {/* Contenido editorial, por encima del media */}
-      <div className="c-hero__content relative z-10 flex flex-col items-center gap-8">
+      <div className="c-hero__content relative z-10 flex w-full max-w-[75rem] flex-col items-center gap-8 [@media(max-height:500px)_and_(orientation:landscape)]:gap-4">
         {/* Kicker */}
         <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-bone/75">
           Decoración de eventos
@@ -27,7 +30,7 @@ export function Hero() {
         <HeroStory />
 
         {/* CTAs */}
-        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
           <Button href="/productos" variant="inverse">Ver catálogo</Button>
           <Button href="#summit" variant="outline" tone="light">
             Próxima edición

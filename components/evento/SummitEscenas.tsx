@@ -55,7 +55,9 @@ export function SummitEscenas() {
       );
       gsap.set(titles, { yPercent: 125, opacity: 0 });
       gsap.set(titles[0], { yPercent: 0, opacity: 1 });
-      if (reduce) return;
+      // Reduced-motion: el pin y el cambio de escena se mantienen (son
+      // navegación, no decoración), pero los cambios son instantáneos.
+      const dur = reduce ? 0 : 1.5;
 
       const state = { index: 0, z: N };
 
@@ -68,7 +70,7 @@ export function SummitEscenas() {
           gsap.fromTo(
             fig,
             { clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)", scale: 1.25 },
-            { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", scale: 1, duration: 1.5, ease: "sfIntro", overwrite: true },
+            { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", scale: 1, duration: dur, ease: "sfIntro", overwrite: true },
           );
         });
         const prev = titles[state.index];
@@ -76,7 +78,7 @@ export function SummitEscenas() {
           gsap.to(prev, {
             yPercent: -125,
             opacity: 0,
-            duration: 1.5,
+            duration: dur,
             ease: "sfIntro",
             overwrite: true,
             onComplete: () => {
@@ -87,7 +89,7 @@ export function SummitEscenas() {
         gsap.fromTo(
           titles[next],
           { yPercent: 125, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: 1.5, ease: "sfIntro", overwrite: true },
+          { yPercent: 0, opacity: 1, duration: dur, ease: "sfIntro", overwrite: true },
         );
         if (current) current.textContent = String(next + 1);
         state.index = next;
@@ -117,8 +119,11 @@ export function SummitEscenas() {
       aria-label="Qué vas a vivir en el Summit"
       className="relative h-svh overflow-hidden bg-ink text-bone"
     >
-      {/* Fotos grandes: mitad izquierda a sangre (mobile: fondo completo) */}
-      <div data-escenas-imgs className="absolute inset-y-0 left-0 z-[1] w-full overflow-hidden md:w-1/2">
+      {/* Fotos grandes: mitad izquierda a sangre. Modo compacto (celular o
+          pantalla baja, p. ej. celular horizontal): fondo completo con velo y
+          una sola columna → texto, título y contador sin superponerse.
+          Variante de layout amplio: ≥768px de ancho Y ≥521px de alto. */}
+      <div data-escenas-imgs className="absolute inset-y-0 left-0 z-[1] w-full overflow-hidden [@media(min-width:768px)_and_(min-height:521px)]:w-1/2">
         {ESCENAS.map((e, i) => (
           <figure key={e.seed} className="absolute inset-0 m-0">
             <Image
@@ -126,26 +131,40 @@ export function SummitEscenas() {
               alt=""
               fill
               priority={i === 0}
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 900px) 100vw, 50vw"
               className="object-cover"
             />
           </figure>
         ))}
       </div>
       {/* Mobile: velo para leer el texto sobre la foto */}
-      <div className="absolute inset-0 z-[1] bg-ink/60 md:hidden" aria-hidden="true" />
+      <div className="absolute inset-0 z-[1] bg-ink/60 [@media(min-width:768px)_and_(min-height:521px)]:hidden" aria-hidden="true" />
 
       {/* Columna derecha */}
       <div className="relative z-[2] h-full px-6 md:px-12">
         <div className="grid h-full grid-cols-12 gap-x-6">
-          <div className="col-span-12 flex h-full flex-col md:col-span-5 md:col-start-8 2xl:col-span-3 2xl:col-start-9">
-            <div className="flex-1 pt-24 md:pt-28">
-              <p className="font-(family-name:--font-logo) text-[clamp(1.15rem,1.7vw,1.45rem)] italic leading-[1.1] text-bone">
+          <div className="col-span-12 flex h-full flex-col [@media(min-width:768px)_and_(min-height:521px)]:col-span-5 [@media(min-width:768px)_and_(min-height:521px)]:col-start-8 [@media(min-width:1536px)_and_(min-height:521px)]:col-span-3 [@media(min-width:1536px)_and_(min-height:521px)]:col-start-9">
+            <div className="pt-28 [@media(max-height:520px)]:pt-24 [@media(min-width:768px)_and_(min-height:521px)]:flex-1 [@media(min-width:768px)_and_(min-height:521px)]:pt-28">
+              <p className="max-w-[60ch] font-(family-name:--font-logo) text-[clamp(1.15rem,1.7vw,1.45rem)] italic leading-[1.1] text-bone [@media(max-height:520px)]:text-[1.05rem]">
                 {TEXTO}
               </p>
             </div>
 
-            <div data-escenas-imgs className="relative my-auto aspect-[3/2] overflow-hidden">
+            {/* Títulos gigantes. Compacto: en el flujo, centrados entre texto y
+                contador. Amplio: absolutos, centrados sobre toda la sección. */}
+            <div
+              data-escenas-titles
+              aria-hidden="true"
+              className="pointer-events-none relative z-[3] my-auto h-[1.15em] w-full text-center font-(family-name:--font-logo) text-[clamp(2.2rem,min(12vw,20svh),6rem)] font-light uppercase leading-[1.15] [@media(min-width:768px)_and_(min-height:521px)]:absolute [@media(min-width:768px)_and_(min-height:521px)]:inset-x-0 [@media(min-width:768px)_and_(min-height:521px)]:top-1/2 [@media(min-width:768px)_and_(min-height:521px)]:my-0 [@media(min-width:768px)_and_(min-height:521px)]:-translate-y-1/2 [@media(min-width:768px)_and_(min-height:521px)]:text-[clamp(3rem,11.1vw,13rem)]"
+            >
+              {ESCENAS.map((e) => (
+                <span key={e.titulo} className="absolute inset-x-0 top-0 block">
+                  {e.titulo}
+                </span>
+              ))}
+            </div>
+
+            <div data-escenas-imgs className="relative isolate my-auto hidden aspect-[3/2] overflow-hidden [@media(min-width:768px)_and_(min-height:521px)]:block">
               {ESCENAS.map((e) => (
                 <figure key={e.seed} className="absolute inset-0 m-0">
                   <Image
@@ -159,7 +178,7 @@ export function SummitEscenas() {
               ))}
             </div>
 
-            <div className="flex flex-1 items-end pb-20 pt-10">
+            <div className="flex items-end pb-24 pr-16 pt-6 [@media(max-height:520px)]:pb-6 [@media(min-width:768px)_and_(min-height:521px)]:flex-1 [@media(min-width:768px)_and_(min-height:521px)]:pb-20 [@media(min-width:768px)_and_(min-height:521px)]:pr-0 [@media(min-width:768px)_and_(min-height:521px)]:pt-10">
               <div className="flex w-full items-center gap-4 font-(family-name:--font-logo) text-2xl italic text-bone">
                 <span data-escenas-current>1</span>
                 <span className="relative h-px flex-1 bg-bone/25">
@@ -172,18 +191,6 @@ export function SummitEscenas() {
         </div>
       </div>
 
-      {/* Títulos gigantes, centrados sobre todo */}
-      <div
-        data-escenas-titles
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-1/2 z-[3] h-[1.15em] -translate-y-1/2 text-center font-(family-name:--font-logo) text-[clamp(3rem,11.1vw,13rem)] font-light uppercase leading-[1.15]"
-      >
-        {ESCENAS.map((e) => (
-          <span key={e.titulo} className="absolute inset-x-0 top-0 block">
-            {e.titulo}
-          </span>
-        ))}
-      </div>
       <h2 className="sr-only">Qué vas a vivir: {ESCENAS.map((e) => e.titulo).join(", ")}</h2>
     </section>
   );

@@ -104,7 +104,7 @@ export default function ContactoPage() {
             </div>
 
             {/* Nota "a medida" */}
-            <div className="rounded-[var(--radius-lg)] bg-blush p-8">
+            <div className="rounded-[var(--radius-lg)] bg-blush p-6 md:p-8">
               <h3 className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-[0.95] text-ink">
                 ¿Buscás algo a medida?
               </h3>

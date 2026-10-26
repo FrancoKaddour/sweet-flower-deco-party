@@ -45,26 +45,34 @@ export function SummitHome() {
       const gridEl = grid.current;
       if (!el || !gridEl) return;
 
-      const prefersReduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      if (prefersReduced) return;
+      const mm = gsap.matchMedia();
+      mm.add(
+        {
+          desktop: "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+          mobile: "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
+        },
+        (ctx) => {
+      const { mobile } = ctx.conditions as { desktop: boolean; mobile: boolean };
 
       const trigger = {
         trigger: el,
         start: "clamp(top bottom)",
         end: "clamp(bottom top)",
-        scrub: 2.8,
+        // Mobile: menos inercia → menos frames de "arrastre" con el dedo.
+        scrub: mobile ? 1.2 : 2.8,
       } as const;
 
       // 1) Tilt 3D: de inclinado → casi de frente.
       // ease "none" → progresa lineal con el scroll (acompaña TODO el recorrido).
+      // Mobile: solo 2D (rotación + escala, sin rotationX/perspectiva) → la capa
+      // se composita sin re-rasterizar y el scroll táctil no se traba.
       gsap.fromTo(
         gridEl,
-        { rotationX: 12, rotationY: 0, rotation: -14, scale: 1.4 },
+        mobile
+          ? { rotation: -14, scale: 1.3 }
+          : { rotationX: 12, rotationY: 0, rotation: -14, scale: 1.4 },
         {
-          rotationX: 0,
-          rotationY: 0,
+          ...(mobile ? {} : { rotationX: 0, rotationY: 0 }),
           rotation: -10,
           scale: 1.12,
           transformOrigin: "50% 50%",
@@ -82,7 +90,7 @@ export function SummitHome() {
         const dir = i % 2 === 0 ? 1 : -1;
         const base = i % 2 === 0 ? -22 : 22; // offset alterno del CSS
         const travel = () =>
-          (col.querySelector("img")?.offsetHeight ?? 0) * 0.3 * dir;
+          (col.querySelector("img")?.offsetHeight ?? 0) * (mobile ? 0.2 : 0.3) * dir;
         gsap.fromTo(
           col,
           { y: () => base + travel() },
@@ -94,6 +102,9 @@ export function SummitHome() {
           },
         );
       });
+        },
+      );
+      return () => mm.revert();
     },
     { scope: root },
   );
@@ -102,7 +113,8 @@ export function SummitHome() {
     <section
       id="summit"
       ref={root}
-      className="relative min-h-[150svh] md:min-h-[200svh] overflow-hidden bg-bone text-ink"
+      data-theme="dark"
+      className="relative min-h-[150svh] overflow-hidden bg-bone text-ink md:min-h-[200svh] [@media(max-height:500px)_and_(orientation:landscape)]:min-h-[170svh]"
     >
       {/* Collage de fondo (decorativo) */}
       <div className="wk-collage" aria-hidden="true">
@@ -121,30 +133,29 @@ export function SummitHome() {
         {/* Velo oscuro parejo: fotos más apagadas para que mande el texto.
             El fundido marfil (wk-fade) va encima → bordes limpios. */}
         <div
-          className="pointer-events-none absolute inset-0 z-[1]"
-          style={{ backgroundColor: "color-mix(in srgb, var(--color-ink) 45%, transparent)" }}
+          className="pointer-events-none absolute inset-0 z-[1] bg-ink/55 md:bg-ink/45"
         />
         <div className="wk-fade" />
       </div>
 
       {/* Título + datos de la próxima edición + CTA, anclado a la derecha */}
-      <div className="relative z-[3] mx-auto flex min-h-[150svh] md:min-h-[200svh] max-w-[87.5rem] items-center justify-start px-6 md:justify-end md:px-10">
+      <div className="relative z-[3] mx-auto flex min-h-[150svh] max-w-[87.5rem] items-center justify-start px-6 md:min-h-[200svh] md:justify-end md:px-10 [@media(max-height:500px)_and_(orientation:landscape)]:min-h-[170svh]">
         <div className="flex flex-col items-start text-left md:items-end md:text-right [text-shadow:0_2px_28px_rgb(20_17_15/0.5)]">
-          <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">
+          <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne [@media(max-height:500px)_and_(orientation:landscape)]:mb-3">
             {EDICION_LABEL} · {EVENT_WHEN}
           </p>
           <RevealText
             as="h2"
             onScroll
-            className="max-w-[14ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone"
+            className="max-w-[14ch] font-display text-[length:var(--text-step-6)] [@media(max-height:500px)_and_(orientation:landscape)]:max-w-[22ch] [@media(max-height:500px)_and_(orientation:landscape)]:text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone"
           >
             {EVENT_NAME}
           </RevealText>
-          <p className="mt-6 max-w-[38ch] text-[length:var(--text-step-0)] leading-snug text-bone/85">
+          <p className="mt-6 max-w-[38ch] text-[length:var(--text-step-0)] leading-snug text-bone/85 [@media(max-height:500px)_and_(orientation:landscape)]:mt-3 [@media(max-height:500px)_and_(orientation:landscape)]:max-w-[52ch]">
             {/* TODO(contenido): bajada real del Summit */}
             El encuentro del año de la decoración de eventos. Después de {WORKSHOPS_REALIZADOS} workshops y una primera edición, vamos por la segunda. Preventa abierta: La Rural, Palermo.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-start gap-x-10 gap-y-4 md:justify-end">
+          <div className="mt-8 flex flex-wrap items-center justify-start gap-x-10 gap-y-3 md:justify-end [@media(max-height:500px)_and_(orientation:landscape)]:mt-4">
             <Button href={EVENT_CTA_HREF} tone="light">
               Quiero mi lugar
             </Button>

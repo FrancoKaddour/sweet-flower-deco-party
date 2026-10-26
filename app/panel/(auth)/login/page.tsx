@@ -19,11 +19,16 @@ export default async function LoginPage({
   const sinPermiso = error === "permiso" || (s?.user && !STAFF_ROLES.includes(s.user.role));
 
   return (
-    <main id="panel-main" tabIndex={-1} className="flex min-h-dvh items-center justify-center bg-bone px-4 py-12">
+    <main
+      id="panel-main"
+      tabIndex={-1}
+      data-area="panel"
+      className="flex min-h-dvh items-center justify-center bg-bone px-[max(1rem,env(safe-area-inset-left))] py-[max(3rem,env(safe-area-inset-top))] focus:outline-none [@media(max-height:480px)]:py-4"
+    >
       <div className="w-full max-w-md">
-        <div className="rounded-[var(--radius-lg)] border border-line bg-cloud p-8 sm:p-10">
-          <div className="mb-8 text-center">
-            <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">
+        <div className="rounded-[var(--radius-lg)] border border-line bg-cloud px-6 py-8 min-[360px]:p-8 sm:p-10">
+          <div className="mb-8 text-center [@media(max-height:480px)]:mb-5">
+            <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-champagne min-[360px]:tracking-[0.18em]">
               ✧ Centro de operaciones
             </p>
             <h1 className="mt-3 font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink">

@@ -18,6 +18,9 @@ export const metadata: Metadata = { title: "Pedidos" };
 
 const POR_PAGINA = 25;
 
+/** Rótulo de celda que sólo se ve en la vista de tarjetas (< md). */
+const ETQ = "text-[0.7rem] uppercase tracking-[0.12em] text-muted md:hidden";
+
 export default async function PedidosPage({
   searchParams,
 }: {
@@ -61,10 +64,11 @@ export default async function PedidosPage({
         </PanelButton>
       </form>
 
-      <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-line bg-cloud">
-        <table className="w-full min-w-[720px] text-left text-[length:var(--text-step--1)]">
+      {/* Tabla en md+; en celular cada pedido es una tarjeta (sin scroll horizontal). */}
+      <div className="relative overflow-hidden rounded-[var(--radius-lg)] border border-line bg-cloud md:overflow-x-auto">
+        <table className={`w-full text-left text-[length:var(--text-step--1)] md:min-w-[640px] ${pedidos.length === 0 ? "hidden" : "max-md:block"}`}>
           <caption className="sr-only">Pedidos</caption>
-          <thead className="border-b border-line text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+          <thead className="border-b border-line text-[0.7rem] uppercase tracking-[0.1em] text-muted max-md:sr-only">
             <tr>
               <th className="px-4 py-3 font-medium">Pedido</th>
               <th className="px-4 py-3 font-medium">Cliente</th>
@@ -75,32 +79,39 @@ export default async function PedidosPage({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-y divide-line max-md:block">
             {pedidos.map((p) => {
               const unidades = p.items.reduce((t, i) => t + i.qty, 0);
               return (
-                <tr key={p.id} className="hover:bg-bone/60">
-                  <td className="px-4 py-3">
+                <tr
+                  key={p.id}
+                  className="hover:bg-bone/60 max-md:grid max-md:grid-cols-[minmax(0,1fr)_auto] max-md:items-center max-md:gap-x-4 max-md:gap-y-3 max-md:p-4"
+                >
+                  <td className="px-4 py-3 max-md:col-start-1 max-md:row-start-1 max-md:block max-md:p-0">
                     <Link href={`/panel/pedidos/${p.id}`} className="block">
                       <span className="block font-mono font-medium text-ink">{p.codigo}</span>
                       <span className="block text-muted">{fechaCorta(p.createdAt)}</span>
                     </Link>
                   </td>
-                  <td className="px-4 py-3">
-                    <span className="block font-medium text-ink">{p.nombre ?? "Sin nombre"}</span>
+                  <td className="px-4 py-3 max-md:col-span-2 max-md:row-start-2 max-md:block max-md:p-0">
+                    <span className="block font-medium text-ink max-md:text-[length:var(--text-step-0)]">{p.nombre ?? "Sin nombre"}</span>
                     <span className="block text-muted">
                       {[p.localidad, `${unidades} producto${unidades === 1 ? "" : "s"}`].filter(Boolean).join(" · ")}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums">
+                  <td className="px-4 py-3 text-right tabular-nums max-md:col-start-2 max-md:row-start-1 max-md:block max-md:p-0 max-md:font-medium max-md:text-ink">
+                    <span className={`${ETQ} block`} aria-hidden="true">Total</span>
                     {formatARS(p.total)}
                     {p.hayConsultar && <span className="block text-muted">+ a consultar</span>}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 max-md:col-start-1 max-md:row-start-3 max-md:block max-md:p-0">
                     <EstadoSelect tipo="pedido" id={p.id} valor={p.estado} opciones={ESTADOS_PEDIDO} etiqueta={`Estado del pedido ${p.codigo}`} />
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <Link href={`/panel/pedidos/${p.id}`} className="font-medium uppercase tracking-[0.08em] text-ink hover:text-bordeaux">
+                  <td className="px-4 py-3 text-right max-md:col-start-2 max-md:row-start-3 max-md:block max-md:p-0">
+                    <Link
+                      href={`/panel/pedidos/${p.id}`}
+                      className="font-medium uppercase tracking-[0.08em] text-ink hover:text-bordeaux max-md:inline-flex max-md:min-h-11 max-md:items-center max-md:rounded-[var(--radius-pill)] max-md:border max-md:border-ink/20 max-md:px-5"
+                    >
                       Ver
                     </Link>
                   </td>

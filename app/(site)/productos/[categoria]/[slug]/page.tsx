@@ -95,47 +95,36 @@ export default async function ProductoPage({ params }: Props) {
         }}
       />
 
-      <section className="px-6 pb-20 pt-32 md:px-10 md:pb-28 md:pt-40">
+      <section data-theme="light" className="px-6 pb-20 pt-28 md:px-10 md:pb-28 md:pt-40 [@media(max-height:540px)_and_(orientation:landscape)]:pt-24">
         <div className="mx-auto max-w-[87.5rem]">
-          <nav aria-label="Migas de pan" className="mb-10 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-ink/50">
-            <Link href="/" className="hover:text-ink">Inicio</Link>
-            <span aria-hidden="true"> › </span>
-            <Link href="/productos" className="hover:text-ink">Productos</Link>
-            <span aria-hidden="true"> › </span>
-            <Link href={`/productos/${cat.slug}`} className="hover:text-ink">{cat.nombre}</Link>
+          <nav aria-label="Migas de pan" className="mb-5 flex flex-wrap items-center gap-x-1 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-ink/50 md:mb-8">
+            <Link href="/" className="inline-flex min-h-11 items-center hover:text-ink">Inicio</Link>
+            <span aria-hidden="true">›</span>
+            <Link href="/productos" className="inline-flex min-h-11 items-center hover:text-ink">Productos</Link>
+            <span aria-hidden="true">›</span>
+            <Link href={`/productos/${cat.slug}`} className="inline-flex min-h-11 items-center hover:text-ink">{cat.nombre}</Link>
           </nav>
 
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-6">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-10 lg:gap-16">
+            <div className="md:sticky md:top-28 md:col-span-6 md:self-start [@media(max-height:540px)_and_(orientation:landscape)]:md:top-20">
               <Galeria imagenes={p.imagenes} nombre={p.nombre} />
             </div>
 
-            <div className="lg:col-span-5 lg:col-start-8 lg:pt-6">
+            <div className="md:col-span-6 md:col-start-7 lg:col-span-5 lg:col-start-8 lg:pt-6">
               <Eyebrow className="mb-4">{cat.nombre}</Eyebrow>
-              <h1 className="font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.92] tracking-[-0.01em] [overflow-wrap:anywhere]">
+              <h1 className="text-balance font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.92] tracking-[-0.01em] [overflow-wrap:break-word]">
                 {p.nombre}
               </h1>
 
-              <p className="mt-6 font-display text-[length:var(--text-step-3)] font-bold">
+              <p className="mt-4 font-display text-[length:var(--text-step-3)] font-bold md:mt-6">
                 {p.precio != null ? formatARS(p.precio) : "Precio a consultar"}
                 {p.precio != null && (
-                  <span className="ml-3 align-middle font-sans text-[0.72rem] font-normal uppercase tracking-[0.14em] text-ink/55">
+                  <span className="ml-3 inline-block align-middle font-sans text-[0.72rem] font-normal uppercase tracking-[0.14em] text-ink/55">
                     por transferencia
                   </span>
                 )}
               </p>
 
-              {p.descripcion && (
-                <p className="mt-6 whitespace-pre-line text-[length:var(--text-step-0)] leading-relaxed text-ink/75">
-                  {p.descripcion}
-                </p>
-              )}
-              {p.medidas && (
-                <p className="mt-4 text-[length:var(--text-step-0)] text-ink/75">
-                  <span className="text-[0.72rem] uppercase tracking-[0.14em] text-ink/50">Medidas · </span>
-                  {p.medidas}
-                </p>
-              )}
               {p.variantes && p.variantes.length > 0 && (
                 <ul className="mt-5 flex flex-wrap gap-2">
                   {p.variantes.map((v) => (
@@ -146,7 +135,7 @@ export default async function ProductoPage({ params }: Props) {
                 </ul>
               )}
 
-              <div className="mt-10 flex flex-col gap-3 sm:max-w-sm">
+              <div className="mt-6 flex flex-col gap-3 sm:max-w-sm md:mt-8">
                 <AddToCartButton item={{ slug: p.slug, nombre: p.nombre, precio: p.precio, img: p.img }} />
                 <a
                   href={wa}
@@ -158,7 +147,18 @@ export default async function ProductoPage({ params }: Props) {
                 </a>
               </div>
 
-              <dl className="mt-10 grid grid-cols-1 gap-4 border-t border-line pt-8 text-[length:var(--text-step--1)] sm:grid-cols-2">
+              {p.descripcion && (
+                <p className="mt-8 max-w-[62ch] whitespace-pre-line text-[length:var(--text-step-0)] leading-relaxed text-ink/75">
+                  {p.descripcion}
+                </p>
+              )}
+              {p.medidas && (
+                <p className="mt-4 text-[length:var(--text-step-0)] text-ink/75">
+                  <span className="text-[0.72rem] uppercase tracking-[0.14em] text-ink/50">Medidas · </span>
+                  {p.medidas}
+                </p>
+              )}
+              <dl className="mt-10 grid grid-cols-2 gap-4 border-t border-line pt-8 text-[length:var(--text-step--1)]">
                 <div>
                   <dt className="uppercase tracking-[0.14em] text-ink/50">Producción</dt>
                   <dd className="mt-1 text-ink/80">{BUSINESS.leadTime}</dd>
@@ -174,12 +174,12 @@ export default async function ProductoPage({ params }: Props) {
       </section>
 
       {relacionados.length > 0 && (
-        <section className="border-t border-line px-6 py-20 md:px-10 md:py-28">
+        <section data-theme="light" className="border-t border-line px-6 py-20 md:px-10 md:py-28">
           <div className="mx-auto max-w-[87.5rem]">
             <h2 className="mb-10 font-display text-[length:var(--text-step-3)] font-bold uppercase">
               Más de {cat.nombre.toLowerCase()}
             </h2>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:gap-x-6 lg:grid-cols-4">
               {relacionados.map((r) => (
                 <ProductCard key={r.slug} p={r} />
               ))}

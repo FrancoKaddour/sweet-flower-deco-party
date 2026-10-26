@@ -10,9 +10,103 @@ import { MAIN_NAV, CONTACTO_LINK } from "@/content/site";
 // Menú del Header = navegación principal + Contacto al final.
 const NAV = [...MAIN_NAV, CONTACTO_LINK];
 
-// Páginas cuyo hero es OSCURO (video/foto): ahí, arriba de todo, el header va
-// en tono claro. En el resto (fondos marfil) va en tinta.
+// Páginas cuyo hero es OSCURO (video/foto): estimación INICIAL del tono (antes
+// de la primera medición, p. ej. en el HTML servido). Después manda el detector.
 const DARK_HERO_PATHS = ["/", "/event-summit"];
+
+/* ---------------------------------------------------------------------------
+ * Detector de fondo: el header invierte su color según lo que tiene DEBAJO.
+ * "Tone" = color del TEXTO del header: "light" (marfil, sobre fondos oscuros)
+ * o "dark" (tinta, sobre fondos claros).
+ * 1) Se toma el elemento de la página bajo cada zona del header
+ *    (document.elementsFromPoint, salteando el propio header y overlays).
+ * 2) Subiendo por sus ancestros, gana lo primero que aparezca:
+ *    data-theme="dark|light" de la sección → un fondo opaco calculado
+ *    (luminancia) → un puente de color (ColorBridge, data-bridge-from/to).
+ * Funciona con Lenis (que scrollea de forma nativa → dispara "scroll").
+ * ------------------------------------------------------------------------- */
+type Tone = "light" | "dark";
+type Tones = { l: Tone; c: Tone; r: Tone; g: Tone };
+
+/** Luminosidad perceptual (0–1) y alpha de un color CSS calculado. */
+function readColor(css: string): { L: number; a: number } | null {
+  const nums = (str: string) =>
+    str
+      .replace(/[^\d.\s/%-]/g, " ")
+      .split(/[\s/]+/)
+      .filter(Boolean)
+      .map((n) => (n.endsWith("%") ? parseFloat(n) / 100 : parseFloat(n)));
+  if (!css || css === "transparent") return null;
+  const inner = css.slice(css.indexOf("(") + 1, css.lastIndexOf(")"));
+  if (css.startsWith("oklab(") || css.startsWith("oklch(")) {
+    const v = nums(inner);
+    return { L: v[0] > 1 ? v[0] / 100 : v[0], a: v.length > 3 ? v[3] : 1 };
+  }
+  let rgb: number[];
+  let a = 1;
+  if (css.startsWith("rgb")) {
+    const v = nums(inner);
+    rgb = v.slice(0, 3).map((x) => x / 255);
+    if (v.length > 3) a = v[3];
+  } else if (css.startsWith("color(srgb")) {
+    const v = nums(inner.replace("srgb", ""));
+    rgb = v.slice(0, 3);
+    if (v.length > 3) a = v[3];
+  } else {
+    return null;
+  }
+  const lin = rgb.map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  const Y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+  return { L: Math.cbrt(Y), a };
+}
+
+/** Resuelve cualquier valor de color (incluye var(--color-x)) a su color calculado. */
+let colorProbe: HTMLSpanElement | null = null;
+function resolveColor(value: string): string {
+  if (!colorProbe) {
+    colorProbe = document.createElement("span");
+    colorProbe.style.display = "none";
+    document.body.appendChild(colorProbe);
+  }
+  colorProbe.style.color = "";
+  colorProbe.style.color = value;
+  return getComputedStyle(colorProbe).color;
+}
+
+const toneFromL = (L: number): Tone => (L < 0.6 ? "light" : "dark");
+
+function toneAt(x: number, y: number, header: HTMLElement): Tone | null {
+  const stack = document.elementsFromPoint(x, y);
+  const hit = stack.find(
+    (el) =>
+      !header.contains(el) &&
+      el !== document.documentElement &&
+      !(el as HTMLElement).closest?.("[data-header-ignore]"),
+  );
+  let el: Element | null = hit ?? document.body;
+  while (el && el !== document.documentElement) {
+    // Sección pineada por ScrollTrigger: el hueco que se ve es el pin-spacer;
+    // el tono es el de la sección pineada (su primer hijo).
+    if (el.classList.contains("pin-spacer") && el.firstElementChild) {
+      el = el.firstElementChild;
+    }
+    const theme = el.getAttribute("data-theme");
+    if (theme === "dark") return "light";
+    if (theme === "light") return "dark";
+    const from = el.getAttribute("data-bridge-from");
+    const to = el.getAttribute("data-bridge-to");
+    if (from && to) {
+      const r = el.getBoundingClientRect();
+      const t = r.height ? (y - r.top) / r.height : 0;
+      const c = readColor(resolveColor(t < 0.5 ? from : to));
+      if (c) return toneFromL(c.L);
+    }
+    const bg = readColor(getComputedStyle(el).backgroundColor);
+    if (bg && bg.a >= 0.5) return toneFromL(bg.L);
+    el = el.parentElement;
+  }
+  return null;
+}
 
 /**
  * Header fijo con:
@@ -29,6 +123,17 @@ export function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false); // ya no está en el tope → frosted + logo chico
   const [wasScrolled, setWasScrolled] = useState(false); // scrolled en el momento de abrir el menú
+  // Tono por zona (izquierda / logo / menú) + global (barra frosted al scrollear).
+  const initialTone: Tone = DARK_HERO_PATHS.includes(pathname) ? "light" : "dark";
+  const [tones, setTones] = useState<Tones>({
+    l: initialTone,
+    c: initialTone,
+    r: initialTone,
+    g: initialTone,
+  });
+  const headerRef = useRef<HTMLElement>(null);
+  const zoneLeftRef = useRef<HTMLDivElement>(null);
+  const zoneRightRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const menuTl = useRef<gsap.core.Timeline | null>(null);
@@ -99,6 +204,59 @@ export function Header() {
       cancelAnimationFrame(raf);
     };
   }, []);
+
+  // 1b) Detector de fondo (ver toneAt): mide bajo cada zona del header en cada
+  //     scroll (1 vez por frame), al cambiar de tamaño/ruta y con un pulso
+  //     lento de respaldo (secciones pineadas, transiciones de color).
+  useEffect(() => {
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const header = headerRef.current;
+      if (!header) return;
+      const zones = [zoneLeftRef.current, logoWrapRef.current, zoneRightRef.current];
+      const hr = header.getBoundingClientRect();
+      const y = hr.top + hr.height / 2;
+      const res = zones.map((z) => {
+        if (!z) return null;
+        const r = z.getBoundingClientRect();
+        if (!r.width) return null;
+        const cx = Math.min(window.innerWidth - 1, Math.max(0, r.left + r.width / 2));
+        return toneAt(cx, y, header);
+      });
+      const c = res[1] ?? res[0] ?? res[2];
+      if (!c) return;
+      const l = res[0] ?? c;
+      const rr = res[2] ?? c;
+      const lightVotes = [l, c, rr].filter((t) => t === "light").length;
+      const g: Tone = lightVotes >= 2 ? "light" : "dark";
+      setTones((prev) =>
+        prev.l === l && prev.c === c && prev.r === rr && prev.g === g
+          ? prev
+          : { l, c, r: rr, g },
+      );
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    schedule();
+    const timers = [120, 450, 1000, 1800].map((ms) => window.setTimeout(schedule, ms));
+    const pulse = window.setInterval(schedule, 900);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      timers.forEach((t) => window.clearTimeout(t));
+      window.clearInterval(pulse);
+      cancelAnimationFrame(raf);
+    };
+  }, [pathname]);
+
+  // Con la barra frosted (scrolled) todo el header comparte el tono global.
+  const toneL = scrolled ? tones.g : tones.l;
+  const toneC = scrolled ? tones.g : tones.c;
+  const toneR = scrolled ? tones.g : tones.r;
 
   // 2) Overlay: UNA timeline que va hacia adelante al abrir y en REVERSA al
   //    cerrar → el cierre es exactamente la inversa de la caída de pilares, y
@@ -226,7 +384,6 @@ export function Header() {
       else tl.timeScale(1.3).reverse();
     }
     // buildMenuTimeline lee solo refs → no necesita ser dependencia.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   useEffect(() => () => { menuTl.current?.kill(); }, []);
@@ -234,19 +391,22 @@ export function Header() {
   // 3) Gestión de foco: al abrir movemos el foco dentro del overlay y al
   //    cerrar lo devolvemos al botón "Menú" que lo disparó.
   //    No se ejecuta en el montaje inicial (mounted.current sigue en false).
+  //    (Solo después de haberlo abierto: antes, al montar, el efecto le daba
+  //    foco al botón "Menú" en cada carga y quedaba el anillo de foco visible.)
+  const everOpened = useRef(false);
   useEffect(() => {
-    if (!mounted.current) return;
     const el = overlayRef.current;
     if (!el) return;
 
     if (open) {
+      everOpened.current = true;
       // Guardamos el elemento que tenía el foco (normalmente el botón "Menú").
       previousFocus.current = document.activeElement as HTMLElement | null;
       // El foco entra al overlay desde la timeline (onComplete), cuando
       // "Cerrar" ya es visible y focuseable.
-    } else {
-      // Al cerrar devolvemos el foco al botón que abrió el menú.
-      (previousFocus.current ?? menuButtonRef.current)?.focus();
+    } else if (everOpened.current) {
+      // Al cerrar devolvemos el foco al botón que abrió el menú (sin scroll).
+      (previousFocus.current ?? menuButtonRef.current)?.focus({ preventScroll: true });
       previousFocus.current = null;
     }
   }, [open]);
@@ -296,20 +456,28 @@ export function Header() {
           CENTRADO: arriba se ve el logo completo (casita + "Sweet Flowers /
           Deco Party"); al scrollear hace crossfade a solo la casita. */}
       <header
-        data-tone={DARK_HERO_PATHS.includes(pathname) && !scrolled ? "light" : "dark"}
+        ref={headerRef}
+        data-tone={tones.g}
+        data-scrolled={scrolled ? "true" : "false"}
         className={`c-site-header fixed inset-x-0 top-0 z-50 border-b pt-[env(safe-area-inset-top)] text-ink transition-[background-color,border-color,backdrop-filter] duration-600 ease-(--ease-out-quart) ${
           scrolled
-            ? "border-ink/10 bg-bone/80 backdrop-blur-md"
+            ? tones.g === "light"
+              ? "border-bone/10 bg-ink/55 backdrop-blur-md"
+              : "border-ink/10 bg-bone/80 backdrop-blur-md"
             : "border-transparent bg-bone/0"
         } ${open ? "pointer-events-none" : ""}`}
       >
         <div
           className={`relative mx-auto grid max-w-360 grid-cols-[1fr_auto_1fr] items-center px-6 transition-[padding] duration-600 ease-(--ease-out-quart) md:px-10 ${
-            scrolled ? "py-2.5" : "py-4"
+            scrolled ? "py-2.5" : "py-4 [@media(max-height:30rem)]:py-2"
           }`}
         >
           {/* Izquierda: EVENT SUMMIT (destacado, prioridad de la clienta) + CONTACTO */}
-          <div className="flex items-center gap-7 justify-self-start">
+          <div
+            ref={zoneLeftRef}
+            data-tone={toneL}
+            className="flex items-center gap-5 justify-self-start sm:gap-7"
+          >
             <Link
               href="/event-summit"
               className="group -my-2 inline-flex min-h-11 items-center gap-2.5 py-2 text-[0.72rem] font-medium uppercase tracking-[0.14em] text-ink"
@@ -346,6 +514,7 @@ export function Header() {
           {/* Centro: LOGO = isotipo + logotipo HTML */}
           <Link
             ref={logoWrapRef}
+            data-tone={toneC}
             href="/"
             onMouseEnter={handleLogoHoverIn}
             onMouseLeave={handleLogoHoverOut}
@@ -356,7 +525,7 @@ export function Header() {
               className={`relative block transition-[height] duration-600 ease-(--ease-out-quart) ${
                 scrolled
                   ? "h-[clamp(2rem,3vw,2.5rem)]"
-                  : "h-[clamp(3rem,5.5vw,4rem)]"
+                  : "h-[clamp(3rem,5.5vw,4rem)] [@media(max-height:30rem)]:h-9"
               }`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -391,14 +560,14 @@ export function Header() {
                 scrolled ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr] opacity-100"
               }`}
             >
-             <span className="min-h-0 overflow-hidden">
+             <span className="min-h-0 w-max overflow-hidden">
               <span
                 className={`flex flex-col items-center text-center leading-none transition-transform duration-600 ease-(--ease-out-quart) ${
                   scrolled ? "-translate-y-2" : "translate-y-0"
                 }`}
               >
               <span
-                className="whitespace-nowrap font-(family-name:--font-logo) text-[0.95rem] font-medium uppercase leading-none tracking-[0.08em] text-ink sm:text-[1.45rem] sm:tracking-[0.12em]"
+                className="whitespace-nowrap font-(family-name:--font-logo) text-[0.88rem] font-medium uppercase leading-none tracking-[0.06em] text-ink min-[360px]:text-[0.95rem] min-[360px]:tracking-[0.08em] sm:text-[1.45rem] sm:tracking-[0.12em] [@media(max-height:30rem)]:text-[1.05rem]"
                 style={{ wordSpacing: "0.15em" }}
               >
                 Sweet&nbsp;Flowers
@@ -412,7 +581,7 @@ export function Header() {
           </Link>
 
           {/* Derecha: MENÚ — líneas animadas + texto */}
-          <div className="justify-self-end">
+          <div ref={zoneRightRef} data-tone={toneR} className="justify-self-end">
             <button
               ref={menuButtonRef}
               type="button"
@@ -459,7 +628,7 @@ export function Header() {
         {/* Contenido por encima de los pilares */}
         <div className="relative z-10 flex flex-1 flex-col text-bone">
           {/* Barra superior */}
-          <div className={`mx-auto flex w-full max-w-360 items-center justify-end px-6 md:px-10 ${wasScrolled ? "pb-2.5 pt-[calc(env(safe-area-inset-top)+1rem)]" : "pb-4 pt-[calc(env(safe-area-inset-top)+3.25rem)]"}`}>
+          <div className={`mx-auto flex w-full max-w-360 items-center justify-end px-6 md:px-10 ${wasScrolled ? "pb-2.5 pt-[calc(env(safe-area-inset-top)+1rem)]" : "pb-4 pt-[calc(env(safe-area-inset-top)+3.25rem)] [@media(max-height:30rem)]:pb-2 [@media(max-height:30rem)]:pt-[calc(env(safe-area-inset-top)+0.75rem)]"}`}>
             <button
               type="button"
               ref={closeButtonRef}
@@ -486,7 +655,7 @@ export function Header() {
                     <Link
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="menu-link group flex items-baseline gap-4 py-1 font-display text-(length:--text-step-4) font-extrabold uppercase leading-[1.05] text-bone/70 transition-colors duration-300 hover:text-bone md:text-(length:--text-step-5)"
+                      className="menu-link group flex items-baseline gap-4 py-1 font-display text-(length:--text-step-4) font-extrabold uppercase leading-[1.05] text-bone/70 transition-colors duration-300 hover:text-bone md:text-(length:--text-step-5) [@media(max-height:30rem)]:text-(length:--text-step-3)"
                     >
                       <span className="font-sans text-(length:--text-step--1) font-normal text-champagne">
                         0{i + 1}
@@ -504,21 +673,21 @@ export function Header() {
             </nav>
 
             {/* Logo — blanco limpio sobre fondo oscuro, abajo a la derecha */}
-            <div className="hidden items-end justify-end px-6 pb-8 md:flex md:px-10">
+            <div className="hidden items-end justify-end px-6 pb-8 md:flex md:px-10 [@media(max-height:30rem)]:pb-4">
               <div className="overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/brand/logo-mark-full.png"
                   alt=""
                   aria-hidden="true"
-                  className="menu-logo-img block h-[clamp(9rem,18vw,16rem)] w-auto brightness-0 invert"
+                  className="menu-logo-img block h-[clamp(9rem,18vw,16rem)] w-auto brightness-0 invert [@media(max-height:30rem)]:h-[min(9rem,45svh)]"
                 />
               </div>
             </div>
           </div>
 
           {/* Barra inferior */}
-          <div className="menu-fade mx-auto flex w-full max-w-360 flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 py-6 text-[0.72rem] uppercase tracking-[0.12em] text-bone/50 md:px-10">
+          <div className="menu-fade mx-auto flex w-full max-w-360 flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-6 text-[0.72rem] [@media(max-height:30rem)]:hidden uppercase tracking-[0.12em] text-bone/50 md:px-10">
             <span>Decoración de eventos · Argentina</span>
             <span>Instagram · WhatsApp · Email</span>
           </div>

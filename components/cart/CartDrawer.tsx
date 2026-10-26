@@ -5,13 +5,14 @@
  * WhatsApp" abre la línea de ventas con el pedido ya escrito (no se paga en
  * el sitio). El total es orientativo (precio de catálogo, por transferencia).
  */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useCart } from "./CartProvider";
 import { formatARS } from "@/content/productos";
 import { WHATSAPP_NUMBER } from "@/content/site";
 import { nuevoCodigo } from "@/lib/codigo";
 import { registrarPedido } from "@/modules/ventas/registro";
+import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
 
 export function CartDrawer() {
   const { items, count, setQty, remove, clear, open, setOpen } = useCart();
@@ -19,11 +20,51 @@ export function CartDrawer() {
   const [localidad, setLocalidad] = useState("");
   const [nota, setNota] = useState("");
 
+  const panelRef = useRef<HTMLElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
+
+  // Abierto: Escape cierra, Tab queda dentro del panel, scroll de la página
+  // bloqueado (Lenis + nativo) y el foco entra al panel; al cerrar vuelve al
+  // botón que lo abrió.
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    previousFocus.current = document.activeElement as HTMLElement | null;
+    const focusTimer = window.setTimeout(() => closeRef.current?.focus({ preventScroll: true }), 60);
+    stopLenis();
+    const html = document.documentElement;
+    const prevOverflow = html.style.overflow;
+    html.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !panelRef.current) return;
+      const f = Array.from(
+        panelRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input, textarea, select',
+        ),
+      );
+      if (!f.length) return;
+      const first = f[0];
+      const last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.clearTimeout(focusTimer);
+      window.removeEventListener("keydown", onKey);
+      html.style.overflow = prevOverflow;
+      startLenis();
+      previousFocus.current?.focus?.({ preventScroll: true });
+    };
   }, [open, setOpen]);
 
   const total = items.reduce((t, i) => t + (i.precio ?? 0) * i.qty, 0);
@@ -70,7 +111,7 @@ export function CartDrawer() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[5.25rem] z-40 flex h-13 items-center gap-2.5 rounded-full bg-bordeaux px-5 text-[0.75rem] font-medium uppercase tracking-[0.12em] text-bone shadow-[0_10px_30px_-10px_rgb(20_17_15/0.55)] transition-transform duration-300 hover:-translate-y-0.5 md:bottom-8 md:right-[6.5rem]"
+          className="c-cart-fab fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[calc(max(1.25rem,env(safe-area-inset-right))+4rem)] z-40 flex h-13 items-center gap-2.5 rounded-full bg-bordeaux px-4 text-[0.75rem] font-medium uppercase tracking-[0.12em] text-bone shadow-[0_10px_30px_-10px_rgb(20_17_15/0.55)] transition-transform duration-300 hover:-translate-y-0.5 min-[360px]:px-5 md:bottom-[max(2rem,env(safe-area-inset-bottom))] md:right-[calc(max(2rem,env(safe-area-inset-right))+4.25rem)]"
           aria-label={`Ver tu pedido (${count} productos)`}
         >
           Tu pedido
@@ -90,26 +131,31 @@ export function CartDrawer() {
           className={`absolute inset-0 bg-ink/50 transition-opacity duration-500 ${open ? "opacity-100" : "opacity-0"}`}
         />
         <aside
+          ref={panelRef}
           role="dialog"
           aria-modal="true"
           aria-label="Tu pedido"
-          className={`absolute inset-y-0 right-0 flex w-full max-w-[28rem] flex-col bg-bone text-ink shadow-2xl transition-transform duration-500 ease-(--ease-out-quart) ${
+          data-lenis-prevent
+          // En pantallas bajas (celular apaisado) scrollea el panel ENTERO (lista
+          // + total + botón); en las altas solo la lista y el pie queda fijo.
+          className={`absolute inset-y-0 right-0 flex w-full max-w-[28rem] flex-col overflow-y-auto overscroll-contain bg-bone pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pt-[env(safe-area-inset-top)] text-ink shadow-2xl transition-transform duration-500 ease-(--ease-out-quart) ${
             open ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          <header className="flex items-center justify-between border-b border-ink/10 px-6 py-5">
+          <header className="flex shrink-0 items-center justify-between border-b border-ink/10 px-5 py-4 sm:px-6 sm:py-5">
             <h2 className="font-display text-[length:var(--text-step-2)] font-bold uppercase">Tu pedido</h2>
             <button
               type="button"
+              ref={closeRef}
               onClick={() => setOpen(false)}
-              className="grid h-10 w-10 place-items-center text-[1.4rem] leading-none"
+              className="-mr-2 grid h-11 w-11 place-items-center text-[1.6rem] leading-none"
               aria-label="Cerrar"
             >
               ×
             </button>
           </header>
 
-          <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-4" data-lenis-prevent>
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 sm:px-6 [@media(max-height:34rem)]:flex-none [@media(max-height:34rem)]:overflow-visible" data-lenis-prevent>
             {items.length === 0 ? (
               <p className="py-10 text-center text-ink/60">Todavía no agregaste productos.</p>
             ) : (
@@ -131,7 +177,7 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => setQty(i.slug, i.qty - 1)}
-                            className="grid h-8 w-8 place-items-center"
+                            className="grid h-10 w-10 place-items-center text-[1.1rem]"
                             aria-label={`Quitar uno de ${i.nombre}`}
                           >
                             −
@@ -140,7 +186,7 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => setQty(i.slug, i.qty + 1)}
-                            className="grid h-8 w-8 place-items-center"
+                            className="grid h-10 w-10 place-items-center text-[1.1rem]"
                             aria-label={`Sumar uno de ${i.nombre}`}
                           >
                             +
@@ -149,7 +195,7 @@ export function CartDrawer() {
                         <button
                           type="button"
                           onClick={() => remove(i.slug)}
-                          className="text-[0.7rem] uppercase tracking-[0.12em] text-ink/50 underline-offset-4 hover:text-ink hover:underline"
+                          className="-mr-1 inline-flex min-h-10 items-center px-1 text-[0.7rem] uppercase tracking-[0.12em] text-ink/50 underline-offset-4 hover:text-ink hover:underline"
                         >
                           Quitar
                         </button>
@@ -171,7 +217,7 @@ export function CartDrawer() {
           </div>
 
           {items.length > 0 && (
-            <footer className="border-t border-ink/10 px-6 py-5">
+            <footer className="shrink-0 border-t border-ink/10 px-5 py-5 sm:px-6">
               <div className="flex items-baseline justify-between">
                 <span className="text-[0.75rem] uppercase tracking-[0.14em] text-ink/60">Total transferencia</span>
                 <span className="font-display text-[length:var(--text-step-2)] font-bold">{formatARS(total)}</span>
@@ -197,7 +243,7 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={clear}
-                className="mx-auto mt-2 block text-[0.7rem] uppercase tracking-[0.12em] text-ink/45 hover:text-ink"
+                className="mx-auto mt-1 flex min-h-10 items-center px-2 text-[0.7rem] uppercase tracking-[0.12em] text-ink/45 hover:text-ink"
               >
                 Vaciar pedido
               </button>

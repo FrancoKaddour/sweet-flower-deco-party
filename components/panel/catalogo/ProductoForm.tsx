@@ -83,16 +83,17 @@ export function ProductoForm({
         <Interruptor name="destacado" label="Destacado" defaultChecked={valores?.destacado} ayuda="Aparece primero y en 'Lo más pedido'." />
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 border-t border-line pt-6">
+      {/* Barra de guardado: en celular queda pegada abajo (al alcance del pulgar). */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line pt-6 max-md:sticky max-md:bottom-0 max-md:z-10 max-md:-mx-4 max-md:border-t max-md:border-line max-md:bg-bone/92 max-md:px-4 max-md:pt-3 max-md:pb-[max(0.75rem,env(safe-area-inset-bottom))] max-md:backdrop-blur-md">
         <button
           type="submit"
           disabled={pendiente}
-          className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-pill)] bg-ink px-6 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-bone disabled:opacity-50"
+          className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-pill)] bg-ink px-6 max-md:min-h-12 max-md:w-full text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-bone disabled:opacity-50"
         >
           {pendiente ? "Guardando…" : id ? "Guardar cambios" : "Crear producto"}
         </button>
         {estado.mensaje && (
-          <p role="status" className={estado.ok ? "text-botanical" : "text-bordeaux"}>
+          <p role="status" className={`text-[length:var(--text-step--1)] max-md:w-full max-md:text-center ${estado.ok ? "text-botanical" : "text-bordeaux"}`}>
             {estado.mensaje}
           </p>
         )}

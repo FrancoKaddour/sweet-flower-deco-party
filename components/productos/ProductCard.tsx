@@ -36,14 +36,14 @@ export function ProductCard({ p }: { p: Producto }) {
         )}
       </Link>
 
-      <div className="mt-4 flex flex-1 flex-col">
-        <h3 className="font-display text-[length:var(--text-step-1)] font-bold uppercase leading-tight text-ink">
+      <div className="mt-3 flex flex-1 flex-col sm:mt-4">
+        <h3 className="font-display text-[length:var(--text-step-0)] font-bold uppercase leading-tight text-ink [overflow-wrap:break-word] sm:text-[length:var(--text-step-1)]">
           <Link href={`/productos/${p.categoria}/${p.slug}`} className="hover:text-bordeaux">
             {p.nombre}
           </Link>
         </h3>
         {p.descripcion && (
-          <p className="mt-1.5 line-clamp-3 text-[length:var(--text-step--1)] leading-snug text-ink/60">
+          <p className="mt-1.5 line-clamp-2 text-[length:var(--text-step--1)] leading-snug text-ink/60 sm:line-clamp-3">
             {p.descripcion}
           </p>
         )}
@@ -54,20 +54,22 @@ export function ProductCard({ p }: { p: Producto }) {
           <p className="mt-1 text-[length:var(--text-step--1)] text-ink/60">{p.variantes.join(" · ")}</p>
         ) : null}
 
-        <div className="mt-3">
+        {/* Pie de la card: precio + acciones pegados abajo, así quedan
+            alineados en toda la fila aunque los textos midan distinto. */}
+        <div className="mt-auto pt-3">
           {p.precio != null ? (
-            <p className="font-sans text-[length:var(--text-step-1)] font-medium text-ink">
+            <p className="flex flex-wrap items-baseline gap-x-2 font-sans text-[length:var(--text-step-1)] font-medium text-ink">
                 {formatARS(p.precio)}
-                <span className="ml-2 text-[0.7rem] uppercase tracking-[0.12em] text-ink/50">
+                <span className="text-[0.66rem] uppercase tracking-[0.12em] text-ink/50 sm:text-[0.7rem]">
                   transferencia
                 </span>
             </p>
           ) : (
-            <p className="font-sans text-[length:var(--text-step-0)] text-ink/70">Precio a consultar</p>
+            <p className="font-sans text-[length:var(--text-step-0)] leading-[1.875] text-ink/70">Precio a consultar</p>
           )}
         </div>
 
-        <div className="mt-4 flex flex-col gap-2 sm:mt-auto sm:pt-4">
+        <div className="mt-3 flex flex-col gap-1 sm:mt-4 sm:gap-2 max-sm:[&>button]:px-2 max-sm:[&>button]:text-[0.66rem] max-sm:[&>button]:leading-tight max-sm:[&>button]:tracking-[0.06em]">
           <AddToCartButton
             item={{ slug: p.slug, nombre: p.nombre, precio: p.precio, img: p.img }}
           />
@@ -75,7 +77,7 @@ export function ProductCard({ p }: { p: Producto }) {
             href={wa}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex min-h-9 items-center justify-center px-4 text-[0.68rem] font-medium uppercase tracking-[0.12em] text-ink/60 underline-offset-4 transition-colors hover:text-ink hover:underline"
+            className="flex min-h-11 items-center justify-center px-2 text-center text-[0.66rem] leading-tight sm:px-4 sm:text-[0.68rem] font-medium uppercase tracking-[0.12em] text-ink/60 underline-offset-4 transition-colors hover:text-ink hover:underline"
           >
             Consultar este producto
           </a>

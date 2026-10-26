@@ -56,8 +56,10 @@ export function Experiencia() {
       const mm = gsap.matchMedia();
 
       // Solo animamos con movimiento permitido: sin autoplay ni parallax si reduce.
+      // Solo cuando la galería en movimiento está visible (md+ y no celular
+      // horizontal: ahí se muestra la tira táctil) y con movimiento permitido.
       mm.add(
-        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 768px) and (min-height: 501px) and (prefers-reduced-motion: no-preference), (min-width: 768px) and (orientation: portrait) and (prefers-reduced-motion: no-preference)",
         () => {
           // (a) Slider horizontal SEGÚN EL SCROLL (scrub): al bajar la galería
           // corre hacia la IZQUIERDA, al subir hacia la DERECHA. Loop infinito
@@ -65,8 +67,17 @@ export function Experiencia() {
           // 2 copias idénticas del grupo el reciclado es perfectamente continuo.
           // El grupo mide GROUP_WIDTH px a 16px de root → en pantallas grandes
           // (root fluido) escala con el rem.
-          const unit = parseFloat(getComputedStyle(document.documentElement).fontSize) / 16;
-          const group = GROUP_WIDTH * unit;
+          // El período del loop se recalcula en cada refresh (resize): en ≥1920
+          // el rem es fluido y un valor fijo dejaba la costura del loop corrida.
+          const rootPx = () =>
+            parseFloat(getComputedStyle(document.documentElement).fontSize) / 16;
+          let group = GROUP_WIDTH * rootPx();
+          let wrapX = gsap.utils.wrap(-group, 0);
+          const onRefresh = () => {
+            group = GROUP_WIDTH * rootPx();
+            wrapX = gsap.utils.wrap(-group, 0);
+          };
+          ScrollTrigger.addEventListener("refreshInit", onRefresh);
           const marquee = gsap.to(trackEl, {
             x: -group * 1.2, // recorrido suave; el wrap lo recicla infinitamente
             ease: "none",
@@ -78,7 +89,7 @@ export function Experiencia() {
               scrub: 2.5, // mucho más suave: sigue al scroll con inercia (nada agresivo)
             },
             modifiers: {
-              x: gsap.utils.unitize(gsap.utils.wrap(-group, 0)),
+              x: (x: string) => `${wrapX(parseFloat(x))}px`,
             },
           });
 
@@ -100,6 +111,7 @@ export function Experiencia() {
           );
 
           return () => {
+            ScrollTrigger.removeEventListener("refreshInit", onRefresh);
             marquee.scrollTrigger?.kill();
             marquee.kill();
             parallax.scrollTrigger?.kill();
@@ -123,7 +135,7 @@ export function Experiencia() {
       <div className="mx-auto max-w-[87.5rem] px-6 md:px-10">
         <FadeUp y={100} className="mx-auto max-w-[48.125rem] text-center">
           {/* TODO(contenido): titular real de la sección. */}
-          <h2 className="mb-6 font-display text-[length:var(--text-step-5)] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-6)]">
+          <h2 className="mb-6 font-display text-[length:min(var(--text-step-5),calc((100vw-3rem)/7.2))] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-6)]">
             Más que decoración,
             <br /> una experiencia
           </h2>
@@ -139,8 +151,12 @@ export function Experiencia() {
       <figure
         ref={figureRef}
         aria-hidden="true"
-        className="my-8 hidden overflow-hidden md:my-12 md:block md:h-[35rem]"
+        className="my-12 block h-[28rem] overflow-hidden max-md:hidden lg:h-[35rem] [@media(max-height:500px)_and_(orientation:landscape)]:hidden"
       >
+        {/* Tablet (md→lg): la composición de 1500px se ve al 80% → fotos en
+            escala con la pantalla (el wrapper mide 125% para seguir cubriendo
+            todo el ancho una vez escalado). */}
+        <div className="h-[35rem] origin-top-left max-lg:w-[125%] max-lg:scale-80">
         {/* Track: 2 copias idénticas del grupo → loop sin costura */}
         <div ref={trackRef} className="flex h-full">
           {[0, 1].map((copy) => (
@@ -169,11 +185,12 @@ export function Experiencia() {
             </div>
           ))}
         </div>
+        </div>
       </figure>
 
-      {/* Tira simple visible solo en mobile */}
-      <div className="my-8 block md:hidden">
-        <div className="flex snap-x gap-3 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* Tira táctil: celular (vertical y horizontal) */}
+      <div className="my-8 hidden max-md:block [@media(max-height:500px)_and_(orientation:landscape)]:block">
+        <div className="flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto overscroll-x-contain px-6 [scrollbar-width:none] md:scroll-px-10 md:px-10 [&::-webkit-scrollbar]:hidden">
           {MOBILE_SEEDS.map((seed) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -185,7 +202,7 @@ export function Experiencia() {
               aria-hidden="true"
               width={600}
               height={800}
-              className="aspect-[3/4] w-[70vw] shrink-0 snap-start rounded-[var(--radius-sm)] object-cover"
+              className="aspect-[3/4] w-[min(70vw,24rem)] shrink-0 snap-start rounded-[var(--radius-sm)] object-cover [@media(max-height:500px)_and_(orientation:landscape)]:w-[min(40vw,48svh)]"
             />
           ))}
         </div>
@@ -195,7 +212,7 @@ export function Experiencia() {
       <div className="mx-auto mt-12 max-w-[87.5rem] px-6 md:mt-[4.5rem] md:px-10">
         <FadeUp y={100} className="mx-auto max-w-[53.75rem] text-center">
           {/* TODO(contenido): titular real. */}
-          <h2 className="mb-4 font-display text-[length:var(--text-step-5)] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-6)]">
+          <h2 className="mb-4 font-display text-[length:min(var(--text-step-5),calc((100vw-3rem)/7.2))] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-6)]">
             El arte de crear
             <br /> momentos inolvidables
           </h2>

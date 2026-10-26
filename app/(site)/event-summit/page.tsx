@@ -58,7 +58,7 @@ export default function EventoPage() {
             <RevealText
               as="h2"
               onScroll
-              className="font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink"
+              className="font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [text-wrap:balance]"
             >
               {/* TODO(contenido): titular real */}
               Entrás por la decoración. Te quedás por la gente.
@@ -87,7 +87,7 @@ export default function EventoPage() {
                 scrim="bottom"
                 className="aspect-[4/3] w-full rounded-[var(--radius-lg)] md:aspect-[5/4]"
               />
-              <p className="absolute bottom-6 left-6 max-w-[24ch] font-display text-[length:var(--text-step-1)] font-bold uppercase leading-[0.95] text-bone">
+              <p className="absolute bottom-5 left-5 right-5 max-w-[24ch] font-display md:bottom-8 md:left-8 text-[length:var(--text-step-1)] font-bold uppercase leading-[0.95] text-bone">
                 {/* TODO(contenido): caption real */}
                 Una sala. Toda la industria.
               </p>
@@ -128,7 +128,7 @@ export default function EventoPage() {
             {DISERTANTES.map((_, i) => (
               <div
                 key={i}
-                className="relative flex h-[18.75rem] flex-col justify-between overflow-hidden rounded-[var(--radius-md)] border border-bone/15 bg-gradient-to-b from-bordeaux/25 to-ink p-7 md:h-[23.75rem]"
+                className="relative flex h-[13rem] flex-col justify-between overflow-hidden rounded-[var(--radius-md)] border border-bone/15 bg-gradient-to-b from-bordeaux/25 to-ink p-6 sm:h-[18.75rem] md:h-[23.75rem] md:p-7"
               >
                 <div className="evt-grain pointer-events-none absolute inset-0" />
                 <span className="relative font-display text-[length:var(--text-step-4)] font-extrabold leading-none text-champagne">
@@ -152,7 +152,7 @@ export default function EventoPage() {
       <section
         id="inscripcion"
         data-theme="dark"
-        className="relative scroll-mt-24 overflow-hidden px-6 py-28 text-bone md:px-10 md:py-40"
+        className="relative isolate scroll-mt-24 overflow-hidden bg-ink px-6 py-28 text-bone md:px-10 md:py-40"
       >
         {/* Fondo full-bleed con duotono */}
         <Duotone
@@ -182,7 +182,7 @@ export default function EventoPage() {
               </p>
             </div>
 
-            <div className="lg:col-span-5 lg:justify-self-end">
+            <div className="w-full max-w-[40rem] lg:col-span-5 lg:max-w-none lg:justify-self-end">
               <dl className="flex flex-col gap-6 border-t border-bone/20 pt-8">
                 <div className="flex items-baseline justify-between gap-6">
                   <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">

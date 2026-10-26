@@ -47,13 +47,13 @@ export default async function CuentaPage() {
   const nombre = (user.name ?? "").split(" ")[0];
 
   return (
-    <main id="main" className="bg-bone px-6 pb-24 pt-36 text-ink md:px-10">
+    <main id="main" data-theme="light" className="bg-bone px-6 pb-24 pt-32 text-ink md:px-10 md:pt-40">
       <div className="mx-auto w-full max-w-3xl">
         <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">Mi cuenta</p>
-        <h1 className="mt-4 font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] text-ink">
+        <h1 className="mt-4 font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] text-ink [overflow-wrap:anywhere]">
           Hola{nombre ? `, ${nombre}` : ""}
         </h1>
-        <p className="mt-4 text-ink/70">{user.email}</p>
+        <p className="mt-4 text-ink/70 [overflow-wrap:anywhere]">{user.email}</p>
 
         <section aria-labelledby="pedidos-h" className="mt-14">
           <h2 id="pedidos-h" className="font-display text-[length:var(--text-step-2)] font-bold uppercase text-ink">
@@ -88,7 +88,7 @@ export default async function CuentaPage() {
           )}
         </section>
 
-        <section aria-labelledby="club-h" className="mt-14 rounded-[var(--radius-lg)] bg-bordeaux p-7 text-bone md:p-9">
+        <section aria-labelledby="club-h" data-theme="dark" className="mt-14 rounded-[var(--radius-lg)] bg-bordeaux p-7 text-bone md:p-9">
           <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">✧ {CLUB.nombre}</p>
           <h2 id="club-h" className="mt-3 font-display text-[length:var(--text-step-2)] font-bold uppercase leading-tight">
             {enClub ? "Sos parte del club" : CLUB.titulo}
@@ -101,7 +101,7 @@ export default async function CuentaPage() {
                   : <>Tu código de {DESCUENTO_BIENVENIDA}%: <span className="font-mono font-bold tracking-[0.1em] text-champagne">{club?.codigo}</span></>}
               </p>
               <form action={bajaDesdeCuenta} className="mt-5">
-                <button type="submit" className="text-[length:var(--text-step--1)] text-bone/60 underline-offset-4 hover:text-bone hover:underline">
+                <button type="submit" className="min-h-11 text-[length:var(--text-step--1)] text-bone/60 underline-offset-4 hover:text-bone hover:underline">
                   Dejar de recibir novedades
                 </button>
               </form>
@@ -110,7 +110,7 @@ export default async function CuentaPage() {
             <>
               <p className="mt-3 max-w-[48ch] text-bone/80">{CLUB.bajada}</p>
               <form action={suscribirDesdeCuenta} className="mt-6">
-                <button type="submit" className="min-h-12 rounded-full bg-bone px-7 text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-ink hover:bg-champagne">
+                <button type="submit" className="min-h-12 max-w-full rounded-full bg-bone px-7 py-3 text-[0.75rem] leading-snug [overflow-wrap:anywhere] font-semibold uppercase tracking-[0.14em] text-ink hover:bg-champagne">
                   Sumarme con {user.email}
                 </button>
               </form>
@@ -119,7 +119,7 @@ export default async function CuentaPage() {
         </section>
 
         <form action={salir.bind(null, "/")} className="mt-14">
-          <button type="submit" className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-ink/60 underline-offset-4 hover:text-ink hover:underline">
+          <button type="submit" className="min-h-11 text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-ink/60 underline-offset-4 hover:text-ink hover:underline">
             Cerrar sesión
           </button>
         </form>

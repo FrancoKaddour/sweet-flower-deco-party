@@ -72,19 +72,19 @@ export default async function ConsultasPage({
             const wa = telefonoWhatsApp(k.telefono);
             return (
               <li key={k.id} className="rounded-[var(--radius-lg)] border border-line bg-cloud p-5 md:p-6">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="min-w-0">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+                  <div className="min-w-0 flex-1 basis-56">
                     <p className="text-[0.7rem] uppercase tracking-[0.14em] text-champagne">
                       {k.tipo} · {fechaCorta(k.createdAt)}
                     </p>
                     <p className="mt-1 font-display text-[length:var(--text-step-1)] font-bold text-ink">{k.nombre}</p>
-                    <p className="text-[length:var(--text-step--1)] text-muted">
+                    <p className="break-words text-[length:var(--text-step--1)] text-muted">
                       {[k.email, k.telefono].filter(Boolean).join(" · ") || "Sin datos de contacto (escribió por WhatsApp)"}
                     </p>
                   </div>
                   <EstadoSelect tipo="consulta" id={k.id} valor={k.estado} opciones={ESTADOS_CONSULTA} etiqueta={`Estado de la consulta de ${k.nombre}`} />
                 </div>
-                <p className="mt-4 whitespace-pre-line text-ink">{k.mensaje}</p>
+                <p className="mt-4 max-w-[70ch] whitespace-pre-line break-words text-ink">{k.mensaje}</p>
                 <div className="mt-5 flex flex-wrap items-center gap-3">
                   {wa && (
                     <PanelButton href={linkWhatsApp(wa, `¡Hola ${k.nombre.split(" ")[0]}! Te escribo de Sweet Flowers por tu consulta.`)} target="_blank">
@@ -98,8 +98,8 @@ export default async function ConsultasPage({
                   )}
                   {esAdmin && <Archivar tipo="consulta" id={k.id} />}
                 </div>
-                <details className="group mt-5 border-t border-line pt-4">
-                  <summary className="cursor-pointer list-none text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-muted hover:text-ink">
+                <details className="group mt-5 border-t border-line pt-2">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-muted hover:text-ink [&::-webkit-details-marker]:hidden">
                     <span className="group-open:hidden">+ Nota interna{k.notaInterna ? " (tiene)" : ""}</span>
                     <span className="hidden group-open:inline">− Nota interna</span>
                   </summary>

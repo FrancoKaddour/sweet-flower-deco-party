@@ -156,6 +156,7 @@ export function PageTransition() {
   return (
     <div
       ref={root}
+      data-header-ignore=""
       className="c-pt pointer-events-none invisible fixed inset-0 z-[200] opacity-0"
       aria-hidden="true"
     >

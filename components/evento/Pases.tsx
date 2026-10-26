@@ -24,22 +24,22 @@ export function Pases() {
           </h2>
         </div>
 
-        <FadeUp y={40} stagger={0.1} className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
+        <FadeUp y={40} stagger={0.1} className="mx-auto grid max-w-[40rem] grid-cols-1 gap-5 md:max-w-none md:grid-cols-2 lg:gap-6">
           {PASES.map((pase) => {
             const vip = pase.id === "vip";
             return (
               <article
                 key={pase.id}
-                className={`flex flex-col rounded-[var(--radius-lg)] p-7 md:p-10 ${
+                className={`@container flex flex-col rounded-[var(--radius-lg)] p-6 min-[400px]:p-7 lg:p-10 ${
                   vip ? "bg-ink text-bone" : "border border-ink/15 bg-bone text-ink"
                 }`}
               >
-                <div className="flex items-baseline justify-between gap-4">
+                <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
                   <h3 className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-none">
                     {pase.nombre}
                   </h3>
                   {vip && (
-                    <span className="rounded-full border border-champagne/60 px-3 py-1 text-[0.65rem] uppercase tracking-[0.16em] text-champagne">
+                    <span className="whitespace-nowrap rounded-full border border-champagne/60 px-3 py-1 text-[0.65rem] uppercase tracking-[0.16em] text-champagne">
                       Experiencia completa
                     </span>
                   )}
@@ -48,14 +48,14 @@ export function Pases() {
                 {/* Precios por preventa */}
                 <dl className={`mt-8 divide-y ${vip ? "divide-bone/15 border-y border-bone/15" : "divide-ink/10 border-y border-ink/10"}`}>
                   {PREVENTAS.map((pv) => (
-                    <div key={pv.id} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
+                    <div key={pv.id} className="flex flex-col gap-2 py-4 @sm:flex-row @sm:items-end @sm:justify-between @sm:gap-6">
                       <dt>
                         <span className="block text-[0.72rem] uppercase tracking-[0.14em] opacity-70">{pv.nombre}</span>
                         <span className={`text-[0.72rem] uppercase tracking-[0.14em] ${vip ? "text-champagne" : "text-bordeaux"}`}>
                           {pv.hastaLabel}
                         </span>
                       </dt>
-                      <dd className="text-right font-display text-[length:var(--text-step-3)] font-bold leading-none tabular-nums">
+                      <dd className="shrink-0 font-display text-[length:var(--text-step-3)] font-bold leading-none tabular-nums @sm:text-right">
                         {formatARS(pv.precios[pase.id])}
                       </dd>
                     </div>
@@ -88,7 +88,7 @@ export function Pases() {
           })}
         </FadeUp>
 
-        <p className="mt-8 text-center text-[length:var(--text-step--1)] text-ink/60">
+        <p className="mx-auto mt-8 max-w-[70ch] text-center text-[length:var(--text-step--1)] text-ink/60">
           Pagás online con Mercado Pago: tarjeta de crédito en cuotas, débito, dinero en cuenta o efectivo. {EXTRAS_NOTA}
         </p>
       </div>

@@ -118,7 +118,7 @@ export default function RootLayout({
             por primera vez o navegando hacia él. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var n=performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload"){document.body.setAttribute("data-loader","false");document.body.setAttribute("data-skip-intro","true")}}catch(e){}`,
+            __html: `try{if(location.pathname!=="/"){document.body.setAttribute("data-loader","false")}else{var n=performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload"){document.body.setAttribute("data-loader","false");document.body.setAttribute("data-skip-intro","true")}}}catch(e){}`,
           }}
         />
         {/* Skip-link: acceso rápido al contenido para usuarios de teclado */}

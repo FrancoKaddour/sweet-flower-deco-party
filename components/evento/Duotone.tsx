@@ -25,7 +25,10 @@ export function Duotone({
   scrim = "none",
 }: Props) {
   return (
-    <div className={`relative overflow-hidden bg-ink ${className}`}>
+    // Si el contenedor ya trae posición (p. ej. `absolute inset-0` como fondo
+    // de sección) no se le suma `relative`: las dos clases chocaban y ganaba
+    // `relative`, dejando el fondo con alto 0 (la foto no se veía).
+    <div className={`${/\b(absolute|fixed|sticky)\b/.test(className) ? "" : "relative"} overflow-hidden bg-ink ${className}`}>
       <Image
         src={src}
         alt=""

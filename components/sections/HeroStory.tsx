@@ -105,7 +105,7 @@ export function HeroStory() {
   return (
     <div ref={root} className="relative w-full">
       {/* Texto completo para SEO y lectores; visible solo con reduced-motion. */}
-      <h1 className="sr-only motion-reduce:not-sr-only motion-reduce:mx-auto motion-reduce:block motion-reduce:max-w-[22ch] motion-reduce:font-display motion-reduce:text-(length:--text-step-4) motion-reduce:font-extrabold motion-reduce:uppercase motion-reduce:leading-[0.95] motion-reduce:text-bone">
+      <h1 className="sr-only motion-reduce:not-sr-only motion-reduce:mx-auto motion-reduce:block motion-reduce:max-w-[22ch] motion-reduce:font-display motion-reduce:text-(length:--text-step-4) [@media(max-height:500px)_and_(orientation:landscape)]:motion-reduce:text-(length:--text-step-3) motion-reduce:font-extrabold motion-reduce:uppercase motion-reduce:leading-[0.95] motion-reduce:text-bone">
         {FULL_TEXT}
       </h1>
 
@@ -114,7 +114,7 @@ export function HeroStory() {
         {PHRASES.map(([text]) => (
           <p
             key={text}
-            className="hero-phrase invisible text-balance col-start-1 row-start-1 mx-auto max-w-[16ch] self-center font-display text-(length:--text-step-5) font-extrabold uppercase leading-[0.92] tracking-[-0.02em] text-bone md:max-w-[18ch] md:text-[clamp(2.6rem,1.6rem+3.4vw,4.2rem)]"
+            className="hero-phrase invisible text-balance col-start-1 row-start-1 mx-auto max-w-[16ch] self-center font-display text-[length:min(var(--text-step-5),calc((100vw-3rem)/7.8))] font-extrabold uppercase leading-[0.92] tracking-[-0.02em] text-bone md:max-w-[18ch] md:text-[clamp(2.6rem,1.6rem+3.4vw,4.2rem)] [@media(max-height:500px)_and_(orientation:landscape)]:max-w-[22ch] [@media(max-height:500px)_and_(orientation:landscape)]:text-[clamp(1.75rem,9svh,2.5rem)]"
           >
             {text}
           </p>

@@ -28,9 +28,9 @@ export function PageHeader({
 
   return (
     <header className="flex flex-col gap-6 border-b border-line pb-8 md:flex-row md:items-end md:justify-between">
-      <div className="max-w-2xl">
+      <div className="min-w-0 max-w-2xl">
         <Eyebrow className="mb-4">✧ {rotulo}</Eyebrow>
-        <h1 className="font-display text-[length:var(--text-step-3)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-4)]">
+        <h1 className="font-display text-[length:var(--text-step-3)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink [overflow-wrap:anywhere] [text-wrap:balance] md:text-[length:var(--text-step-4)]">
           {titulo}
         </h1>
         <p className="mt-4 text-[length:var(--text-step-0)] leading-relaxed text-muted">

@@ -34,7 +34,7 @@ export function NewsletterForm() {
           <button
             type="button"
             onClick={copiar}
-            className="text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone underline-offset-4 hover:underline"
+            className="inline-flex min-h-11 items-center text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone underline-offset-4 hover:underline"
           >
             {copiado ? "¡Copiado!" : "Copiar"}
           </button>
@@ -97,7 +97,7 @@ export function NewsletterForm() {
           {INTERESES.map((i) => (
             <label key={i.v} className="cursor-pointer">
               <input type="checkbox" name="intereses" value={i.v} className="peer sr-only" />
-              <span className="inline-flex min-h-10 items-center rounded-full border border-bone/30 px-4 text-[length:var(--text-step--1)] text-bone/80 transition-colors peer-checked:border-champagne peer-checked:bg-champagne peer-checked:text-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-champagne">
+              <span className="inline-flex min-h-11 items-center rounded-full border border-bone/30 px-4 text-[length:var(--text-step--1)] text-bone/80 transition-colors peer-checked:border-champagne peer-checked:bg-champagne peer-checked:text-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-champagne">
                 {i.l}
               </span>
             </label>

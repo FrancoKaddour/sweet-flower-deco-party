@@ -24,8 +24,8 @@ export default async function IngresarPage({
   const conEmail = Boolean(process.env.AUTH_RESEND_KEY);
 
   return (
-    <main id="main" className="flex min-h-[80svh] items-center justify-center bg-bone px-6 pb-24 pt-36 text-ink">
-      <div className="w-full max-w-md text-center">
+    <main id="main" data-theme="light" className="flex min-h-[100svh] items-center justify-center bg-bone px-6 pb-20 pt-32 text-ink md:pb-24 md:pt-40">
+      <div className="w-full max-w-[26rem] text-center">
         <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">Tu cuenta</p>
         <h1 className="mt-4 font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] text-ink">
           Ingresá

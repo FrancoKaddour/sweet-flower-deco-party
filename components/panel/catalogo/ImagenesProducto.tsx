@@ -55,20 +55,20 @@ export function ImagenesProducto({ productId, nombre, imagenes }: { productId: s
           {imagenes.map((img, i) => (
             <li key={img.id} className="group relative overflow-hidden rounded-[var(--radius-md)] border border-line bg-cloud">
               <div className="relative aspect-[4/5] bg-sand">
-                <Image src={img.url} alt={img.alt || nombre} fill sizes="200px" className="object-cover" />
+                <Image src={img.url} alt={img.alt || nombre} fill sizes="(max-width: 640px) 50vw, 240px" className="object-cover" />
                 {i === 0 && (
                   <span className="absolute left-2 top-2 rounded-full bg-ink px-2.5 py-1 text-[0.65rem] uppercase tracking-[0.12em] text-bone">
                     Portada
                   </span>
                 )}
               </div>
-              <div className="flex items-center justify-between gap-1 px-2 py-1.5">
+              <div className="flex items-center justify-between gap-1 px-1 py-0.5">
                 <div className="flex">
                   <button
                     type="button"
                     disabled={i === 0 || pendiente}
                     onClick={() => start(() => moverImagen(img.id, -1))}
-                    className="grid h-9 w-9 place-items-center text-ink disabled:opacity-30"
+                    className="grid h-11 w-10 place-items-center rounded-[var(--radius-sm)] text-ink hover:bg-bone disabled:opacity-30"
                     aria-label="Mover a la izquierda"
                   >
                     ←
@@ -77,7 +77,7 @@ export function ImagenesProducto({ productId, nombre, imagenes }: { productId: s
                     type="button"
                     disabled={i === imagenes.length - 1 || pendiente}
                     onClick={() => start(() => moverImagen(img.id, 1))}
-                    className="grid h-9 w-9 place-items-center text-ink disabled:opacity-30"
+                    className="grid h-11 w-10 place-items-center rounded-[var(--radius-sm)] text-ink hover:bg-bone disabled:opacity-30"
                     aria-label="Mover a la derecha"
                   >
                     →
@@ -89,7 +89,7 @@ export function ImagenesProducto({ productId, nombre, imagenes }: { productId: s
                   onClick={() => {
                     if (window.confirm("¿Borrar esta foto?")) start(() => borrarImagen(img.id));
                   }}
-                  className="px-2 text-[0.7rem] uppercase tracking-[0.12em] text-bordeaux disabled:opacity-30"
+                  className="inline-flex min-h-11 items-center px-2 text-[0.7rem] uppercase tracking-[0.12em] text-bordeaux disabled:opacity-30"
                 >
                   Borrar
                 </button>
@@ -100,7 +100,7 @@ export function ImagenesProducto({ productId, nombre, imagenes }: { productId: s
       )}
 
       <div className="flex flex-wrap items-center gap-4">
-        <label className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[var(--radius-pill)] border border-ink/20 px-5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink hover:border-ink/40">
+        <label className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[var(--radius-pill)] border border-ink/20 px-5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink max-sm:w-full text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink hover:border-ink/40">
           {subiendo ?? "Subir fotos"}
           <input
             ref={input}

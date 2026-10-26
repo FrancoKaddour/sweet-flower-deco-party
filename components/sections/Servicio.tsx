@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
+import { SwipeDots } from "@/components/ui/SwipeDots";
 
 // TODO(contenido): copy, títulos y fotos reales (ver docs/16_DECISIONS.md → 03_SERVICIO).
 // Adaptación del bloque "Savoir-faire" de momoamo.com → mood premium editorial cálido.
@@ -138,6 +139,7 @@ export function Servicio() {
   return (
     <section
       id="servicio"
+      data-theme="light"
       className="relative w-full overflow-hidden bg-blush py-[4rem] text-ink md:py-[7.5rem]"
     >
       {/* 1) Encabezado centrado (dos líneas: quiebre antes de la marca) + flechas */}
@@ -206,19 +208,22 @@ export function Servicio() {
 
       {/* 2) Carrusel — respeta los márgenes del sitio; scroll-snap + flechas + drag */}
       <div className="mx-auto mt-12 max-w-[87.5rem] px-6 md:px-10">
+        {/* Mobile: el track sangra hasta los bordes (-mx-6 + px-6) → asoman
+            las fotos vecinas y se entiende que se desliza. */}
         <div
           ref={trackRef}
+          id="servicio-track"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
           onPointerCancel={endDrag}
-          className="flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto pb-4 select-none [-ms-overflow-style:none] [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
+          className="-mx-6 flex cursor-grab snap-x snap-mandatory scroll-px-6 gap-4 overflow-x-auto overscroll-x-contain px-6 pb-4 select-none md:mx-0 md:scroll-px-0 md:px-0 [-ms-overflow-style:none] [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
         >
           {SLIDES.map((slide) => (
           <article
             key={slide.seed}
-            className="group relative w-[78vw] shrink-0 snap-center overflow-hidden sm:snap-start rounded-[var(--radius-md)] sm:w-[48%] md:w-[calc((100%-2rem)/3)]"
+            className="group relative w-[78vw] max-w-[24rem] shrink-0 snap-center overflow-hidden rounded-[var(--radius-md)] sm:w-[calc((100%-1rem)/2)] sm:max-w-none sm:snap-start md:w-[calc((100%-2rem)/3)]"
           >
             <Image
               src={slide.img}
@@ -227,7 +232,7 @@ export function Servicio() {
               height={800}
               draggable={false}
               sizes="(max-width: 639px) 78vw, (max-width: 767px) 48vw, 33vw"
-              className="pointer-events-none h-[20rem] w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 lg:h-[25rem]"
+              className="pointer-events-none aspect-[3/4] h-auto max-h-[70svh] w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 md:aspect-auto md:h-[20rem] lg:h-[25rem]"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
             <header className="absolute bottom-4 left-4 max-w-[15.625rem] md:bottom-6 md:left-6 md:max-w-[21.9375rem]">
@@ -241,6 +246,7 @@ export function Servicio() {
           </article>
           ))}
         </div>
+        <SwipeDots forId="servicio-track" count={SLIDES.length} label="Servicios" />
       </div>
 
       {/* 3) Bloque grande centrado */}

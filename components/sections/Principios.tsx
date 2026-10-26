@@ -30,6 +30,7 @@ export function Principios() {
   return (
     <section
       id="principios"
+      data-theme="light"
       className="relative w-full bg-sage py-[4rem] text-ink md:pb-[5rem] md:pt-[5rem]"
     >
       <div className="mx-auto max-w-[87.5rem] px-6 md:px-10">
@@ -41,13 +42,14 @@ export function Principios() {
         </h2>
       </FadeUp>
 
-      {/* Lista apilable: cada item se pega con top incremental (96, 168, 240) */}
+      {/* Lista apilable: cada item se pega con top incremental (6rem, 10.5rem, 15rem).
+          En pantallas bajas (celular horizontal) no se apilan: no entrarían. */}
       <ul className="m-0 grid list-none gap-[2.5rem] p-0">
         {PRINCIPIOS.map((p, i) => (
           <li
             key={p.titulo}
-            className="sticky overflow-hidden rounded-[var(--radius-md)] bg-bone p-6 shadow-[0_10px_44px_-18px_rgba(20,17,15,0.28)] md:p-9"
-            style={{ top: `${96 + i * 72}px` }}
+            className="sticky overflow-hidden rounded-[var(--radius-md)] bg-bone p-6 [@media(max-height:600px)]:static shadow-[0_10px_44px_-18px_rgba(20,17,15,0.28)] md:p-9"
+            style={{ top: `${6 + i * 4.5}rem` }}
           >
             <article className="grid w-full grid-cols-1 items-start gap-6 md:grid-cols-3 md:gap-8">
               <header>
@@ -57,12 +59,12 @@ export function Principios() {
               </header>
               <figure className="m-0">
                 <Image
-                  className="h-[32.8125rem] max-h-[40vh] w-full rounded-[var(--radius-sm)] object-cover md:max-h-none md:w-[26.8125rem]"
+                  className="aspect-[429/525] h-auto max-h-[40svh] w-full rounded-[var(--radius-sm)] object-cover md:max-h-[calc(100svh-14rem)] md:w-full"
                   src={p.img}
                   alt={p.titulo}
                   width={429}
                   height={525}
-                  sizes="(max-width: 768px) 100vw, 429px"
+                  sizes="(max-width: 768px) 100vw, 33vw"
                 />
               </figure>
               <p className="font-sans text-[length:var(--text-step-0)] leading-snug text-ink md:ml-2">

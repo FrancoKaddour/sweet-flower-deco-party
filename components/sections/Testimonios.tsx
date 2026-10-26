@@ -1,5 +1,6 @@
 import { FadeUp } from "@/components/motion/FadeUp";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SwipeDots } from "@/components/ui/SwipeDots";
 
 // TODO(contenido): testimonios REALES con permiso de publicación (nombre, ciudad,
 // edición). Ver docs/16_DECISIONS.md → 03_EVENTOS / pregunta 20 al cliente.
@@ -57,6 +58,7 @@ export function Testimonios() {
   return (
     <section
       id="testimonios"
+      data-theme="light"
       className="bg-sand px-6 py-24 text-ink md:px-10 md:py-32"
     >
       <div className="mx-auto max-w-[87.5rem]">
@@ -74,17 +76,20 @@ export function Testimonios() {
           </p>
         </FadeUp>
 
-        {/* Grilla de citas (reveal escalonado) */}
+        {/* Citas (reveal escalonado) — mobile: carrusel deslizable (6 tarjetas
+            apiladas eran ~2000px de scroll); md: 2 columnas; lg: 3. El pt/pb
+            extra en mobile deja lugar a la sombra (el overflow-x la recortaría). */}
+        <div id="testimonios-track" className="-mx-6 snap-x snap-mandatory scroll-px-6 overflow-x-auto overscroll-x-contain px-6 pb-12 pt-2 -mb-10 [scrollbar-width:none] md:mx-0 md:mb-0 md:overflow-visible md:p-0 [&::-webkit-scrollbar]:hidden">
         <FadeUp
           as="div"
           y={50}
           stagger={0.08}
-          className="grid grid-cols-1 items-start gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3"
+          className="flex gap-4 md:grid md:grid-cols-2 md:items-start md:gap-6 lg:grid-cols-3"
         >
           {TESTIMONIOS.map((t) => (
             <figure
               key={t.nombre}
-              className="flex flex-col rounded-[var(--radius-md)] bg-cloud p-7 shadow-[0_18px_50px_-26px_rgba(20,17,15,0.22)] md:p-8"
+              className="flex w-[85%] max-w-[24rem] shrink-0 snap-center flex-col rounded-[var(--radius-md)] bg-cloud p-7 shadow-[0_18px_50px_-26px_rgba(20,17,15,0.22)] sm:w-[60%] md:w-auto md:max-w-none md:p-8"
             >
               <span
                 aria-hidden="true"
@@ -115,6 +120,8 @@ export function Testimonios() {
             </figure>
           ))}
         </FadeUp>
+        </div>
+        <SwipeDots forId="testimonios-track" count={TESTIMONIOS.length} label="Testimonios" />
       </div>
     </section>
   );

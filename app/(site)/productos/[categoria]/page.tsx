@@ -58,16 +58,16 @@ export default async function CategoriaPage({ params }: Props) {
           {/* Breadcrumb editorial (solo e-commerce — docs/04 §6) */}
           <nav
             aria-label="Migas de pan"
-            className="mb-8 text-center text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-ink/50"
+            className="mb-6 flex flex-wrap items-center justify-center gap-x-1 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-ink/50 md:mb-8"
           >
-            <Link href="/" className="transition-colors hover:text-ink">
+            <Link href="/" className="inline-flex min-h-11 items-center transition-colors hover:text-ink">
               Inicio
             </Link>
-            <span aria-hidden="true"> › </span>
-            <Link href="/productos" className="transition-colors hover:text-ink">
+            <span aria-hidden="true">›</span>
+            <Link href="/productos" className="inline-flex min-h-11 items-center transition-colors hover:text-ink">
               Productos
             </Link>
-            <span aria-hidden="true"> › </span>
+            <span aria-hidden="true">›</span>
             <span aria-current="page" className="text-ink">
               {cat.nombre}
             </span>

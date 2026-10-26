@@ -36,7 +36,7 @@ export function Campo({
 export function Interruptor({ name, label, defaultChecked, ayuda }: { name: string; label: string; defaultChecked?: boolean; ayuda?: string }) {
   return (
     <label className="flex cursor-pointer items-start gap-3 rounded-[var(--radius-md)] border border-line bg-cloud px-4 py-3">
-      <input type="checkbox" name={name} defaultChecked={defaultChecked} className="mt-1 size-4 accent-[var(--color-ink)]" />
+      <input type="checkbox" name={name} defaultChecked={defaultChecked} className="mt-0.5 size-5 shrink-0 accent-[var(--color-ink)]" />
       <span>
         <span className="block text-[length:var(--text-step-0)] font-medium text-ink">{label}</span>
         {ayuda && <span className="block text-[length:var(--text-step--1)] text-muted">{ayuda}</span>}

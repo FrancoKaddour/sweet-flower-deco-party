@@ -25,7 +25,7 @@ export function Contacto() {
         <RevealText
           as="h2"
           onScroll
-          className="mx-auto max-w-[18ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink md:text-[length:var(--text-step-7)]"
+          className="mx-auto max-w-[18ch] font-display text-[length:min(var(--text-step-6),calc((100vw-3rem)/6.8))] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink md:text-[length:var(--text-step-7)]"
         >
           {/* TODO(contenido): titular real */}
           Creemos algo inolvidable juntos

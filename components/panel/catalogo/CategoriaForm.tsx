@@ -40,7 +40,7 @@ export function CategoriaForm({ id, valores }: { id: string | null; valores?: Va
         <input id={`${k}-tagline`} name="tagline" defaultValue={valores?.tagline} className={inputCls} />
       </Campo>
       <Campo id={`${k}-descripcion`} label="Descripción">
-        <textarea id={`${k}-descripcion`} name="descripcion" rows={3} defaultValue={valores?.descripcion} className={inputCls} />
+        <textarea id={`${k}-descripcion`} name="descripcion" rows={3} defaultValue={valores?.descripcion} className={`${inputCls} resize-y`} />
       </Campo>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <Campo id={`${k}-incluye`} label="Qué vas a encontrar" ayuda="Separado por coma (máx. 8).">
@@ -51,11 +51,11 @@ export function CategoriaForm({ id, valores }: { id: string | null; valores?: Va
         </Campo>
       </div>
       <Interruptor name="visible" label="Visible en el sitio" defaultChecked={valores?.visible ?? true} />
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <button
           type="submit"
           disabled={pendiente}
-          className="inline-flex min-h-11 items-center rounded-[var(--radius-pill)] bg-ink px-6 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-bone disabled:opacity-50"
+          className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-pill)] bg-ink px-6 max-sm:w-full text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-bone disabled:opacity-50"
         >
           {pendiente ? "Guardando…" : id ? "Guardar" : "Crear categoría"}
         </button>

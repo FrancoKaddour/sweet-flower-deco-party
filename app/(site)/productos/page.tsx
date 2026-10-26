@@ -88,14 +88,14 @@ export default async function ProductosPage() {
                   key={cat.slug}
                   y={60}
                   as="article"
-                  className="group grid grid-cols-1 items-center gap-8 md:grid-cols-12 md:gap-12"
+                  className="group grid grid-cols-1 items-center gap-8 md:grid-cols-12 md:gap-10 lg:gap-12"
                 >
                   {/* Imagen */}
                   <Link
                     href={`/productos/${cat.slug}`}
                     aria-label={`Ver categoría ${cat.nombre}`}
-                    className={`relative block overflow-hidden rounded-[var(--radius-lg)] bg-sand md:col-span-7 ${
-                      flip ? "md:order-2 md:col-start-6" : ""
+                    className={`relative block overflow-hidden rounded-[var(--radius-lg)] bg-sand md:col-span-6 lg:col-span-7 ${
+                      flip ? "md:order-2 md:col-start-7 lg:col-start-6" : ""
                     }`}
                   >
                     <div className="relative aspect-[4/3] w-full md:aspect-[16/11]">
@@ -104,7 +104,7 @@ export default async function ProductosPage() {
                         src={cat.img}
                         alt=""
                         fill
-                        sizes="(max-width: 768px) 100vw, 58vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 58vw"
                         className="object-cover transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
                       />
                     </div>
@@ -116,8 +116,8 @@ export default async function ProductosPage() {
 
                   {/* Texto */}
                   <div
-                    className={`md:col-span-5 ${
-                      flip ? "md:order-1 md:col-start-1" : "md:col-start-8"
+                    className={`md:col-span-6 lg:col-span-5 ${
+                      flip ? "md:order-1 md:col-start-1" : "md:col-start-7 lg:col-start-8"
                     }`}
                   >
                     <h2 className="font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink">

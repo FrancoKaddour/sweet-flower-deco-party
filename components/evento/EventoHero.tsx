@@ -87,7 +87,7 @@ export function EventoHero() {
     <section
       ref={root}
       data-theme="dark"
-      className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ink px-6 pb-20 pt-32 text-bone md:px-10 md:pb-24"
+      className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ink px-6 pb-20 pt-32 text-bone md:px-10 md:pb-24 [@media(max-height:520px)]:pb-12 [@media(max-height:520px)]:pt-28"
     >
       {/* Fondo full-bleed con duotono + grano + parallax */}
       <div ref={bg} className="absolute inset-0 -z-10">
@@ -116,12 +116,12 @@ export function EventoHero() {
       <div className="mx-auto w-full max-w-[87.5rem]">
         <h1
           ref={title}
-          className="mx-auto text-center font-display text-[length:var(--text-step-7)] font-extrabold uppercase leading-[0.82] tracking-[-0.03em] text-bone [overflow-wrap:anywhere]"
+          className="mx-auto text-center font-display text-[length:min(var(--text-step-7),18svh)] font-extrabold uppercase leading-[0.82] tracking-[-0.03em] text-bone [overflow-wrap:anywhere] [text-wrap:balance]"
         >
           {EVENT_NAME}
         </h1>
 
-        <div data-hero-reveal className="mx-auto mt-12 flex flex-col items-center text-center">
+        <div data-hero-reveal className="mx-auto mt-12 flex flex-col items-center text-center [@media(max-height:520px)]:mt-7">
           {EVENT_DATE_ISO ? (
             <>
               <p className="mb-3 text-[0.7rem] uppercase tracking-[0.2em] text-bone/50">

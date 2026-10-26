@@ -15,6 +15,9 @@ import { formatARS } from "@/modules/catalog/types";
 
 export const metadata: Metadata = { title: "Productos" };
 
+/** Rótulo de celda que sólo se ve en la vista de tarjetas (< md). */
+const ETQ = "text-[0.7rem] uppercase tracking-[0.12em] text-muted md:hidden";
+
 const ESTADOS: { v: NonNullable<FiltroProductos["estado"]>; l: string }[] = [
   { v: "visibles", l: "Visibles" },
   { v: "ocultos", l: "Ocultos" },
@@ -77,8 +80,8 @@ export default async function ProductosPage({
       )}
 
       {/* Filtros (GET → se pueden compartir/guardar como link) */}
-      <form className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto_auto_auto]" role="search">
-        <input name="q" defaultValue={sp.q} placeholder="Buscar por nombre o descripción…" className={inputCls} aria-label="Buscar" />
+      <form className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto_auto]" role="search">
+        <input name="q" defaultValue={sp.q} placeholder="Buscar por nombre o descripción…" className={`${inputCls} col-span-2 md:col-span-1`} aria-label="Buscar" />
         <select name="cat" defaultValue={sp.cat ?? ""} className={inputCls} aria-label="Categoría">
           <option value="">Todas las categorías</option>
           {categorias.map((c) => (
@@ -95,7 +98,7 @@ export default async function ProductosPage({
             </option>
           ))}
         </select>
-        <PanelButton type="submit" variant="outline">
+        <PanelButton type="submit" variant="outline" className="col-span-2 md:col-span-1">
           Filtrar
         </PanelButton>
       </form>
@@ -105,10 +108,12 @@ export default async function ProductosPage({
         {totalPaginas > 1 && ` · página ${pagina} de ${totalPaginas}`}
       </p>
 
-      <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-line bg-cloud">
-        <table className="w-full min-w-[640px] text-left text-[length:var(--text-step--1)]">
+      {/* Desktop/tablet ancha: tabla. En < md cada fila se reacomoda como tarjeta
+          (grid) con sus rótulos visibles, sin scroll horizontal. */}
+      <div className="relative overflow-hidden rounded-[var(--radius-lg)] border border-line bg-cloud md:overflow-x-auto">
+        <table className={`w-full text-left text-[length:var(--text-step--1)] md:min-w-[640px] ${productos.length === 0 ? "hidden" : "max-md:block"}`}>
           <caption className="sr-only">Productos del catálogo</caption>
-          <thead className="border-b border-line text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+          <thead className="border-b border-line text-[0.7rem] uppercase tracking-[0.1em] text-muted max-md:sr-only">
             <tr>
               <th className="px-4 py-3 font-medium">Producto</th>
               <th className="px-4 py-3 text-right font-medium">Precio</th>
@@ -119,40 +124,56 @@ export default async function ProductosPage({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-y divide-line max-md:block">
             {productos.map((p) => (
-              <tr key={p.id} className="hover:bg-bone/60">
-                <td className="px-4 py-3">
+              <tr
+                key={p.id}
+                className="hover:bg-bone/60 max-md:grid max-md:grid-cols-2 max-md:gap-x-3 max-md:gap-y-3 max-md:p-4"
+              >
+                <td className="px-4 py-3 max-md:col-span-2 max-md:block max-md:p-0">
                   <Link href={`/panel/productos/${p.id}`} className="flex items-center gap-3">
-                    <span className="relative h-12 w-10 shrink-0 overflow-hidden rounded-[var(--radius-sm)] bg-sand">
-                      {p.img && <Image src={p.img} alt="" fill sizes="40px" className="object-cover" />}
+                    <span className="relative h-12 w-10 shrink-0 overflow-hidden rounded-[var(--radius-sm)] bg-sand max-md:h-16 max-md:w-13">
+                      {p.img && <Image src={p.img} alt="" fill sizes="(max-width: 767px) 52px, 40px" className="object-cover" />}
                     </span>
-                    <span className="min-w-0">
+                    <span className="min-w-0 flex-1">
                       <span className="block text-[0.68rem] uppercase tracking-[0.12em] text-champagne">{p.categoria}</span>
-                      <span className="block truncate font-medium text-ink">{p.nombre}</span>
+                      <span className="block font-medium text-ink max-md:line-clamp-2 md:truncate">{p.nombre}</span>
                       {!p.img && <Badge variant="warning">Sin foto</Badge>}
                     </span>
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-right tabular-nums">
-                  {p.precio != null ? formatARS(p.precio) : <Badge variant="warning">A consultar</Badge>}
+                <td className="px-4 py-3 text-right tabular-nums max-md:col-span-2 max-md:flex max-md:items-center max-md:justify-between max-md:border-t max-md:border-line/70 max-md:p-0 max-md:pt-3">
+                  <span className={ETQ} aria-hidden="true">Precio</span>
+                  {p.precio != null ? (
+                    <span className="max-md:text-[length:var(--text-step-0)] max-md:font-medium max-md:text-ink">{formatARS(p.precio)}</span>
+                  ) : (
+                    <Badge variant="warning">A consultar</Badge>
+                  )}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-3 text-center max-md:flex max-md:min-h-11 max-[419px]:col-span-2 max-md:items-center max-md:justify-between max-md:gap-2 max-md:rounded-[var(--radius-md)] max-md:bg-bone/70 max-md:px-3 max-md:py-1">
+                  <span className={ETQ} aria-hidden="true">Visible</span>
                   <Alternar id={p.id} campo="visible" valor={p.visible} label={`Visible: ${p.nombre}`} />
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-3 text-center max-md:flex max-md:min-h-11 max-[419px]:col-span-2 max-md:items-center max-md:justify-between max-md:gap-2 max-md:rounded-[var(--radius-md)] max-md:bg-bone/70 max-md:px-3 max-md:py-1">
+                  <span className={ETQ} aria-hidden="true">Destacado</span>
                   <Alternar id={p.id} campo="destacado" valor={p.destacado} label={`Destacado: ${p.nombre}`} />
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-right">
-                  <Link href={`/panel/productos/${p.id}`} className="font-medium uppercase tracking-[0.08em] text-ink hover:text-bordeaux">
+                <td className="whitespace-nowrap px-4 py-3 text-right max-md:col-span-2 max-md:grid max-md:grid-cols-2 max-md:gap-3 max-md:p-0">
+                  <Link
+                    href={`/panel/productos/${p.id}`}
+                    className="font-medium uppercase tracking-[0.08em] text-ink hover:text-bordeaux max-md:inline-flex max-md:min-h-11 max-md:items-center max-md:justify-center max-md:rounded-[var(--radius-pill)] max-md:bg-ink max-md:text-bone max-md:hover:text-bone"
+                  >
                     Editar
                   </Link>
                   <Link
                     href={`/productos/${p.categoriaSlug}/${p.slug}`}
                     target="_blank"
-                    className="ml-4 text-muted hover:text-ink"
+                    className="ml-4 text-muted hover:text-ink max-md:ml-0 max-md:inline-flex max-md:min-h-11 max-md:items-center max-md:justify-center max-md:rounded-[var(--radius-pill)] max-md:border max-md:border-ink/20 max-md:font-medium max-md:uppercase max-md:tracking-[0.08em] max-md:text-ink"
                   >
-                    Ver ↗
+                    {/* Un solo nodo: en inline-flex el espacio inicial del span se perdería. */}
+                    <span>
+                      Ver<span className="md:hidden"> en el sitio</span> ↗
+                    </span>
                   </Link>
                 </td>
               </tr>

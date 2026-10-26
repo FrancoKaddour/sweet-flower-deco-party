@@ -19,14 +19,14 @@ export default async function BajaPage({ searchParams }: { searchParams: Promise
   }
 
   return (
-    <main id="main" className="flex min-h-[70svh] items-center justify-center bg-bone px-6 pb-24 pt-36 text-ink">
-      <div className="w-full max-w-md text-center">
+    <main id="main" data-theme="light" className="flex min-h-[100svh] items-center justify-center bg-bone px-6 pb-20 pt-32 text-ink md:pb-24 md:pt-40">
+      <div className="w-full max-w-[28rem] text-balance text-center">
         <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">Club Sweet Flowers</p>
         {ok === "1" ? (
           <>
             <h1 className="mt-4 font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.95]">Listo, te dimos de baja</h1>
             <p className="mt-5 text-ink/70">No vas a recibir más mails del club. Si cambiás de idea, te podés volver a sumar desde cualquier página del sitio.</p>
-            <Link href="/" className="mt-8 inline-block border-b border-ink pb-1 text-[0.75rem] font-medium uppercase tracking-[0.14em]">Volver al inicio</Link>
+            <Link href="/" className="mt-6 inline-flex min-h-11 items-center underline decoration-ink underline-offset-[6px] text-[0.75rem] font-medium uppercase tracking-[0.14em]">Volver al inicio</Link>
           </>
         ) : ok === "0" || !t ? (
           <>
@@ -41,7 +41,7 @@ export default async function BajaPage({ searchParams }: { searchParams: Promise
               <button type="submit" className="min-h-12 rounded-full bg-ink px-8 text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone hover:bg-bordeaux">
                 Sí, darme de baja
               </button>
-              <Link href="/" className="text-[0.75rem] uppercase tracking-[0.14em] text-ink/60 hover:text-ink">
+              <Link href="/" className="inline-flex min-h-11 items-center px-3 text-[0.75rem] uppercase tracking-[0.14em] text-ink/60 hover:text-ink">
                 Mejor me quedo
               </Link>
             </form>

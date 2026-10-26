@@ -62,8 +62,10 @@ export function CampanaEditor({
   const segmento = SEGMENTOS.find((s) => s.v === d.segmento);
 
   return (
+    // Lado a lado recién en xl (con el sidebar fijo, en lg cada columna quedaría
+    // angosta). Debajo se apila: primero el formulario, después la vista previa.
     <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      <form action={accion} className="flex flex-col gap-6">
+      <form action={accion} className="flex min-w-0 flex-col gap-6">
         {!id && (
           <fieldset className="flex flex-col gap-3">
             <legend className={`${label} mb-3`}>Empezar desde una plantilla</legend>
@@ -73,7 +75,7 @@ export function CampanaEditor({
                   key={p.id}
                   type="button"
                   onClick={() => setD(p.datos)}
-                  className="rounded-[var(--radius-md)] border border-line bg-cloud px-4 py-3 text-left transition-colors hover:border-champagne"
+                  className="min-h-11 rounded-[var(--radius-md)] border border-line bg-cloud px-4 py-3 text-left transition-colors hover:border-champagne"
                 >
                   <span className="block font-medium text-ink">{p.nombre}</span>
                   <span className="block text-[length:var(--text-step--1)] text-muted">{p.descripcion}</span>
@@ -114,7 +116,7 @@ export function CampanaEditor({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={d.imagen} alt="" className="h-20 w-28 rounded-[var(--radius-sm)] object-cover" />
               {!bloqueada && (
-                <button type="button" onClick={() => set("imagen", "")} className="text-[length:var(--text-step--1)] text-muted hover:text-bordeaux">
+                <button type="button" onClick={() => set("imagen", "")} className="inline-flex min-h-11 items-center text-[length:var(--text-step--1)] text-muted hover:text-bordeaux">
                   Quitar
                 </button>
               )}
@@ -123,7 +125,7 @@ export function CampanaEditor({
             !bloqueada && (
               <div>
                 <input ref={archivo} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" id="img-campana" onChange={(e) => subirImagen(e.target.files?.[0])} />
-                <label htmlFor="img-campana" className="inline-flex min-h-11 cursor-pointer items-center rounded-[var(--radius-pill)] border border-line bg-cloud px-5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink hover:border-ink/40">
+                <label htmlFor="img-campana" className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[var(--radius-pill)] max-sm:w-full border border-line bg-cloud px-5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink hover:border-ink/40">
                   {subiendo ? "Subiendo…" : "Subir foto"}
                 </label>
                 <p className="mt-2 text-[length:var(--text-step--1)] text-muted">Horizontal y en JPG/PNG se ve bien en todos los correos.</p>
@@ -157,27 +159,30 @@ export function CampanaEditor({
         </label>
 
         {!bloqueada && (
-          <div className="flex flex-wrap items-center gap-4">
-            <PanelButton type="submit" disabled={pendiente || subiendo}>
+          // Barra de guardado: en celular/tablet queda pegada abajo, al alcance del pulgar.
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 max-md:sticky max-md:bottom-0 max-md:z-10 max-md:-mx-4 max-md:border-t max-md:border-line max-md:bg-bone/92 max-md:px-4 max-md:pt-3 max-md:pb-[max(0.75rem,env(safe-area-inset-bottom))] max-md:backdrop-blur-md">
+            <PanelButton type="submit" disabled={pendiente || subiendo} className="max-md:min-h-12 max-md:w-full">
               {pendiente ? "Guardando…" : id ? "Guardar cambios" : "Guardar borrador"}
             </PanelButton>
-            {estado && <p role="status" className={estado.ok ? "text-botanical" : "text-bordeaux"}>{estado.mensaje}</p>}
+            {estado && <p role="status" className={`text-[length:var(--text-step--1)] max-md:w-full max-md:text-center ${estado.ok ? "text-botanical" : "text-bordeaux"}`}>{estado.mensaje}</p>}
           </div>
         )}
       </form>
 
       {/* Vista previa en vivo */}
-      <div className="flex flex-col gap-3 xl:sticky xl:top-6 xl:self-start">
-        <div className="flex items-center justify-between">
+      {/* xl: sticky debajo de la topbar (que también es sticky, ~4.5rem). */}
+      <div className="flex min-w-0 flex-col gap-3 xl:sticky xl:top-24 xl:self-start">
+        <div className="flex min-h-11 flex-wrap items-center justify-between gap-2">
           <span className={label}>Vista previa</span>
-          <div className="flex gap-1 rounded-full border border-line bg-cloud p-1">
+          {/* En celular la vista previa YA tiene ancho de celular: el selector sobra. */}
+          <div className="flex gap-1 rounded-full border border-line bg-cloud p-1 max-sm:hidden">
             {(["escritorio", "celular"] as const).map((v) => (
               <button
                 key={v}
                 type="button"
                 onClick={() => setVista(v)}
                 aria-pressed={vista === v}
-                className={`rounded-full px-3 py-1 text-[length:var(--text-step--1)] capitalize ${vista === v ? "bg-ink text-bone" : "text-muted"}`}
+                className={`min-h-9 rounded-full px-4 py-1 text-[length:var(--text-step--1)] capitalize ${vista === v ? "bg-ink text-bone" : "text-muted"}`}
               >
                 {v}
               </button>
@@ -193,7 +198,7 @@ export function CampanaEditor({
             title="Vista previa del mail"
             srcDoc={html}
             sandbox=""
-            className={`h-[720px] bg-bone transition-[width] ${vista === "celular" ? "w-[375px]" : "w-full"}`}
+            className={`h-[min(720px,75svh)] min-h-[26rem] bg-bone transition-[width] xl:h-[min(720px,calc(100dvh-14rem))] ${vista === "celular" ? "w-full max-w-[375px]" : "w-full"}`}
           />
         </div>
       </div>

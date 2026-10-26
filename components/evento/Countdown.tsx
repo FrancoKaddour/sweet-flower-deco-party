@@ -49,24 +49,24 @@ export function Countdown({ className = "" }: { className?: string }) {
 
   return (
     <div
-      className={`flex items-start gap-4 sm:gap-6 ${className}`}
+      className={`flex items-start gap-2.5 min-[360px]:gap-3.5 sm:gap-6 ${className}`}
       role="timer"
       aria-label="Cuenta regresiva hasta el evento"
     >
       {units.map((u, i) => (
-        <div key={u.label} className="flex items-start gap-4 sm:gap-6">
+        <div key={u.label} className="flex items-start gap-2.5 min-[360px]:gap-3.5 sm:gap-6">
           <div className="flex flex-col items-center">
-            <span className="font-display text-[length:var(--text-step-4)] font-extrabold leading-none tabular-nums text-bone md:text-[length:var(--text-step-5)]">
+            <span className="font-display text-[length:min(var(--text-step-4),10vw)] font-extrabold leading-none tabular-nums text-bone md:text-[length:min(var(--text-step-5),12svh)]">
               {u.value === null ? "—" : pad(u.value)}
             </span>
-            <span className="mt-2 text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">
+            <span className="mt-2 text-[0.7rem] uppercase tracking-[0.1em] text-bone/55 sm:text-[length:var(--text-step--1)] sm:tracking-[0.16em]">
               {u.label}
             </span>
           </div>
           {i < units.length - 1 && (
             <span
               aria-hidden="true"
-              className="font-display text-[length:var(--text-step-4)] font-extrabold leading-none text-champagne/60 md:text-[length:var(--text-step-5)]"
+              className="font-display text-[length:min(var(--text-step-4),10vw)] font-extrabold leading-none text-champagne/60 md:text-[length:min(var(--text-step-5),12svh)]"
             >
               :
             </span>

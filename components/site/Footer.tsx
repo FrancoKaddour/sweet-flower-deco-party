@@ -74,9 +74,9 @@ export function Footer() {
       </div>
 
       {/* 2) Grilla de columnas */}
-      <div className="mx-auto grid max-w-[87.5rem] grid-cols-2 gap-10 px-6 py-16 md:grid-cols-4 md:px-10 lg:grid-cols-5 lg:py-24">
+      <div className="mx-auto grid max-w-[87.5rem] grid-cols-2 gap-x-6 gap-y-10 px-6 py-16 min-[480px]:grid-cols-3 md:gap-x-10 md:px-10 lg:grid-cols-5 lg:py-24">
         {/* Marca: isotipo blanco + logotipo Cormorant (como el header) */}
-        <div className="col-span-2 flex flex-col gap-4 md:gap-6">
+        <div className="col-span-full flex flex-col gap-4 md:gap-6 lg:col-span-2">
           <div className="flex items-center gap-4 md:gap-6">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -107,12 +107,12 @@ export function Footer() {
           <h4 className="mb-4 text-[length:var(--text-step--1)] uppercase tracking-wide text-champagne">
             Navegación
           </h4>
-          <ul className="space-y-2">
+          <ul className="md:space-y-2">
             {MAIN_NAV.map((item) => (
               <li key={item.label}>
                 <Link
                   href={item.href}
-                  className="text-bone/80 transition-colors hover:text-bone"
+                  className="inline-flex min-h-10 items-center text-bone/80 transition-colors hover:text-bone md:min-h-0 md:py-0.5"
                 >
                   {item.label}
                 </Link>
@@ -126,13 +126,13 @@ export function Footer() {
           <h4 className="mb-4 text-[length:var(--text-step--1)] uppercase tracking-wide text-champagne">
             Contacto
           </h4>
-          <ul className="space-y-2">
+          <ul className="md:space-y-2">
             {CONTACTO_LINKS.map((item) => (
               <li key={item.label}>
                 {/* TODO(contenido): href real de contacto */}
                 <a
                   href={item.href}
-                  className="text-bone/80 transition-colors hover:text-bone"
+                  className="inline-flex min-h-10 items-center text-bone/80 transition-colors hover:text-bone md:min-h-0 md:py-0.5"
                 >
                   {item.label}
                 </a>
@@ -146,13 +146,13 @@ export function Footer() {
           <h4 className="mb-4 text-[length:var(--text-step--1)] uppercase tracking-wide text-champagne">
             Info
           </h4>
-          <ul className="space-y-2">
+          <ul className="md:space-y-2">
             {INFO_LINKS.map((item) => (
               <li key={item.label}>
                 {/* TODO(contenido): páginas legales reales */}
                 <a
                   href={item.href}
-                  className="text-bone/80 transition-colors hover:text-bone"
+                  className="inline-flex min-h-10 items-center text-bone/80 transition-colors hover:text-bone md:min-h-0 md:py-0.5"
                 >
                   {item.label}
                 </a>
@@ -163,7 +163,7 @@ export function Footer() {
       </div>
 
       {/* 3) Barra inferior */}
-      <div className="mx-auto flex max-w-[87.5rem] flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 py-8 text-[length:var(--text-step--1)] text-muted md:px-10">
+      <div className="mx-auto flex max-w-[87.5rem] flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-8 text-[length:var(--text-step--1)] text-muted md:px-10 md:pb-28">
         <p>© 2026 Sweet Flowers Deco Party</p>
 
         <nav

@@ -55,20 +55,20 @@ export default async function InscripcionPage({
   } as const;
 
   return (
-    <main id="main" className="relative flex min-h-[90svh] items-center overflow-hidden bg-ink px-6 pb-24 pt-36 text-bone md:px-10">
-      <div aria-hidden="true" className="pointer-events-none absolute -right-32 top-10 h-[34rem] w-[34rem] rounded-full border border-champagne/20" />
-      <div aria-hidden="true" className="pointer-events-none absolute -right-10 top-32 h-[24rem] w-[24rem] rounded-full border border-champagne/10" />
+    <main id="main" data-theme="dark" className="relative flex min-h-[90svh] items-center overflow-hidden bg-ink px-6 pb-24 pt-32 text-bone md:px-10 md:pt-36">
+      <div aria-hidden="true" className="pointer-events-none absolute -right-32 top-10 h-[min(34rem,90vw)] w-[min(34rem,90vw)] rounded-full border border-champagne/20" />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-10 top-32 h-[min(24rem,64vw)] w-[min(24rem,64vw)] rounded-full border border-champagne/10" />
       <div className="relative mx-auto w-full max-w-[60rem]">
         <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">
           ✧ {EVENT_NAME} · {EDICION_LABEL}
         </p>
-        <h1 className="mt-6 max-w-[16ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.86] tracking-[-0.02em]">
+        <h1 className="mt-6 max-w-[16ch] font-display text-[length:min(var(--text-step-6),calc((100vw-3rem)/8))] font-extrabold uppercase leading-[0.86] tracking-[-0.02em] [overflow-wrap:anywhere] [text-wrap:balance]">
           {titulos[estado]}
         </h1>
         <p className="mt-8 max-w-[52ch] text-[length:var(--text-step-1)] leading-snug text-bone/80">{textos[estado]}</p>
 
         {r && (
-          <dl className="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-bone/15 pt-8 md:grid-cols-4">
+          <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-bone/15 pt-8 md:grid-cols-4 md:gap-x-8">
             {[
               ["Código", r.codigo],
               ["Pase", pase],
@@ -77,7 +77,7 @@ export default async function InscripcionPage({
             ].map(([k, v]) => (
               <div key={k}>
                 <dt className="text-[0.7rem] uppercase tracking-[0.16em] text-bone/50">{k}</dt>
-                <dd className={`mt-2 font-display text-[length:var(--text-step-1)] font-bold ${k === "Código" ? "font-mono tracking-[0.08em] text-champagne" : ""}`}>{v}</dd>
+                <dd className={`mt-2 font-display text-[length:var(--text-step-1)] font-bold [overflow-wrap:anywhere] ${k === "Código" ? "font-mono tracking-[0.08em] text-champagne" : ""}`}>{v}</dd>
               </div>
             ))}
           </dl>
@@ -100,8 +100,10 @@ export default async function InscripcionPage({
               Volver al Summit <span aria-hidden="true">→</span>
             </Link>
           )}
-          <a href={wa} target="_blank" rel="noopener noreferrer" className="border-b border-bone pb-1 text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone">
+          <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center">
+            <span className="border-b border-bone pb-1 text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone">
             Escribinos por WhatsApp
+            </span>
           </a>
         </div>
       </div>

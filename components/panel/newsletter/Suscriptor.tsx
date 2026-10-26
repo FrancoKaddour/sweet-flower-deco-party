@@ -21,7 +21,7 @@ export function CodigoUsado({ id, usado, codigo }: { id: string; usado: boolean;
           await marcarCodigo(id, !opt);
         })
       }
-      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${opt ? "bg-ink" : "bg-line"}`}
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors before:absolute before:-inset-x-1 before:-inset-y-2.5 before:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${opt ? "bg-ink" : "bg-line"}`}
     >
       <span className={`inline-block size-5 rounded-full bg-cloud shadow transition-transform ${opt ? "translate-x-5" : "translate-x-0.5"}`} />
     </button>
@@ -35,7 +35,7 @@ export function EstadoSuscriptor({ id, activo }: { id: string; activo: boolean }
       type="button"
       disabled={pendiente}
       onClick={() => start(() => cambiarEstadoSuscriptor(id, activo ? "baja" : "activo"))}
-      className="text-[length:var(--text-step--1)] text-muted underline-offset-4 hover:text-ink hover:underline"
+      className="inline-flex min-h-11 items-center text-[length:var(--text-step--1)] text-muted underline-offset-4 hover:text-ink hover:underline disabled:opacity-50"
     >
       {activo ? "Dar de baja" : "Reactivar"}
     </button>
@@ -51,8 +51,8 @@ export function AltaSuscriptor() {
         <input name="email" type="email" required placeholder="email@ejemplo.com" aria-label="Email" className={inputCls} />
         <input name="nombre" placeholder="Nombre (opcional)" aria-label="Nombre" className={inputCls} />
       </div>
-      <label className="flex items-start gap-3 text-[length:var(--text-step--1)] text-muted">
-        <input type="checkbox" name="consentimiento" className="mt-1" />
+      <label className="flex cursor-pointer items-start gap-3 py-1 text-[length:var(--text-step--1)] text-muted">
+        <input type="checkbox" name="consentimiento" className="mt-0.5 size-5 shrink-0 accent-[var(--color-ink)]" />
         La persona me pidió recibir novedades (por WhatsApp, en persona, etc.).
       </label>
       <div className="flex flex-wrap items-center gap-4">

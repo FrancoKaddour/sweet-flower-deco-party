@@ -41,7 +41,9 @@ export function EstadoSelect({
           await cambiarEstado(tipo, id, nuevo);
         });
       }}
-      className={`cursor-pointer appearance-none rounded-[var(--radius-pill)] border py-1.5 pl-3 pr-7 text-[length:var(--text-step--1)] font-medium leading-none transition-opacity disabled:opacity-60 bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23777' stroke-width='1.5'/%3E%3C/svg%3E")] bg-[length:10px_6px] bg-[right_0.6rem_center] bg-no-repeat ${TONO[actual.tono]}`}
+      // < md: 44px de alto y 16px de texto (iOS hace zoom en selects < 16px); en
+      // desktop vuelve a la pill compacta de la tabla.
+      className={`min-h-11 max-w-full cursor-pointer appearance-none rounded-[var(--radius-pill)] border py-1.5 pl-4 pr-8 text-[length:var(--text-step-0)] font-medium leading-none md:min-h-9 md:pl-3 md:pr-7 md:text-[length:var(--text-step--1)] transition-opacity disabled:opacity-60 bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23777' stroke-width='1.5'/%3E%3C/svg%3E")] bg-[length:10px_6px] bg-[right_0.6rem_center] bg-no-repeat ${TONO[actual.tono]}`}
     >
       {opciones.map((o) => (
         <option key={o.v} value={o.v}>
