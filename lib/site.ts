@@ -85,3 +85,17 @@ export function pageMetadata({
     twitter: { card: "summary_large_image", title: shareTitle, description, images },
   };
 }
+
+// ── Recargo de Mercado Pago (fuente ÚNICA; CONTENIDO_FLOR §4) ──────────────
+// El precio publicado es por transferencia. Con link de Mercado Pago el precio
+// es precio / (1 − 0,15) → ≈ +17,6 %. Nunca escribir el porcentaje a mano en
+// textos: usar RECARGO_MP_TEXTO o precioMercadoPago().
+export const MP_COMISION = 0.15;
+/** Recargo efectivo sobre el precio por transferencia (≈ 0,176). */
+export const RECARGO_MP = 1 / (1 - MP_COMISION) - 1;
+/** "17,6 %" — para textos. */
+export const RECARGO_MP_TEXTO = `${(RECARGO_MP * 100).toLocaleString("es-AR", { maximumFractionDigits: 1 })} %`;
+/** Precio con link de Mercado Pago, redondeado a $100. */
+export function precioMercadoPago(precioTransferencia: number): number {
+  return Math.ceil(precioTransferencia / (1 - MP_COMISION) / 100) * 100;
+}
