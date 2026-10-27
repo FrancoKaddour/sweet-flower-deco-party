@@ -41,25 +41,22 @@ import {
   type BrandShape,
 } from "@/content/brandShapes";
 
-// Globos: forma, color y posición (en % del viewport) alrededor de la casita.
-const BALLOONS: { shape: BrandShape; color: string; left: string; top: string; h: string }[] = [
-  { shape: balloonBlack, color: "var(--color-bone)", left: "24%", top: "36%", h: "clamp(9rem, 22vh, 15rem)" },
-  { shape: balloonRed, color: "#ed1c24", left: "37%", top: "12%", h: "clamp(6.5rem, 15vh, 10rem)" },
-  { shape: balloonBlack2, color: "var(--color-bone)", left: "60%", top: "18%", h: "clamp(6rem, 13vh, 8.5rem)" },
-  { shape: balloonRed2, color: "#ed1c24", left: "70%", top: "40%", h: "clamp(10rem, 24vh, 16rem)" },
+// La composición EXACTA del logo: las formas de brandShapes comparten el
+// sistema de coordenadas del logo original, así que dibujarlas juntas en este
+// viewBox arma el isotipo tal cual (casita + 4 globos con sus propios hilos).
+const LOGO_VB = "130 120 380 370";
+const ROJO = "#ed1c24";
+const BALLOONS: { shape: BrandShape; color: string }[] = [
+  { shape: balloonBlack, color: "var(--color-bone)" },
+  { shape: balloonRed, color: ROJO },
+  { shape: balloonBlack2, color: "var(--color-bone)" },
+  { shape: balloonRed2, color: ROJO },
 ];
 
-function Shape({ shape, color, className, style }: {
-  shape: BrandShape;
-  color: string;
-  className?: string;
-  style?: React.CSSProperties;
-}) {
-  return (
-    <svg viewBox={shape.viewBox} className={className} style={style} aria-hidden="true">
-      <path d={shape.d} fill={color} fillRule="evenodd" />
-    </svg>
-  );
+/** Punto de giro de un globo: la punta de su hilo (abajo al centro de su caja). */
+function balloonOrigin(el: Element): string {
+  const [x, y, w, h] = (el.getAttribute("data-vb") ?? "0 0 0 0").split(" ").map(Number);
+  return `${x + w / 2} ${y + h}`;
 }
 
 /** Sección de una ruta: entre secciones va la transición completa (globos). */
@@ -145,8 +142,8 @@ export function PageTransition() {
     if (!el) return;
 
     const panel = el.querySelector<HTMLElement>(".c-pt__panel");
-    const balloons = Array.from(el.querySelectorAll<HTMLElement>(".c-pt__balloon"));
-    const mark = el.querySelector<HTMLElement>(".c-pt__mark");
+    const balloons = Array.from(el.querySelectorAll<SVGGElement>(".c-pt__balloon"));
+    const mark = el.querySelector<SVGGElement>(".c-pt__mark");
 
     const terminar = (conFoco: boolean) => {
       gsap.killTweensOf([panel, mark, ...balloons]);
@@ -183,9 +180,11 @@ export function PageTransition() {
         gsap.killTweensOf([panel, mark, ...balloons]);
         gsap.set(el, { autoAlpha: 1 });
         gsap.set(panel, { clipPath: "inset(100% 0% 0% 0%)" });
-        gsap.set(mark, { autoAlpha: 0, scale: 0.85, y: 20 });
+        gsap.set(mark, { autoAlpha: 0, scale: 0.9, y: 20, transformOrigin: "50% 100%" });
+        // Globos: arrancan bien abajo (unidades del viewBox del logo) y suben
+        // hasta su lugar exacto en el isotipo.
         balloons.forEach((b, i) =>
-          gsap.set(b, { y: "70vh", rotate: i % 2 ? 8 : -8, autoAlpha: corta ? 0 : 1 }),
+          gsap.set(b, { y: 520 + i * 40, rotate: i % 2 ? 6 : -6, svgOrigin: balloonOrigin(b), autoAlpha: corta ? 0 : 1 }),
         );
 
         const tCover = performance.now();
@@ -200,10 +199,10 @@ export function PageTransition() {
                 balloons,
                 {
                   y: 0,
-                  rotate: (i) => (i % 2 ? -3 : 3),
+                  rotate: 0,
                   duration: 0.9,
                   ease: "power3.out",
-                  stagger: { each: 0.06, from: "random" },
+                  stagger: { each: 0.07, from: "random" },
                 },
                 0.1,
               )
@@ -239,8 +238,8 @@ export function PageTransition() {
           tl.to(
             balloons,
             {
-              y: "-115vh",
-              rotate: (i) => (i % 2 ? 10 : -10),
+              y: -900,
+              rotate: (i) => (i % 2 ? 8 : -8),
               duration: 0.8,
               ease: "power2.in",
               stagger: { each: 0.04, from: "random" },
@@ -272,19 +271,24 @@ export function PageTransition() {
       className="c-pt pointer-events-none invisible fixed inset-0 z-[200] opacity-0"
       aria-hidden="true"
     >
-      <div className="c-pt__panel absolute inset-0 overflow-hidden bg-ink">
-        {BALLOONS.map((b, i) => (
-          <div
-            key={i}
-            className="c-pt__balloon absolute"
-            style={{ left: b.left, top: b.top, height: b.h }}
-          >
-            <Shape shape={b.shape} color={b.color} className="h-full w-auto" />
-          </div>
-        ))}
-        <div className="c-pt__mark absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <Shape shape={house} color="var(--color-bone)" className="h-[clamp(6.5rem,18vh,11rem)] w-auto" />
-        </div>
+      <div className="c-pt__panel absolute inset-0 grid place-items-center overflow-hidden bg-ink">
+        {/* El isotipo completo: la casita aparece y los globos suben desde abajo
+            hasta su posición del logo; al revelar, siguen subiendo y se van. */}
+        <svg
+          viewBox={LOGO_VB}
+          className="h-[clamp(14rem,44vh,26rem)] w-auto max-w-[86vw] overflow-visible"
+          aria-hidden="true"
+        >
+          {/* Globos DETRÁS de la casita: al subir pasan por atrás, no por encima. */}
+          {BALLOONS.map((b, i) => (
+            <g key={i} className="c-pt__balloon" data-vb={b.shape.viewBox}>
+              <path d={b.shape.d} fill={b.color} fillRule="evenodd" />
+            </g>
+          ))}
+          <g className="c-pt__mark">
+            <path d={house.d} fill="var(--color-bone)" fillRule="evenodd" />
+          </g>
+        </svg>
       </div>
     </div>
   );

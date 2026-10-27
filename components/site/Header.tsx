@@ -506,7 +506,7 @@ export function Header() {
           >
             <Link
               href="/event-summit"
-              className="group -my-2 inline-flex min-h-11 items-center gap-2.5 py-2 text-[0.72rem] font-medium uppercase tracking-[0.14em] text-ink"
+              className="group -my-2 inline-flex min-h-11 items-center gap-2 py-2 text-[0.62rem] font-medium uppercase tracking-[0.12em] text-ink sm:gap-2.5 sm:text-[0.72rem] sm:tracking-[0.14em]"
             >
               <span aria-hidden="true" className="relative flex h-1.5 w-1.5">
                 <span className="absolute inset-0 rounded-full bg-champagne opacity-70 motion-safe:animate-ping" />
@@ -614,7 +614,7 @@ export function Header() {
               aria-label="Mi cuenta"
               className="-my-2 grid min-h-11 min-w-11 place-items-center text-ink transition-opacity hover:opacity-70"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-[17px] w-[17px] sm:h-5 sm:w-5">
                 <circle cx="12" cy="8.5" r="3.75" stroke="currentColor" strokeWidth="1.4" />
                 <path d="M4.75 20c.9-3.6 3.86-5.5 7.25-5.5s6.35 1.9 7.25 5.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
               </svg>
@@ -627,10 +627,10 @@ export function Header() {
               aria-expanded={open}
               aria-haspopup="dialog"
               aria-controls="menu-overlay"
-              className="group -my-2 inline-flex min-h-11 items-center gap-2.5 py-2 text-[0.72rem] font-medium uppercase tracking-[0.14em] text-ink"
+              className="group -my-2 inline-flex min-h-11 items-center gap-2 py-2 text-[0.62rem] font-medium uppercase tracking-[0.12em] text-ink sm:gap-2.5 sm:text-[0.72rem] sm:tracking-[0.14em]"
             >
               Menú
-              <span className="flex w-5 flex-col gap-1.5">
+              <span className="flex w-4 flex-col gap-1.5 sm:w-5">
                 <span className="block h-px w-5 bg-current transition-[width] duration-300 ease-(--ease-out-expo) group-hover:w-3" />
                 <span className="block h-px w-3 bg-current transition-[width] duration-300 ease-(--ease-out-expo) group-hover:w-5" />
               </span>
