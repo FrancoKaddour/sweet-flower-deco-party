@@ -137,10 +137,10 @@ export function Servicio() {
       data-theme="light"
       className="relative w-full overflow-hidden bg-blush py-[4rem] text-ink md:py-[7.5rem]"
     >
-      {/* 1) Encabezado a la izquierda + flechas a la derecha */}
-      <div className="mx-auto flex max-w-[87.5rem] items-end justify-between gap-8 px-6 md:px-10">
+      {/* 1) Encabezado centrado + flechas debajo del título */}
+      <div className="mx-auto flex max-w-[87.5rem] flex-col items-center gap-8 px-6 text-center md:px-10">
         <FadeUp y={60}>
-          <h2 className="t-voz-display max-w-[14ch] text-[length:var(--text-step-5)] text-ink md:text-[length:var(--text-step-6)]">
+          <h2 className="t-voz-display mx-auto max-w-[16ch] text-balance text-[length:var(--text-step-5)] text-ink md:text-[length:var(--text-step-6)]">
             Así se ven las piezas armadas
           </h2>
         </FadeUp>
@@ -210,7 +210,7 @@ export function Servicio() {
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
           onPointerCancel={endDrag}
-          className="-mx-6 flex cursor-grab snap-x snap-mandatory scroll-px-6 gap-4 overflow-x-auto overscroll-x-contain px-6 pb-4 select-none md:mx-0 md:scroll-px-0 md:px-0 [-ms-overflow-style:none] [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
+          className="-mx-6 flex cursor-grab snap-x snap-mandatory scroll-px-[11vw] gap-4 overflow-x-auto overscroll-x-contain px-[11vw] pb-4 sm:scroll-px-6 sm:px-6 select-none md:mx-0 md:scroll-px-0 md:px-0 [-ms-overflow-style:none] [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
         >
           {SLIDES.map((slide) => (
           <article
@@ -243,7 +243,7 @@ export function Servicio() {
 
       {/* 3) Cómo trabajamos — a la izquierda, voz display + bajada itálica */}
       <div className="mx-auto mt-16 max-w-[87.5rem] px-6 md:mt-[6rem] md:px-10">
-        <FadeUp y={60} className="grid gap-6 md:grid-cols-12 md:items-end">
+        <FadeUp y={60} className="grid gap-6 md:grid-cols-12 md:items-center">
           <h3 className="t-voz-display max-w-[15ch] text-[length:var(--text-step-5)] text-ink md:col-span-7 md:text-[length:var(--text-step-6)]">
             Del taller a tu evento, sin intermediarios
           </h3>

@@ -7,8 +7,35 @@ import { useEffect, useState } from "react";
  * Escucha el scroll del contenedor con id `forId`, marca la página activa y
  * al tocar un punto desliza hasta esa página. Solo se ve en mobile (md:hidden).
  */
-export function SwipeDots({ forId, count, label }: { forId: string; count: number; label: string }) {
-  const [active, setActive] = useState(0);
+export function SwipeDots({
+  forId,
+  count,
+  label,
+  centrar = false,
+}: {
+  forId: string;
+  count: number;
+  label: string;
+  /** Celular: arranca centrado en la tarjeta del medio (hay para deslizar a ambos lados). */
+  centrar?: boolean;
+}) {
+  const [active, setActive] = useState(centrar ? Math.floor((count - 1) / 2) : 0);
+
+  useEffect(() => {
+    if (!centrar) return;
+    const el = document.getElementById(forId);
+    if (!el || !window.matchMedia("(max-width: 767px)").matches) return;
+    const mid = el.children[Math.floor((el.children.length - 1) / 2)] as HTMLElement | undefined;
+    if (!mid) return;
+    const snap = el.style.scrollSnapType;
+    el.style.scrollSnapType = "none";
+    const m = mid.getBoundingClientRect();
+    const t = el.getBoundingClientRect();
+    el.scrollLeft += m.left - t.left - (el.clientWidth - m.width) / 2;
+    requestAnimationFrame(() => {
+      el.style.scrollSnapType = snap;
+    });
+  }, [forId, centrar]);
 
   useEffect(() => {
     const el = document.getElementById(forId);

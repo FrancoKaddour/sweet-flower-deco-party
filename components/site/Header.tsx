@@ -243,9 +243,13 @@ export function Header() {
       // D-03: sobre el hero del inicio (video oscuro) el tono es SIEMPRE claro
       // mientras el hero siga debajo del header → determinista, no depende de
       // qué frame del video esté pasando.
+      // Se mide por scroll (no por getBoundingClientRect del hero): durante la
+      // intro el hero está transformado/escalado y su rect no sirve → el header
+      // arrancaba en tinta y recién después pasaba a marfil.
       if (pathname === "/") {
-        const hero = document.querySelector(".c-hero");
-        if (hero && hero.getBoundingClientRect().bottom > y) {
+        const hero = document.querySelector<HTMLElement>(".c-hero");
+        const altoHero = hero?.offsetHeight || window.innerHeight;
+        if (window.scrollY + y < altoHero) {
           setAll("light");
           return;
         }
@@ -547,7 +551,7 @@ export function Header() {
               className={`relative block transition-[height] duration-600 ease-(--ease-out-quart) ${
                 scrolled
                   ? "h-[clamp(2rem,3vw,2.5rem)]"
-                  : "h-[clamp(3rem,5.5vw,4rem)] [@media(max-height:30rem)]:h-9"
+                  : "h-[1.9rem] min-[360px]:h-[2.1rem] sm:h-[clamp(3rem,5.5vw,4rem)] [@media(max-height:30rem)]:h-9"
               }`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -589,12 +593,12 @@ export function Header() {
                 }`}
               >
               <span
-                className="whitespace-nowrap font-(family-name:--font-logo) text-[0.88rem] font-medium uppercase leading-none tracking-[0.06em] text-ink min-[360px]:text-[0.95rem] min-[360px]:tracking-[0.08em] sm:text-[1.45rem] sm:tracking-[0.12em] [@media(max-height:30rem)]:text-[1.05rem]"
+                className="whitespace-nowrap font-(family-name:--font-logo) text-[0.66rem] font-medium uppercase leading-none tracking-[0.06em] text-ink min-[360px]:text-[0.72rem] min-[360px]:tracking-[0.08em] sm:text-[1.45rem] sm:tracking-[0.12em] [@media(max-height:30rem)]:text-[1.05rem]"
                 style={{ wordSpacing: "0.15em" }}
               >
                 Sweet&nbsp;Flowers
               </span>
-              <span className="mt-px text-[0.7rem] font-medium uppercase tracking-[0.13em] text-ink/70">
+              <span className="mt-px text-[0.5rem] font-medium uppercase tracking-[0.13em] text-ink/70 sm:text-[0.7rem]">
                 Deco&nbsp;Party
               </span>
               </span>
@@ -603,7 +607,18 @@ export function Header() {
           </Link>
 
           {/* Derecha: MENÚ — líneas animadas + texto */}
-          <div ref={zoneRightRef} data-tone={toneR} className="justify-self-end">
+          <div ref={zoneRightRef} data-tone={toneR} className="flex items-center gap-1 justify-self-end sm:gap-3">
+            {/* Cuenta: siempre visible, a la izquierda del menú. Sin sesión, /cuenta lleva a /ingresar. */}
+            <Link
+              href="/cuenta"
+              aria-label="Mi cuenta"
+              className="-my-2 grid min-h-11 min-w-11 place-items-center text-ink transition-opacity hover:opacity-70"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8.5" r="3.75" stroke="currentColor" strokeWidth="1.4" />
+                <path d="M4.75 20c.9-3.6 3.86-5.5 7.25-5.5s6.35 1.9 7.25 5.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+              </svg>
+            </Link>
             <button
               ref={menuButtonRef}
               type="button"

@@ -8,19 +8,21 @@ import { FooterGlobos } from "@/components/site/FooterGlobos";
  * casita con globos (FooterGlobos, isla client chica).
  *
  * D-20: cierre de marca grande (SWEET FLOWERS a todo el ancho, la casita con
- * sus globos) y TODOS los links en columnas verticales, un link por línea
+ * sus globos) y el mapa del sitio en FILAS (título + links en línea, pedido de Fran)
  * (navegación, contacto, info y las landings SEO por grupo). T-13: los títulos
  * de columna son h2 (antes h4 después de un h2).
  */
 const linkCls =
-  "inline-flex min-h-10 items-center py-0.5 text-bone/80 transition-colors hover:text-bone md:min-h-8";
-const tituloCls = "mb-3 text-[length:var(--text-step--1)] text-champagne";
+  "inline-flex min-h-10 items-center text-bone/80 transition-colors hover:text-bone md:min-h-8";
+const tituloCls =
+  "pt-2.5 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-champagne md:pt-1.5";
 
-function Columna({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+/** Una FILA del mapa del sitio: título a la izquierda y links en línea (se acomodan solos). */
+function Fila({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
-    <div>
+    <div className="grid gap-x-8 gap-y-1 border-t border-bone/10 py-4 first:border-t-0 md:grid-cols-[11rem_1fr] md:py-5">
       <h2 className={tituloCls}>{titulo}</h2>
-      <ul>{children}</ul>
+      <ul className="flex flex-wrap gap-x-6 gap-y-0">{children}</ul>
     </div>
   );
 }
@@ -47,37 +49,34 @@ export function Footer() {
         </p>
       </div>
 
-      {/* 2) Links — columnas verticales */}
+      {/* 2) Links — una fila por grupo (título + links en línea) */}
       <nav
         aria-label="Mapa del sitio"
-        className="mx-auto grid max-w-[87.5rem] grid-cols-2 gap-x-6 gap-y-10 border-t border-bone/10 px-6 py-16 min-[560px]:grid-cols-3 md:mt-16 md:px-10 lg:grid-cols-7 lg:py-20"
+        className="mx-auto max-w-[87.5rem] border-t border-bone/10 px-6 py-10 md:mt-16 md:px-10 md:py-14"
       >
-        <Columna titulo="Sitio">
+        <Fila titulo="Sitio">
           {[...MAIN_NAV, CONTACTO_LINK].map((item) => (
             <li key={item.href}>
-              <Link href={item.href} className={linkCls}>{item.label}</Link>
+              <Link href={item.href} className={`${linkCls} text-[length:var(--text-step--1)]`}>{item.label}</Link>
             </li>
           ))}
-        </Columna>
+        </Fila>
         {GRUPOS.map((g) => {
           const items = LANDINGS.filter((l) => l.grupo === g.id);
           if (!items.length) return null;
           return (
-            <div key={g.id} className={g.id === "zonas" ? "lg:col-span-2" : ""}>
-              <h2 className={tituloCls}>{g.titulo}</h2>
-              <ul className={g.id === "zonas" ? "lg:columns-2 lg:gap-x-6" : ""}>
-                {items.map((l) => (
-                  <li key={l.slug} className="break-inside-avoid">
-                    <Link href={`/${l.slug}`} className={`${linkCls} text-[length:var(--text-step--1)]`}>
-                      {l.link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <Fila key={g.id} titulo={g.titulo}>
+              {items.map((l) => (
+                <li key={l.slug}>
+                  <Link href={`/${l.slug}`} className={`${linkCls} text-[length:var(--text-step--1)]`}>
+                    {l.link}
+                  </Link>
+                </li>
+              ))}
+            </Fila>
           );
         })}
-        <Columna titulo="Info">
+        <Fila titulo="Info">
           {INFO_LINKS.map((item) => (
             <li key={item.href}>
               <Link href={item.href} className={`${linkCls} text-[length:var(--text-step--1)]`}>{item.label}</Link>
@@ -86,7 +85,7 @@ export function Footer() {
           <li>
             <Link href="/resenas" className={`${linkCls} text-[length:var(--text-step--1)]`}>Dejanos tu reseña</Link>
           </li>
-        </Columna>
+        </Fila>
       </nav>
 
       {/* 3) Barra inferior */}

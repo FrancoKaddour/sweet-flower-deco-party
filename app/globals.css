@@ -989,3 +989,11 @@ body:has(form[data-oculta-flotantes]:focus-within) .c-wa {
   .min-h-svh, .min-h-dvh { min-height: 100vh; }
   .h-svh, .h-dvh { height: 100vh; }
 }
+
+/* Hero: las máscaras de SplitText cortaban ascendentes/descendentes y la
+   itálica de Cormorant (arriba, abajo y costados). Aire dentro de la máscara
+   compensado con margen negativo → mismo layout, sin recorte. */
+.hero-phrase .reveal-word-mask {
+  padding: 0.1em 0.08em 0.16em;
+  margin: -0.1em -0.08em -0.16em;
+}

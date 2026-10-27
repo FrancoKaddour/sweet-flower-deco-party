@@ -20,14 +20,14 @@ import { heroEnModoLiviano } from "@/components/sections/HeroMedia";
 // El video arranca cuando nace en el loader; la 1ª frase espera a que el hero
 // termine de expandirse (~2.3s después).
 // Le hablan a la decoradora (E-22): solo datos confirmados (CONTENIDO_FLOR).
-const PHRASES: [string, number, number][] = [
-  ["Las estructuras", 2.5, 5.8],
-  ["que arman tus eventos", 6.5, 10.1],
-  ["Hierro, catering, fundas y telas", 10.9, 14.8],
-  ["hechas en Tortuguitas", 15.5, 17.8],
-  ["por encargo,", 18.5, 21.5],
-  ["con envío", 22.2, 24.9],
-  ["a todo el país.", 25.6, 29.1],
+// Siempre DOS líneas cortas por frase (se leen de corrido, como una oración
+// que avanza con el video). Cada frase entra y sale en un corte de toma.
+const PHRASES: [string, string, number, number][] = [
+  ["Las estructuras", "que arman tus eventos", 2.5, 10.1],
+  ["Hierro, catering,", "fundas y telas", 10.9, 14.8],
+  ["Hechas en Tortuguitas,", "por encargo", 15.5, 21.5],
+  ["con envío", "a todo el país.", 22.2, 24.9],
+  ["Vos armás la escena.", "Nosotros, las piezas.", 25.6, 29.1],
 ];
 const DURATION = 30;
 const IN_DUR = 0.9;
@@ -55,21 +55,29 @@ export function HeroStory() {
       // de useGSAP (contextSafe) → se revierte en el cleanup.
       const armar = () => {
         phraseEls.forEach((p, i) => {
-          const [, tIn, tOut] = PHRASES[i];
+          const [, , tIn, tOut] = PHRASES[i];
           const split = SplitText.create(p, { type: "words", mask: "words", tag: "span", wordsClass: "reveal-word" });
-          gsap.set(p, { autoAlpha: 1 });
-          gsap.set(split.words, { yPercent: 110 });
+          // Fuera de su ventana la frase queda OCULTA (autoAlpha 0): las tildes y
+          // ascendentes de Cormorant asomaban por encima/debajo de la máscara
+          // como rayitas sueltas. Además se corre 170% (no 110%) para que la
+          // máscara (con aire, ver .hero-phrase en globals.css) no la deje ver.
+          gsap.set(p, { autoAlpha: 0 });
+          gsap.set(split.words, { yPercent: 170 });
           const outLen = OUT_DUR + OUT_STAGGER * (split.words.length - 1);
-          tl.fromTo(
-            split.words,
-            { yPercent: 110 },
-            { yPercent: 0, duration: IN_DUR, ease: "expo.out", stagger: IN_STAGGER },
-            tIn,
-          ).to(
-            split.words,
-            { yPercent: -110, duration: OUT_DUR, ease: "power3.in", stagger: OUT_STAGGER },
-            tOut - outLen,
-          );
+          tl.set(p, { autoAlpha: 0 }, 0)
+            .set(p, { autoAlpha: 1 }, tIn)
+            .fromTo(
+              split.words,
+              { yPercent: 170 },
+              { yPercent: 0, duration: IN_DUR, ease: "expo.out", stagger: IN_STAGGER },
+              tIn,
+            )
+            .to(
+              split.words,
+              { yPercent: -170, duration: OUT_DUR, ease: "power3.in", stagger: OUT_STAGGER },
+              tOut - outLen,
+            )
+            .set(p, { autoAlpha: 0 }, tOut);
         });
         tl.time(tl.time()); // re-render en la posición actual
       };
@@ -163,12 +171,13 @@ export function HeroStory() {
 
       {/* Frases cinéticas: todas apiladas en la misma celda. */}
       <div aria-hidden="true" className="grid justify-items-start motion-reduce:hidden">
-        {PHRASES.map(([text]) => (
+        {PHRASES.map(([l1, l2]) => (
           <p
-            key={text}
-            className="hero-phrase t-voz-display invisible col-start-1 row-start-1 max-w-[13ch] self-end text-balance text-[length:min(var(--text-step-6),calc((100vw-3rem)/6.4))] leading-[0.95] text-bone md:max-w-[16ch] md:text-[length:clamp(3rem,1.4rem+4.6vw,7rem)] [@media(max-height:500px)_and_(orientation:landscape)]:max-w-[24ch] [@media(max-height:500px)_and_(orientation:landscape)]:text-[clamp(1.75rem,9svh,2.5rem)]"
+            key={l1}
+            className="hero-phrase t-voz-display invisible col-start-1 row-start-1 self-end text-[length:min(2.6rem,calc((100vw-3rem)/9.8))] leading-[1.06] text-bone sm:text-[length:min(3.6rem,calc((100vw-4rem)/10))] md:text-[length:clamp(3rem,1.6rem+3.4vw,5.5rem)] [@media(max-height:500px)_and_(orientation:landscape)]:text-[clamp(1.6rem,8svh,2.3rem)]"
           >
-            {text}
+            <span className="block whitespace-nowrap">{l1}</span>
+            <span className="block whitespace-nowrap">{l2}</span>
           </p>
         ))}
       </div>

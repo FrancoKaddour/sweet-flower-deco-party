@@ -17,7 +17,7 @@ export function Hero() {
     >
       <HeroMedia />
 
-      <div className="c-hero__content relative z-10 mx-auto flex w-full max-w-[87.5rem] flex-col items-start gap-7 text-left [@media(max-height:500px)_and_(orientation:landscape)]:gap-3">
+      <div className="c-hero__content relative z-10 mx-auto flex w-full max-w-[87.5rem] flex-col items-start gap-5 text-left md:gap-7 [@media(max-height:500px)_and_(orientation:landscape)]:gap-3">
         <p className="max-w-[34ch] text-[length:var(--text-step-0)] leading-snug text-bone/85">
           Fabricantes para decoradoras y organizadores de eventos
         </p>

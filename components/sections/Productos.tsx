@@ -21,17 +21,18 @@ const FOTO_EN_USO: Record<string, string> = {
 export async function Productos() {
   const COLECCIONES = (await getCategorias()).slice(0, 3);
   return (
-    <section id="productos" data-theme="light" className="bg-bone px-6 pb-16 pt-28 md:px-10 md:pb-24 md:pt-40">
-      <div className="mx-auto max-w-[87.5rem]">
-        <div className="mb-14 grid gap-6 md:mb-20 md:grid-cols-12 md:items-end">
+    <section id="productos" data-theme="light" className="bg-bone px-6 pb-16 pt-28 md:flex md:min-h-svh md:flex-col md:justify-center md:px-10 md:py-16">
+      <div className="mx-auto w-full max-w-[87.5rem]">
+        {/* Encabezado centrado; en desktop/notebook la sección entra en 100svh */}
+        <div className="mb-10 flex flex-col items-center gap-4 text-center md:mb-[clamp(1.5rem,4svh,3rem)]">
           <RevealText
             as="h2"
             onScroll
-            className="t-voz-display max-w-[14ch] text-[length:var(--text-step-6)] text-ink md:col-span-7"
+            className="t-voz-display mx-auto max-w-[16ch] text-[length:var(--text-step-5)] text-ink lg:max-w-none lg:text-[length:var(--text-step-6)]"
           >
             Lo que sale del taller
           </RevealText>
-          <p className="max-w-[40ch] text-[length:var(--text-step-0)] leading-relaxed text-ink/75 md:col-span-4 md:col-start-9">
+          <p className="mx-auto max-w-[44ch] text-[length:var(--text-step-0)] leading-relaxed text-ink/75">
             Tres familias de piezas, todas hechas por encargo: contá unos 20
             días desde que confirmás.
           </p>
@@ -41,10 +42,10 @@ export async function Productos() {
         <div
           id="colecciones-track"
           data-fall-group
-          className="-mx-6 flex snap-x snap-mandatory scroll-px-6 gap-4 overflow-x-auto px-6 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
+          className="-mx-6 flex snap-x snap-mandatory scroll-px-[14vw] gap-4 overflow-x-auto px-[14vw] [scrollbar-width:none] sm:scroll-px-6 sm:px-6 md:mx-0 md:justify-center md:gap-6 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
         >
           {COLECCIONES.map((c, i) => (
-            <div key={c.slug} className="w-[80%] max-w-[22rem] shrink-0 snap-center sm:w-[46%] md:w-auto md:max-w-none">
+            <div key={c.slug} className="w-[72vw] max-w-[20rem] shrink-0 snap-center sm:w-[44%] md:w-[min(22rem,calc((100svh-19rem)*0.727),calc((100%-3rem)/3))] md:max-w-none">
               <CollectionCard
                 href={`/productos/${c.slug}`}
                 index=""
@@ -56,7 +57,7 @@ export async function Productos() {
             </div>
           ))}
         </div>
-        <SwipeDots forId="colecciones-track" count={COLECCIONES.length} label="Colecciones" />
+        <SwipeDots forId="colecciones-track" count={COLECCIONES.length} label="Colecciones" centrar />
       </div>
     </section>
   );

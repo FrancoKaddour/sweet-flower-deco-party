@@ -239,8 +239,17 @@ export function Experiencia() {
       </div>
 
       {/* 3) Bloque inferior — corrido a la derecha: dato concreto de la galería */}
-      <div className="mx-auto mt-12 max-w-[87.5rem] px-6 md:mt-[4.5rem] md:px-10">
-        <FadeUp y={60} className="max-w-[44rem] md:ml-auto">
+      <div className="mx-auto mt-12 grid max-w-[87.5rem] gap-8 px-6 md:mt-[4.5rem] md:grid-cols-12 md:items-center md:gap-10 md:px-10">
+        {/* Foto del día (a la izquierda en desktop, debajo del texto en celular) */}
+        <FadeUp y={40} className="order-2 md:order-1 md:col-span-5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            {...fotoProps(11, 1500, 1000, "(max-width: 767px) calc(100vw - 3rem), 40vw")}
+            alt="Workshop de Río Cuarto: el salón armado en vivo"
+            className="aspect-[4/3] w-full rounded-[var(--radius-sm)] object-cover"
+          />
+        </FadeUp>
+        <FadeUp y={60} className="order-1 max-w-[44rem] md:order-2 md:col-span-6 md:col-start-7">
           <h2 className="t-voz-display text-[length:min(var(--text-step-5),calc((100vw-3rem)/6.2))] text-ink md:text-[length:var(--text-step-6)]">
             En Río Cuarto armamos el salón en vivo.
           </h2>

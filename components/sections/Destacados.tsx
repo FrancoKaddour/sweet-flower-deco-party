@@ -89,7 +89,7 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
         {/* Encabezado: título a la izquierda + CTA a la derecha */}
         <FadeUp
           y={80}
-          className="mb-10 flex flex-col items-start gap-4 border-t border-ink/10 pt-10 text-left md:mb-14 md:flex-row md:items-end md:justify-between md:pt-14"
+          className="mb-10 flex flex-col items-center gap-3 border-t border-ink/10 pt-10 text-center md:mb-14 md:pt-14"
         >
           <div>
             {/* Continuación de "Lo que sale del taller" (Productos): encabezado
