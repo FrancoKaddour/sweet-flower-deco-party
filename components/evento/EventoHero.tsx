@@ -126,11 +126,11 @@ export function EventoHero() {
       <div className="mx-auto w-full max-w-[87.5rem]">
         <h1
           ref={title}
-          className="mx-auto text-center font-display text-[length:min(var(--text-step-7),7.4svh,calc((100vw-3rem)/5.6)) [@media(max-height:600px)]:text-[length:min(6.2svh,calc((100vw-3rem)/5.6))]] font-extrabold uppercase leading-[0.84] sm:text-[length:min(var(--text-step-7),10svh,calc((100vw-4rem)/7))] lg:text-[length:min(var(--text-step-7),12svh)] tracking-[-0.03em] text-bone [overflow-wrap:anywhere] [text-wrap:balance]"
+          className="mx-auto text-center font-display text-[length:min(var(--text-step-7),9svh,calc((100vw-3rem)/5.4))] font-extrabold uppercase leading-[0.84] tracking-[-0.03em] text-bone [overflow-wrap:anywhere] [text-wrap:balance] [@media(max-height:600px)]:text-[length:min(6svh,calc((100vw-3rem)/5.4))] [@media(max-height:520px)_and_(orientation:landscape)]:text-[length:10svh] sm:text-[length:min(var(--text-step-7),12svh,calc((100vw-4rem)/6.8))] lg:text-[length:min(clamp(3.58rem,2.1rem+7.4vw,11.5rem),17svh,calc((100vw-5rem)/7.2))] [@media(min-width:1024px)_and_(max-height:800px)]:text-[length:14svh]"
         >
           {/* Siempre "Sweet Flowers" arriba y "Event Summit" abajo (en celular
               cada renglón puede partirse en dos). */}
-          <span className="block">Sweet Flowers</span>
+          <span className="block">Sweet Flowers </span>
           <span className="block">Event Summit</span>
         </h1>
 
@@ -140,10 +140,10 @@ export function EventoHero() {
               <p className="mb-[clamp(0.25rem,1svh,0.75rem)] text-[0.7rem] uppercase tracking-[0.2em] text-bone/50 [@media(max-height:700px)]:hidden">
                 {EDICION_LABEL}
               </p>
-              <p className="font-display text-[length:min(var(--text-step-2),4.2svh)] font-extrabold uppercase leading-none text-champagne md:text-[length:min(var(--text-step-3),5svh)]">
+              <p className="font-display text-[length:min(var(--text-step-2),4.2svh)] font-extrabold uppercase leading-none text-champagne md:text-[length:min(var(--text-step-3),4.2svh)]">
                 {EVENT_WHEN}
               </p>
-              <p className="mb-[clamp(0.6rem,3svh,1.75rem)] mt-[clamp(0.25rem,1svh,0.625rem)] [@media(max-height:520px)]:hidden text-[0.7rem] uppercase tracking-[0.16em] text-bone/60">
+              <p className="mb-[clamp(0.6rem,3svh,1.75rem)] mt-[clamp(0.25rem,1svh,0.625rem)] [@media(max-height:600px)]:hidden text-[0.7rem] uppercase tracking-[0.16em] text-bone/60">
                 {EVENT_HORARIO} · {EVENT_SEDE}
               </p>
               {pv ? (

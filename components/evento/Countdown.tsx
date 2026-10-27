@@ -66,7 +66,7 @@ export function Countdown({
       {units.map((u, i) => (
         <div key={u.label} className="flex items-start gap-2.5 min-[360px]:gap-3.5 sm:gap-6">
           <div className="flex flex-col items-center">
-            <span className="font-display text-[length:min(var(--text-step-4),10vw,6.5svh)] font-extrabold leading-none tabular-nums text-bone md:text-[length:min(var(--text-step-5),7svh)]">
+            <span className="font-display text-[length:min(var(--text-step-4),10vw,6.5svh)] font-extrabold leading-none tabular-nums text-bone md:text-[length:min(var(--text-step-5),6svh)]">
               {u.value === null ? "—" : pad(u.value)}
             </span>
             <span className="mt-[clamp(0.2rem,0.8svh,0.5rem)] text-[0.7rem] uppercase tracking-[0.1em] text-bone/55 sm:text-[length:var(--text-step--1)] sm:tracking-[0.16em]">
@@ -76,7 +76,7 @@ export function Countdown({
           {i < units.length - 1 && (
             <span
               aria-hidden="true"
-              className="font-display text-[length:min(var(--text-step-4),10vw,6.5svh)] font-extrabold leading-none text-champagne/60 md:text-[length:min(var(--text-step-5),7svh)]"
+              className="font-display text-[length:min(var(--text-step-4),10vw,6.5svh)] font-extrabold leading-none text-champagne/60 md:text-[length:min(var(--text-step-5),6svh)]"
             >
               :
             </span>

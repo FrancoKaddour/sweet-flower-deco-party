@@ -35,12 +35,10 @@ export function Duotone({
         fill
         priority={priority}
         sizes={sizes}
-        className="object-cover grayscale [transform:translateZ(0)]"
+        className="object-cover [transform:translateZ(0)]"
       />
-      {/* Duotono: sombras cálidas */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-bordeaux/70 to-bordeaux/40 mix-blend-multiply" />
-      {/* Duotono: luces champagne */}
-      <div className="pointer-events-none absolute inset-0 bg-champagne/15 mix-blend-screen" />
+      {/* Foto a color natural: se sacó el duotono (gris + tinte bordó/champagne,
+          que se veía violeta) a pedido de Fran. Solo quedan grano y scrims. */}
       {/* Grano */}
       <div className="evt-grain pointer-events-none absolute inset-0" />
       {/* Scrim de legibilidad */}
