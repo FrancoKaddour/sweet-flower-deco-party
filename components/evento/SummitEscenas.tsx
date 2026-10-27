@@ -31,7 +31,10 @@ const ESCENAS = [
 const TEXTO =
   "El Summit es más que charlas. Es la escena del año montada pieza por pieza, la comunidad que se encuentra, los proveedores que importan y las conversaciones que después se convierten en trabajo. Un día pensado entero, de la entrada al último brindis.";
 
-const STEP = 750; // px de scroll por escena (como el original)
+// Scroll por escena: ~media pantalla (antes 750 px fijos → 5 escenas pedían
+// casi 4,5 pantallas de scroll). Mínimo 320 px para que no pase de largo.
+const PASO_VH = 0.45;
+const paso = () => Math.round(Math.max(320, window.innerHeight * PASO_VH));
 
 export function SummitEscenas() {
   const root = useRef<HTMLElement>(null);
@@ -55,7 +58,7 @@ export function SummitEscenas() {
       gsap.set(titles[0], { yPercent: 0, opacity: 1 });
       // Reduced-motion: el pin y el cambio de escena se mantienen (son
       // navegación, no decoración), pero los cambios son instantáneos.
-      const dur = reduce ? 0 : 1.5;
+      const dur = reduce ? 0 : 1.1;
 
       const state = { index: 0, z: N };
 
@@ -96,12 +99,13 @@ export function SummitEscenas() {
       const st = ScrollTrigger.create({
         trigger: el,
         start: "clamp(top top)",
-        end: `+=${STEP * N}`,
+        end: () => `+=${paso() * N}`,
         pin: true,
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress > 0.99 ? 1 : self.progress;
           if (bar) gsap.to(bar, { width: `${p * 100}%`, duration: 0.2, ease: "none", overwrite: true });
-          const idx = Math.min(Math.floor((self.progress * STEP * N) / STEP), N - 1);
+          const idx = Math.min(Math.floor(self.progress * N), N - 1);
           if (idx !== state.index) goTo(idx);
         },
       });
