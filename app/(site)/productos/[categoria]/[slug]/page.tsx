@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { pageMetadata, SITE_URL, SITE_NAME, BUSINESS } from "@/lib/site";
+import { pageMetadata, SITE_URL, SITE_NAME, RECARGO_MP_TEXTO, COLORES_HIERRO, DIAS_PRODUCCION } from "@/lib/site";
 import { BreadcrumbJsonLd, JsonLdScript } from "@/components/site/JsonLd";
 import { Galeria } from "@/components/productos/Galeria";
 import { ProductCard } from "@/components/productos/ProductCard";
-import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { FichaCompra } from "@/components/productos/FichaCompra";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { WHATSAPP_NUMBER } from "@/content/site";
 import {
   getCategoria,
   getProducto,
   getRelacionados,
+  getSeArmaCon,
   getTodosLosProductos,
 } from "@/modules/catalog/repository";
-import { formatARS } from "@/modules/catalog/types";
+import { esHierro, etiquetaPrecio, rangoDePrecio } from "@/modules/catalog/types";
 
 /**
  * FICHA DE PRODUCTO — una URL por pieza: aparece en Google (con precio, vía
@@ -29,21 +30,39 @@ export async function generateStaticParams() {
   return (await getTodosLosProductos()).map((p) => ({ categoria: p.categoria, slug: p.slug }));
 }
 
-const resumen = (t?: string) => (t ? (t.length > 155 ? `${t.slice(0, 152).trimEnd()}…` : t) : "");
+const resumen = (t?: string) => {
+  const linea = (t ?? "").split("\n")[0].trim();
+  return linea.length > 155 ? `${linea.slice(0, 152).trimEnd()}…` : linea;
+};
+
+/** Separa la descripción en párrafos y filas "Etiqueta: valor" (Colores, Incluye…). */
+function partesDescripcion(t: string, hierro: boolean) {
+  const parrafos: string[] = [];
+  const filas: { k: string; v: string }[] = [];
+  for (const linea of t.split("\n").map((l) => l.trim()).filter(Boolean)) {
+    const m = /^(Colores|Incluye|Adicionales|Medidas)\s*:\s*(.+)$/i.exec(linea);
+    // Los colores de hierro ya están en el bloque fijo de arriba.
+    if (m && hierro && /^colores$/i.test(m[1]) && /rosa gold/i.test(m[2])) continue;
+    if (m) filas.push({ k: m[1][0].toUpperCase() + m[1].slice(1).toLowerCase(), v: m[2] });
+    else parrafos.push(linea);
+  }
+  return { parrafos, filas };
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { categoria, slug } = await params;
   const p = await getProducto(categoria, slug);
   if (!p) return {};
   const cat = await getCategoria(categoria);
-  const precio = p.precio != null ? ` · ${formatARS(p.precio)}` : "";
+  const precio = etiquetaPrecio(p);
+  const conPrecio = precio ? ` · ${precio}` : "";
   const meta = pageMetadata({
     title: `${p.nombre}${cat ? ` · ${cat.nombre}` : ""}`,
-    description:
-      resumen(p.descripcion) ||
-      `${p.nombre}${precio}. Fabricación propia, por encargo y con envíos a todo el país.`,
+    description: resumen(
+      `${resumen(p.descripcion) || p.nombre}${conPrecio}. Fabricación propia, por encargo y con envíos a todo el país.`,
+    ),
     path: `/productos/${categoria}/${slug}`,
-    ogTitle: `${p.nombre}${precio} · ${SITE_NAME}`,
+    ogTitle: `${p.nombre}${conPrecio} · ${SITE_NAME}`,
   });
   if (p.img) {
     meta.openGraph = { ...meta.openGraph, images: [{ url: p.img, alt: p.nombre }] };
@@ -56,10 +75,64 @@ export default async function ProductoPage({ params }: Props) {
   const { categoria, slug } = await params;
   const [p, cat] = await Promise.all([getProducto(categoria, slug), getCategoria(categoria)]);
   if (!p || !cat) notFound();
-  const relacionados = await getRelacionados(p);
+  const [seArmaCon, relacionadosTodos] = await Promise.all([getSeArmaCon(p), getRelacionados(p, 8)]);
+  const enCombo = new Set(seArmaCon.map((x) => x.slug));
+  const relacionados = relacionadosTodos.filter((x) => !enCombo.has(x.slug)).slice(0, 4);
 
-  const msg = `¡Hola! Quiero consultar por: ${p.nombre} (${SITE_URL}/productos/${categoria}/${slug}).`;
-  const wa = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  const path = `/productos/${cat.slug}/${p.slug}`;
+  const url = `${SITE_URL}${path}`;
+  const hierro = esHierro(p);
+  const variantes = p.variantes ?? [];
+  const { parrafos, filas } = partesDescripcion(p.descripcion ?? "", hierro);
+  if (p.medidas) filas.unshift({ k: "Medidas", v: p.medidas });
+
+  // JSON-LD (T-09): siempre con offers. Rango → AggregateOffer; un precio →
+  // Offer; a cotizar → Offer por encargo sin precio (nunca Product "pelado").
+  const rango = rangoDePrecio(p);
+  const vendedor = { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: SITE_NAME };
+  const base = {
+    priceCurrency: "ARS",
+    availability: "https://schema.org/MadeToOrder",
+    itemCondition: "https://schema.org/NewCondition",
+    url,
+    seller: vendedor,
+  };
+  const offers = !rango
+    ? { "@type": "Offer", ...base, priceSpecification: { "@type": "PriceSpecification", priceCurrency: "ARS" } }
+    : rango.min === rango.max
+      ? { "@type": "Offer", price: rango.min, ...base }
+      : {
+          "@type": "AggregateOffer",
+          lowPrice: rango.min,
+          highPrice: rango.max,
+          offerCount: Math.max(variantes.filter((v) => v.precio != null).length, 1),
+          ...base,
+        };
+
+  const info: { k: string; v: React.ReactNode }[] = [
+    {
+      k: "Pago",
+      v: `El precio publicado es por transferencia. Con link de Mercado Pago se suma un ${RECARGO_MP_TEXTO}.`,
+    },
+    {
+      k: "Envío",
+      v: (
+        <>
+          A todo el país por Vía Cargo, con 50 % de descuento en el valor del envío. Donde no llega, Buspack, MD o
+          FlechaBus; el seguro se abona a la transportista.{" "}
+          <Link href="/envios-a-todo-el-pais" className="underline decoration-ink/30 underline-offset-4 hover:decoration-ink">
+            Cómo son los envíos
+          </Link>
+        </>
+      ),
+    },
+    {
+      k: "Producción",
+      v: `Por encargo: contá unos ${DIAS_PRODUCCION} días desde que confirmás. Cerramos la producción por semana.`,
+    },
+    ...(hierro ? [{ k: "Colores", v: `${COLORES_HIERRO.slice(0, -1).join(", ")} o ${COLORES_HIERRO.at(-1)}.`.toLowerCase().replace(/^./, (c) => c.toUpperCase()) }] : []),
+    { k: "¿Dudas?", v: "Te responden Flor o Tobías por WhatsApp, en persona." },
+  ];
 
   return (
     <main id="main" className="bg-bone text-ink">
@@ -67,7 +140,7 @@ export default async function ProductoPage({ params }: Props) {
         items={[
           { name: "Productos", path: "/productos" },
           { name: cat.nombre, path: `/productos/${cat.slug}` },
-          { name: p.nombre, path: `/productos/${cat.slug}/${p.slug}` },
+          { name: p.nombre, path },
         ]}
       />
       <JsonLdScript
@@ -75,32 +148,20 @@ export default async function ProductoPage({ params }: Props) {
           "@context": "https://schema.org",
           "@type": "Product",
           name: p.nombre,
-          description: p.descripcion ?? "",
+          description: (p.descripcion ?? "").replace(/\n+/g, " ") || p.nombre,
           image: p.imagenes.map((i) => (i.url.startsWith("http") ? i.url : `${SITE_URL}${i.url}`)),
           category: cat.nombre,
           brand: { "@type": "Brand", name: SITE_NAME },
           manufacturer: { "@id": `${SITE_URL}/#organization` },
           sku: p.slug,
-          url: `${SITE_URL}/productos/${cat.slug}/${p.slug}`,
-          ...(p.precio != null
-            ? {
-                offers: {
-                  "@type": "Offer",
-                  price: p.precio,
-                  priceCurrency: "ARS",
-                  availability: "https://schema.org/MadeToOrder",
-                  itemCondition: "https://schema.org/NewCondition",
-                  url: `${SITE_URL}/productos/${cat.slug}/${p.slug}`,
-                  seller: { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: SITE_NAME },
-                },
-              }
-            : {}),
+          url,
+          offers,
         }}
       />
 
       <section data-theme="light" className="px-6 pb-20 pt-28 md:px-10 md:pb-28 md:pt-40 [@media(max-height:540px)_and_(orientation:landscape)]:pt-24">
         <div className="mx-auto max-w-[87.5rem]">
-          <nav aria-label="Migas de pan" className="mb-5 flex flex-wrap items-center gap-x-1 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-ink/50 md:mb-8">
+          <nav aria-label="Migas de pan" className="mb-5 flex flex-wrap items-center gap-x-1 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-ink/60 md:mb-8">
             <Link href="/" className="inline-flex min-h-11 items-center hover:text-ink">Inicio</Link>
             <span aria-hidden="true">›</span>
             <Link href="/productos" className="inline-flex min-h-11 items-center hover:text-ink">Productos</Link>
@@ -119,62 +180,71 @@ export default async function ProductoPage({ params }: Props) {
                 {p.nombre}
               </h1>
 
-              <p className="mt-4 font-display text-[length:var(--text-step-3)] font-bold md:mt-6">
-                {p.precio != null ? formatARS(p.precio) : "Precio a consultar"}
-                {p.precio != null && (
-                  <span className="ml-3 inline-block align-middle font-sans text-[0.72rem] font-normal uppercase tracking-[0.14em] text-ink/55">
-                    por transferencia
-                  </span>
-                )}
-              </p>
+              <FichaCompra
+                slug={p.slug}
+                nombre={p.nombre}
+                categoria={cat.slug}
+                precio={p.precio}
+                variantes={variantes}
+                img={p.img}
+                href={path}
+                url={url}
+                hierro={hierro}
+                whatsapp={WHATSAPP_NUMBER}
+              />
 
-              {p.variantes && p.variantes.length > 0 && (
-                <ul className="mt-5 flex flex-wrap gap-2">
-                  {p.variantes.map((v) => (
-                    <li key={v} className="rounded-full border border-line px-4 py-1.5 text-[length:var(--text-step--1)] text-ink/70">
-                      {v}
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <div className="mt-6 flex flex-col gap-3 sm:max-w-sm md:mt-8">
-                <AddToCartButton item={{ slug: p.slug, nombre: p.nombre, precio: p.precio, img: p.img }} />
-                <a
-                  href={wa}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex min-h-11 items-center justify-center rounded-full border border-ink/25 px-4 text-[0.72rem] font-medium uppercase tracking-[0.12em] text-ink transition-colors hover:border-ink"
-                >
-                  Consultar por WhatsApp
-                </a>
-              </div>
-
-              {p.descripcion && (
-                <p className="mt-8 max-w-[62ch] whitespace-pre-line text-[length:var(--text-step-0)] leading-relaxed text-ink/75">
-                  {p.descripcion}
-                </p>
-              )}
-              {p.medidas && (
-                <p className="mt-4 text-[length:var(--text-step-0)] text-ink/75">
-                  <span className="text-[0.72rem] uppercase tracking-[0.14em] text-ink/50">Medidas · </span>
-                  {p.medidas}
-                </p>
-              )}
-              <dl className="mt-10 grid grid-cols-2 gap-4 border-t border-line pt-8 text-[length:var(--text-step--1)]">
-                <div>
-                  <dt className="uppercase tracking-[0.14em] text-ink/50">Producción</dt>
-                  <dd className="mt-1 text-ink/80">{BUSINESS.leadTime}</dd>
-                </div>
-                <div>
-                  <dt className="uppercase tracking-[0.14em] text-ink/50">Envíos</dt>
-                  <dd className="mt-1 text-ink/80">A todo el país</dd>
-                </div>
+              {/* Pago · Envío · Producción · Colores · Dudas (E-07): fijo en todas las fichas */}
+              <dl className="mt-10 divide-y divide-line border-y border-line text-[length:var(--text-step--1)]">
+                {info.map((i) => (
+                  <div key={i.k} className="grid grid-cols-[6.5rem_1fr] gap-4 py-4 sm:grid-cols-[8rem_1fr]">
+                    <dt className="font-medium text-ink">{i.k}</dt>
+                    <dd className="leading-relaxed text-ink/75">{i.v}</dd>
+                  </div>
+                ))}
               </dl>
+
+              {(parrafos.length > 0 || filas.length > 0) && (
+                <div className="mt-10">
+                  <h2 className="font-display text-[length:var(--text-step-1)] font-bold uppercase">Sobre esta pieza</h2>
+                  {parrafos.map((t) => (
+                    <p key={t} className="mt-3 max-w-[62ch] text-[length:var(--text-step-0)] leading-relaxed text-ink/75">
+                      {t}
+                    </p>
+                  ))}
+                  {filas.length > 0 && (
+                    <dl className="mt-5 grid gap-3 text-[length:var(--text-step-0)]">
+                      {filas.map((f) => (
+                        <div key={f.k + f.v} className="grid grid-cols-[6.5rem_1fr] gap-4 sm:grid-cols-[8rem_1fr]">
+                          <dt className="text-ink/60">{f.k}</dt>
+                          <dd className="text-ink/80">{f.v}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
+
+      {seArmaCon.length > 0 && (
+        <section data-theme="light" aria-labelledby="se-arma-con" className="border-t border-line px-6 py-20 md:px-10 md:py-28">
+          <div className="mx-auto max-w-[87.5rem]">
+            <h2 id="se-arma-con" className="mb-3 font-display text-[length:var(--text-step-3)] font-bold uppercase">
+              Se arma con
+            </h2>
+            <p className="mb-10 max-w-[52ch] text-[length:var(--text-step-0)] text-ink/70">
+              Las piezas que suelen ir junto a esta. Sumalas al mismo pedido.
+            </p>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:gap-x-6 lg:grid-cols-4">
+              {seArmaCon.slice(0, 4).map((r) => (
+                <ProductCard key={r.slug} p={r} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {relacionados.length > 0 && (
         <section data-theme="light" className="border-t border-line px-6 py-20 md:px-10 md:py-28">

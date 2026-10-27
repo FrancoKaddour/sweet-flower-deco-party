@@ -12,28 +12,20 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Resend from "next-auth/providers/resend";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
-import { accounts, sessions, subscribers, users, verificationTokens, type Role } from "@/db/schema";
+import { accounts, sessions, subscribers, summitRegistrations, users, verificationTokens, type Role } from "@/db/schema";
 import { BASE_URL, enviarEmail } from "@/lib/email/enviar";
 import { correoBienvenidaCuenta } from "@/lib/email/plantillas";
+import { rolDeStaff } from "@/lib/auth/roles";
 
-const lista = (v?: string) =>
-  (v ?? "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-
-/** Rol de staff que corresponde a un email según las env vars (o null). */
-export function rolDeStaff(email: string): Role | null {
-  const e = email.toLowerCase();
-  if (lista(process.env.PANEL_SUPERADMINS).includes(e)) return "superadmin";
-  if (lista(process.env.PANEL_ADMINS).includes(e)) return "admin";
-  if (lista(process.env.PANEL_EDITORS).includes(e)) return "editor";
-  return null;
-}
+export { rolDeStaff };
 
 const providers = [
+  // Vinculación por email: Google verifica el email, así que entrar con Google
+  // a una cuenta creada por link de email es seguro. OJO (S-11): si se suma OTRO
+  // proveedor que no verifique emails, sacar esta opción (el rol de staff sale
+  // del email).
   Google({ allowDangerousEmailAccountLinking: true }),
   ...(process.env.AUTH_RESEND_KEY
     ? [
@@ -54,6 +46,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         verificationTokensTable: verificationTokens,
       })
     : undefined,
+  // Clientes: 30 días. El staff queda en 7 días deslizantes (lo recorta lib/dal.ts).
   session: { strategy: db ? "database" : "jwt", maxAge: 30 * 24 * 60 * 60 },
   trustHost: true,
   providers,
@@ -84,12 +77,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
     },
     // Sincroniza el rol de staff en cada ingreso (alta, baja o cambio por env).
-    async signIn({ user }) {
+    async signIn({ user, account, profile }) {
       if (!db || !user.id || !user.email) return;
       const staff = rolDeStaff(user.email);
       const actual = (user as { role?: Role }).role;
       const nuevo: Role = staff ?? (actual && actual !== "customer" ? "customer" : actual ?? "customer");
       if (nuevo !== actual) await db.update(users).set({ role: nuevo }).where(eq(users.id, user.id));
+      // Historial: las inscripciones al Summit hechas sin sesión con este email
+      // pasan a la cuenta. SOLO con email verificado por el proveedor (link por
+      // email = verificado; Google = `email_verified`). Los pedidos del carrito no
+      // guardan email: se vinculan desde el dispositivo (modules/cuenta/actions.ts).
+      const verificado = account?.type === "email" || (account?.provider === "google" && (profile as { email_verified?: boolean } | undefined)?.email_verified === true);
+      if (!verificado) return;
+      try {
+        await db
+          .update(summitRegistrations)
+          .set({ userId: user.id })
+          .where(and(eq(summitRegistrations.email, user.email.toLowerCase()), isNull(summitRegistrations.userId)));
+      } catch (e) {
+        console.error("[auth] vincular inscripciones", e instanceof Error ? e.message : e);
+      }
     },
   },
 });

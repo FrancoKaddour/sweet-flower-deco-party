@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import { gsap, ScrollTrigger, CustomEase, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 /**
  * SummitEscenas — sección pineada de "escenas" del Summit.
@@ -47,8 +47,6 @@ export function SummitEscenas() {
       const bar = el.querySelector<HTMLElement>("[data-escenas-bar]");
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      if (!gsap.parseEase("sfIntro")) CustomEase.create("sfIntro", "0.19, 1, 0.22, 1");
-
       // Estado inicial: la 1ª escena arriba; títulos fuera salvo el primero.
       groups.forEach((g) =>
         g.querySelectorAll<HTMLElement>("figure").forEach((f, i) => (f.style.zIndex = String(N - i))),
@@ -70,7 +68,7 @@ export function SummitEscenas() {
           gsap.fromTo(
             fig,
             { clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)", scale: 1.25 },
-            { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", scale: 1, duration: dur, ease: "sfIntro", overwrite: true },
+            { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", scale: 1, duration: dur, ease: "expo.out", overwrite: true },
           );
         });
         const prev = titles[state.index];
@@ -79,7 +77,7 @@ export function SummitEscenas() {
             yPercent: -125,
             opacity: 0,
             duration: dur,
-            ease: "sfIntro",
+            ease: "expo.out",
             overwrite: true,
             onComplete: () => {
               if (state.index !== titles.indexOf(prev)) gsap.set(prev, { yPercent: 125 });
@@ -89,7 +87,7 @@ export function SummitEscenas() {
         gsap.fromTo(
           titles[next],
           { yPercent: 125, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: dur, ease: "sfIntro", overwrite: true },
+          { yPercent: 0, opacity: 1, duration: dur, ease: "expo.out", overwrite: true },
         );
         if (current) current.textContent = String(next + 1);
         state.index = next;

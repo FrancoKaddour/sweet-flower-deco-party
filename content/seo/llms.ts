@@ -1,13 +1,14 @@
 // Textos de /llms.txt (resumen) y /llms-full.txt (completo) para asistentes de
 // IA (ChatGPT, Claude, Perplexity, Gemini, Copilot). Estándar llmstxt.org.
 // SOLO datos confirmados: lib/site.ts, content/evento.ts, catálogo, FAQs y landings.
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, BUSINESS } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, BUSINESS, RECARGO_MP_TEXTO } from "@/lib/site";
 import { CATEGORIAS } from "@/content/catalogo";
 import {
   EVENT_NAME,
   EVENT_WHEN,
   EDICION_LABEL,
   WORKSHOPS_REALIZADOS,
+  ASISTENTES_WORKSHOPS,
   EVENT_SEDE,
   EVENT_HORARIO,
   EXTRAS_NOTA,
@@ -27,7 +28,7 @@ function encabezado() {
 
 > ${SITE_DESCRIPTION}
 
-${SITE_NAME} es un emprendimiento familiar argentino que fabrica y vende piezas para decorar eventos —estructuras de hierro, exhibidores para catering, piezas de MDF y madera, fundas y telas sublimadas— para decoradores, ambientadores, organizadores de eventos, salones y particulares. Lo fundó y lo dirige ${BUSINESS.founder}. Su taller está en ${BUSINESS.locality} (partido de Malvinas Argentinas), provincia de ${BUSINESS.region}, Argentina, y envía a todo el país. También organiza el ${EVENT_NAME}, la cumbre argentina de la decoración y la organización de eventos.
+${SITE_NAME} es un emprendimiento familiar argentino que fabrica y vende piezas para decorar eventos —estructuras de hierro, exhibidores para catering, pies de lámpara, fundas y telas sublimadas— para decoradores, ambientadores, organizadores de eventos, salones y particulares. Lo fundó y lo dirige ${BUSINESS.founder}. Su taller está en ${BUSINESS.locality} (partido de Malvinas Argentinas), provincia de ${BUSINESS.region}, Argentina, y envía a todo el país. También organiza el ${EVENT_NAME}, la cumbre argentina de la decoración y la organización de eventos.
 
 ## Datos clave
 
@@ -36,8 +37,8 @@ ${SITE_NAME} es un emprendimiento familiar argentino que fabrica y vende piezas 
 - Dónde: ${BUSINESS.locality}, ${BUSINESS.region}, Argentina. ${BUSINESS.shipping}.
 - Producción: por encargo, alrededor de 20 días. Las piezas a medida se cotizan; la demora depende de la complejidad.
 - Colores de las estructuras de hierro: blanco, negro, dorado, plateado o rosa gold.
-- Pedidos de productos: se arman en la web y se envían por WhatsApp (no se pagan en la web). Pago por transferencia (precio de catálogo) o link de Mercado Pago con recargo (~15–18%).
-- Event Summit: la inscripción se paga online con Mercado Pago (tarjeta, cuotas, débito o efectivo).
+- Pedidos de productos: se arman en la web y se envían por WhatsApp (no se pagan en la web). Pago por transferencia (precio de catálogo) o link de Mercado Pago con un recargo del ${RECARGO_MP_TEXTO}.
+- Event Summit: la inscripción se paga online con Mercado Pago (tarjeta de crédito en cuotas, débito o dinero en cuenta; no se acepta efectivo).
 - Atención: Flor y Tobías, en persona, por WhatsApp.
 `;
 }
@@ -56,7 +57,7 @@ function summit() {
   return `## ${EVENT_NAME}
 
 - Qué es: la cumbre argentina de la decoración y la organización de eventos. Charlas de referentes del rubro, certificado, coffee break, comunidad y networking.
-- Trayectoria: ${WORKSHOPS_REALIZADOS} workshops presenciales (2024–2026) y la 1ª edición del Summit (18 de septiembre de 2026, La Rural). Más de 180 asistentes y más de 20 disertantes en total.
+- Trayectoria: ${WORKSHOPS_REALIZADOS} workshops presenciales (2024–2026) y la 1ª edición del Summit (18 de septiembre de 2026, La Rural). Más de ${ASISTENTES_WORKSHOPS} asistentes en los workshops y más de 20 disertantes en total.
 - Próxima edición: ${EDICION_LABEL}, ${EVENT_WHEN}, de ${EVENT_HORARIO}, en ${EVENT_SEDE}. ${EXTRAS_NOTA}
 - Pases: ${PASES.map((p) => `${p.nombre} (incluye: ${p.incluye.join(", ").toLowerCase()})`).join("; ")}.
 - Precios (ARS): ${PREVENTAS.map((pv) => `${pv.nombre} ${pv.hastaLabel}: ${PASES.map((p) => `${p.nombre} ${ars(pv.precios[p.id])}`).join(", ")}`).join(". ")}.
@@ -142,7 +143,7 @@ ${LANDINGS.map(
 
 ## Catálogo con precios (ARS, precio de catálogo por transferencia)
 
-Los precios pueden cambiar; el valor final se confirma por WhatsApp. Con link de Mercado Pago se suma un recargo.
+Los precios pueden cambiar; el valor final se confirma por WhatsApp. Con link de Mercado Pago se suma un ${RECARGO_MP_TEXTO}.
 
 ${porCat}
 `;

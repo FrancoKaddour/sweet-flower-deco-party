@@ -2,7 +2,6 @@ import { WHATSAPP_HREF } from "@/content/site";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
 import { Button } from "@/components/ui/Button";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 
 /**
  * Sección CONTACTO — cierre de conversión (CTA final).
@@ -18,24 +17,20 @@ export function Contacto() {
       className="bg-bone px-6 py-28 text-ink md:px-10 md:py-40"
     >
       <div className="mx-auto max-w-[87.5rem] text-center">
-        {/* Kicker */}
-        <Eyebrow className="mb-6">Hablemos</Eyebrow>
-
         {/* Statement gigante con mask-reveal palabra por palabra */}
         <RevealText
           as="h2"
           onScroll
-          className="mx-auto max-w-[18ch] font-display text-[length:min(var(--text-step-6),calc((100vw-3rem)/6.8))] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink md:text-[length:var(--text-step-7)]"
+          className="t-voz-display mx-auto max-w-[16ch] text-[length:min(var(--text-step-6),calc((100vw-3rem)/6))] text-ink md:text-[length:var(--text-step-7)]"
         >
-          {/* TODO(contenido): titular real */}
-          Creemos algo inolvidable juntos
+          Contanos qué estás armando y te pasamos precio
         </RevealText>
 
         {/* Bajada */}
         <FadeUp y={50}>
           <p className="mx-auto mt-8 max-w-xl font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
-            {/* TODO(contenido) */}
-            Contanos tu evento y armamos la escenografía a tu medida.
+            Te responden Flor o Tobías por WhatsApp. Si ya sabés qué querés,
+            armá el pedido desde el catálogo.
           </p>
         </FadeUp>
 
@@ -51,7 +46,7 @@ export function Contacto() {
 
         {/* Canales de contacto */}
         <FadeUp y={50}>
-          <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-1 text-[length:var(--text-step--1)] uppercase tracking-[0.1em] text-muted">
+          <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-1 text-[length:var(--text-step--1)] uppercase tracking-[0.1em] text-ink/70">
             <a
               href="https://www.instagram.com/sweetflowersdecoparty/"
               target="_blank"

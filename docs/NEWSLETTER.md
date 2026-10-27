@@ -15,6 +15,22 @@
 - **Baja:** link en cada mail (`/newsletter/baja`, con confirmación) + baja en un
   clic de Gmail/Yahoo (`List-Unsubscribe`, `/api/newsletter/baja`).
 
+## Doble opt-in (S-13)
+- El formulario del sitio responde SIEMPRE lo mismo ("Revisá tu mail para
+  confirmar"): no revela si el email ya estaba, ni muestra el código.
+- Se manda un mail de confirmación (sin el nombre que escribieron) con un link
+  a `/newsletter/confirmar?t=…`; ahí se confirma con un botón (los antivirus de
+  correo abren los links solos) y recién entonces llega el código CLUB.
+- Una baja no se reactiva desde el formulario: hace falta confirmar desde el mail.
+- Hasta confirmar, la persona figura con `confirmado_at` vacío y no recibe
+  campañas, recordatorios ni cuenta en el total del club.
+- Altas desde "Mi cuenta" (email ya verificado) y desde el panel (con el
+  consentimiento tildado por el equipo) entran confirmadas.
+- Rate limit: 6 por hora por IP y 3 por hora por email.
+- En las páginas `/event-summit…` la banda cambia sola al mensaje del Summit
+  ("Enterate primero del Summit", interés Summit preseleccionado).
+- El export CSV (solo admin) usa `;` y fechas de Argentina, y queda en el audit log.
+
 ## Activar el envío (una sola vez)
 1. **Comprar el dominio** (ej. `sweetflowers.com.ar` en nic.ar) y apuntarlo a
    Vercel (Vercel → Settings → Domains).

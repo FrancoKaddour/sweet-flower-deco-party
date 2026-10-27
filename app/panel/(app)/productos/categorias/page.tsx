@@ -6,6 +6,7 @@ import { CategoriaForm } from "@/components/panel/catalogo/CategoriaForm";
 import { hasDb } from "@/db";
 import { requireStaff } from "@/lib/dal";
 import { listarCategoriasPanel } from "@/modules/catalog/admin";
+import { puede } from "@/modules/ventas/estados";
 
 export const metadata: Metadata = { title: "Categorías" };
 
@@ -21,7 +22,7 @@ export default async function CategoriasPage() {
   );
   if (!hasDb()) return <div className="flex flex-col gap-8">{header}<SinBase /></div>;
   const categorias = await listarCategoriasPanel();
-  const puedeEditar = user.role !== "editor";
+  const puedeEditar = puede(user.role, "categorias");
 
   return (
     <div className="flex flex-col gap-6">

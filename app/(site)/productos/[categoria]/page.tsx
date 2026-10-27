@@ -110,7 +110,7 @@ export default async function CategoriaPage({ params }: Props) {
         /* Grilla de productos (modules/catalog) */
         <section data-theme="light" className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32">
           <div className="mx-auto max-w-[87.5rem]">
-            <GrillaPaginada productos={productos} />
+            <GrillaPaginada productos={productos} categoria={cat.slug} />
           </div>
         </section>
       ) : (

@@ -9,6 +9,8 @@ import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { JsonLd } from "@/components/site/JsonLd";
 import { Loader } from "@/components/intro/Loader";
 import { PageTransition } from "@/components/motion/PageTransition";
+import Script from "next/script";
+import { Medicion } from "@/components/site/Medicion";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, IS_INDEXABLE } from "@/lib/site";
 
 // Display grotesca con carácter — equivalente LIBRE al espíritu de "Snaskface".
@@ -110,6 +112,11 @@ export const viewport: Viewport = {
   themeColor: "#f7f3ec",
 };
 
+// Vercel Web Analytics + Speed Insights por script (sin paquete). Se activan
+// con NEXT_PUBLIC_ANALYTICS=1 en Vercel (y Analytics/Speed Insights prendidos
+// en el proyecto). Los eventos de negocio salen de lib/analytics.ts (track).
+const ANALYTICS = process.env.NEXT_PUBLIC_ANALYTICS === "1";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -146,6 +153,13 @@ export default function RootLayout({
         {/* Transición entre páginas (globos del logo) — la firma de la marca. */}
         <PageTransition />
         <SmoothScroll>{children}</SmoothScroll>
+        <Medicion />
+        {ANALYTICS && (
+          <>
+            <Script src="/_vercel/insights/script.js" strategy="afterInteractive" />
+            <Script src="/_vercel/speed-insights/script.js" strategy="lazyOnload" />
+          </>
+        )}
       </body>
     </html>
   );

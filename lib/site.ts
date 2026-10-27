@@ -99,3 +99,8 @@ export const RECARGO_MP_TEXTO = `${(RECARGO_MP * 100).toLocaleString("es-AR", { 
 export function precioMercadoPago(precioTransferencia: number): number {
   return Math.ceil(precioTransferencia / (1 - MP_COMISION) / 100) * 100;
 }
+
+// ── Colores de hierro (fuente única; catálogo de WhatsApp) — frente C1 ─────
+export const COLORES_HIERRO = ["Blanco", "Negro", "Dorado", "Plateado", "Rosa gold"] as const;
+/** Producción por encargo (CONTENIDO_FLOR §1: comunicar 20 días). */
+export const DIAS_PRODUCCION = 20;

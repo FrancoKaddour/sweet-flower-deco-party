@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, SplitText, useGSAP } from "@/lib/gsap";
+import { gsap, SplitText, useGSAP, conFuentes } from "@/lib/gsap";
 
 type RevealTextProps = {
   children: string;
@@ -34,7 +34,7 @@ export function RevealText({
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
-    () => {
+    (_ctx, contextSafe) => {
       const el = ref.current;
       if (!el) return;
 
@@ -53,6 +53,7 @@ export function RevealText({
           type: "words",
           mask: "words", // genera el wrapper con overflow: clip
           wordsClass: "reveal-word",
+          tag: "span", // T-22: <span> (no <div>) → HTML válido dentro de h2/p
         });
 
         gsap.set(el, { autoAlpha: 1 });
@@ -68,12 +69,9 @@ export function RevealText({
         });
       };
 
-      // Esperar a que carguen las fuentes para evitar reflow del split.
-      if (document.fonts?.status === "loaded") {
-        run();
-      } else {
-        document.fonts?.ready.then(run);
-      }
+      // Esperar a que carguen las fuentes para evitar reflow del split
+      // (contextSafe: lo creado después igual se revierte; cancelable).
+      return conFuentes(contextSafe ? contextSafe(run) : run);
     },
     { scope: ref, dependencies: [children] },
   );

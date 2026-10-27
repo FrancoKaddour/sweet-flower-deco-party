@@ -1,7 +1,7 @@
 // Contenido del sitio centralizado (única fuente de verdad para navegación y
 // enlaces). Header y Footer consumen de acá para que no se dupliquen ni deriven.
-// TODO(contenido): reemplazar los href="#" por URLs reales (WhatsApp, redes,
-// páginas legales) cuando Flor pase los datos. Ver docs/16_DECISIONS.md.
+// Las páginas legales son provisorias (con lo confirmado y "escribinos" donde
+// falta definición). TODO(contenido): email y redes cuando Flor los pase.
 
 export type NavLink = {
   label: string;
@@ -38,9 +38,9 @@ export const CONTACTO_LINKS: readonly NavLink[] = [
 export const INFO_LINKS: readonly NavLink[] = [
   { label: "Envíos", href: "/envios-a-todo-el-pais" },
   { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
-  { label: "Cambios", href: "#" },
-  { label: "Términos", href: "#" },
-  { label: "Privacidad", href: "#" },
+  { label: "Cambios", href: "/cambios" },
+  { label: "Términos", href: "/terminos" },
+  { label: "Privacidad", href: "/privacidad" },
 ] as const;
 
 // WhatsApp de contacto (botón flotante).

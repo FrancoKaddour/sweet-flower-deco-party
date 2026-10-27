@@ -45,7 +45,7 @@ export function Seguimiento({
           {pendiente ? "Guardando…" : "Guardar"}
         </PanelButton>
         {estado && (
-          <p role="status" className={estado.ok ? "text-botanical" : "text-bordeaux"}>
+          <p role={estado.ok ? "status" : "alert"} className={estado.ok ? "text-ink" : "text-bordeaux"}>
             {estado.mensaje}
           </p>
         )}

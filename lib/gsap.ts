@@ -28,4 +28,26 @@ export function ensureHopEase(): void {
   }
 }
 
+/**
+ * T-10: corre `fn` UNA vez, cuando las fuentes ya cargaron. Así los splits de
+ * SplitText miden con la fuente final (no hay que re-splitear ni llamar a
+ * ScrollTrigger.refresh() después). Si ya cargaron, corre en el acto.
+ * Dentro de useGSAP, pasar una función envuelta con contextSafe() para que el
+ * split y sus tweens se reviertan solos al desmontar. Devuelve "cancelar".
+ */
+export function conFuentes(fn: () => void): () => void {
+  let vivo = true;
+  const fonts = typeof document !== "undefined" ? document.fonts : undefined;
+  if (!fonts || fonts.status === "loaded") {
+    fn();
+  } else {
+    fonts.ready.then(() => {
+      if (vivo) fn();
+    });
+  }
+  return () => {
+    vivo = false;
+  };
+}
+
 export { gsap, ScrollTrigger, SplitText, CustomEase, useGSAP };

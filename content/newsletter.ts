@@ -10,11 +10,23 @@ export const CLUB = {
   bajada:
     "Sumate al club y enterate antes que nadie de lanzamientos, preventas del Event Summit y promos que no publicamos en ningún otro lado.",
   beneficios: [
-    `Tu código de ${DESCUENTO_BIENVENIDA}% al instante`,
-    "Preventas del Summit antes que el público",
+    `Tu código de ${DESCUENTO_BIENVENIDA}% por mail`,
+    "Te avisamos antes de que cambie el precio del Summit",
     "Lanzamientos y reposiciones primero",
   ],
   legal: "Un mail cada tanto, nada de spam. Te das de baja con un clic.",
+} as const;
+
+/** Variante de la banda para las páginas del Summit (E-20): lo que importa ahí es el evento. */
+export const CLUB_SUMMIT = {
+  titulo: "Enterate primero del Summit",
+  bajada:
+    "Te escribimos cuando se anuncien disertantes y antes de que cambie el precio de la entrada. Además, tu código de bienvenida para el primer pedido.",
+  beneficios: [
+    "Aviso antes de que cambie el precio",
+    "Disertantes y novedades del Summit",
+    `Tu código de ${DESCUENTO_BIENVENIDA}% por mail`,
+  ],
 } as const;
 
 export const INTERESES = [

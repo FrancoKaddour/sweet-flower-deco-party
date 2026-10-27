@@ -2,9 +2,9 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import { gsap, SplitText, CustomEase, useGSAP } from "@/lib/gsap";
+import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { Button } from "@/components/ui/Button";
-import { EVENT_NAME, EVENT_CTA_HREF } from "@/content/evento";
+import { EVENT_NAME, EVENT_CTA_HREF, EVENT_CUPO } from "@/content/evento";
 
 /**
  * SummitIntro — intro editorial debajo del hero del Summit.
@@ -20,10 +20,10 @@ import { EVENT_NAME, EVENT_CTA_HREF } from "@/content/evento";
  * chica abajo 0 → −50%. Ease = cubic-bezier(0.19, 1, 0.22, 1).
  */
 
-// Fotos reales de la 1ª edición. TODO(contenido): titular y texto definitivos.
+// Fotos reales de la 1ª edición. Texto solo con hechos (auditoría E-15, 5.7).
+// TODO(contenido): titular y texto definitivos de Flor.
 const TITLE_LINES = ["Un día", "para todo", "el rubro"];
-const BODY =
-  "Una vez al año, la decoración de eventos se junta en un mismo lugar. Charlas de referentes, proveedores, comunidad y una escena montada por Sweet Flowers para que la vivas desde adentro. Presencial, con cupos contados — y siempre se agota.";
+const BODY = `Siete workshops, una primera edición en La Rural y ahora la segunda. La decoración de eventos se junta en un mismo lugar: charlas de referentes, proveedores, comunidad y una escena montada por Sweet Flowers. Presencial y con ${EVENT_CUPO} lugares.`;
 const IMG = {
   big: "/img/summit/lg/sum-07.webp",
   top: "/img/summit/lg/sum-11.webp",
@@ -39,8 +39,6 @@ export function SummitIntro() {
       if (!el) return;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      if (!gsap.parseEase("sfIntro")) CustomEase.create("sfIntro", "0.19, 1, 0.22, 1");
-
       // 1) Text split (máscara por línea). data-type: "words" | "lines".
       document.fonts.ready.then(() => {
         el.querySelectorAll<HTMLElement>("[data-split]").forEach((t) => {
@@ -54,10 +52,23 @@ export function SummitIntro() {
                 yPercent: 120,
                 stagger: 0.05,
                 duration: 1.5,
-                ease: "sfIntro",
+                ease: "expo.out",
                 scrollTrigger: { trigger: t, start: "top 85%" },
               }),
           });
+        });
+      });
+
+      // 1b) El CTA entra junto con el párrafo (D-18): nunca queda solo en pantalla.
+      el.querySelectorAll<HTMLElement>("[data-cta]").forEach((cta) => {
+        const texto = cta.previousElementSibling ?? cta;
+        gsap.from(cta, {
+          autoAlpha: 0,
+          y: 24,
+          duration: 1.2,
+          delay: 0.35,
+          ease: "expo.out",
+          scrollTrigger: { trigger: texto, start: "top 85%" },
         });
       });
 
@@ -72,7 +83,7 @@ export function SummitIntro() {
             scale: 1,
             clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
             duration: 2,
-            ease: "sfIntro",
+            ease: "expo.out",
             scrollTrigger: { trigger: fig, start: "top 85%" },
           },
         );
@@ -142,7 +153,7 @@ export function SummitIntro() {
                 >
                   {BODY}
                 </p>
-                <div className="mt-10 text-center md:mt-20 md:text-left">
+                <div data-cta className="mt-10 text-center md:mt-12 md:text-left">
                   <Button href={EVENT_CTA_HREF} tone="light">
                     Quiero mi lugar
                   </Button>
@@ -150,7 +161,7 @@ export function SummitIntro() {
               </div>
 
               <div className="col-span-10 col-start-2 md:col-span-6 md:col-start-7 xl:col-span-5 xl:col-start-7">
-                <div data-parallax="-50">
+                <div data-parallax="-30">
                   <figure data-reveal className="relative aspect-[3/4] overflow-hidden">
                     <Image src={IMG.big} alt="" fill sizes="(max-width: 768px) 80vw, 40vw" className="object-cover" />
                   </figure>
@@ -170,8 +181,8 @@ export function SummitIntro() {
             </div>
           </div>
 
-          {/* Foto chica ABAJO */}
-          <div className="relative" data-parallax="-50">
+          {/* Foto chica ABAJO (parallax corto: no se despega del bloque de texto) */}
+          <div className="relative" data-parallax="-30">
             <div className="grid grid-cols-12 gap-x-6">
               <div className="col-span-4 col-start-9 md:col-span-3 md:col-start-3">
                 <figure data-reveal className="relative aspect-[3/4] overflow-hidden">

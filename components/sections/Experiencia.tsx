@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { getImageProps } from "next/image";
 import { gsap, useGSAP, ScrollTrigger } from "@/lib/gsap";
 import { FadeUp } from "@/components/motion/FadeUp";
+import { italica } from "@/components/ui/fuentes";
 
 // Slides del grupo: imágenes superpuestas dentro de un track de ancho fijo.
 // Fotos reales del workshop en Río Cuarto (public/img/rio-cuarto, optimizadas a webp).
@@ -52,6 +53,18 @@ export function Experiencia() {
   const sectionRef = useRef<HTMLElement>(null);
   const figureRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  // Pausa de la galería (T-08): la tira se mueve con el scroll; el botón la
+  // deja quieta (y la reanuda) sin tocar el resto de la página.
+  const marqueeRef = useRef<gsap.core.Tween | null>(null);
+  const [quieta, setQuieta] = useState(false);
+  const alternarGaleria = () => {
+    const st = marqueeRef.current?.scrollTrigger;
+    const q = !quieta;
+    setQuieta(q);
+    if (!st) return;
+    if (q) st.disable(false);
+    else st.enable();
+  };
 
   useGSAP(
     () => {
@@ -101,6 +114,8 @@ export function Experiencia() {
             },
           });
 
+          marqueeRef.current = marquee;
+
           // (b) Parallax vertical muy sutil ligado al scroll (profundidad).
           const parallax = gsap.fromTo(
             figureEl,
@@ -121,11 +136,11 @@ export function Experiencia() {
 
           return () => {
             ScrollTrigger.removeEventListener("refreshInit", onRefresh);
+            marqueeRef.current = null;
             marquee.scrollTrigger?.kill();
             marquee.kill();
             parallax.scrollTrigger?.kill();
             parallax.kill();
-            ScrollTrigger.refresh();
           };
         },
       );
@@ -140,18 +155,15 @@ export function Experiencia() {
       data-theme="light"
       className="relative bg-bone pb-[4rem] pt-[4rem] text-ink md:pb-[7.5rem] md:pt-[6.125rem]"
     >
-      {/* 1) Bloque superior — centrado */}
+      {/* 1) Bloque superior — a la izquierda (D-04): voz display light */}
       <div className="mx-auto max-w-[87.5rem] px-6 md:px-10">
-        <FadeUp y={100} className="mx-auto max-w-[48.125rem] text-center">
-          {/* TODO(contenido): titular real de la sección. */}
-          <h2 className="mb-6 font-display text-[length:min(var(--text-step-5),calc((100vw-3rem)/7.2))] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-6)]">
-            Más que decoración,
-            <br /> una experiencia
+        <FadeUp y={60} className="max-w-[66rem]">
+          <h2 className="t-voz-display text-[length:min(var(--text-step-6),calc((100vw-3rem)/6.2))] text-ink">
+            Lo fabricamos en Tortuguitas. Lo armás donde quieras.
           </h2>
-          {/* TODO(contenido): bajada real. */}
-          <p className="font-display text-[length:var(--text-step-2)] font-normal leading-[1.05] text-ink md:text-[length:var(--text-step-3)]">
-            Creamos escenografías que transforman cualquier evento en un
-            recuerdo.
+          <p className={`${italica.className} t-voz-cita mt-6 max-w-[34ch] text-[length:var(--text-step-2)] leading-[1.15] text-ink/80 md:text-[length:var(--text-step-3)]`}>
+            Arcos, estanterías y alzadas de hierro, hechos por encargo y
+            enviados a todo el país.
           </p>
         </FadeUp>
       </div>
@@ -160,7 +172,7 @@ export function Experiencia() {
       <figure
         ref={figureRef}
         aria-hidden="true"
-        className="my-12 block h-[28rem] overflow-hidden max-md:hidden lg:h-[35rem] [@media(max-height:500px)_and_(orientation:landscape)]:hidden"
+        className="relative my-12 block h-[28rem] overflow-hidden max-md:hidden lg:h-[35rem] [@media(max-height:500px)_and_(orientation:landscape)]:hidden"
       >
         {/* Tablet (md→lg): la composición de 1500px se ve al 80% → fotos en
             escala con la pantalla (el wrapper mide 125% para seguir cubriendo
@@ -209,23 +221,32 @@ export function Experiencia() {
         </div>
       </div>
 
-      {/* 3) Bloque inferior — centrado */}
+      {/* Pausa de la galería (fuera del <figure> aria-hidden) */}
+      <div className="mx-auto -mt-8 flex max-w-[87.5rem] justify-end px-6 max-md:hidden md:px-10 [@media(max-height:500px)_and_(orientation:landscape)]:hidden">
+        <button
+          type="button"
+          onClick={alternarGaleria}
+          aria-pressed={quieta}
+          aria-label={quieta ? "Mover la galería con el scroll" : "Dejar quieta la galería"}
+          className="grid h-11 w-11 place-items-center rounded-full border border-ink/25 text-ink transition-colors duration-300 hover:border-ink"
+        >
+          {quieta ? (
+            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor" /></svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="2.5" y="1.5" width="3" height="11" rx="0.5" fill="currentColor" /><rect x="8.5" y="1.5" width="3" height="11" rx="0.5" fill="currentColor" /></svg>
+          )}
+        </button>
+      </div>
+
+      {/* 3) Bloque inferior — corrido a la derecha: dato concreto de la galería */}
       <div className="mx-auto mt-12 max-w-[87.5rem] px-6 md:mt-[4.5rem] md:px-10">
-        <FadeUp y={100} className="mx-auto max-w-[53.75rem] text-center">
-          {/* TODO(contenido): titular real. */}
-          <h2 className="mb-4 font-display text-[length:min(var(--text-step-5),calc((100vw-3rem)/7.2))] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-6)]">
-            El arte de crear
-            <br /> momentos inolvidables
+        <FadeUp y={60} className="max-w-[44rem] md:ml-auto">
+          <h2 className="t-voz-display text-[length:min(var(--text-step-5),calc((100vw-3rem)/6.2))] text-ink md:text-[length:var(--text-step-6)]">
+            En Río Cuarto armamos el salón en vivo.
           </h2>
-          {/* TODO(contenido): bajada real. */}
-          <p className="mb-4 font-display text-[length:var(--text-step-2)] font-normal leading-[1.05] text-ink md:text-[length:var(--text-step-3)]">
-            Cada pieza está pensada para sorprender.
-          </p>
-          {/* TODO(contenido): copy secundario real. */}
-          <p className="font-sans text-[length:var(--text-step-0)] font-light leading-relaxed text-ink/70">
-            Del primer boceto al último detalle, cuidamos cada textura, color y
-            proporción para que la escenografía cuente tu historia y deje una
-            marca que perdura mucho después de que la fiesta termina.
+          <p className="mt-6 max-w-[46ch] text-[length:var(--text-step-0)] leading-relaxed text-ink/75">
+            Fue el cuarto workshop: cuarenta decoradoras mirando cómo se arma
+            un salón de punta a punta. Estas fotos son de ese día.
           </p>
         </FadeUp>
       </div>

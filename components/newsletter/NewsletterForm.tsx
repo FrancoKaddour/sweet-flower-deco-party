@@ -1,16 +1,20 @@
 "use client";
 
-import { startTransition, useActionState, useState } from "react";
+import { startTransition, useActionState } from "react";
 import Link from "next/link";
-import { CLUB, DESCUENTO_BIENVENIDA, INTERESES } from "@/content/newsletter";
+import { CLUB, DESCUENTO_BIENVENIDA, INTERESES, type Interes } from "@/content/newsletter";
 import { suscribirNewsletter, type EstadoSuscripcion } from "@/modules/newsletter/publico";
+import { Turnstile } from "@/components/captcha/Turnstile";
 
 const campo =
   "w-full border-b border-bone/30 bg-transparent py-3 text-[length:var(--text-step-0)] text-bone placeholder:text-bone/45 transition-colors focus:border-champagne focus:outline-none";
 
-export function NewsletterForm() {
+/**
+ * Formulario del Club con doble opt-in (S-13): la respuesta es siempre la misma
+ * ("revisá tu mail") y el código llega recién al confirmar desde el mail.
+ */
+export function NewsletterForm({ interes, cta }: { interes?: Interes; cta?: string } = {}) {
   const [estado, accion, pendiente] = useActionState<EstadoSuscripcion, FormData>(suscribirNewsletter, null);
-  const [copiado, setCopiado] = useState(false);
   // Con JS enviamos a mano: React 19 resetea el form tras la action y, ante un
   // error (email mal escrito), se borraba lo tipeado. action={accion} queda
   // para el envío sin JS.
@@ -20,60 +24,21 @@ export function NewsletterForm() {
     startTransition(() => accion(datos));
   };
 
-  if (estado?.ok && estado.tipo === "nuevo") {
-    const copiar = async () => {
-      try {
-        await navigator.clipboard.writeText(estado.codigo);
-        setCopiado(true);
-      } catch {
-        /* sin permiso de portapapeles: el código queda visible igual */
-      }
-    };
+  if (estado?.ok) {
     return (
       <div role="status" className="rounded-[var(--radius-lg)] border border-champagne/40 bg-ink/25 p-8 md:p-10">
-        <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">
-          {estado.nombre ? `¡Bienvenida, ${estado.nombre.split(" ")[0]}!` : "¡Ya estás adentro!"}
+        <p className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-tight text-bone">Revisá tu mail para confirmar</p>
+        <p className="mt-4 text-bone/80">
+          Te mandamos un link para confirmar tu suscripción. Cuando lo abras, te llega tu código de {DESCUENTO_BIENVENIDA}% para el primer pedido.
         </p>
-        <p className="mt-4 text-bone/85">Tu código de {DESCUENTO_BIENVENIDA}% para el primer pedido:</p>
-        <div className="mt-5 flex flex-wrap items-center gap-4">
-          <span className="rounded-[var(--radius-md)] border border-dashed border-champagne bg-bone px-5 py-3 font-mono text-[length:var(--text-step-2)] font-bold tracking-[0.12em] text-bordeaux">
-            {estado.codigo}
-          </span>
-          <button
-            type="button"
-            onClick={copiar}
-            className="inline-flex min-h-11 items-center text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone underline-offset-4 hover:underline"
-          >
-            {copiado ? "¡Copiado!" : "Copiar"}
-          </button>
-        </div>
-        <p className="mt-5 text-[length:var(--text-step--1)] leading-relaxed text-bone/70">
-          También te lo mandamos por mail. Mencionalo cuando nos mandes tu pedido por WhatsApp.
+        <p className="mt-4 text-[length:var(--text-step--1)] leading-relaxed text-bone/60">
+          ¿No aparece en unos minutos? Buscalo en Promociones o Spam.
         </p>
-        <Link
-          href="/productos"
-          className="mt-8 inline-flex items-center gap-2 border-b border-bone pb-1 text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone"
-        >
-          Elegir mis piezas <span aria-hidden="true">→</span>
-        </Link>
       </div>
     );
   }
 
-  if (estado?.ok) {
-    return (
-      <div role="status" className="rounded-[var(--radius-lg)] border border-champagne/40 bg-ink/25 p-8 md:p-10">
-        <p className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-tight text-bone">
-          {estado.tipo === "reactivado" ? "¡Qué bueno tenerte de vuelta!" : "¡Ya eras parte del club!"}
-        </p>
-        <p className="mt-4 text-bone/80">
-          {estado.tipo === "reactivado"
-            ? "Te mandamos de nuevo tu código de bienvenida por mail."
-            : "Buscá tu código de bienvenida en tu mail (revisá también Promociones o Spam)."}
-        </p>
-      </div>
-    );
-  }
+  const errorAcepto = estado?.ok === false && estado.campo === "acepto";
 
   return (
     <form action={accion} onSubmit={onSubmit} className="flex flex-col gap-6" aria-describedby="club-legal">
@@ -95,7 +60,7 @@ export function NewsletterForm() {
           spellCheck={false}
           maxLength={200}
           placeholder="nombre@email.com"
-          aria-invalid={estado?.ok === false ? true : undefined}
+          aria-invalid={estado?.ok === false && !errorAcepto ? true : undefined}
           className={campo}
         />
       </label>
@@ -107,7 +72,7 @@ export function NewsletterForm() {
         <div className="flex flex-wrap gap-2">
           {INTERESES.map((i) => (
             <label key={i.v} className="cursor-pointer">
-              <input type="checkbox" name="intereses" value={i.v} className="peer sr-only" />
+              <input type="checkbox" name="intereses" value={i.v} defaultChecked={i.v === interes} className="peer sr-only" />
               <span className="inline-flex min-h-11 items-center rounded-full border border-bone/30 px-4 text-[length:var(--text-step--1)] text-bone/80 transition-colors peer-checked:border-champagne peer-checked:bg-champagne peer-checked:text-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-champagne">
                 {i.l}
               </span>
@@ -115,6 +80,27 @@ export function NewsletterForm() {
           ))}
         </div>
       </fieldset>
+
+      {/* Consentimiento (Ley 25.326): obligatorio y registrado al confirmar. */}
+      <label className="flex cursor-pointer items-start gap-3 text-[length:var(--text-step--1)] leading-relaxed text-bone/75">
+        <input
+          type="checkbox"
+          name="acepto"
+          value="si"
+          required
+          aria-invalid={errorAcepto ? true : undefined}
+          className="mt-0.5 size-5 shrink-0 accent-[var(--color-champagne)]"
+        />
+        <span>
+          Quiero recibir los mails del club. Leí la{" "}
+          <Link href="/privacidad" className="underline decoration-bone/40 underline-offset-4 hover:decoration-champagne">
+            política de privacidad
+          </Link>
+          .
+        </span>
+      </label>
+
+      <Turnstile accion="newsletter" reiniciar={estado} />
 
       {estado?.ok === false && (
         <p role="alert" className="text-[length:var(--text-step--1)] text-champagne">
@@ -127,11 +113,11 @@ export function NewsletterForm() {
         disabled={pendiente}
         className="group inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-bone px-8 text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-ink transition-colors hover:bg-champagne disabled:opacity-60"
       >
-        {pendiente ? "Sumándote…" : `Quiero mi ${DESCUENTO_BIENVENIDA}%`}
+        {pendiente ? "Enviando…" : (cta ?? `Quiero mi ${DESCUENTO_BIENVENIDA}%`)}
         <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
       </button>
       <p id="club-legal" className="text-[length:var(--text-step--1)] leading-relaxed text-bone/55">
-        {CLUB.legal}
+        {CLUB.legal} Usamos tu email solo para el club; podés pedir acceso o baja cuando quieras.
       </p>
     </form>
   );

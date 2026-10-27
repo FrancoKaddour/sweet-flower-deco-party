@@ -809,7 +809,7 @@ export const LANDINGS: readonly Landing[] = [
       },
       {
         q: "¿Cómo me inscribo?",
-        a: "Desde la página del Event Summit: elegís el pase y lo pagás online con Mercado Pago (tarjeta, cuotas, débito o efectivo).",
+        a: "Desde la página del Event Summit: elegís el pase y lo pagás online con Mercado Pago (tarjeta de crédito en cuotas, débito o dinero en cuenta).",
       },
       {
         q: "¿Dan certificado?",

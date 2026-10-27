@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pageMetadata } from "@/lib/site";
+import { pageMetadata, RECARGO_MP_TEXTO } from "@/lib/site";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/site/JsonLd";
 
 import { FadeUp } from "@/components/motion/FadeUp";
@@ -20,7 +20,7 @@ export const metadata: Metadata = pageMetadata({
 const FAQS = [
   {
     q: "¿Cuáles son las formas de pago?",
-    a: "Transferencia bancaria o Mercado Pago. El precio de catálogo es sin recargo; si pagás con Mercado Pago se suma el recargo habitual (~18%).",
+    a: `Transferencia bancaria o Mercado Pago. El precio publicado es por transferencia; con link de Mercado Pago se suma un ${RECARGO_MP_TEXTO}.`,
   },
   {
     q: "¿Hacen envíos a todo el país?",

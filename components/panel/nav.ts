@@ -22,7 +22,7 @@ export const PANEL_NAV: NavItem[] = [
     label: "Inicio",
     href: "/panel",
     icon: IconInicio,
-    descripcion: "Resumen del catálogo y accesos rápidos.",
+    descripcion: "Cómo viene el negocio hoy.",
   },
   {
     label: "Pedidos",
@@ -48,7 +48,7 @@ export const PANEL_NAV: NavItem[] = [
     label: "Summit",
     href: "/panel/summit",
     icon: IconComunidad,
-    descripcion: "Reservas al Event Summit.",
+    descripcion: "Inscripciones, pagos y acreditación del Event Summit.",
     pendientes: "inscripciones",
   },
   {

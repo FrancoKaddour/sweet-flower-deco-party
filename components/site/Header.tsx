@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
 import { lockScroll } from "@/lib/scroll-lock";
-import { MAIN_NAV, CONTACTO_LINK } from "@/content/site";
+import { MAIN_NAV, CONTACTO_LINK, CONTACTO_LINKS, WHATSAPP_HREF } from "@/content/site";
+import { track } from "@/lib/analytics";
 
 // Menú del Header = navegación principal + Contacto al final.
 const NAV = [...MAIN_NAV, CONTACTO_LINK];
+const INSTAGRAM_HREF =
+  CONTACTO_LINKS.find((l) => l.label === "Instagram")?.href ??
+  "https://www.instagram.com/sweetflowersdecoparty/";
 
 // Páginas cuyo hero es OSCURO (video/foto): estimación INICIAL del tono (antes
 // de la primera medición, p. ej. en el HTML servido). Después manda el detector.
@@ -90,7 +94,7 @@ function toneAt(x: number, y: number, header: HTMLElement): Tone | null {
   // (congelaba /event-summit en "El camino hasta acá").
   const spacers = new Set<Element>();
   let guard = 0;
-  while (el && el !== document.documentElement && guard++ < 64) {
+  while (el && el !== document.documentElement && guard++ < 32) {
     // Sección pineada por ScrollTrigger: el hueco que se ve es el pin-spacer;
     // el tono es el de la sección pineada (su primer hijo).
     if (
@@ -152,7 +156,6 @@ export function Header() {
   const liberarScroll = useRef<(() => void) | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
-  const mounted = useRef(false);
 
   // Hover logo (solo cuando scrolled): "Sweet" ←, "Flowers" → desde el centro.
   const logoWrapRef = useRef<HTMLAnchorElement>(null);
@@ -220,18 +223,34 @@ export function Header() {
     };
   }, []);
 
-  // 1b) Detector de fondo (ver toneAt): mide bajo cada zona del header en cada
-  //     scroll (1 vez por frame), al cambiar de tamaño/ruta y con un pulso
-  //     lento de respaldo (secciones pineadas, transiciones de color).
+  // 1b) Detector de fondo (ver toneAt): mide bajo cada zona del header solo
+  //     cuando hace falta — scroll/resize (1 vez por frame), cambio de ruta y
+  //     refresh de ScrollTrigger (pins). Sin pulso periódico (T-01/D-03).
   useEffect(() => {
     let raf = 0;
+    const setAll = (t: Tone) =>
+      setTones((prev) =>
+        prev.l === t && prev.c === t && prev.r === t && prev.g === t
+          ? prev
+          : { l: t, c: t, r: t, g: t },
+      );
     const measure = () => {
       raf = 0;
       const header = headerRef.current;
       if (!header) return;
-      const zones = [zoneLeftRef.current, logoWrapRef.current, zoneRightRef.current];
       const hr = header.getBoundingClientRect();
       const y = hr.top + hr.height / 2;
+      // D-03: sobre el hero del inicio (video oscuro) el tono es SIEMPRE claro
+      // mientras el hero siga debajo del header → determinista, no depende de
+      // qué frame del video esté pasando.
+      if (pathname === "/") {
+        const hero = document.querySelector(".c-hero");
+        if (hero && hero.getBoundingClientRect().bottom > y) {
+          setAll("light");
+          return;
+        }
+      }
+      const zones = [zoneLeftRef.current, logoWrapRef.current, zoneRightRef.current];
       const res = zones.map((z) => {
         if (!z) return null;
         const r = z.getBoundingClientRect();
@@ -255,15 +274,16 @@ export function Header() {
       if (!raf) raf = requestAnimationFrame(measure);
     };
     schedule();
+    // La página nueva termina de armarse (pins, imágenes) en el primer segundo.
     const timers = [120, 450, 1000, 1800].map((ms) => window.setTimeout(schedule, ms));
-    const pulse = window.setInterval(schedule, 900);
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    ScrollTrigger.addEventListener("refresh", schedule);
     return () => {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      ScrollTrigger.removeEventListener("refresh", schedule);
       timers.forEach((t) => window.clearTimeout(t));
-      window.clearInterval(pulse);
       cancelAnimationFrame(raf);
     };
   }, [pathname]);
@@ -273,167 +293,129 @@ export function Header() {
   const toneC = scrolled ? tones.g : tones.c;
   const toneR = scrolled ? tones.g : tones.r;
 
-  // 2) Overlay: UNA timeline que va hacia adelante al abrir y en REVERSA al
-  //    cerrar → el cierre es exactamente la inversa de la caída de pilares, y
-  //    si se interrumpe a mitad (abrir/cerrar rápido) continúa desde donde está.
-  //    "Cerrar" aparece recién cuando el pilar ya tapó el botón "Menú", y al
-  //    cerrar desaparece justo cuando ese pilar se retira de esa posición.
-  const PILLAR_DUR = 0.55;
-  const PILLAR_STAGGER = 0.055;
-  const PILLAR_EASE = "power4.inOut";
+  // 2) Overlay: UNA timeline (ver buildMenuTimeline) que va hacia adelante al
+  //    abrir y en REVERSA al cerrar. T-11: se arma en idle (después de montar,
+  //    al cambiar el tamaño o el estado "scrolled") → el click solo hace play().
+  const openRef = useRef(false);
+  const liberarInert = useRef<(() => void) | null>(null);
+  const everOpened = useRef(false);
 
-  const buildMenuTimeline = () => {
+  const construir = useCallback(() => {
     const el = overlayRef.current;
     if (!el) return null;
-    const links = el.querySelectorAll(".menu-link");
-    const pillars = el.querySelectorAll<HTMLElement>(".menu-pillar");
-    const fades = el.querySelectorAll(".menu-fade");
-    const logo = el.querySelector(".menu-logo-img");
-    const closeBtn = closeButtonRef.current;
-    const menuBtn = menuButtonRef.current;
-
-    // ¿En qué momento el pilar que está sobre el botón "Menú" termina de taparlo?
-    // Se calcula con la posición real del botón → exacto en cualquier viewport.
-    let tCover = PILLAR_DUR * 0.5;
-    if (menuBtn && pillars.length) {
-      const r = menuBtn.getBoundingClientRect();
-      const idx = Math.min(
-        pillars.length - 1,
-        Math.max(0, Math.floor(((r.left + r.right) / 2 / window.innerWidth) * pillars.length)),
-      );
-      const target = Math.min(1, (r.bottom + 6) / window.innerHeight); // fracción de alto a cubrir
-      const ease = gsap.parseEase(PILLAR_EASE);
-      let lo = 0;
-      let hi = 1;
-      for (let i = 0; i < 20; i++) {
-        const mid = (lo + hi) / 2;
-        if (ease(mid) < target) lo = mid;
-        else hi = mid;
-      }
-      tCover = idx * PILLAR_STAGGER + hi * PILLAR_DUR;
+    // Abierto o a mitad de camino: no se toca la timeline en curso.
+    if (openRef.current || (menuTl.current && menuTl.current.progress() > 0)) {
+      return menuTl.current;
     }
-    const pillarsEnd = (pillars.length - 1) * PILLAR_STAGGER + PILLAR_DUR;
-
-    const tl = gsap.timeline({ paused: true });
-    tl.set(el, { autoAlpha: 1 }, 0)
-      // Pilares caen en cascada (dominó) — en reversa suben en el orden inverso.
-      .fromTo(
-        pillars,
-        { scaleY: 0, transformOrigin: "top center" },
-        { scaleY: 1, duration: PILLAR_DUR, ease: PILLAR_EASE, stagger: PILLAR_STAGGER },
-        0,
-      )
-      // "Cerrar" nace recién cuando el botón "Menú" ya quedó tapado.
-      .fromTo(
-        closeBtn,
-        { autoAlpha: 0, yPercent: 40 },
-        { autoAlpha: 1, yPercent: 0, duration: 0.3, ease: "power3.out" },
-        tCover,
-      )
-      // Links suben desde debajo de su máscara
-      .fromTo(
-        links,
-        { yPercent: 110, autoAlpha: 0 },
-        { yPercent: 0, autoAlpha: 1, duration: 0.6, ease: "power3.out", stagger: PILLAR_STAGGER },
-        pillarsEnd - 0.35,
-      )
-      // Logo: reveal en máscara desde abajo
-      .fromTo(
-        logo,
-        { yPercent: 105 },
-        { yPercent: 0, duration: 0.9, ease: "expo.out" },
-        pillarsEnd - 0.2,
-      )
-      // Hairlines + barra inferior
-      .fromTo(
-        fades,
-        { autoAlpha: 0 },
-        { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
-        pillarsEnd - 0.1,
-      );
-
-    tl.eventCallback("onComplete", () => {
-      // Foco al primer elemento del diálogo, recién cuando es visible.
-      closeBtn?.focus();
-    });
-    tl.eventCallback("onReverseComplete", () => {
-      // Recién con el menú totalmente retirado se libera el scroll (sin saltos
-      // de layout a mitad de la animación).
-      liberarScroll.current?.();
-      liberarScroll.current = null;
-      startLenis();
-    });
-    return tl;
-  };
-
-  useEffect(() => {
-    const el = overlayRef.current;
-    if (!el) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (!mounted.current) {
-      gsap.set(el, { autoAlpha: 0 });
-      mounted.current = true;
-      return;
-    }
-
-    if (open) {
-      // iOS: overflow:hidden solo no frena el arrastre táctil → lockScroll.
-      if (!liberarScroll.current) liberarScroll.current = lockScroll();
-      stopLenis();
-      // Si estaba cerrándose, retoma desde ahí; si no, se arma de cero
-      // (recalcula la posición del botón por si cambió el viewport).
-      if (!menuTl.current || menuTl.current.progress() === 0) {
-        menuTl.current?.kill();
-        menuTl.current = buildMenuTimeline();
-      }
-      const tl = menuTl.current;
-      if (!tl) return;
-      if (reduce) tl.progress(1);
-      else tl.timeScale(1).play();
-    } else {
-      const tl = menuTl.current;
-      if (!tl) return;
-      if (reduce) {
-        tl.progress(0);
+    menuTl.current?.kill();
+    menuTl.current = buildMenuTimeline(el, closeButtonRef.current, menuButtonRef.current, {
+      // T-11: el bloqueo de scroll entra con el primer frame, no en el click.
+      onStart: () => {
+        if (!liberarScroll.current) liberarScroll.current = lockScroll();
+      },
+      onReverseComplete: () => {
+        // Recién con el menú totalmente retirado se libera el scroll (sin
+        // saltos de layout a mitad de la animación).
+        gsap.set(el, { autoAlpha: 0 });
         liberarScroll.current?.();
         liberarScroll.current = null;
         startLenis();
-      }
-      // Cierre = la misma coreografía en reversa, un poco más ágil.
-      else tl.timeScale(1.3).reverse();
-    }
-    // buildMenuTimeline lee solo refs → no necesita ser dependencia.
-  }, [open]);
-
-  useEffect(() => () => {
-    menuTl.current?.kill();
-    liberarScroll.current?.();
-    liberarScroll.current = null;
+      },
+    });
+    return menuTl.current;
   }, []);
 
-  // 3) Gestión de foco: al abrir movemos el foco dentro del overlay y al
-  //    cerrar lo devolvemos al botón "Menú" que lo disparó.
-  //    No se ejecuta en el montaje inicial (mounted.current sigue en false).
-  //    (Solo después de haberlo abierto: antes, al montar, el efecto le daba
-  //    foco al botón "Menú" en cada carga y quedaba el anillo de foco visible.)
-  const everOpened = useRef(false);
+  useEffect(() => {
+    const ric: (cb: () => void) => number =
+      typeof window.requestIdleCallback === "function"
+        ? (cb) => window.requestIdleCallback(cb, { timeout: 1500 })
+        : (cb) => window.setTimeout(cb, 200);
+    const cic: (h: number) => void =
+      typeof window.cancelIdleCallback === "function"
+        ? (h) => window.cancelIdleCallback(h)
+        : (h) => window.clearTimeout(h);
+    let idle = 0;
+    let t = 0;
+    const programar = () => {
+      cic(idle);
+      idle = ric(() => {
+        construir();
+      });
+    };
+    programar();
+    const onResize = () => {
+      window.clearTimeout(t);
+      t = window.setTimeout(programar, 250);
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      cic(idle);
+      window.clearTimeout(t);
+      window.removeEventListener("resize", onResize);
+    };
+    // scrolled cambia la posición del botón "Menú" → se rearma en idle.
+  }, [construir, scrolled]);
+
   useEffect(() => {
     const el = overlayRef.current;
+    if (el) gsap.set(el, { autoAlpha: 0 });
+    return () => {
+      menuTl.current?.kill();
+      liberarScroll.current?.();
+      liberarScroll.current = null;
+      liberarInert.current?.();
+      liberarInert.current = null;
+    };
+  }, []);
+
+  // 3) Abrir / cerrar + foco (T-07). useLayoutEffect: corre apenas React sacó
+  //    el `inert` del overlay, antes de pintar → el foco entra en "Cerrar" de
+  //    inmediato (aunque visualmente aparezca después) y el resto de la página
+  //    queda `inert` mientras el menú está abierto.
+  useLayoutEffect(() => {
+    const el = overlayRef.current;
+    openRef.current = open;
     if (!el) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (open) {
       everOpened.current = true;
-      // Guardamos el elemento que tenía el foco (normalmente el botón "Menú").
       previousFocus.current = document.activeElement as HTMLElement | null;
-      // El foco entra al overlay desde la timeline (onComplete), cuando
-      // "Cerrar" ya es visible y focuseable.
+      stopLenis();
+      const tl = menuTl.current ?? construir();
+      gsap.set(el, { autoAlpha: 1 });
+      liberarInert.current?.();
+      liberarInert.current = inertFondo(el);
+      if (tl) {
+        if (reduce) {
+          if (!liberarScroll.current) liberarScroll.current = lockScroll();
+          tl.progress(1);
+        } else {
+          tl.timeScale(1).play();
+        }
+      }
+      closeButtonRef.current?.focus({ preventScroll: true });
     } else if (everOpened.current) {
-      // Al cerrar devolvemos el foco al botón que abrió el menú (sin scroll).
+      liberarInert.current?.();
+      liberarInert.current = null;
+      const tl = menuTl.current;
+      if (tl) {
+        if (reduce) {
+          tl.progress(0);
+          gsap.set(el, { autoAlpha: 0 });
+          liberarScroll.current?.();
+          liberarScroll.current = null;
+          startLenis();
+        } else {
+          // Cierre = la misma coreografía en reversa, un poco más ágil.
+          tl.timeScale(1.3).reverse();
+        }
+      }
+      // Devolvemos el foco al botón que abrió el menú (sin scroll).
       (previousFocus.current ?? menuButtonRef.current)?.focus({ preventScroll: true });
       previousFocus.current = null;
     }
-  }, [open]);
+  }, [open, construir]);
 
   // Cerrar con Escape
   useEffect(() => {
@@ -445,34 +427,42 @@ export function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // 4) Focus trap: mientras el menú está abierto, Tab/Shift+Tab ciclan solo
-  //    dentro del overlay (primer ↔ último elemento focusable).
-  const onOverlayKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const cerrarMenu = useCallback(() => setOpen(false), []);
+
+  // 4) Focus trap: Tab/Shift+Tab ciclan dentro del overlay (el resto ya está
+  //    inert; esto evita que el foco se vaya a la barra del navegador).
+  const onOverlayKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== "Tab") return;
     const el = overlayRef.current;
     if (!el) return;
     const focusables = Array.from(
-      el.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+      el.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
     );
     if (focusables.length === 0) return;
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
     const active = document.activeElement;
-
     if (e.shiftKey) {
-      // Shift+Tab desde el primero → saltar al último.
       if (active === first || !el.contains(active)) {
         e.preventDefault();
         last.focus();
       }
-    } else {
-      // Tab desde el último → volver al primero.
-      if (active === last || !el.contains(active)) {
-        e.preventDefault();
-        first.focus();
-      }
+    } else if (active === last || !el.contains(active)) {
+      e.preventDefault();
+      first.focus();
     }
-  };
+  }, []);
+
+  // T-07: si el foco llega a un link mientras el stagger todavía corre, se
+  // completa la entrada → el link enfocado siempre se ve.
+  const onOverlayFocus = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
+    const t = e.target as HTMLElement;
+    if (!t.classList.contains("menu-link")) return;
+    const tl = menuTl.current;
+    if (tl && !tl.reversed() && tl.progress() < 1) tl.progress(1);
+    // El <li> es overflow-hidden: el foco pudo haberlo scrolleado.
+    if (t.parentElement) t.parentElement.scrollTop = 0;
+  }, []);
 
   return (
     <>
@@ -491,6 +481,14 @@ export function Header() {
             : "border-transparent bg-bone/0"
         } ${open ? "pointer-events-none" : ""}`}
       >
+        {/* D-03: degradé superior sutil sobre héroes oscuros (inicio, Summit) →
+            el contraste del logo y de "Menú" no depende del frame del video. */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-x-0 top-0 -z-10 h-[calc(100%+3rem)] bg-linear-to-b from-ink/45 via-ink/15 to-transparent transition-opacity duration-600 ease-(--ease-out-quart) ${
+            !scrolled && tones.g === "light" ? "opacity-100" : "opacity-0"
+          }`}
+        />
         <div
           className={`relative mx-auto grid max-w-360 grid-cols-[1fr_auto_1fr] items-center px-6 transition-[padding] duration-600 ease-(--ease-out-quart) md:px-10 ${
             scrolled ? "py-2.5" : "py-4 [@media(max-height:30rem)]:py-2"
@@ -626,11 +624,45 @@ export function Header() {
         </div>
       </header>
 
-      {/* Menú overlay full-screen */}
-      <div
+      {/* Menú overlay full-screen (memoizado: no se re-renderiza con el scroll) */}
+      <MenuOverlay
+        open={open}
+        wasScrolled={wasScrolled}
+        onClose={cerrarMenu}
+        onKeyDown={onOverlayKeyDown}
+        onFocusCapture={onOverlayFocus}
+        overlayRef={overlayRef}
+        closeButtonRef={closeButtonRef}
+      />
+    </>
+  );
+}
+
+type MenuOverlayProps = {
+  open: boolean;
+  wasScrolled: boolean;
+  onClose: () => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
+  onFocusCapture: (e: React.FocusEvent<HTMLDivElement>) => void;
+  overlayRef: React.RefObject<HTMLDivElement | null>;
+  closeButtonRef: React.RefObject<HTMLButtonElement | null>;
+};
+
+const MenuOverlay = memo(function MenuOverlay({
+  open,
+  wasScrolled,
+  onClose,
+  onKeyDown,
+  onFocusCapture,
+  overlayRef,
+  closeButtonRef,
+}: MenuOverlayProps) {
+  return (
+            <div
         ref={overlayRef}
         id="menu-overlay"
-        onKeyDown={onOverlayKeyDown}
+        onKeyDown={onKeyDown}
+        onFocusCapture={onFocusCapture}
         className={`invisible fixed inset-0 z-60 flex flex-col overflow-hidden opacity-0 ${
           open ? "pointer-events-auto" : "pointer-events-none"
         }`}
@@ -656,9 +688,9 @@ export function Header() {
             <button
               type="button"
               ref={closeButtonRef}
-              onClick={() => setOpen(false)}
+              onClick={onClose}
               aria-label="Cerrar menú"
-              className="invisible opacity-0 group -my-2 inline-flex min-h-11 items-center gap-2.5 py-2 text-[0.72rem] font-medium uppercase tracking-[0.14em] text-bone/70 transition-colors hover:text-bone"
+              className="opacity-0 group -my-2 inline-flex min-h-11 items-center gap-2.5 py-2 text-[0.72rem] font-medium uppercase tracking-[0.14em] text-bone/70 transition-colors hover:text-bone"
             >
               Cerrar
               <span className="flex w-5 items-center justify-center">
@@ -678,7 +710,7 @@ export function Header() {
                   <li key={item.href} className="overflow-hidden">
                     <Link
                       href={item.href}
-                      onClick={() => setOpen(false)}
+                      onClick={onClose}
                       className="menu-link group flex items-baseline gap-4 py-1 font-display text-(length:--text-step-4) font-extrabold uppercase leading-[1.05] text-bone/70 transition-colors duration-300 hover:text-bone md:text-(length:--text-step-5) [@media(max-height:30rem)]:text-(length:--text-step-3)"
                     >
                       <span className="font-sans text-(length:--text-step--1) font-normal text-champagne">
@@ -713,10 +745,127 @@ export function Header() {
           {/* Barra inferior */}
           <div className="menu-fade mx-auto flex w-full max-w-360 flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-6 text-[0.72rem] [@media(max-height:30rem)]:hidden uppercase tracking-[0.12em] text-bone/50 md:px-10">
             <span>Decoración de eventos · Argentina</span>
-            <span>Instagram · WhatsApp · Email</span>
+            <ul className="-mx-2 flex items-center">
+              <li>
+                <a
+                  href={INSTAGRAM_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-bone"
+                >
+                  Instagram<span className="sr-only"> (se abre en otra pestaña)</span>
+                </a>
+              </li>
+              <li aria-hidden="true">·</li>
+              <li>
+                <a
+                  href={WHATSAPP_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => track("wa_contact_click", { origen: "menu" })}
+                  className="inline-flex min-h-11 items-center px-2 transition-colors hover:text-bone"
+                >
+                  WhatsApp<span className="sr-only"> (se abre en otra pestaña)</span>
+                </a>
+              </li>
+              {/* TODO(contenido): Email cuando Flor confirme la casilla (sin mail confirmado no se muestra). */}
+            </ul>
           </div>
         </div>
       </div>
-    </>
   );
+});
+
+/* ---------------------------------------------------------------------------
+ * Timeline del menú: caída de pilares en cascada (en reversa suben en orden
+ * inverso). Todo con opacity (no visibility) → "Cerrar" y los links son
+ * enfocables desde el primer instante (T-07).
+ * ------------------------------------------------------------------------- */
+const PILLAR_DUR = 0.55;
+const PILLAR_STAGGER = 0.055;
+const PILLAR_EASE = "power4.inOut";
+
+function buildMenuTimeline(
+  el: HTMLElement,
+  closeBtn: HTMLElement | null,
+  menuBtn: HTMLElement | null,
+  cb: { onStart: () => void; onReverseComplete: () => void },
+): gsap.core.Timeline {
+  const links = el.querySelectorAll(".menu-link");
+  const pillars = el.querySelectorAll<HTMLElement>(".menu-pillar");
+  const fades = el.querySelectorAll(".menu-fade");
+  const logo = el.querySelector(".menu-logo-img");
+
+  // ¿En qué momento el pilar que está sobre el botón "Menú" termina de taparlo?
+  // Se calcula con la posición real del botón → exacto en cualquier viewport.
+  let tCover = PILLAR_DUR * 0.5;
+  if (menuBtn && pillars.length) {
+    const r = menuBtn.getBoundingClientRect();
+    const idx = Math.min(
+      pillars.length - 1,
+      Math.max(0, Math.floor(((r.left + r.right) / 2 / window.innerWidth) * pillars.length)),
+    );
+    const target = Math.min(1, (r.bottom + 6) / window.innerHeight);
+    const ease = gsap.parseEase(PILLAR_EASE);
+    let lo = 0;
+    let hi = 1;
+    for (let i = 0; i < 20; i++) {
+      const mid = (lo + hi) / 2;
+      if (ease(mid) < target) lo = mid;
+      else hi = mid;
+    }
+    tCover = idx * PILLAR_STAGGER + hi * PILLAR_DUR;
+  }
+  const pillarsEnd = (pillars.length - 1) * PILLAR_STAGGER + PILLAR_DUR;
+
+  const tl = gsap.timeline({ paused: true });
+  tl.set(el, { autoAlpha: 1 }, 0)
+    .fromTo(
+      pillars,
+      { scaleY: 0, transformOrigin: "top center" },
+      { scaleY: 1, duration: PILLAR_DUR, ease: PILLAR_EASE, stagger: PILLAR_STAGGER },
+      0,
+    );
+  // "Cerrar" nace recién cuando el botón "Menú" ya quedó tapado.
+  if (closeBtn) {
+    tl.fromTo(
+      closeBtn,
+      { opacity: 0, yPercent: 40 },
+      { opacity: 1, yPercent: 0, duration: 0.3, ease: "power3.out" },
+      tCover,
+    );
+  }
+  tl.fromTo(
+    links,
+    { yPercent: 110, opacity: 0 },
+    { yPercent: 0, opacity: 1, duration: 0.6, ease: "power3.out", stagger: PILLAR_STAGGER },
+    pillarsEnd - 0.35,
+  );
+  if (logo) {
+    tl.fromTo(logo, { yPercent: 105 }, { yPercent: 0, duration: 0.9, ease: "expo.out" }, pillarsEnd - 0.2);
+  }
+  tl.fromTo(fades, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power2.out" }, pillarsEnd - 0.1);
+  tl.eventCallback("onStart", cb.onStart);
+  tl.eventCallback("onReverseComplete", cb.onReverseComplete);
+  return tl;
+}
+
+/**
+ * Deja `inert` todo lo que no sea el overlay (hermanos en cada nivel hasta el
+ * <body>: main, footer, el resto del header, flotantes). Devuelve cómo deshacerlo.
+ */
+function inertFondo(keep: Element): () => void {
+  const tocados: Element[] = [];
+  let node: Element = keep;
+  while (node.parentElement && node !== document.body) {
+    const parent: HTMLElement = node.parentElement;
+    for (const sib of Array.from(parent.children)) {
+      if (sib === node || sib.hasAttribute("inert")) continue;
+      if (/^(SCRIPT|STYLE|TEMPLATE|NOSCRIPT|NEXT-ROUTE-ANNOUNCER)$/.test(sib.tagName)) continue;
+      sib.setAttribute("inert", "");
+      tocados.push(sib);
+    }
+    node = parent;
+  }
+  return () => tocados.forEach((n) => n.removeAttribute("inert"));
 }

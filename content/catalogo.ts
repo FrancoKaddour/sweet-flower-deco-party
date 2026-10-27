@@ -58,6 +58,23 @@ export const CATEGORIAS: readonly Categoria[] = [
     incluye: ["Fundas para aros", "Fundas para arcadas", "Fundas para mesas", "Telas y pisos"],
     img: "/productos/funda-aro-2m.jpg",
   },
+] as const;
+
+/**
+ * Categorías OCULTAS del sitio (E-09): Flor pidió por escrito no publicar MDF ni
+ * madera/pino (docs/CONTENIDO_FLOR.md §3). No se borran: el seed las crea
+ * ocultas y scripts/actualizaciones.ts ("2026-10-27-ocultar-mdf-madera") ocultó
+ * en la base la categoría y sus productos.
+ *
+ * CÓMO VOLVER A MOSTRARLAS:
+ *  - En la base (lo que ve el sitio): Panel → Productos → Categorías → MDF /
+ *    Madera → "Visible en el sitio"; después Panel → Productos → filtro
+ *    "Ocultos" → prender "Visible" en los que se quieran publicar. (Un producto
+ *    visible en una categoría oculta NO se publica.)
+ *  - En el respaldo estático (solo si la base se cae): mover el bloque de abajo
+ *    al array CATEGORIAS de arriba.
+ */
+export const CATEGORIAS_OCULTAS: readonly Categoria[] = [
   {
     slug: "mdf",
     linea: "ambientacion",

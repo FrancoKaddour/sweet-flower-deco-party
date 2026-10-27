@@ -19,26 +19,36 @@ function partsUntil(target: number): Parts {
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
- * Cuenta regresiva en vivo hasta el evento (18/09). Client-only para evitar
+ * Cuenta regresiva en vivo hasta `target` (por defecto, el evento). En el hero
+ * del Summit apunta al fin de la preventa vigente. Client-only para evitar
  * mismatch de hidratación: hasta montar muestra "—". Actualiza cada segundo.
  * Los números no "animan" (es info, no decoración) → sirve con reduced-motion.
  */
-export function Countdown({ className = "" }: { className?: string }) {
+export function Countdown({
+  className = "",
+  target = EVENT_DATE_ISO,
+  label = "Cuenta regresiva hasta el evento",
+}: {
+  className?: string;
+  /** Fecha ISO a la que cuenta. */
+  target?: string | null;
+  label?: string;
+}) {
   const [parts, setParts] = useState<Parts | null>(null);
 
   useEffect(() => {
-    if (!EVENT_DATE_ISO) return;
-    const target = new Date(EVENT_DATE_ISO).getTime();
-    const tick = () => setParts(partsUntil(target));
+    if (!target) return;
+    const t = new Date(target).getTime();
+    const tick = () => setParts(partsUntil(t));
     tick();
     const id = window.setInterval(tick, 1000);
     return () => window.clearInterval(id);
-  }, []);
+  }, [target]);
 
   // Sin fecha confirmada (o ya pasada) no hay cuenta regresiva. El "ya pasó"
   // se evalúa con el estado del efecto (Date.now en render rompe la pureza).
   const vencido = parts !== null && parts.d + parts.h + parts.m + parts.s === 0;
-  if (!EVENT_DATE_ISO || vencido) return null;
+  if (!target || vencido) return null;
 
   const units: { value: number | null; label: string }[] = [
     { value: parts?.d ?? null, label: "Días" },
@@ -51,7 +61,7 @@ export function Countdown({ className = "" }: { className?: string }) {
     <div
       className={`flex items-start gap-2.5 min-[360px]:gap-3.5 sm:gap-6 ${className}`}
       role="timer"
-      aria-label="Cuenta regresiva hasta el evento"
+      aria-label={label}
     >
       {units.map((u, i) => (
         <div key={u.label} className="flex items-start gap-2.5 min-[360px]:gap-3.5 sm:gap-6">

@@ -32,6 +32,19 @@ export default async function PedidoPage({ params }: { params: Promise<{ id: str
   const estado = infoEstado(ESTADOS_PEDIDO, p.estado);
   const saludo = `${MENSAJE[p.estado] ?? MENSAJE.nuevo} ${p.codigo}${p.estado === "entregado" ? "?" : "."}`;
   const esAdmin = user.role === "admin" || user.role === "superadmin";
+  // Campos que suma el frente F (migración 0005): se muestran solo si existen.
+  const x = p as unknown as { fechaEvento?: unknown; pago?: string | null; codigoClub?: string | null; origen?: string | null; userId?: string | null };
+  const fecha = x.fechaEvento instanceof Date ? fechaLarga(x.fechaEvento) : x.fechaEvento ? String(x.fechaEvento) : null;
+  const PAGO_L: Record<string, string> = { transferencia: "Transferencia", mercadopago: "Mercado Pago" };
+  const extras = (
+    [
+      ["Fecha del evento", fecha],
+      ["Forma de pago", x.pago ? (PAGO_L[x.pago] ?? x.pago) : null],
+      ["Código del Club", x.codigoClub ?? null],
+      ["Llegó desde", x.origen ?? null],
+      ["Cuenta", x.userId ? "Pidió con su cuenta del sitio" : null],
+    ] as [string, string | null][]
+  ).filter((e): e is [string, string] => Boolean(e[1]));
 
   return (
     <div className="flex flex-col gap-10">
@@ -71,11 +84,21 @@ export default async function PedidoPage({ params }: { params: Promise<{ id: str
             <li className="flex items-baseline justify-between gap-4 bg-sand/50 px-5 py-4">
               <span className="font-medium uppercase tracking-[0.1em] text-ink">Total (transferencia)</span>
               <span className="font-display text-[length:var(--text-step-1)] font-bold tabular-nums text-ink">
-                {formatARS(p.total)}
-                {p.hayConsultar && <span className="block text-right text-[length:var(--text-step--1)] font-normal text-muted">+ productos a consultar</span>}
+                {p.total === 0 && p.hayConsultar ? "A cotizar" : formatARS(p.total)}
+                {p.hayConsultar && p.total > 0 && <span className="block text-right text-[length:var(--text-step--1)] font-normal text-muted">+ productos a consultar</span>}
               </span>
             </li>
           </ul>
+          {extras.length > 0 && (
+            <dl className="grid grid-cols-1 gap-x-6 gap-y-3 rounded-[var(--radius-md)] border border-line bg-cloud px-5 py-4 sm:grid-cols-2">
+              {extras.map(([l, v]) => (
+                <div key={l}>
+                  <dt className="text-[length:var(--text-step--1)] text-muted">{l}</dt>
+                  <dd className="text-ink">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
           {p.nota && (
             <div className="rounded-[var(--radius-md)] border border-line bg-cloud px-5 py-4">
               <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-muted">Comentario del cliente</p>

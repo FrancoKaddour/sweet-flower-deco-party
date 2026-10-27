@@ -6,6 +6,9 @@ import { PanelButton } from "@/components/panel/PanelButton";
 import { Badge } from "@/components/panel/Badge";
 import { SinBase } from "@/components/panel/SinBase";
 import { Alternar } from "@/components/panel/catalogo/Alternar";
+import { OrdenProducto, PrecioInline, RestaurarProducto } from "@/components/panel/catalogo/ProductoAcciones";
+import { AumentoPrecios } from "@/components/panel/catalogo/AumentoPrecios";
+import { puede } from "@/modules/ventas/estados";
 import { inputCls } from "@/components/panel/catalogo/campos";
 import { Paginacion } from "@/components/ui/Paginacion";
 import { hasDb } from "@/db";
@@ -24,6 +27,7 @@ const ESTADOS: { v: NonNullable<FiltroProductos["estado"]>; l: string }[] = [
   { v: "destacados", l: "Destacados" },
   { v: "sin-foto", l: "Sin foto" },
   { v: "sin-precio", l: "Sin precio" },
+  { v: "papelera", l: "Papelera" },
 ];
 
 export default async function ProductosPage({
@@ -31,7 +35,7 @@ export default async function ProductosPage({
 }: {
   searchParams: Promise<{ q?: string; cat?: string; estado?: string; borrado?: string; pagina?: string }>;
 }) {
-  await requireStaff();
+  const user = await requireStaff();
   const sp = await searchParams;
   const header = (
     <PageHeader
@@ -51,15 +55,14 @@ export default async function ProductosPage({
   if (!hasDb()) return <div className="flex flex-col gap-8">{header}<SinBase /></div>;
 
   const estado = ESTADOS.find((e) => e.v === sp.estado)?.v;
-  const [todos, categorias] = await Promise.all([
-    listarProductosPanel({ q: sp.q?.slice(0, 80), categoria: sp.cat, estado }),
+  // Con una categoría elegida y sin otros filtros se puede reordenar (↑↓): se muestran todos juntos.
+  const ordenable = Boolean(sp.cat) && !sp.q && !estado;
+  const [lista, categorias] = await Promise.all([
+    listarProductosPanel({ q: sp.q?.slice(0, 80), categoria: sp.cat, estado, pagina: Number(sp.pagina) || 1, porPagina: ordenable ? 200 : 25 }),
     listarCategoriasPanel(),
   ]);
-  // Paginación (25 por página). La página vive en la URL junto con los filtros.
-  const POR_PAGINA = 25;
-  const totalPaginas = Math.max(1, Math.ceil(todos.length / POR_PAGINA));
-  const pagina = Math.min(Math.max(1, Number(sp.pagina) || 1), totalPaginas);
-  const productos = todos.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
+  const { filas: productos, total, pagina, paginas: totalPaginas } = lista;
+  const papelera = estado === "papelera";
   const hrefPagina = (n: number) => {
     const q = new URLSearchParams();
     if (sp.q) q.set("q", sp.q);
@@ -74,10 +77,11 @@ export default async function ProductosPage({
     <div className="flex flex-col gap-8">
       {header}
       {sp.borrado && (
-        <p role="status" className="rounded-[var(--radius-md)] border border-line bg-cloud px-4 py-3 text-muted">
-          Producto borrado.
+        <p role="status" className="rounded-[var(--radius-md)] border border-line bg-cloud px-4 py-3 text-ink">
+          Producto enviado a la papelera. Lo podés restaurar desde el filtro “Papelera”.
         </p>
       )}
+      {puede(user.role, "preciosMasivos") && !papelera && <AumentoPrecios categorias={categorias.map((c) => ({ id: c.id, nombre: c.nombre }))} />}
 
       {/* Filtros (GET → se pueden compartir/guardar como link) */}
       <form className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto_auto]" role="search">
@@ -104,8 +108,11 @@ export default async function ProductosPage({
       </form>
 
       <p className="text-[length:var(--text-step--1)] text-muted">
-        {todos.length} producto{todos.length === 1 ? "" : "s"}
+        {total} producto{total === 1 ? "" : "s"}
+        {papelera ? " en la papelera" : ""}
         {totalPaginas > 1 && ` · página ${pagina} de ${totalPaginas}`}
+        {ordenable && " · usá ↑↓ para cambiar el orden en el sitio"}
+        {sp.cat && !ordenable && !papelera && " · para reordenar, elegí solo la categoría (sin búsqueda ni estado)"}
       </p>
 
       {/* Desktop/tablet ancha: tabla. En < md cada fila se reacomoda como tarjeta
@@ -125,7 +132,7 @@ export default async function ProductosPage({
             </tr>
           </thead>
           <tbody className="divide-y divide-line max-md:block">
-            {productos.map((p) => (
+            {productos.map((p, idx) => (
               <tr
                 key={p.id}
                 className="hover:bg-bone/60 max-md:grid max-md:grid-cols-2 max-md:gap-x-3 max-md:gap-y-3 max-md:p-4"
@@ -144,21 +151,30 @@ export default async function ProductosPage({
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums max-md:col-span-2 max-md:flex max-md:items-center max-md:justify-between max-md:border-t max-md:border-line/70 max-md:p-0 max-md:pt-3">
                   <span className={ETQ} aria-hidden="true">Precio</span>
-                  {p.precio != null ? (
-                    <span className="max-md:text-[length:var(--text-step-0)] max-md:font-medium max-md:text-ink">{formatARS(p.precio)}</span>
+                  {papelera ? (
+                    <span>{p.precio != null ? formatARS(p.precio) : "A consultar"}</span>
                   ) : (
-                    <Badge variant="warning">A consultar</Badge>
+                    <PrecioInline id={p.id} nombre={p.nombre} precio={p.precio} bloqueado={p.conVariantesConPrecio} />
                   )}
                 </td>
                 <td className="px-4 py-3 text-center max-md:flex max-md:min-h-11 max-[419px]:col-span-2 max-md:items-center max-md:justify-between max-md:gap-2 max-md:rounded-[var(--radius-md)] max-md:bg-bone/70 max-md:px-3 max-md:py-1">
                   <span className={ETQ} aria-hidden="true">Visible</span>
-                  <Alternar id={p.id} campo="visible" valor={p.visible} label={`Visible: ${p.nombre}`} />
+                  {papelera ? <span className="text-muted">—</span> : <Alternar id={p.id} campo="visible" valor={p.visible} label={`Visible: ${p.nombre}`} nombre={p.nombre} />}
                 </td>
                 <td className="px-4 py-3 text-center max-md:flex max-md:min-h-11 max-[419px]:col-span-2 max-md:items-center max-md:justify-between max-md:gap-2 max-md:rounded-[var(--radius-md)] max-md:bg-bone/70 max-md:px-3 max-md:py-1">
                   <span className={ETQ} aria-hidden="true">Destacado</span>
-                  <Alternar id={p.id} campo="destacado" valor={p.destacado} label={`Destacado: ${p.nombre}`} />
+                  {papelera ? <span className="text-muted">—</span> : <Alternar id={p.id} campo="destacado" valor={p.destacado} label={`Destacado: ${p.nombre}`} nombre={p.nombre} />}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-right max-md:col-span-2 max-md:grid max-md:grid-cols-2 max-md:gap-3 max-md:p-0">
+                  {papelera ? (
+                    <span className="max-md:col-span-2">{puede(user.role, "productoBorrar") ? <RestaurarProducto id={p.id} /> : "En la papelera"}</span>
+                  ) : (
+                  <>
+                  {ordenable && (
+                    <span className="mr-2 max-md:col-span-2 max-md:mr-0 max-md:justify-self-end">
+                      <OrdenProducto id={p.id} nombre={p.nombre} primero={idx === 0} ultimo={idx === productos.length - 1} />
+                    </span>
+                  )}
                   <Link
                     href={`/panel/productos/${p.id}`}
                     className="font-medium uppercase tracking-[0.08em] text-ink hover:text-bordeaux max-md:inline-flex max-md:min-h-11 max-md:items-center max-md:justify-center max-md:rounded-[var(--radius-pill)] max-md:bg-ink max-md:text-bone max-md:hover:text-bone"
@@ -175,12 +191,14 @@ export default async function ProductosPage({
                       Ver<span className="md:hidden"> en el sitio</span> ↗
                     </span>
                   </Link>
+                  </>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {productos.length === 0 && <p className="px-4 py-10 text-center text-muted">No hay productos con esos filtros.</p>}
+        {productos.length === 0 && <p className="px-4 py-10 text-center text-muted">{papelera ? "La papelera está vacía." : "No hay productos con esos filtros."}</p>}
       </div>
       <Paginacion pagina={pagina} total={totalPaginas} href={hrefPagina} />
     </div>

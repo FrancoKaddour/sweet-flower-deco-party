@@ -29,6 +29,20 @@
       "when": 1792762700852,
       "tag": "0003_summit_mercadopago",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793050092680,
+      "tag": "0004_pagos_seguridad",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793052312004,
+      "tag": "0005_perfil_clientes",
+      "breakpoints": true
     }
   ]
 }

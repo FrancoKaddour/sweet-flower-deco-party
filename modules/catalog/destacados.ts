@@ -1,4 +1,4 @@
-import { formatARS, type Producto } from "./types";
+import { etiquetaPrecio, type Producto } from "./types";
 
 // Selección para "Lo más pedido" del inicio: destacados con foto, categorías
 // intercaladas (catering primero) para que la grilla no sea monótona.
@@ -36,7 +36,7 @@ export function seleccionarDestacados(productos: readonly Producto[], max = 18):
       slug: p.slug,
       nombre: p.nombre,
       material: NOMBRE_CAT[p.categoria] ?? p.categoria,
-      precio: p.precio != null ? formatARS(p.precio) : "Consultar",
+      precio: etiquetaPrecio(p) ?? "A cotizar",
       img: p.img as string,
       href: `/productos/${p.categoria}/${p.slug}`,
     }));

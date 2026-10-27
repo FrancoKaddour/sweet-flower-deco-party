@@ -1,48 +1,44 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { upload } from "@vercel/blob/client";
 import { agregarImagen, borrarImagen, moverImagen } from "@/modules/catalog/actions";
+import { useAccion, useToast } from "@/components/panel/Toast";
+import { subirFoto } from "@/components/panel/subirImagen";
 
 type Img = { id: string; url: string; alt: string };
 
 /**
- * Fotos del producto: subir varias (directo a Vercel Blob), ordenar y borrar.
- * La primera es la portada. Las fotos importadas del catálogo de WhatsApp
- * también se pueden reordenar o reemplazar.
+ * Fotos del producto: subir varias (se achican en el celular a 2400 px WEBP y
+ * van directo a Vercel Blob, con progreso), ordenar y borrar. La primera es la portada.
  */
 export function ImagenesProducto({ productId, nombre, imagenes }: { productId: string; nombre: string; imagenes: Img[] }) {
   const input = useRef<HTMLInputElement>(null);
-  const [subiendo, setSubiendo] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [pendiente, start] = useTransition();
+  const [subiendo, setSubiendo] = useState<{ i: number; n: number; pct: number } | null>(null);
+  const [pendiente, correr] = useAccion();
+  const { avisar } = useToast();
+  const [borrando, setBorrando] = useState<string | null>(null);
 
   const subir = async (files: FileList | null) => {
     if (!files?.length) return;
-    setError(null);
-    const lista = Array.from(files);
+    const lista = Array.from(files).filter((f) => f.type.startsWith("image/") || /\.(heic|heif)$/i.test(f.name));
+    let ok = 0;
     for (const [i, f] of lista.entries()) {
-      if (!f.type.startsWith("image/")) continue;
-      if (f.size > 15 * 1024 * 1024) {
-        setError(`"${f.name}" pesa más de 15 MB.`);
-        continue;
-      }
-      setSubiendo(`Subiendo ${i + 1} de ${lista.length}…`);
+      setSubiendo({ i: i + 1, n: lista.length, pct: 0 });
       try {
-        const ext = f.name.split(".").pop()?.toLowerCase() ?? "jpg";
-        const blob = await upload(`productos/${productId}.${ext}`, f, {
-          access: "public",
-          handleUploadUrl: "/api/panel/upload",
-        });
-        await agregarImagen(productId, blob.url, nombre);
+        const url = await subirFoto(`productos/${productId}`, f, (pct) => setSubiendo({ i: i + 1, n: lista.length, pct }));
+        await agregarImagen(productId, url, nombre);
+        ok++;
       } catch (e) {
-        setError((e as Error).message || "No se pudo subir la foto.");
+        avisar({ tipo: "error", texto: (e as Error).message || `No se pudo subir "${f.name}".` });
       }
     }
     setSubiendo(null);
     if (input.current) input.current.value = "";
+    if (ok) avisar({ tipo: "ok", texto: ok === 1 ? "Foto subida." : `${ok} fotos subidas.` });
   };
+
+  const total = subiendo ? Math.round(((subiendo.i - 1) * 100 + subiendo.pct) / subiendo.n) : 0;
 
   return (
     <div className="flex flex-col gap-4">
@@ -62,63 +58,76 @@ export function ImagenesProducto({ productId, nombre, imagenes }: { productId: s
                   </span>
                 )}
               </div>
-              <div className="flex items-center justify-between gap-1 px-1 py-0.5">
-                <div className="flex">
+              {borrando === img.id ? (
+                <div className="flex flex-wrap items-center justify-between gap-1 px-2 py-1 text-[0.75rem]">
+                  <span className="text-ink">¿Borrarla?</span>
+                  <span className="flex">
+                    <button type="button" disabled={pendiente} onClick={() => correr(() => borrarImagen(img.id))} className="inline-flex min-h-11 items-center px-2 font-medium text-bordeaux">
+                      Sí
+                    </button>
+                    <button type="button" onClick={() => setBorrando(null)} className="inline-flex min-h-11 items-center px-2 text-muted">
+                      No
+                    </button>
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between gap-1 px-1 py-0.5">
+                  <div className="flex">
+                    <button
+                      type="button"
+                      disabled={i === 0 || pendiente}
+                      onClick={() => correr(() => moverImagen(img.id, -1))}
+                      className="grid h-11 w-10 place-items-center rounded-[var(--radius-sm)] text-ink hover:bg-bone disabled:opacity-30"
+                      aria-label={i === 1 ? "Usar como portada" : "Mover a la izquierda"}
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      disabled={i === imagenes.length - 1 || pendiente}
+                      onClick={() => correr(() => moverImagen(img.id, 1))}
+                      className="grid h-11 w-10 place-items-center rounded-[var(--radius-sm)] text-ink hover:bg-bone disabled:opacity-30"
+                      aria-label="Mover a la derecha"
+                    >
+                      →
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    disabled={i === 0 || pendiente}
-                    onClick={() => start(() => moverImagen(img.id, -1))}
-                    className="grid h-11 w-10 place-items-center rounded-[var(--radius-sm)] text-ink hover:bg-bone disabled:opacity-30"
-                    aria-label="Mover a la izquierda"
+                    disabled={pendiente}
+                    onClick={() => setBorrando(img.id)}
+                    className="inline-flex min-h-11 items-center px-2 text-[0.7rem] uppercase tracking-[0.12em] text-bordeaux disabled:opacity-30"
                   >
-                    ←
-                  </button>
-                  <button
-                    type="button"
-                    disabled={i === imagenes.length - 1 || pendiente}
-                    onClick={() => start(() => moverImagen(img.id, 1))}
-                    className="grid h-11 w-10 place-items-center rounded-[var(--radius-sm)] text-ink hover:bg-bone disabled:opacity-30"
-                    aria-label="Mover a la derecha"
-                  >
-                    →
+                    Borrar
                   </button>
                 </div>
-                <button
-                  type="button"
-                  disabled={pendiente}
-                  onClick={() => {
-                    if (window.confirm("¿Borrar esta foto?")) start(() => borrarImagen(img.id));
-                  }}
-                  className="inline-flex min-h-11 items-center px-2 text-[0.7rem] uppercase tracking-[0.12em] text-bordeaux disabled:opacity-30"
-                >
-                  Borrar
-                </button>
-              </div>
+              )}
             </li>
           ))}
         </ul>
       )}
 
       <div className="flex flex-wrap items-center gap-4">
-        <label className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[var(--radius-pill)] border border-ink/20 px-5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink max-sm:w-full text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink hover:border-ink/40">
-          {subiendo ?? "Subir fotos"}
+        <label className="relative inline-flex min-h-11 cursor-pointer items-center justify-center overflow-hidden rounded-[var(--radius-pill)] border border-ink/20 px-5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink max-sm:w-full text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink hover:border-ink/40">
+          {subiendo && <span aria-hidden="true" className="absolute inset-y-0 left-0 bg-sand transition-[width]" style={{ width: `${total}%` }} />}
+          <span className="relative">{subiendo ? `Subiendo ${subiendo.i} de ${subiendo.n} · ${subiendo.pct}%` : "Subir fotos"}</span>
           <input
             ref={input}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
+            accept="image/jpeg,image/png,image/webp,image/avif,image/heic"
             multiple
             className="sr-only"
             disabled={Boolean(subiendo)}
             onChange={(e) => subir(e.target.files)}
           />
         </label>
-        <span className="text-[length:var(--text-step--1)] text-muted">JPG, PNG o WEBP · hasta 15 MB · ideal vertical 4:5</span>
+        <span className="text-[length:var(--text-step--1)] text-muted">Se achican solas antes de subir · ideal vertical 4:5</span>
+        {subiendo && (
+          <span role="status" className="sr-only">
+            Subiendo foto {subiendo.i} de {subiendo.n}
+          </span>
+        )}
       </div>
-      {error && (
-        <p role="alert" className="text-[length:var(--text-step--1)] text-bordeaux">
-          {error}
-        </p>
-      )}
     </div>
   );
 }

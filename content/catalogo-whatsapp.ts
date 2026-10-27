@@ -3,52 +3,82 @@
 // Categoría: la colección de WhatsApp cuando el producto estaba en una; si no,
 // deducida por nombre/descripción (revisar con Flor). "destacado" = el producto
 // aparece en alguna colección destacada del catálogo.
+// Limpieza editorial 27/10/2026 (frente C1): precios de las descripciones →
+// `variantes` ({ etiqueta, precio }), sin recargos ni "CATALOGO DE FUNDAS",
+// ortografía y nombres prolijos. Medidas → campo `medidas`. Lo mismo se aplicó
+// a la base con scripts/actualizaciones.ts (bloque "2026-10-27-catalogo-limpio").
 // Para editar un producto, cambialo acá (o regenerá desde el catálogo).
 import type { Producto } from "./productos";
 
 export const CATALOGO_WHATSAPP: readonly Producto[] = [
   {
     "slug": "mickey-mdf-2x2",
-    "nombre": "Mickey mdf 2x2",
+    "nombre": "Mickey MDF 2x2",
     "categoria": "mdf",
     "precio": 312000,
-    "descripcion": "Mickey mdf 2x2 desarmable Profundidad 20cm aprox Pintado $420.000",
+    "descripcion": "Mickey MDF 2x2 desarmable Profundidad 20cm aprox Pintado $420.000",
     "img": "/productos/mickey-mdf-2x2.jpg",
     "destacado": false
   },
   {
     "slug": "olas-de-mdf",
-    "nombre": "Olas de mdf",
+    "nombre": "Olas de MDF",
     "categoria": "mdf",
     "precio": 47500,
-    "descripcion": "Olas de mdf/ individual o doble Pintadas $62.500",
+    "descripcion": "Olas de MDF/ individual o doble Pintadas $62.500",
     "img": "/productos/olas-de-mdf.jpg",
     "destacado": false
   },
   {
     "slug": "cubo-de-25x25",
-    "nombre": "Cubo de 25x25",
+    "nombre": "Cubo 25 × 25",
     "categoria": "catering",
     "precio": 10000,
-    "descripcion": "Sin pintar sin letras $10.000 c/u Sin pintar con letras $12.000 c/u Pintado con letras $18.000 c/u",
+    "descripcion": "Cubo con o sin letras. Precio por unidad.",
+    "medidas": "25 × 25 cm",
+    "variantes": [
+      {
+        "etiqueta": "Sin pintar, sin letras",
+        "precio": 10000
+      },
+      {
+        "etiqueta": "Sin pintar, con letras",
+        "precio": 12000
+      },
+      {
+        "etiqueta": "Pintado, con letras",
+        "precio": 18000
+      }
+    ],
     "img": "/productos/cubo-de-25x25.jpg",
     "destacado": true
   },
   {
     "slug": "combo-x-3-paneles-arcadas",
-    "nombre": "Combo x 3 paneles arcadas",
+    "nombre": "Combo x3 paneles arcada",
     "categoria": "hierro",
     "precio": 144000,
-    "descripcion": "Combo x3 arcadas lisas, desarmables 1Panel arcada 1.80x80 2 semi arcadas 1.60x80 Pintado $209.000",
+    "descripcion": "Tres paneles de arcada lisos y desarmables: una arcada y dos semiarcadas.",
+    "medidas": "Arcada 1,80 × 0,80 m · semiarcadas 1,60 × 0,80 m",
+    "variantes": [
+      {
+        "etiqueta": "Sin pintar",
+        "precio": 144000
+      },
+      {
+        "etiqueta": "Pintado",
+        "precio": 209000
+      }
+    ],
     "img": "/productos/combo-x-3-paneles-arcadas.jpg",
     "destacado": false
   },
   {
     "slug": "bases-orejas-mickey-mdf",
-    "nombre": "Bases Orejas Mickey mdf",
+    "nombre": "Bases Orejas Mickey MDF",
     "categoria": "mdf",
     "precio": 12000,
-    "descripcion": "Bases mdf Mickey 35cm aprox 15% de recargo x link de mercado pago",
+    "descripcion": "Bases MDF Mickey 35cm aprox",
     "img": "/productos/bases-orejas-mickey-mdf.jpg",
     "destacado": false
   },
@@ -57,16 +87,17 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Hexágono",
     "categoria": "hierro",
     "precio": 99000,
-    "descripcion": "Hexagono de hierro desarmable Medidas: 2m de alto x 2m de ancho La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Hexágono de hierro desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 m de alto × 2 m de ancho",
     "img": "/productos/hexagono.jpg",
     "destacado": false
   },
   {
     "slug": "casita-mdf",
-    "nombre": "Casita mdf",
+    "nombre": "Casita MDF",
     "categoria": "mdf",
     "precio": 87500,
-    "descripcion": "Casita de mdf Pintada $129.500 Medidas: 1.80x80",
+    "descripcion": "Casita de MDF Pintada $129.500 Medidas: 1.80x80",
     "img": "/productos/casita-mdf.jpg",
     "destacado": false
   },
@@ -75,43 +106,76 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa ranurada",
     "categoria": "mdf",
     "precio": 60500,
-    "descripcion": "Mesa ranurada de mdf desarmable Medidas: 1x80x40 Pintado $90.500 Tapa cajón $70.500 Pintado $105.500",
+    "descripcion": "Mesa ranurada de MDF desarmable Medidas: 1x80x40 Pintado $90.500 Tapa cajón $70.500 Pintado $105.500",
     "img": "/productos/mesa-ranurada.jpg",
     "destacado": false
   },
   {
     "slug": "arcada-de-hierro-3d",
-    "nombre": "Arcada de hierro 3d",
+    "nombre": "Arcada de hierro 3D",
     "categoria": "hierro",
     "precio": 309000,
-    "descripcion": "Arcada de hierro desarmable Medidas: De 2.40 x 1.50 $309.000 De 2.40 x 1.80 $351.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Arcada de hierro desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "variantes": [
+      {
+        "etiqueta": "2,40 × 1,50 m",
+        "precio": 309000
+      },
+      {
+        "etiqueta": "2,40 × 1,80 m",
+        "precio": 351000
+      }
+    ],
     "img": "/productos/arcada-de-hierro-3d.jpg",
     "destacado": false
   },
   {
     "slug": "base-mariposa",
-    "nombre": "Base Mariposa",
+    "nombre": "Base mariposa",
     "categoria": "catering",
     "precio": 12000,
-    "descripcion": "",
+    "descripcion": "Base con forma de mariposa. Consultanos medidas y colores.",
     "img": "/productos/base-mariposa.jpg",
     "destacado": false
   },
   {
     "slug": "base-cola-de-sirena-mdf",
-    "nombre": "Base cola de sirena mdf",
+    "nombre": "Base cola de sirena (MDF)",
     "categoria": "catering",
     "precio": 12000,
-    "descripcion": "Base cola de sirena mdf 35cm aporx 15,% de recargo x link de mercado pago",
+    "descripcion": "Base de MDF con forma de cola de sirena.",
+    "medidas": "35 cm aprox.",
     "img": "/productos/base-cola-de-sirena-mdf.jpg",
     "destacado": true
   },
   {
     "slug": "pisos-de-cordura",
-    "nombre": "Pisos de Cordura",
+    "nombre": "Piso de cordura",
     "categoria": "fundas-y-telas",
     "precio": 13000,
-    "descripcion": "Pisos de cordura sublimados Se vende por metro de 1x1.40 Lo podes pedir de la medida que quieras 1x1.40 $13.000 2x1.40 $26.000 3x1.40 $39.000 2x2.80 $52.000 3x2.80 $78.000 De otra medida a cotizar CATALOGO DE FUNDAS",
+    "descripcion": "Piso de cordura sublimado, por metro. De otra medida, a cotizar.",
+    "variantes": [
+      {
+        "etiqueta": "1 × 1,40 m",
+        "precio": 13000
+      },
+      {
+        "etiqueta": "2 × 1,40 m",
+        "precio": 26000
+      },
+      {
+        "etiqueta": "3 × 1,40 m",
+        "precio": 39000
+      },
+      {
+        "etiqueta": "2 × 2,80 m",
+        "precio": 52000
+      },
+      {
+        "etiqueta": "3 × 2,80 m",
+        "precio": 78000
+      }
+    ],
     "img": "/productos/pisos-de-cordura.jpg",
     "destacado": true
   },
@@ -126,19 +190,20 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
   },
   {
     "slug": "auto-barbie-mdf",
-    "nombre": "Auto Barbie mdf",
+    "nombre": "Auto Barbie MDF",
     "categoria": "mdf",
     "precio": 56000,
-    "descripcion": "Auto Barbie mdf pintado $79.000 Medidas 1m x 70 aprox",
+    "descripcion": "Auto Barbie MDF pintado $79.000 Medidas 1m x 70 aprox",
     "img": "/productos/auto-barbie-mdf.jpg",
     "destacado": false
   },
   {
     "slug": "columna-hierro-estrella",
-    "nombre": "Columna hierro estrella",
+    "nombre": "Columna de hierro estrella",
     "categoria": "hierro",
     "precio": 71000,
-    "descripcion": "Columna hierro estrella Medidas 1.90 de alto y ancho aprox 1 m X link mp 15% de recargo",
+    "descripcion": "Columna de hierro con estrella.",
+    "medidas": "1,90 m de alto · 1 m de ancho aprox.",
     "img": "/productos/columna-hierro-estrella.jpg",
     "destacado": false
   },
@@ -147,7 +212,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Margarita",
     "categoria": "mdf",
     "precio": 25000,
-    "descripcion": "Margarita mdf Pintado $35.000 Medidas: 90cm de largo x 40cm de alto",
+    "descripcion": "Margarita MDF Pintado $35.000 Medidas: 90cm de largo x 40cm de alto",
     "img": "/productos/margarita.jpg",
     "destacado": false
   },
@@ -156,16 +221,17 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Combo x3 arcadas",
     "categoria": "hierro",
     "precio": 252000,
-    "descripcion": "Combo x 3: 1 arcada 95x2 2 semi arcada 95x1.60 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Una arcada y dos semiarcadas de hierro.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "Arcada 0,95 × 2 m · semiarcadas 0,95 × 1,60 m",
     "img": "/productos/combo-x3-arcadas.jpg",
     "destacado": false
   },
   {
     "slug": "candelabro-5-velas",
-    "nombre": "Candelabro 5 velas",
+    "nombre": "Candelabro de 5 velas",
     "categoria": "hierro",
     "precio": 98000,
-    "descripcion": "Candelabro 5 velas Consultar x otras opciones",
+    "descripcion": "Candelabro para 5 velas. Consultanos por otras opciones.",
     "img": "/productos/candelabro-5-velas.jpg",
     "destacado": false
   },
@@ -183,25 +249,37 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa jeep",
     "categoria": "mdf",
     "precio": 112500,
-    "descripcion": "Mesa jeep mdf desarmable Medidas 80x80x40 Pintado $147.500",
+    "descripcion": "Mesa jeep MDF desarmable Medidas 80x80x40 Pintado $147.500",
     "img": "/productos/mesa-jeep.jpg",
     "destacado": false
   },
   {
     "slug": "mesa-carroza",
-    "nombre": "Mesa Carroza",
-    "categoria": "madera",
+    "nombre": "Mesa carroza",
+    "categoria": "hierro",
     "precio": 135000,
-    "descripcion": "Mesa carroza desarmable Medidas: Diámetro 50cm Largo Total 1m aprox El tambor se saca y lo podes usar como Mesa solo eso Dos usos $165.000 con madera La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Mesa carroza desarmable. El tambor se saca y lo usás como mesa sola: dos usos.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "50 cm de diámetro · 1 m de largo total aprox.",
+    "variantes": [
+      {
+        "etiqueta": "Sin madera",
+        "precio": 135000
+      },
+      {
+        "etiqueta": "Con madera",
+        "precio": 165000
+      }
+    ],
     "img": "/productos/mesa-carroza.jpg",
     "destacado": false
   },
   {
     "slug": "sillon-luna",
-    "nombre": "Sillón luna",
+    "nombre": "Sillón Luna",
     "categoria": "hierro",
     "precio": 198000,
-    "descripcion": "Sillon luna solo armazón 2m de alto La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Sillón luna de hierro, solo armazón.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 m de alto",
     "img": "/productos/sillon-luna.jpg",
     "destacado": false
   },
@@ -216,19 +294,31 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
   },
   {
     "slug": "cubos-pintados-con-numeros-o-letras-en-mdf",
-    "nombre": "Cubos pintados con números o letras en mdf",
+    "nombre": "Cubo pintado con número o letra (MDF)",
     "categoria": "catering",
     "precio": 15500,
-    "descripcion": "Cada uno $15500 15% de recargo x link mercado pago Medidas 25x25",
+    "descripcion": "Cubo de MDF pintado con número o letra. Precio por unidad.",
+    "medidas": "25 × 25 cm",
     "img": "/productos/cubos-pintados-con-numeros-o-letras-en-mdf.jpg",
     "destacado": true
   },
   {
     "slug": "semiarcada-de-hierro-95x2",
-    "nombre": "Semiarcada de hierro 95x2",
+    "nombre": "Semiarcada de hierro 95 × 2",
     "categoria": "hierro",
     "precio": 95000,
-    "descripcion": "Semi Arcada 95x2 Combo x3 $256.000 (cualquier formato) La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Semiarcada de hierro. En combo x3 la combinás con arcadas y arcadas rectas, en el formato que quieras.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "0,95 × 2 m",
+    "variantes": [
+      {
+        "etiqueta": "Unidad",
+        "precio": 95000
+      },
+      {
+        "etiqueta": "Combo x3",
+        "precio": 256000
+      }
+    ],
     "img": "/productos/semiarcada-de-hierro-95x2.jpg",
     "destacado": true
   },
@@ -237,25 +327,36 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa hexagonal larga",
     "categoria": "hierro",
     "precio": 105000,
-    "descripcion": "Solo armazon $105.000 Medidas: 90cm de alto x 90cm de largo",
+    "descripcion": "Mesa hexagonal de hierro, solo armazón.",
+    "medidas": "90 cm de alto × 90 cm de largo",
     "img": "/productos/mesa-hexagonal-larga.jpg",
     "destacado": false
   },
   {
     "slug": "funda-semi-arcada-hierro",
-    "nombre": "Funda Semi Arcada hierro",
+    "nombre": "Funda para semiarcada de hierro",
     "categoria": "fundas-y-telas",
-    "precio": 22000,
-    "descripcion": "Funda con elastico para semi arcada de hierro 95x2 $22.000 95x1.60$20.000 CATALOGO DE FUNDAS",
+    "precio": 20000,
+    "descripcion": "Funda con elástico para semiarcada de hierro.",
+    "variantes": [
+      {
+        "etiqueta": "0,95 × 1,60 m",
+        "precio": 20000
+      },
+      {
+        "etiqueta": "0,95 × 2 m",
+        "precio": 22000
+      }
+    ],
     "img": "/productos/funda-semi-arcada-hierro.jpg",
     "destacado": false
   },
   {
     "slug": "arcoiris-en-mdf",
-    "nombre": "Arcoíris en mdf",
+    "nombre": "Arcoíris en MDF",
     "categoria": "mdf",
     "precio": 15000,
-    "descripcion": "15% de recargo x link mercado pago Medidas 40cm aprox",
+    "descripcion": "Medidas 40cm aprox",
     "img": "/productos/arcoiris-en-mdf.jpg",
     "destacado": false
   },
@@ -264,7 +365,8 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Pies y tallos para flores",
     "categoria": "hierro",
     "precio": 79500,
-    "descripcion": "Pies para flores de organza x3 Base con 3 caños de hierro, desarmable Los podes acomodar de la forma que quieras Medidas: 50cm de diametro 3 tallos de 1.60m de alto (los 2 curvos quedan a 1.50 de alto)",
+    "descripcion": "Base desarmable con 3 caños de hierro para flores de organza: los acomodás como quieras.\nIncluye: base y 3 tallos.",
+    "medidas": "Base de 50 cm de diámetro · tallos de 1,60 m (los 2 curvos quedan a 1,50 m)",
     "img": "/productos/pies-y-tallos-para-flores.jpg",
     "destacado": false
   },
@@ -273,13 +375,13 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa ola",
     "categoria": "mdf",
     "precio": 60500,
-    "descripcion": "Mesa de mdf con ola Medidas: 1x80x40 Pintado $90.500 Tapa cajón $70.500 Pintado $105.500",
+    "descripcion": "Mesa de MDF con ola Medidas: 1x80x40 Pintado $90.500 Tapa cajón $70.500 Pintado $105.500",
     "img": "/productos/mesa-ola.jpg",
     "destacado": false
   },
   {
     "slug": "algas-de-mdf",
-    "nombre": "Algas de mdf",
+    "nombre": "Algas de MDF",
     "categoria": "mdf",
     "precio": 4000,
     "descripcion": "Alga grande 20cm de alto sin pintar $4.000 Pintada $8.500 Alga grande 30cm de alto sin pintar $6.000 Pintada $10.500 Alga chica 50cm de alto sin pintar $16.000 Pintado $21.500 Alga grande 70cm de alto sin pintar $23.000 Pintada $30.500",
@@ -288,37 +390,39 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
   },
   {
     "slug": "alzada-cuadrada-20x20",
-    "nombre": "Alzada cuadrada 20x20",
+    "nombre": "Alzada cuadrada 20 × 20",
     "categoria": "catering",
     "precio": 10000,
-    "descripcion": "15% de recargo x link Mercado pago Colores a elección",
+    "descripcion": "Alzada cuadrada.\nColores: a elección.",
+    "medidas": "20 × 20 cm",
     "img": "/productos/alzada-cuadrada-20x20.jpg",
     "destacado": true
   },
   {
     "slug": "luna-enterrada",
-    "nombre": "Luna Enterrada",
+    "nombre": "Luna enterrada",
     "categoria": "hierro",
     "precio": 132000,
-    "descripcion": "Luna enterrada de hierro Medidas: No es desarmable son 2 partes, la mas alta y la chica",
+    "descripcion": "Luna de hierro en 2 partes, la alta y la chica. No es desarmable.",
     "img": "/productos/luna-enterrada.jpg",
     "destacado": false
   },
   {
     "slug": "funda-aro-1-50",
-    "nombre": "Funda aro 1.50",
+    "nombre": "Funda para aro de 1,50 m",
     "categoria": "fundas-y-telas",
     "precio": 18000,
-    "descripcion": "Funda con elastico para aro 1.50 de diametro CATALOGO DE FUNDAS",
+    "descripcion": "Funda con elástico para aro de 1,50 m de diámetro.",
     "img": "/productos/funda-aro-1-50.jpg",
     "destacado": true
   },
   {
     "slug": "columna-corazon",
-    "nombre": "Columna corazon",
+    "nombre": "Columna corazón",
     "categoria": "hierro",
     "precio": 75000,
-    "descripcion": "Columna con corazón de hierro desarmable 2m de alto 1.50 aprox el corazón La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Columna de hierro desarmable con corazón.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 m de alto · corazón de 1,50 m aprox.",
     "img": "/productos/columna-corazon.jpg",
     "destacado": false
   },
@@ -333,10 +437,11 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
   },
   {
     "slug": "numero-de-hierro-3d-1-2-3-4-5-6-7-8-9",
-    "nombre": "Número de hierro 3D 1/2/3/4/5/6/7/8/9",
+    "nombre": "Número de hierro 3D (del 1 al 9)",
     "categoria": "hierro",
     "precio": 62000,
-    "descripcion": "Número de hierro de 1.50 de alto y 30cm de profundidad La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Número de hierro 3D, del 1 al 9.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "1,50 m de alto × 30 cm de profundidad",
     "img": null,
     "destacado": false
   },
@@ -345,16 +450,17 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Alzada mariposa",
     "categoria": "catering",
     "precio": 13000,
-    "descripcion": "Alzada Mariposa Medidas: 20xm alto x 25cm ancho Pintada",
+    "descripcion": "Alzada con forma de mariposa, pintada.",
+    "medidas": "20 cm de alto × 25 cm de ancho",
     "img": "/productos/alzada-mariposa.jpg",
     "destacado": false
   },
   {
     "slug": "base-mdf-10x30",
-    "nombre": "Base mdf 10x30",
+    "nombre": "Base MDF 10x30",
     "categoria": "mdf",
     "precio": 4700,
-    "descripcion": "Colores a elección 15% de recargo x link de mercado pago",
+    "descripcion": "Colores a elección",
     "img": "/productos/base-mdf-10x30.jpg",
     "destacado": false
   },
@@ -363,16 +469,28 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Atril",
     "categoria": "hierro",
     "precio": 83000,
-    "descripcion": "Atril de hierro Medidas: 1.80 de alto Abonando por transferencia/efectivo tenes descuento en hierro!",
+    "descripcion": "Atril de hierro.",
+    "medidas": "1,80 m de alto",
     "img": "/productos/atril.jpg",
     "destacado": false
   },
   {
     "slug": "combo-x-3-mesas-cubo-mas-barril",
-    "nombre": "Combo x 3 mesas cubo más barril",
-    "categoria": "madera",
+    "nombre": "Combo x3 mesas cubo más barril",
+    "categoria": "hierro",
     "precio": 284000,
-    "descripcion": "Combo x 3 mesas desarmables más 1 barril 2 mesas Cubo 1 Mesa rectangular 1 barril Con las maderas $384.000 Medidas Rectangular 40x90x80 Cuadradas 40x40x75 40x40x55 Barril 40x65 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Tres mesas desarmables (2 cubo y 1 rectangular) más 1 barril.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "Rectangular 40 × 90 × 80 · cubos 40 × 40 × 75 y 40 × 40 × 55 · barril 40 × 65 cm",
+    "variantes": [
+      {
+        "etiqueta": "Sin maderas",
+        "precio": 284000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 384000
+      }
+    ],
     "img": "/productos/combo-x-3-mesas-cubo-mas-barril.jpg",
     "destacado": false
   },
@@ -381,16 +499,16 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Separador de torta",
     "categoria": "catering",
     "precio": 19500,
-    "descripcion": "Separador de torta Hierro La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Separador de torta de hierro.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/separador-de-torta.jpg",
     "destacado": true
   },
   {
     "slug": "cola-de-sirena-de-mdf-150m",
-    "nombre": "Cola de sirena de mdf 150m",
+    "nombre": "Cola de sirena de MDF 150m",
     "categoria": "mdf",
     "precio": 87500,
-    "descripcion": "Cola de Sirena mdf 1.50m Pintada $122.000",
+    "descripcion": "Cola de Sirena MDF 1.50m Pintada $122.000",
     "img": "/productos/cola-de-sirena-de-mdf-150m.jpg",
     "destacado": false
   },
@@ -399,25 +517,37 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Armazón granero",
     "categoria": "hierro",
     "precio": 123000,
-    "descripcion": "Medidas 1.50 x 2 m Funda armazon granero (ver catálogo de fundas) $25.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Armazón de hierro tipo granero. La funda se pide aparte (Funda para armazón granero).\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "1,50 × 2 m",
     "img": "/productos/armazon-granero.jpg",
     "destacado": false
   },
   {
     "slug": "fundas-mesa-torta",
-    "nombre": "Fundas mesa torta",
+    "nombre": "Funda para mesa torta",
     "categoria": "fundas-y-telas",
     "precio": 28000,
-    "descripcion": "Fundas para la mesa torta de pino Medidas de la mesa 50x28 40x28 30x35 CATALOGO DE FUNDAS",
+    "descripcion": "Funda para la mesa torta de pino.",
+    "medidas": "Para mesas de 50 × 28, 40 × 28 y 30 × 35 cm",
     "img": "/productos/fundas-mesa-torta.jpg",
     "destacado": false
   },
   {
     "slug": "cubo-con-malla-x-unidad",
-    "nombre": "Cubo con malla x unidad",
+    "nombre": "Cubo con malla (por unidad)",
     "categoria": "hierro",
     "precio": 110000,
-    "descripcion": "Cubo con malla solo armazon 50x50x75 $115.000 40x40x65 $110.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Cubo de hierro con malla, solo armazón.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "variantes": [
+      {
+        "etiqueta": "40 × 40 × 65 cm",
+        "precio": 110000
+      },
+      {
+        "etiqueta": "50 × 50 × 75 cm",
+        "precio": 115000
+      }
+    ],
     "img": "/productos/cubo-con-malla-x-unidad.jpg",
     "destacado": false
   },
@@ -435,25 +565,36 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Jaula",
     "categoria": "catering",
     "precio": 35500,
-    "descripcion": "Jaula Colores a elección La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Jaula decorativa.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/cat-jaula.jpg",
     "destacado": false
   },
   {
     "slug": "alzada-hierro-con-pie-para-un-plato",
-    "nombre": "Alzada hierro con pie para un plato",
+    "nombre": "Alzada de hierro con pie",
     "categoria": "catering",
     "precio": 45000,
-    "descripcion": "Alzada de hierro p un plato 28cm de diámetro Alto 85cm aprox La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Alzada de hierro con pie, para un plato.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "Plato de 28 cm de diámetro · 85 cm de alto aprox.",
     "img": "/productos/cat-alzada-de-pie.jpg",
     "destacado": false
   },
   {
     "slug": "mesitas-pentagono-x-unidad",
-    "nombre": "Mesitas pentagono x unidad",
-    "categoria": "madera",
+    "nombre": "Mesitas pentágono",
+    "categoria": "hierro",
     "precio": 80500,
-    "descripcion": "Combo x2 mesas solo armazon $144.000 Por unidad $80.500 No hacemos las maderas de este combo",
+    "descripcion": "Mesitas pentágono de hierro, solo armazón (las maderas de este modelo no las hacemos).",
+    "variantes": [
+      {
+        "etiqueta": "Unidad",
+        "precio": 80500
+      },
+      {
+        "etiqueta": "Combo x2",
+        "precio": 144000
+      }
+    ],
     "img": "/productos/mesitas-pentagono-x-unidad.jpg",
     "destacado": false
   },
@@ -462,7 +603,8 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Sillón Sweet",
     "categoria": "hierro",
     "precio": 174000,
-    "descripcion": "Sillón Sweet solo armazón 2x2m Entran 2 personas La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Sillón de hierro, solo armazón. Entran 2 personas.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 × 2 m",
     "img": "/productos/sillon-sweet.jpg",
     "destacado": false
   },
@@ -477,28 +619,30 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
   },
   {
     "slug": "funda-aro-2m",
-    "nombre": "Funda Aro 2m",
+    "nombre": "Funda para aro de 2 m",
     "categoria": "fundas-y-telas",
     "precio": 38000,
-    "descripcion": "Funda con elastico para aro 2m de diámetro CATALOGO DE FUNDAS",
+    "descripcion": "Funda con elástico para aro de 2 m de diámetro.",
     "img": "/productos/funda-aro-2m.jpg",
     "destacado": true
   },
   {
     "slug": "fundas-mesa-cubo",
-    "nombre": "Fundas Mesa Cubo",
+    "nombre": "Fundas para mesa cubo",
     "categoria": "fundas-y-telas",
     "precio": 38000,
-    "descripcion": "Fundas para las Mesa cubo Medidas 30x55 40x65 50x75 CATALOGO DE FUNDAS",
+    "descripcion": "Fundas para mesas cubo.",
+    "medidas": "30 × 55 · 40 × 65 · 50 × 75 cm",
     "img": "/productos/fundas-mesa-cubo.jpg",
     "destacado": true
   },
   {
     "slug": "arcada-romana-xl",
-    "nombre": "Arcada Romana XL",
+    "nombre": "Arcada romana XL",
     "categoria": "hierro",
     "precio": 396000,
-    "descripcion": "Arcada Romana XL 2X3 con entrada XL Color a eleccion",
+    "descripcion": "Arcada romana con entrada XL.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 × 3 m",
     "img": "/productos/arcada-romana-xl.jpg",
     "destacado": false
   },
@@ -507,34 +651,36 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Corona",
     "categoria": "hierro",
     "precio": 66500,
-    "descripcion": "Corona de hierro Medidas: Largo 1m aproximadamente Tiene 2 ganchitos La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Corona de hierro con 2 ganchitos.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "1 m de largo aprox.",
     "img": "/productos/corona.jpg",
     "destacado": false
   },
   {
     "slug": "funda-armazon-granero",
-    "nombre": "Funda armazón Granero",
+    "nombre": "Funda para armazón granero",
     "categoria": "fundas-y-telas",
     "precio": 25000,
-    "descripcion": "Funda con elastico para armazón granero 2 x 1.50 CATALOGO DE FUNDAS",
+    "descripcion": "Funda con elástico para el armazón granero.",
+    "medidas": "2 × 1,50 m",
     "img": "/productos/funda-armazon-granero.jpg",
     "destacado": true
   },
   {
     "slug": "alzada-16-lazos-espiralada",
-    "nombre": "Alzada 16 lazos espiralada",
+    "nombre": "Alzada espiralada de 16 lazos",
     "categoria": "catering",
     "precio": 54500,
-    "descripcion": "Alzada Colores a elección La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Alzada espiralada.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/cat-16-lazos.jpg",
     "destacado": true
   },
   {
     "slug": "cohete-mdf-50cm-de-alto",
-    "nombre": "Cohete mdf 50cm de alto",
+    "nombre": "Cohete MDF 50cm de alto",
     "categoria": "mdf",
     "precio": 12000,
-    "descripcion": "Cohete mdf 50cm de alto 15% de recargo x link de mercado pago",
+    "descripcion": "Cohete MDF 50cm de alto",
     "img": "/productos/cohete-mdf-50cm-de-alto.jpg",
     "destacado": false
   },
@@ -543,43 +689,93 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Columna mariposa",
     "categoria": "hierro",
     "precio": 94000,
-    "descripcion": "Columnas con mariposa de hierro Llegan a 1.50cm de alto Mariposa 60cm $94.000 Mariposa 90cm $105.000 En hierro tenes descuento por tranferencia!",
+    "descripcion": "Columna de hierro con mariposa.",
+    "medidas": "Hasta 1,50 m de alto",
+    "variantes": [
+      {
+        "etiqueta": "Mariposa de 60 cm",
+        "precio": 94000
+      },
+      {
+        "etiqueta": "Mariposa de 90 cm",
+        "precio": 105000
+      }
+    ],
     "img": "/productos/columna-mariposa.jpg",
     "destacado": false
   },
   {
     "slug": "porton-merlina-halloween",
-    "nombre": "Portón Merlina Halloween",
+    "nombre": "Portón Merlina (Halloween)",
     "categoria": "hierro",
     "precio": 94000,
-    "descripcion": "Pintado $144.000 3 piezas Medidas 180x1 aprox",
+    "descripcion": "Portón en 3 piezas.",
+    "medidas": "1,80 × 1 m aprox.",
+    "variantes": [
+      {
+        "etiqueta": "Sin pintar",
+        "precio": 94000
+      },
+      {
+        "etiqueta": "Pintado",
+        "precio": 144000
+      }
+    ],
     "img": "/productos/porton-merlina-halloween.jpg",
     "destacado": false
   },
   {
     "slug": "funda-semi-arcada-pino",
-    "nombre": "Funda Semi Arcada pino",
+    "nombre": "Funda para semiarcada de pino",
     "categoria": "fundas-y-telas",
     "precio": 16000,
-    "descripcion": "Funda con elastico para semi arcada de pino 1.60x60 CATALOGO DE FUNDAS",
+    "descripcion": "Funda con elástico para semiarcada de pino.",
+    "medidas": "1,60 × 0,60 m",
     "img": "/productos/funda-semi-arcada-pino.jpg",
     "destacado": false
   },
   {
     "slug": "doble-arcada-hierro",
-    "nombre": "Doble arcada hierro",
+    "nombre": "Doble arcada de hierro",
     "categoria": "hierro",
-    "precio": 281000,
-    "descripcion": "Doble arcada hierro Medidas y precios Combo 1 doble arcada ($303.000) 2.20 X 1.50m aprox $185.500 2.00 X 1.10m aprox $123.500 Combo 2 doble arcada ($281.000) 2.40 X 1.80m aprox $200.000 2.20 X 1.20m aprox $133.000 15% de recargo x link de Mercado pago",
+    "precio": 123500,
+    "descripcion": "Dos arcadas de hierro, una dentro de la otra. Se venden en combo o cada una por separado. Medidas aproximadas.",
+    "variantes": [
+      {
+        "etiqueta": "Combo 1: 2,20 × 1,50 + 2,00 × 1,10 m",
+        "precio": 303000
+      },
+      {
+        "etiqueta": "Combo 2: 2,40 × 1,80 + 2,20 × 1,20 m",
+        "precio": 281000
+      },
+      {
+        "etiqueta": "Sola 2,20 × 1,50 m",
+        "precio": 185500
+      },
+      {
+        "etiqueta": "Sola 2,00 × 1,10 m",
+        "precio": 123500
+      },
+      {
+        "etiqueta": "Sola 2,40 × 1,80 m",
+        "precio": 200000
+      },
+      {
+        "etiqueta": "Sola 2,20 × 1,20 m",
+        "precio": 133000
+      }
+    ],
     "img": "/productos/doble-arcada-hierro.jpg",
     "destacado": false
   },
   {
     "slug": "columna-mickey-hierro-desarmable",
-    "nombre": "Columna Mickey hierro desarmable",
+    "nombre": "Columna Mickey de hierro",
     "categoria": "hierro",
     "precio": 75000,
-    "descripcion": "Estructura Mickey hierro Alto 2 m Diámetro de aro 1m La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Estructura Mickey de hierro, desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 m de alto · aro de 1 m de diámetro",
     "img": "/productos/columna-mickey-hierro-desarmable.jpg",
     "destacado": false
   },
@@ -588,25 +784,54 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa hamaca",
     "categoria": "hierro",
     "precio": 173000,
-    "descripcion": "Mesa hamaca 1.50 x 2 desarmable La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Mesa hamaca de hierro, desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "1,50 × 2 m",
     "img": "/productos/mesa-hamaca.jpg",
     "destacado": false
   },
   {
     "slug": "arco-para-luces-fijo-o-extendible",
-    "nombre": "Arco para luces fijo o extendible",
+    "nombre": "Arco para luces extensible",
     "categoria": "hierro",
     "precio": 349000,
-    "descripcion": "Arco de hierro para cortina de luces es extensible! de 2x2x2 extensible a 2x3x3 $349.000 de 2x2x2 extensible a 3x3x3 $427.000 Dato extra!!!! Se pueden usar solo los extendibles p eventos diferentes o sectores diferentes!!! Super practicos y varios usos!!!",
+    "descripcion": "Arco de hierro para cortina de luces. Los tramos extensibles también se usan solos, en otro evento o en otro sector.",
+    "variantes": [
+      {
+        "etiqueta": "De 2×2×2 a 2×3×3 m",
+        "precio": 349000
+      },
+      {
+        "etiqueta": "De 2×2×2 a 3×3×3 m",
+        "precio": 427000
+      }
+    ],
     "img": "/productos/arco-para-luces-fijo-o-extendible.jpg",
     "destacado": false
   },
   {
     "slug": "tunel-hexagonal-desarmable",
-    "nombre": "Túnel Hexagonal desarmable",
+    "nombre": "Túnel hexagonal desarmable",
     "categoria": "hierro",
-    "precio": null,
-    "descripcion": "*Túnel hexagonal x 3 (desarmable)* 2.20 de alto x 2.50 de ancho aprox $295.000 2.50 de alto x 3 de ancho aprox $324.000 *Túnel hexagonal x 4 (desarmable)* 2.50 de alto x 3 de ancho aprox $386.000 *Túnel hexagonal x 5 (desarmable)* 2.50 de alto x 3 de ancho aprox $438.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "precio": 295000,
+    "descripcion": "Túnel de hexágonos de hierro, desarmable, de 3, 4 o 5 módulos. Medidas de alto × ancho, aproximadas.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "variantes": [
+      {
+        "etiqueta": "x3 · 2,20 × 2,50 m",
+        "precio": 295000
+      },
+      {
+        "etiqueta": "x3 · 2,50 × 3 m",
+        "precio": 324000
+      },
+      {
+        "etiqueta": "x4 · 2,50 × 3 m",
+        "precio": 386000
+      },
+      {
+        "etiqueta": "x5 · 2,50 × 3 m",
+        "precio": 438000
+      }
+    ],
     "img": "/productos/tunel-hexagonal-desarmable.jpg",
     "destacado": false
   },
@@ -615,7 +840,18 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Alzada Corona",
     "categoria": "catering",
     "precio": 34500,
-    "descripcion": "Alzada de hierro con madera $49.000 Solo armazon $34.500 Medidas 25cm de diámetro 18 cm de alto La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Alzada de hierro.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "25 cm de diámetro × 18 cm de alto",
+    "variantes": [
+      {
+        "etiqueta": "Solo armazón",
+        "precio": 34500
+      },
+      {
+        "etiqueta": "Con madera",
+        "precio": 49000
+      }
+    ],
     "img": "/productos/cat-alzada-corona.jpg",
     "destacado": true
   },
@@ -624,70 +860,124 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Eclipse XL",
     "categoria": "catering",
     "precio": 72000,
-    "descripcion": "Eclipse XL Con maderas $192.000 Medida 1m x 58cm Colores a elección",
+    "descripcion": "Estantería Eclipse XL de hierro.\nColores: a elección.",
+    "medidas": "1 m × 58 cm",
+    "variantes": [
+      {
+        "etiqueta": "Sin maderas",
+        "precio": 72000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 192000
+      }
+    ],
     "img": "/productos/cat-eclipse-1m.jpg",
-    "destacado": false
+    "destacado": true
   },
   {
     "slug": "par-de-columnas-parentesis",
     "nombre": "Par de columnas paréntesis",
     "categoria": "hierro",
     "precio": 71000,
-    "descripcion": "Columnas paréntesis de hierro para flores Par de columnas parentesis de 1.20 de alto $71.000 Par de columnas parentesis de 1.90 de alto $80.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Par de columnas paréntesis de hierro para flores.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "variantes": [
+      {
+        "etiqueta": "1,20 m de alto",
+        "precio": 71000
+      },
+      {
+        "etiqueta": "1,90 m de alto",
+        "precio": 80000
+      }
+    ],
     "img": "/productos/par-de-columnas-parentesis.jpg",
     "destacado": false
   },
   {
     "slug": "posa-torta-triangulo",
-    "nombre": "Posa torta triángulo",
+    "nombre": "Posatorta triángulo",
     "categoria": "catering",
     "precio": 30000,
-    "descripcion": "Posa torta hierro y madera 22cm de díametro La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Posatorta de hierro y madera.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "22 cm de diámetro",
     "img": "/productos/posa-torta-triangulo.jpg",
     "destacado": false
   },
   {
     "slug": "arco-extensible-3x4-con-soporte",
-    "nombre": "Arco extensible 3x4 con soporte",
+    "nombre": "Arco extensible con soporte",
     "categoria": "hierro",
     "precio": 182000,
-    "descripcion": "Arco extensible base pesada con soporte 3x4 $182.000 4x4 $237.000",
+    "descripcion": "Arco extensible con base pesada y soporte.",
+    "variantes": [
+      {
+        "etiqueta": "3 × 4 m",
+        "precio": 182000
+      },
+      {
+        "etiqueta": "4 × 4 m",
+        "precio": 237000
+      }
+    ],
     "img": "/productos/arco-extensible-3x4-con-soporte.jpg",
-    "destacado": false
+    "destacado": true
   },
   {
     "slug": "columna-mariposa-hierro-solo-contorno",
-    "nombre": "Columna Mariposa hierro solo contorno",
+    "nombre": "Columna mariposa (solo contorno)",
     "categoria": "hierro",
     "precio": 94000,
-    "descripcion": "Columna mariposa hierro dorada plateada rosa gold Mariposa 60cm $94.000 Maripsoa 90cm $105.000 Pie regulable hasta 1.50 Colores a eleccion",
+    "descripcion": "Columna mariposa de hierro, solo contorno, con pie regulable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "Pie regulable hasta 1,50 m",
+    "variantes": [
+      {
+        "etiqueta": "Mariposa de 60 cm",
+        "precio": 94000
+      },
+      {
+        "etiqueta": "Mariposa de 90 cm",
+        "precio": 105000
+      }
+    ],
     "img": "/productos/columna-mariposa-hierro-solo-contorno.jpg",
     "destacado": false
   },
   {
     "slug": "arcada-ventana-2x1-desarmable",
-    "nombre": "Arcada ventana 2x1 desarmable",
+    "nombre": "Arcada ventana desarmable",
     "categoria": "hierro",
     "precio": 160000,
-    "descripcion": "Arcada ventana 2x1 Arcada ventana 2.50x1.50 $178.000 Desarmable Color a eleccion",
+    "descripcion": "Arcada ventana de hierro, desarmable.\nColores: a elección.",
+    "variantes": [
+      {
+        "etiqueta": "2 × 1 m",
+        "precio": 160000
+      },
+      {
+        "etiqueta": "2,50 × 1,50 m",
+        "precio": 178000
+      }
+    ],
     "img": "/productos/arcada-ventana-2x1-desarmable.jpg",
     "destacado": false
   },
   {
     "slug": "arcada-hierro-2x2",
-    "nombre": "Arcada hierro 2x2",
+    "nombre": "Arcada de hierro 2 × 2",
     "categoria": "hierro",
     "precio": 94000,
-    "descripcion": "Arcada hierro para entrada desarmable Medidas 2x2 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Arcada de hierro para entrada, desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 × 2 m",
     "img": "/productos/arcada-hierro-2x2.jpg",
     "destacado": false
   },
   {
     "slug": "mesa-puente-desarmable-mdf",
-    "nombre": "Mesa puente desarmable mdf",
+    "nombre": "Mesa puente desarmable MDF",
     "categoria": "mdf",
     "precio": 97500,
-    "descripcion": "Mesa puente mdf Medidas: 35x60, 40x70, 45x80 (plegables) Pintado $127.500",
+    "descripcion": "Mesa puente MDF Medidas: 35x60, 40x70, 45x80 (plegables) Pintado $127.500",
     "img": "/productos/mesa-puente-desarmable-mdf.jpg",
     "destacado": false
   },
@@ -696,25 +986,38 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa octogonal",
     "categoria": "hierro",
     "precio": 99000,
-    "descripcion": "Mesa octogonal Medidas: 60x75 Solo armazón $85.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Mesa octogonal de hierro. Solo armazón: $85.000.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "60 × 75 cm",
     "img": "/productos/mesa-octogonal.jpg",
     "destacado": false
   },
   {
     "slug": "columna-con-circulos",
-    "nombre": "Columna con circulos",
+    "nombre": "Columna con círculos",
     "categoria": "hierro",
     "precio": 71000,
-    "descripcion": "Columna de aros de hierro para flores Columna de 1.90 de alto $71.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Columna de aros de hierro para flores.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "1,90 m de alto",
     "img": "/productos/columna-con-circulos.jpg",
     "destacado": false
   },
   {
     "slug": "arcada-de-hierro-95x2",
-    "nombre": "Arcada de hierro 95x2",
+    "nombre": "Arcada de hierro 95 × 2",
     "categoria": "hierro",
     "precio": 95000,
-    "descripcion": "Arcada 95x2 Combo x3 $256.000 (cualquier formato) La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Arcada de hierro. En combo x3 la combinás con semiarcadas y arcadas rectas, en el formato que quieras.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "0,95 × 2 m",
+    "variantes": [
+      {
+        "etiqueta": "Unidad",
+        "precio": 95000
+      },
+      {
+        "etiqueta": "Combo x3",
+        "precio": 256000
+      }
+    ],
     "img": "/productos/arcada-de-hierro-95x2.jpg",
     "destacado": true
   },
@@ -723,7 +1026,21 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Entrada estrella",
     "categoria": "hierro",
     "precio": 99000,
-    "descripcion": "Estrella hierro desarmable Medidas: 2m x 2m caño 15-15 $99.000 2.50 x 2.50 caño 20-20 $212.000 3.50 x 3.50 caño 30-30 $302.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Estrella de hierro desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "variantes": [
+      {
+        "etiqueta": "2 × 2 m · caño 15-15",
+        "precio": 99000
+      },
+      {
+        "etiqueta": "2,50 × 2,50 m · caño 20-20",
+        "precio": 212000
+      },
+      {
+        "etiqueta": "3,50 × 3,50 m · caño 30-30",
+        "precio": 302000
+      }
+    ],
     "img": "/productos/entrada-estrella.jpg",
     "destacado": false
   },
@@ -738,28 +1055,57 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
   },
   {
     "slug": "bandeja-huesito-mdf",
-    "nombre": "Bandeja huesito mdf",
+    "nombre": "Bandeja huesito (MDF)",
     "categoria": "catering",
     "precio": 4900,
-    "descripcion": "15% de recargo x link mercado pago Medida 22cm aprox",
+    "descripcion": "Bandeja de MDF con forma de huesito.",
+    "medidas": "22 cm aprox.",
     "img": "/productos/bandeja-huesito-mdf.jpg",
     "destacado": false
   },
   {
     "slug": "bases-rectangulares-20x30",
-    "nombre": "Bases rectangulares 20x30",
+    "nombre": "Bases rectangulares 20 × 30",
     "categoria": "catering",
     "precio": 9000,
-    "descripcion": "15% de recargo x link de mercado pago Bases rectangulares colores a elección Consultar x otras medidas",
+    "descripcion": "Bases rectangulares. Consultanos por otras medidas.\nColores: a elección.",
+    "medidas": "20 × 30 cm",
     "img": "/productos/bases-rectangulares-20x30.jpg",
     "destacado": true
   },
   {
     "slug": "combo-x-5-mesas-diamante",
-    "nombre": "Combo x 5 mesas diamante",
-    "categoria": "madera",
-    "precio": 330000,
-    "descripcion": "Combo x 5 mesas armazones Medidas 50x75x90 40x40x75 30x30x90 Solo armazon $330.000 Con la madera $440.000 Combo x 3 (mesa principial y 2 a eleccion de las otras) Solo armazon $223.000 Con maderas $293.000 PRECIOS INDIVIDUALES 40x40x75 solo armazon $79.000 30x30x90 solo armazon $79.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "nombre": "Combo x5 mesas diamante",
+    "categoria": "hierro",
+    "precio": 79000,
+    "descripcion": "Mesas diamante de hierro en combo de 5, de 3 (la principal y 2 a elección) o por unidad.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "50 × 75 × 90 · 40 × 40 × 75 · 30 × 30 × 90 cm",
+    "variantes": [
+      {
+        "etiqueta": "Combo x5 solo armazón",
+        "precio": 330000
+      },
+      {
+        "etiqueta": "Combo x5 con maderas",
+        "precio": 440000
+      },
+      {
+        "etiqueta": "Combo x3 solo armazón",
+        "precio": 223000
+      },
+      {
+        "etiqueta": "Combo x3 con maderas",
+        "precio": 293000
+      },
+      {
+        "etiqueta": "40 × 40 × 75 solo armazón",
+        "precio": 79000
+      },
+      {
+        "etiqueta": "30 × 30 × 90 solo armazón",
+        "precio": 79000
+      }
+    ],
     "img": "/productos/combo-x-5-mesas-diamante.jpg",
     "destacado": false
   },
@@ -767,8 +1113,19 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "slug": "aro-mickey",
     "nombre": "Aro Mickey",
     "categoria": "hierro",
-    "precio": 170000,
-    "descripcion": "Solo orejas $74.000 Medidas: Aro de hierro 1.50cm de diametro Alto 2m aprox con las orejas (Tambien lo podes pedir con pies) Desarmable",
+    "precio": 74000,
+    "descripcion": "Aro de hierro con orejas, desarmable. También se puede pedir con pies.",
+    "medidas": "Aro de 1,50 m de diámetro · 2 m de alto aprox. con las orejas",
+    "variantes": [
+      {
+        "etiqueta": "Aro con orejas",
+        "precio": 170000
+      },
+      {
+        "etiqueta": "Solo las orejas",
+        "precio": 74000
+      }
+    ],
     "img": "/productos/aro-mickey.jpg",
     "destacado": false
   },
@@ -777,16 +1134,28 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesas Isla",
     "categoria": "catering",
     "precio": 348000,
-    "descripcion": "Combo x5 mesas de hierro Con maderas $468.000 2cm pintado y barnizado Medidas: 1 mesa central de 1m de alto x 40cm de diametro 4 mesas en los costados de 80cm de alto x 40cm de profundidad El diametro final es de 1.20, cada uno le da la abertura que necesite",
+    "descripcion": "Combo de 5 mesas de hierro: una central y cuatro a los costados, que abrís como necesites. La madera es de 2 cm, pintada y barnizada.",
+    "medidas": "Central de 1 m de alto × 40 cm de diámetro · 4 laterales de 80 cm de alto × 40 cm de profundidad · diámetro final 1,20 m",
+    "variantes": [
+      {
+        "etiqueta": "Sin maderas",
+        "precio": 348000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 468000
+      }
+    ],
     "img": "/productos/cat-mesas-isla.jpg",
     "destacado": true
   },
   {
     "slug": "vuelta-al-mundo-2x2",
-    "nombre": "Vuelta al mundo 2x2",
+    "nombre": "Vuelta al mundo 2 × 2",
     "categoria": "hierro",
     "precio": 517000,
-    "descripcion": "Vuelta al mundo hierro Medida 2x2 no gira Es desarmable La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Vuelta al mundo de hierro, desarmable. No gira.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 × 2 m",
     "img": "/productos/vuelta-al-mundo-2x2.jpg",
     "destacado": false
   },
@@ -804,16 +1173,17 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Cómoda Maru",
     "categoria": "madera",
     "precio": 60000,
-    "descripcion": "Cómoda Maru de pino Las podes pedir con reja Medidas 60x40x55",
+    "descripcion": "Cómoda Maru de pino Las podés pedir con reja Medidas 60x40x55",
     "img": "/productos/comoda-maru.jpg",
     "destacado": true
   },
   {
     "slug": "arcada-entrada-doble",
-    "nombre": "Arcada entrada doble",
+    "nombre": "Arcada de entrada doble",
     "categoria": "hierro",
     "precio": 212000,
-    "descripcion": "Arcada entrada doble base pesada Medidas: 2.50m de ancho x 2m de alto La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Arcada doble para entrada, con base pesada.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2,50 m de ancho × 2 m de alto",
     "img": "/productos/arcada-entrada-doble.jpg",
     "destacado": false
   },
@@ -822,16 +1192,16 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa mariposa",
     "categoria": "mdf",
     "precio": 119000,
-    "descripcion": "Mesa mariposa mdf desarmable Medidas 80x80 Pintado $189.000",
+    "descripcion": "Mesa mariposa MDF desarmable Medidas 80x80 Pintado $189.000",
     "img": "/productos/mesa-mariposa.jpg",
     "destacado": false
   },
   {
     "slug": "torre-cupcakes-hexagonal-2-x-1",
-    "nombre": "Torre cupcakes hexagonal 2 x 1",
+    "nombre": "Torre de cupcakes hexagonal 2 en 1",
     "categoria": "catering",
     "precio": 30000,
-    "descripcion": "15% de recargo x link de mercado pago Colores a elección La usas como torre o cómo alzadas divinas!",
+    "descripcion": "La usás como torre de cupcakes o separada, como alzadas.\nColores: a elección.",
     "img": "/productos/torre-cupcakes-hexagonal-2-x-1.jpg",
     "destacado": true
   },
@@ -849,25 +1219,47 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mariposa",
     "categoria": "mdf",
     "precio": 8000,
-    "descripcion": "Mariposa mdf De 50cm de alto $8.000 sin pintar •pintada $16.000 De 1m de alto aprox $22.000 sin pintar •pintada $44.000 De 1.50 de alto $37.000 sin pintar •pintada $74.000 De 2m de alto (segundo modelo) $99.000 sin pintar •pintada $198.000 Cada mitad $56.500",
+    "descripcion": "Mariposa MDF De 50cm de alto $8.000 sin pintar •pintada $16.000 De 1m de alto aprox $22.000 sin pintar •pintada $44.000 De 1.50 de alto $37.000 sin pintar •pintada $74.000 De 2m de alto (segundo modelo) $99.000 sin pintar •pintada $198.000 Cada mitad $56.500",
     "img": "/productos/mariposa.jpg",
     "destacado": true
   },
   {
     "slug": "funda-aro-1-20",
-    "nombre": "Funda Aro 1.20",
+    "nombre": "Funda para aro de 1,20 m",
     "categoria": "fundas-y-telas",
     "precio": 16000,
-    "descripcion": "Funda con elastico para aro 1.20 de diámetro CATALOGO DE FUNDAS",
+    "descripcion": "Funda con elástico para aro de 1,20 m de diámetro.",
     "img": "/productos/funda-aro-1-20.jpg",
     "destacado": true
   },
   {
     "slug": "combo-x-3-cilindros-malla",
-    "nombre": "Combo x 3 cilindros malla",
-    "categoria": "madera",
-    "precio": 207000,
-    "descripcion": "Combo x 3 cilindros malla solo armazón Medidas 50x75 40x65 30x55 Con maderas $282.000 PRECIOS INDIVIDUALES (sin madera) 50x75 $92.000 40x65 $89.000 30x55 $87.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "nombre": "Cilindros con malla",
+    "categoria": "hierro",
+    "precio": 87000,
+    "descripcion": "Cilindros de hierro con malla, en combo de 3 o por unidad (diámetro × alto, en cm).\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "variantes": [
+      {
+        "etiqueta": "Combo x3 solo armazón",
+        "precio": 207000
+      },
+      {
+        "etiqueta": "Combo x3 con maderas",
+        "precio": 282000
+      },
+      {
+        "etiqueta": "50 × 75 sin madera",
+        "precio": 92000
+      },
+      {
+        "etiqueta": "40 × 65 sin madera",
+        "precio": 89000
+      },
+      {
+        "etiqueta": "30 × 55 sin madera",
+        "precio": 87000
+      }
+    ],
     "img": "/productos/combo-x-3-cilindros-malla.jpg",
     "destacado": false
   },
@@ -876,7 +1268,17 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Pie para flores",
     "categoria": "hierro",
     "precio": 40000,
-    "descripcion": "Pie con base pesada para poner 3 flores de organza Unidad $40.000 Par $63.000 Medidas:",
+    "descripcion": "Pie con base pesada para 3 flores de organza.",
+    "variantes": [
+      {
+        "etiqueta": "Unidad",
+        "precio": 40000
+      },
+      {
+        "etiqueta": "Par",
+        "precio": 63000
+      }
+    ],
     "img": "/productos/pie-para-flores.jpg",
     "destacado": false
   },
@@ -885,34 +1287,46 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa frozen",
     "categoria": "mdf",
     "precio": 100000,
-    "descripcion": "Mesa Frozen mdf desarmable Medidas 80x80cm Pintada $130.000",
+    "descripcion": "Mesa Frozen MDF desarmable Medidas 80x80cm Pintada $130.000",
     "img": "/productos/mesa-frozen.jpg",
     "destacado": false
   },
   {
     "slug": "arcada-3d-arcoiris-2-x-1",
-    "nombre": "Arcada 3d arcoiris 2 x 1",
+    "nombre": "Arcada 3D arcoíris",
     "categoria": "hierro",
     "precio": 219000,
-    "descripcion": "Medidas 2x1 Sin pintar $219.000 Pintada $270.000",
+    "descripcion": "Arcada arcoíris 3D.",
+    "medidas": "2 × 1 m",
+    "variantes": [
+      {
+        "etiqueta": "Sin pintar",
+        "precio": 219000
+      },
+      {
+        "etiqueta": "Pintada",
+        "precio": 270000
+      }
+    ],
     "img": "/productos/arcada-3d-arcoiris-2-x-1.jpg",
     "destacado": false
   },
   {
     "slug": "aro-de-hierro-1-20-1-50-2-00",
-    "nombre": "Aro de hierro 1.20/1.50/2.00",
+    "nombre": "Aro de hierro",
     "categoria": "hierro",
     "precio": 99000,
-    "descripcion": "Aro de hierro Hacemos de la medida que quieras! Son de 2m de alto, lo que varia es el diametro 2m x 2m 1.50 x 2m 1.20 x 2m Color a eleccion",
+    "descripcion": "Aro de hierro de 2 m de alto; lo que cambia es el diámetro. También lo hacemos a la medida que necesites.\nColores: a elección.",
+    "medidas": "1,20, 1,50 o 2 m de diámetro × 2 m de alto",
     "img": "/productos/aro-de-hierro-1-20-1-50-2-00.jpg",
     "destacado": true
   },
   {
     "slug": "alzada-2-platos-de-hierro",
-    "nombre": "Alzada 2 platos de hierro",
+    "nombre": "Alzada de 2 platos",
     "categoria": "hierro",
     "precio": 35000,
-    "descripcion": "Alzada 2 platos hierro La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Alzada de hierro de 2 platos.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/alzada-2-platos-de-hierro.jpg",
     "destacado": true
   },
@@ -936,73 +1350,141 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
   },
   {
     "slug": "mesas-glowsweet",
-    "nombre": "Mesas Glowsweet",
-    "categoria": "madera",
+    "nombre": "Mesas GlowSweet",
+    "categoria": "hierro",
     "precio": 93000,
-    "descripcion": "Mesas GlowSweet! *Opciones por unidad* 40x75 $113.000 sin maderas _$138.000 con madera_ 40x65 $108.000 sin maderas _$133.000 con madera_ 40x55 $98.000 sin maderas _$123.000 con madera_ 40x45 $93.000 sin maderas _$118.000 con madera_ *Opciones de combos x 2* (75 y 55) $200.000 sin maderas _$250.000 con maderas_ (65 y 45) $190.000 sin maderas _$240.000 con maderas_ (75 y 65) $209.000 sin maderas _$259.000 con maderas_ (55 y 45) $181.000 sin madera _$231.000 con maderas_ (75 y 45) $195.000 sin madera _$245.000 con maderas_ (65 y 55) $195.000 sin madera _$245.000 con maderas_ *Combo x 3* Elegir las 3 , y a los precios por unidad se les hace un %10 de descuento *Combo x 4* $350.000 sin maderas _$450.000 con maderas_",
+    "descripcion": "Mesas GlowSweet por unidad o en combo (diámetro × alto, en cm). Combos de 2 mesas desde $181.000 sin maderas; en el combo de 3 elegís las mesas y tienen 10 % de descuento sobre el precio por unidad.",
+    "variantes": [
+      {
+        "etiqueta": "40 × 45 sin maderas",
+        "precio": 93000
+      },
+      {
+        "etiqueta": "40 × 45 con madera",
+        "precio": 118000
+      },
+      {
+        "etiqueta": "40 × 55 sin maderas",
+        "precio": 98000
+      },
+      {
+        "etiqueta": "40 × 55 con madera",
+        "precio": 123000
+      },
+      {
+        "etiqueta": "40 × 65 sin maderas",
+        "precio": 108000
+      },
+      {
+        "etiqueta": "40 × 65 con madera",
+        "precio": 133000
+      },
+      {
+        "etiqueta": "40 × 75 sin maderas",
+        "precio": 113000
+      },
+      {
+        "etiqueta": "40 × 75 con madera",
+        "precio": 138000
+      },
+      {
+        "etiqueta": "Combo x4 sin maderas",
+        "precio": 350000
+      },
+      {
+        "etiqueta": "Combo x4 con maderas",
+        "precio": 450000
+      }
+    ],
     "img": "/productos/mesas-glowsweet.jpg",
     "destacado": false
   },
   {
     "slug": "estanteria-star",
-    "nombre": "Estanteria Star",
+    "nombre": "Estantería Star",
     "categoria": "catering",
     "precio": 57000,
-    "descripcion": "Estanteria Star Con maderas $77.000 Medida 60cm aprox Colores a eleccion",
+    "descripcion": "Estantería Star de hierro.\nColores: a elección.",
+    "medidas": "60 cm aprox.",
+    "variantes": [
+      {
+        "etiqueta": "Sin maderas",
+        "precio": 57000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 77000
+      }
+    ],
     "img": "/productos/cat-estanteria-star.jpg",
     "destacado": false
   },
   {
     "slug": "base-ovalada-espiralada-mdf-20x30",
-    "nombre": "Base ovalada espiralada mdf 20x30",
+    "nombre": "Base ovalada espiralada MDF 20x30",
     "categoria": "mdf",
     "precio": 9000,
-    "descripcion": "Base espiralada ovalada mdf Medida 20x30 Color a elección 15% de recargo x link de mercado pago",
+    "descripcion": "Base espiralada ovalada MDF Medida 20x30 Color a elección",
     "img": "/productos/base-ovalada-espiralada-mdf-20x30.jpg",
     "destacado": false
   },
   {
     "slug": "hexagono-doble",
-    "nombre": "Hexagono doble",
+    "nombre": "Hexágono doble",
     "categoria": "hierro",
     "precio": 152000,
-    "descripcion": "Doble hexágono de hierro Medidas La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Doble hexágono de hierro.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/hexagono-doble.jpg",
     "destacado": false
   },
   {
     "slug": "arbol-de-navidad",
-    "nombre": "Arbol de navidad",
+    "nombre": "Árbol de Navidad",
     "categoria": "hierro",
     "precio": 149000,
-    "descripcion": "Estructura árbol navidad de hierro desarmable Medidas: 1.20m de ancho x 2m de alto $169.000 1.80m de ancho x 3m de alto $262.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Estructura de árbol de Navidad de hierro, desarmable. Medidas y precios publicados: 1,20 × 2 m, $169.000 · 1,80 × 3 m, $262.000.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/arbol-de-navidad.jpg",
     "destacado": false
   },
   {
     "slug": "columna-hierro-corazon",
-    "nombre": "Columna hierro corazon",
+    "nombre": "Columna de hierro corazón",
     "categoria": "hierro",
     "precio": 71000,
-    "descripcion": "Columna hierro corazon Medidas 1.90 de alto y ancho aprox 1 m X link mp 15% de recargo",
+    "descripcion": "Columna de hierro con corazón.",
+    "medidas": "1,90 m de alto · 1 m de ancho aprox.",
     "img": "/productos/columna-hierro-corazon.jpg",
     "destacado": false
   },
   {
     "slug": "arcada-romana",
-    "nombre": "Arcada Romana",
+    "nombre": "Arcada romana",
     "categoria": "hierro",
     "precio": 352000,
-    "descripcion": "Arcada Romana 2.40x1.80 $352.000 Arcada Romana 2x3 $396.000 Arcada Romana 3x3 $454.000 Extension de 1 m sola $58.000 COLUMNAS 45x45x2 $137.000 c/u 45x45x1.60 $129.000 c/u La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Arcada romana de hierro.\nAdicionales: extensión de 1 m, $58.000 · columnas de 45 × 45 × 2 m, $137.000 c/u · de 45 × 45 × 1,60 m, $129.000 c/u.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "variantes": [
+      {
+        "etiqueta": "2,40 × 1,80 m",
+        "precio": 352000
+      },
+      {
+        "etiqueta": "2 × 3 m",
+        "precio": 396000
+      },
+      {
+        "etiqueta": "3 × 3 m",
+        "precio": 454000
+      }
+    ],
     "img": "/productos/arcada-romana.jpg",
     "destacado": false
   },
   {
     "slug": "torre-cupcakes-o-alzadas-2-en-1",
-    "nombre": "Torre cupcakes o alzadas 2 en 1",
+    "nombre": "Torre de cupcakes o alzadas 2 en 1",
     "categoria": "catering",
     "precio": 30000,
-    "descripcion": "15% de recargo x link Mercado pago Torre de cupcakes desarmable la usas como torre o la separas y te quedan alzadas p tortas Colores a elección",
+    "descripcion": "Torre de cupcakes desarmable: la usás como torre o la separás y te quedan alzadas para tortas.\nColores: a elección.",
     "img": "/productos/torre-cupcakes-o-alzadas-2-en-1.jpg",
     "destacado": true
   },
@@ -1011,9 +1493,10 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Arco extensible doble barral",
     "categoria": "hierro",
     "precio": 174000,
-    "descripcion": "Arco extensible doble barral 2 x 1.50 extensible a 3 m Base pesada La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Arco extensible de doble barral con base pesada.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 × 1,50 m, extensible a 3 m",
     "img": "/productos/arco-extensible-doble-barral.jpg",
-    "destacado": false
+    "destacado": true
   },
   {
     "slug": "combo-x-3-cilindros-tradicionales",
@@ -1029,7 +1512,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa Caracola",
     "categoria": "mdf",
     "precio": 62500,
-    "descripcion": "Mesa Caracola de mdf Medidas: 1m x 80cm x 40cm Pintada $87.500",
+    "descripcion": "Mesa Caracola de MDF Medidas: 1m x 80cm x 40cm Pintada $87.500",
     "img": "/productos/mesa-caracola.jpg",
     "destacado": false
   },
@@ -1038,16 +1521,18 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Corazón de hierro",
     "categoria": "hierro",
     "precio": 99000,
-    "descripcion": "Corazón hierro Medidas: 2m x 2m Desarmable La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Corazón de hierro desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 × 2 m",
     "img": "/productos/corazon-de-hierro.jpg",
     "destacado": false
   },
   {
     "slug": "mesa-mdf",
-    "nombre": "Mesa mdf",
+    "nombre": "Mesa de MDF 25 × 35",
     "categoria": "catering",
     "precio": 15000,
-    "descripcion": "15% de recargo x link de Mercado pago Mesa 25x35 colores a elección",
+    "descripcion": "Mesa de MDF.\nColores: a elección.",
+    "medidas": "25 × 35 cm",
     "img": "/productos/mesa-mdf.jpg",
     "destacado": true
   },
@@ -1056,16 +1541,46 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Castillo",
     "categoria": "mdf",
     "precio": 87500,
-    "descripcion": "Castillo de mdf Medidas: 1.80 x 70 aprox Pintado $129.500",
+    "descripcion": "Castillo de MDF Medidas: 1.80 x 70 aprox Pintado $129.500",
     "img": "/productos/castillo.jpg",
     "destacado": false
   },
   {
     "slug": "alzadas-mdf-mas-pino",
-    "nombre": "Alzadas mdf más Pino",
+    "nombre": "Alzadas de MDF y pino",
     "categoria": "catering",
-    "precio": null,
-    "descripcion": "15cm diámetro x 15cm alto $8.500 15xm diámetro x40cm alto $10.000 20cm diámetro x 20cm alto $15.000 25cm diametro x 20cm alto $15.000 25cm diámetro x 25cm alto $15.000 30cm diámetro x 20cm alto $15.000 30cm diámetro x 25cm alto $16.500 15% de recargo x link de mercado pago Colores a elección!!",
+    "precio": 8500,
+    "descripcion": "Alzadas para torta de MDF y pino. Medidas: diámetro × alto.\nColores: a elección.",
+    "variantes": [
+      {
+        "etiqueta": "15 × 15 cm",
+        "precio": 8500
+      },
+      {
+        "etiqueta": "15 × 40 cm",
+        "precio": 10000
+      },
+      {
+        "etiqueta": "20 × 20 cm",
+        "precio": 15000
+      },
+      {
+        "etiqueta": "25 × 20 cm",
+        "precio": 15000
+      },
+      {
+        "etiqueta": "25 × 25 cm",
+        "precio": 15000
+      },
+      {
+        "etiqueta": "30 × 20 cm",
+        "precio": 15000
+      },
+      {
+        "etiqueta": "30 × 25 cm",
+        "precio": 16500
+      }
+    ],
     "img": "/productos/alzadas-mdf-mas-pino.jpg",
     "destacado": true
   },
@@ -1074,25 +1589,36 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Carpa circo",
     "categoria": "mdf",
     "precio": 159000,
-    "descripcion": "Carpa circo mdf desarmable Medidas 2x1.80 Pintado $204.000",
+    "descripcion": "Carpa circo MDF desarmable Medidas 2x1.80 Pintado $204.000",
     "img": "/productos/carpa-circo.jpg",
     "destacado": false
   },
   {
     "slug": "alzadas-escandinavas-x3",
-    "nombre": "Alzadas Escandinavas x3",
+    "nombre": "Alzadas escandinavas",
     "categoria": "catering",
-    "precio": 85000,
-    "descripcion": "Combo x 3 alzadas Escandinavas Colores a eleccion Combo x 3 Indiciduales $35.000",
+    "precio": 35000,
+    "descripcion": "Alzadas escandinavas, en combo de 3 o por unidad.\nColores: a elección.",
+    "variantes": [
+      {
+        "etiqueta": "Combo x3",
+        "precio": 85000
+      },
+      {
+        "etiqueta": "Individual",
+        "precio": 35000
+      }
+    ],
     "img": "/productos/cat-alzadas-escandinavas.jpg",
     "destacado": true
   },
   {
     "slug": "funda-arcada-pino",
-    "nombre": "Funda Arcada pino",
+    "nombre": "Funda para arcada de pino",
     "categoria": "fundas-y-telas",
     "precio": 18000,
-    "descripcion": "Funda con elastico para arcada pino 1.90x60 $18.000 1.60x60 $18.000 1.40x60 $18.000 CATALOGO DE FUNDAS",
+    "descripcion": "Funda con elástico para arcada de pino.",
+    "medidas": "1,90, 1,60 o 1,40 × 0,60 m (mismo precio)",
     "img": "/productos/funda-arcada-pino.jpg",
     "destacado": false
   },
@@ -1101,16 +1627,16 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa Pelota",
     "categoria": "mdf",
     "precio": 69500,
-    "descripcion": "Mesa Pelota mdf $85.000 pintada Desarmable",
+    "descripcion": "Mesa Pelota MDF $85.000 pintada Desarmable",
     "img": "/productos/mesa-pelota.jpg",
     "destacado": false
   },
   {
     "slug": "combo-x-3-mesas-cilindro-con-varillas",
-    "nombre": "Combo x 3 mesas cilindro con varillas",
+    "nombre": "Combo x3 mesas cilindro con varillas",
     "categoria": "hierro",
     "precio": 260000,
-    "descripcion": "Combo x 3 mesas redondas con detalles de varillas solo armazón sin maderas La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Tres mesas redondas de hierro con detalle de varillas. Solo armazón, sin maderas.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/combo-x-3-mesas-cilindro-con-varillas.jpg",
     "destacado": true
   },
@@ -1119,70 +1645,139 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Combo x 3 paneles espiralado",
     "categoria": "mdf",
     "precio": 146000,
-    "descripcion": "Combo x 3 paneles espiralado Medidas 1.80x80 1.60x80 80x80 este podes usarlo de ambos lados Pintado $216.000",
+    "descripcion": "Combo x 3 paneles espiralado Medidas 1.80x80 1.60x80 80x80 este podés usarlo de ambos lados Pintado $216.000",
     "img": "/productos/combo-x-3-paneles-espiralado.jpg",
     "destacado": true
   },
   {
     "slug": "funda-cilindros-tradicional",
-    "nombre": "Funda Cilindros Tradicional",
+    "nombre": "Fundas para cilindros tradicionales",
     "categoria": "fundas-y-telas",
     "precio": 35000,
-    "descripcion": "Fundas con elastico para los tres cilindros tradicional Medidas (diametro x alto) 50x75 40x65 30x55 CATALOGO DE FUNDAS",
+    "descripcion": "Fundas con elástico para los tres cilindros tradicionales.",
+    "medidas": "50 × 75 · 40 × 65 · 30 × 55 cm (diámetro × alto)",
     "img": "/productos/funda-cilindros-tradicional.jpg",
     "destacado": true
   },
   {
     "slug": "funda-arcada-hierro",
-    "nombre": "Funda Arcada hierro",
+    "nombre": "Funda para arcada de hierro",
     "categoria": "fundas-y-telas",
     "precio": 22000,
-    "descripcion": "Funda con elastico para Arcada de hierro o semi arcada 95x2 CATALOGO DE FUNDAS",
+    "descripcion": "Funda con elástico para arcada o semiarcada de hierro.",
+    "medidas": "0,95 × 2 m",
     "img": "/productos/funda-arcada-hierro.jpg",
     "destacado": true
   },
   {
     "slug": "alajero-mdf-c-u",
-    "nombre": "Alajero mdf C/u",
+    "nombre": "Alajero MDF C/u",
     "categoria": "mdf",
     "precio": 15000,
-    "descripcion": "15% de recargo x link Mercado pago Colores a elección",
+    "descripcion": "Colores a elección",
     "img": "/productos/alajero-mdf-c-u.jpg",
     "destacado": false
   },
   {
     "slug": "alzadas-p-torta-de-mdf",
-    "nombre": "Alzadas p torta de mdf",
+    "nombre": "Alzadas para torta de MDF",
     "categoria": "catering",
-    "precio": null,
-    "descripcion": "Alzadas p torta de mdf De 10cm $7.000 De 15cm $11.000 De 20cm $13.000 De 25cm $15.000 15% de recargo x link de mercado pago Colores a elección",
+    "precio": 7000,
+    "descripcion": "Alzadas para torta de MDF.\nColores: a elección.",
+    "variantes": [
+      {
+        "etiqueta": "10 cm",
+        "precio": 7000
+      },
+      {
+        "etiqueta": "15 cm",
+        "precio": 11000
+      },
+      {
+        "etiqueta": "20 cm",
+        "precio": 13000
+      },
+      {
+        "etiqueta": "25 cm",
+        "precio": 15000
+      }
+    ],
     "img": "/productos/alzadas-p-torta-de-mdf.jpg",
     "destacado": true
   },
   {
     "slug": "estructura-telonera",
-    "nombre": "Estructura Telonera",
+    "nombre": "Estructura telonera",
     "categoria": "hierro",
-    "precio": 217000,
-    "descripcion": "Estructura de hierro en forma de S Medidas : De 2.40m de alto x 4m de largo $217.000 De 2m de alto x 2m de largo $198.000 Desarmable Hierro 15-15 Hierro 20-20 $255.000 Para abonar con tarjeta de credito x medio de mecado pago 15% de recargo",
+    "precio": 198000,
+    "descripcion": "Estructura de hierro en forma de S, desarmable.",
+    "variantes": [
+      {
+        "etiqueta": "2 × 2 m",
+        "precio": 198000
+      },
+      {
+        "etiqueta": "2,40 × 4 m",
+        "precio": 217000
+      },
+      {
+        "etiqueta": "En caño 20-20",
+        "precio": 255000
+      }
+    ],
     "img": "/productos/estructura-telonera.jpg",
-    "destacado": false
+    "destacado": true
   },
   {
     "slug": "cilindro-x-3",
-    "nombre": "Cilindro x 3",
+    "nombre": "Cilindros de hierro",
     "categoria": "hierro",
-    "precio": 150000,
-    "descripcion": "Cilindros hierro Combo x 3 sin maderas $150.000 con maderas $225.000 Medidas 50x75 $55.000 sin madera $85.000 con madera 40x65 $52.000 sin madera $77.000 con madera 30x55 $48.000 sin madera $68.000 con madera La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold Colores rosa celeste verde amarillo etc a cotizar",
+    "precio": 48000,
+    "descripcion": "Cilindros de hierro, en combo de 3 o por unidad (diámetro × alto, en cm).\nColores: blanco, negro, dorado, plateado o rosa gold.\nOtros colores (rosa, celeste, verde, amarillo…): a cotizar.",
+    "variantes": [
+      {
+        "etiqueta": "Combo x3 sin maderas",
+        "precio": 150000
+      },
+      {
+        "etiqueta": "Combo x3 con maderas",
+        "precio": 225000
+      },
+      {
+        "etiqueta": "50 × 75 sin madera",
+        "precio": 55000
+      },
+      {
+        "etiqueta": "50 × 75 con madera",
+        "precio": 85000
+      },
+      {
+        "etiqueta": "40 × 65 sin madera",
+        "precio": 52000
+      },
+      {
+        "etiqueta": "40 × 65 con madera",
+        "precio": 77000
+      },
+      {
+        "etiqueta": "30 × 55 sin madera",
+        "precio": 48000
+      },
+      {
+        "etiqueta": "30 × 55 con madera",
+        "precio": 68000
+      }
+    ],
     "img": "/productos/cilindro-x-3.jpg",
     "destacado": false
   },
   {
     "slug": "mesa-triangulo-x-unidad",
-    "nombre": "Mesa triángulo x unidad",
-    "categoria": "madera",
+    "nombre": "Mesa triángulo (por unidad)",
+    "categoria": "hierro",
     "precio": 122000,
-    "descripcion": "Mesa triangulo sin madera c/u $122.000 Medidas 40x75 40x65",
+    "descripcion": "Mesa triángulo de hierro, sin madera. Precio por unidad.",
+    "medidas": "40 × 75 o 40 × 65 cm",
     "img": "/productos/mesa-triangulo-x-unidad.jpg",
     "destacado": false
   },
@@ -1191,7 +1786,8 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Tela rectangular",
     "categoria": "fundas-y-telas",
     "precio": 25000,
-    "descripcion": "Tela rectangular sin elastico horizontal o vertical 1.50 x 2m Consultar otras medidas!! CATALOGO DE FUNDAS",
+    "descripcion": "Tela sin elástico, para usar en horizontal o vertical. Consultanos por otras medidas.",
+    "medidas": "1,50 × 2 m",
     "img": "/productos/tela-rectangular.jpg",
     "destacado": true
   },
@@ -1200,61 +1796,103 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Paneles x 2 ondas",
     "categoria": "mdf",
     "precio": 81000,
-    "descripcion": "Paneles x 2 ondas de mdf Desarmable o fijos Medidas 1.80 x 70 1.50 x 70 Pintado $125.000",
+    "descripcion": "Paneles x 2 ondas de MDF Desarmable o fijos Medidas 1.80 x 70 1.50 x 70 Pintado $125.000",
     "img": "/productos/paneles-x-2-ondas.jpg",
     "destacado": true
   },
   {
     "slug": "arcada-entrada-semi-circulo",
-    "nombre": "Arcada entrada semi Círculo",
+    "nombre": "Arcada de entrada semicírculo",
     "categoria": "hierro",
     "precio": 137000,
-    "descripcion": "Arcada de hierro para entradas con base pesada Medidas: 2.50m de ancho x 2m de alto La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Arcada de hierro para entradas, con base pesada.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2,50 m de ancho × 2 m de alto",
     "img": "/productos/arcada-entrada-semi-circulo.jpg",
     "destacado": false
   },
   {
     "slug": "estanteria-eclipse",
-    "nombre": "Estanteria Eclipse",
+    "nombre": "Estantería Eclipse",
     "categoria": "catering",
     "precio": 49000,
-    "descripcion": "Estanteria Eclipse Medidas: 60cm diametro x 15cm $57.000 (C/madera $77.000 ) 45cm diametro x 15cm $49.000 (C/madera $69.000)",
+    "descripcion": "Estantería Eclipse de hierro (diámetro × alto).",
+    "variantes": [
+      {
+        "etiqueta": "45 × 15 cm",
+        "precio": 49000
+      },
+      {
+        "etiqueta": "45 × 15 cm con madera",
+        "precio": 69000
+      },
+      {
+        "etiqueta": "60 × 15 cm",
+        "precio": 57000
+      },
+      {
+        "etiqueta": "60 × 15 cm con madera",
+        "precio": 77000
+      }
+    ],
     "img": "/productos/cat-estanteria-eclipse.jpg",
     "destacado": true
   },
   {
     "slug": "panel-con-malla-1x2",
-    "nombre": "Panel con malla 1x2",
+    "nombre": "Panel con malla",
     "categoria": "hierro",
     "precio": 152000,
-    "descripcion": "Panel con malla desarmable Recto o Arcada Medidas: 2m x 1m $152.000 2.50m x 1.20m $195.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Panel con malla desarmable, recto o arcada.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "variantes": [
+      {
+        "etiqueta": "2 × 1 m",
+        "precio": 152000
+      },
+      {
+        "etiqueta": "2,50 × 1,20 m",
+        "precio": 195000
+      }
+    ],
     "img": "/productos/panel-con-malla-1x2.jpg",
     "destacado": false
   },
   {
     "slug": "columnas-centro-de-mesa",
-    "nombre": "Columnas centro de mesa",
+    "nombre": "Columnas para centro de mesa",
     "categoria": "catering",
     "precio": 28000,
-    "descripcion": "Columnas para centros de mesa 15x15x50 Unidad $28.000 X 10 unidades $252.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Columnas de hierro para centros de mesa.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "15 × 15 × 50 cm",
+    "variantes": [
+      {
+        "etiqueta": "Unidad",
+        "precio": 28000
+      },
+      {
+        "etiqueta": "Pack x10",
+        "precio": 252000
+      }
+    ],
     "img": "/productos/columnas-centro-de-mesa.jpg",
     "destacado": false
   },
   {
     "slug": "estructura-cartel-bienvenida",
-    "nombre": "Estructura Cartel Bienvenida",
+    "nombre": "Estructura para cartel de bienvenida",
     "categoria": "hierro",
     "precio": 91000,
-    "descripcion": "Estructura Cartel Bienvenida 1.60x95 Colores a eleccion",
+    "descripcion": "Estructura de hierro para cartel de bienvenida.\nColores: a elección.",
+    "medidas": "1,60 × 0,95 m",
     "img": "/productos/estructura-cartel-bienvenida.jpg",
     "destacado": false
   },
   {
     "slug": "funda-cilindros-xl",
-    "nombre": "Funda Cilindros XL",
+    "nombre": "Fundas para cilindros XL",
     "categoria": "fundas-y-telas",
     "precio": 45000,
-    "descripcion": "Fundas con elastico para los tres cilindros XL Medidas (diametro x alto) 60x1m 50x90 40x80 CATALOGO DE FUNDAS",
+    "descripcion": "Fundas con elástico para los tres cilindros XL.",
+    "medidas": "60 × 100 · 50 × 90 · 40 × 80 cm (diámetro × alto)",
     "img": "/productos/funda-cilindros-xl.jpg",
     "destacado": true
   },
@@ -1263,34 +1901,45 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa diamante",
     "categoria": "hierro",
     "precio": 105000,
-    "descripcion": "Mesa diamante de hierro Medidas: 50x75x90 Solo armazón $105.000 Con madera $135.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Mesa diamante de hierro.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "50 × 75 × 90 cm",
+    "variantes": [
+      {
+        "etiqueta": "Solo armazón",
+        "precio": 105000
+      },
+      {
+        "etiqueta": "Con madera",
+        "precio": 135000
+      }
+    ],
     "img": "/productos/mesa-diamante.jpg",
     "destacado": true
   },
   {
     "slug": "televisor-70-mdf",
-    "nombre": "Televisor ‘70 Mdf",
+    "nombre": "Televisor ‘70 MDF",
     "categoria": "mdf",
     "precio": 18000,
-    "descripcion": "Sin pintar $9000 Pintado $15000 15% de recargo x link mercado pago Color a elección",
+    "descripcion": "Sin pintar $9000 Pintado $15000 Color a elección",
     "img": "/productos/televisor-70-mdf.jpg",
     "destacado": false
   },
   {
     "slug": "base-espiralada-redonda-mdf-20cm-de-diametro",
-    "nombre": "Base espiralada redonda mdf 20cm de diámetro",
+    "nombre": "Base espiralada redonda MDF 20cm de diámetro",
     "categoria": "mdf",
     "precio": 8000,
-    "descripcion": "Base espiralada redonda Medida 20cm de diámetro Colores a elección 15% de recargo x link de mercado pago",
+    "descripcion": "Base espiralada redonda Medida 20cm de diámetro Colores a elección",
     "img": "/productos/base-espiralada-redonda-mdf-20cm-de-diametro.jpg",
     "destacado": false
   },
   {
     "slug": "panel-abejita-3d-mdf-desarmable",
-    "nombre": "Panel Abejita 3D mdf desarmable",
+    "nombre": "Panel Abejita 3D MDF desarmable",
     "categoria": "mdf",
     "precio": 82000,
-    "descripcion": "Panel abejita 3D mdf desarmable 1.80 x 1 Sin pintar $82.000 Pintado 1 color $112.000 Puntado 2 colores $122.000",
+    "descripcion": "Panel abejita 3D MDF desarmable 1.80 x 1 Sin pintar $82.000 Pintado 1 color $112.000 Puntado 2 colores $122.000",
     "img": "/productos/panel-abejita-3d-mdf-desarmable.jpg",
     "destacado": false
   },
@@ -1308,7 +1957,18 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Panel arcada liso",
     "categoria": "hierro",
     "precio": 60000,
-    "descripcion": "Panel arcada liso desarmable Medida 1.80x80 Pintado $80.000",
+    "descripcion": "Panel arcada liso, desarmable.",
+    "medidas": "1,80 × 0,80 m",
+    "variantes": [
+      {
+        "etiqueta": "Sin pintar",
+        "precio": 60000
+      },
+      {
+        "etiqueta": "Pintado",
+        "precio": 80000
+      }
+    ],
     "img": "/productos/panel-arcada-liso.jpg",
     "destacado": false
   },
@@ -1325,17 +1985,31 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "slug": "bases-de-3-o-4-pisos",
     "nombre": "Bases de 3 o 4 pisos",
     "categoria": "catering",
-    "precio": null,
-    "descripcion": "Base de 3 pisos colores a elección $18.000 Base de 4 pisos colores a elección $20.000 Base de 3 pisos circular color a elección $30.000 15% de recargo x link mercado pago",
+    "precio": 18000,
+    "descripcion": "Bases de pisos.\nColores: a elección.",
+    "variantes": [
+      {
+        "etiqueta": "3 pisos",
+        "precio": 18000
+      },
+      {
+        "etiqueta": "4 pisos",
+        "precio": 20000
+      },
+      {
+        "etiqueta": "3 pisos circular",
+        "precio": 30000
+      }
+    ],
     "img": "/productos/bases-de-3-o-4-pisos.jpg",
     "destacado": false
   },
   {
     "slug": "extensible-3x3-cano-cuadrado",
-    "nombre": "Extensible 3x3 caño cuadrado",
+    "nombre": "Arco extensible 3 × 3 de caño cuadrado",
     "categoria": "hierro",
     "precio": 138000,
-    "descripcion": "Arxo extensible 3x3 caño 20-20 Se extiende hacia arriba desde 1.40 a 3 Se extiende horizontal desde 1.50 a 3",
+    "descripcion": "Arco extensible de caño 20-20. En alto va de 1,40 a 3 m y en ancho de 1,50 a 3 m.",
     "img": "/productos/extensible-3x3-cano-cuadrado.jpg",
     "destacado": false
   },
@@ -1344,16 +2018,27 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Combo mesas reloj",
     "categoria": "hierro",
     "precio": 242000,
-    "descripcion": "Combo x3 mesitas reloj de hierro Medidas: Solo armazon $242.000 Con maderas $312.000 Abonando por transferencia/efectivo tenes descuento en hierro!",
+    "descripcion": "Tres mesitas reloj de hierro.",
+    "variantes": [
+      {
+        "etiqueta": "Solo armazón",
+        "precio": 242000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 312000
+      }
+    ],
     "img": "/productos/combo-mesas-reloj.jpg",
     "destacado": false
   },
   {
     "slug": "torre-eiffel",
-    "nombre": "Torre EIFFEL",
+    "nombre": "Torre Eiffel",
     "categoria": "catering",
     "precio": 472000,
-    "descripcion": "Torre EIFFEL De 1.50 a 2m Color a elección La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Torre Eiffel de hierro.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "De 1,50 a 2 m",
     "img": "/productos/torre-eiffel.jpg",
     "destacado": false
   },
@@ -1362,7 +2047,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Árboles",
     "categoria": "mdf",
     "precio": 27500,
-    "descripcion": "Árbol mdf c/u Altura 1.40 Pintado $57.000",
+    "descripcion": "Árbol MDF c/u Altura 1.40 Pintado $57.000",
     "img": "/productos/arboles.jpg",
     "destacado": true
   },
@@ -1371,7 +2056,8 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Arco con rombo",
     "categoria": "hierro",
     "precio": 145000,
-    "descripcion": "Aro de hierro con rombo desarmable 2x2 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Aro de hierro con rombo, desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 × 2 m",
     "img": "/productos/arco-con-rombo.jpg",
     "destacado": false
   },
@@ -1380,16 +2066,65 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa S",
     "categoria": "hierro",
     "precio": 122000,
-    "descripcion": "Mesa S Medidas En S 1m x 40 de alto En circular 50cm Valor solo armazon $122.000 En S 1.20m x 80 de alto En circulras 60cm Valor solo armazón $138.000 En S 2.20m x 80 de alto En circulat 1.10m Valor solo armazón $160.000",
+    "descripcion": "Mesa de hierro en S, que también se arma en círculo. Precio solo armazón.",
+    "variantes": [
+      {
+        "etiqueta": "En S 1 m · 40 cm de alto (círculo 50 cm)",
+        "precio": 122000
+      },
+      {
+        "etiqueta": "En S 1,20 m · 80 cm de alto (círculo 60 cm)",
+        "precio": 138000
+      },
+      {
+        "etiqueta": "En S 2,20 m · 80 cm de alto (círculo 1,10 m)",
+        "precio": 160000
+      }
+    ],
     "img": "/productos/mesa-s.jpg",
     "destacado": false
   },
   {
     "slug": "mesas-espiraladas-x3",
-    "nombre": "Mesas espiraladas x3",
+    "nombre": "Mesas espiraladas",
     "categoria": "hierro",
-    "precio": 205000,
-    "descripcion": "Combo x 3 mesas de hierro espiraladas Medidas: 40x65 40x75 40x90 Solo armazon $205.000 Con las maderas $244.000 Valores individuales Mesa 40x65 solo armazón $75.000 Con madera $90.000 Mesa 40x75 solo armazón $80.000 Con madera $95.000 Mesa 40x90 solo armazón $85.000 Con madera $100.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "precio": 75000,
+    "descripcion": "Mesas de hierro espiraladas, en combo de 3 o por unidad (diámetro × alto, en cm).\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "40 × 65 · 40 × 75 · 40 × 90 cm",
+    "variantes": [
+      {
+        "etiqueta": "Combo x3 solo armazón",
+        "precio": 205000
+      },
+      {
+        "etiqueta": "Combo x3 con maderas",
+        "precio": 244000
+      },
+      {
+        "etiqueta": "40 × 65 solo armazón",
+        "precio": 75000
+      },
+      {
+        "etiqueta": "40 × 65 con madera",
+        "precio": 90000
+      },
+      {
+        "etiqueta": "40 × 75 solo armazón",
+        "precio": 80000
+      },
+      {
+        "etiqueta": "40 × 75 con madera",
+        "precio": 95000
+      },
+      {
+        "etiqueta": "40 × 90 solo armazón",
+        "precio": 85000
+      },
+      {
+        "etiqueta": "40 × 90 con madera",
+        "precio": 100000
+      }
+    ],
     "img": "/productos/mesas-espiraladas-x3.jpg",
     "destacado": false
   },
@@ -1398,7 +2133,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Base Organica",
     "categoria": "mdf",
     "precio": 12000,
-    "descripcion": "Bandeja de mdf Organica Medidas: 20x30 aproximadamente Pintada!",
+    "descripcion": "Bandeja de MDF Organica Medidas: 20x30 aproximadamente Pintada!",
     "img": "/productos/base-organica.jpg",
     "destacado": false
   },
@@ -1407,7 +2142,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Panel Moñitos",
     "categoria": "mdf",
     "precio": 74000,
-    "descripcion": "Panel moñitos 3D mdf 4 moñitos encastrables directamente en la estructura Medidas: 1.80 de alto x 1m de ancho Sin pintar $74.000 Pintado en 1 color $104.000 Pintado en 2 colores $114.000",
+    "descripcion": "Panel moñitos 3D MDF 4 moñitos encastrables directamente en la estructura Medidas: 1.80 de alto x 1m de ancho Sin pintar $74.000 Pintado en 1 color $104.000 Pintado en 2 colores $114.000",
     "img": "/productos/panel-monitos.jpg",
     "destacado": false
   },
@@ -1416,7 +2151,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Arcada arcoiris",
     "categoria": "mdf",
     "precio": 70000,
-    "descripcion": "Arcada arcoiris de mdf Pintado $120.000 Mide 1.80x80",
+    "descripcion": "Arcada arcoiris de MDF Pintado $120.000 Mide 1.80x80",
     "img": "/productos/arcada-arcoiris.jpg",
     "destacado": true
   },
@@ -1424,8 +2159,18 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "slug": "sillon-circular",
     "nombre": "Sillón circular",
     "categoria": "hierro",
-    "precio": 174000,
-    "descripcion": "Sillón circular solo armazón Desarmable 2m de diámetro $174.000 1.50 de diámetro $162.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "precio": 162000,
+    "descripcion": "Sillón circular de hierro, solo armazón y desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "variantes": [
+      {
+        "etiqueta": "1,50 m de diámetro",
+        "precio": 162000
+      },
+      {
+        "etiqueta": "2 m de diámetro",
+        "precio": 174000
+      }
+    ],
     "img": "/productos/sillon-circular.jpg",
     "destacado": false
   },
@@ -1434,25 +2179,45 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Cubo estructura",
     "categoria": "hierro",
     "precio": 164000,
-    "descripcion": "Cubo rectangular 2m ancho x 2m de alto x 50cm de profundidad caño 15-15 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Cubo rectangular de hierro, caño 15-15.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 m de ancho × 2 m de alto × 50 cm de profundidad",
     "img": "/productos/cubo-estructura.jpg",
     "destacado": false
   },
   {
     "slug": "bases-mdf-35cm-aprox-color-a-eleccion",
-    "nombre": "Bases mdf 35cm aprox color a elección",
+    "nombre": "Bases de MDF de 35 cm",
     "categoria": "catering",
     "precio": 12000,
-    "descripcion": "15% de recargo x link Mercado pago Colores a elección",
+    "descripcion": "Bases de MDF.\nColores: a elección.",
+    "medidas": "35 cm aprox.",
     "img": "/productos/bases-mdf-35cm-aprox-color-a-eleccion.jpg",
     "destacado": true
   },
   {
     "slug": "cabina-espejada-estructura",
-    "nombre": "Cabina Espejada Estructura",
+    "nombre": "Estructura cabina espejada",
     "categoria": "hierro",
     "precio": 213000,
-    "descripcion": "ESTRUCTURA CABINA ESPEJADA 2x2x2 caño 15-15 $213.000 2x2x2 caño 20-20 $251.000 2x2x3 caño 15-15 $296.000 2x2x3 caño 20-20 $346.000",
+    "descripcion": "Estructura de hierro para cabina espejada.",
+    "variantes": [
+      {
+        "etiqueta": "2×2×2 m · caño 15-15",
+        "precio": 213000
+      },
+      {
+        "etiqueta": "2×2×2 m · caño 20-20",
+        "precio": 251000
+      },
+      {
+        "etiqueta": "2×2×3 m · caño 15-15",
+        "precio": 296000
+      },
+      {
+        "etiqueta": "2×2×3 m · caño 20-20",
+        "precio": 346000
+      }
+    ],
     "img": "/productos/cabina-espejada-estructura.jpg",
     "destacado": false
   },
@@ -1461,7 +2226,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Panel mariposa",
     "categoria": "mdf",
     "precio": 77500,
-    "descripcion": "Panel mariposa 3d mdf 4 mariposas encastrables directamente en la estructura Medidas: 1.80 de alto x 1m de ancho Sin pintar $77.500 Pintado en 1 color $107.500 Pintado en 2 colores $115.000",
+    "descripcion": "Panel mariposa 3d MDF 4 mariposas encastrables directamente en la estructura Medidas: 1.80 de alto x 1m de ancho Sin pintar $77.500 Pintado en 1 color $107.500 Pintado en 2 colores $115.000",
     "img": "/productos/panel-mariposa.jpg",
     "destacado": false
   },
@@ -1470,25 +2235,26 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Arcada Mickey",
     "categoria": "mdf",
     "precio": 55000,
-    "descripcion": "Arcada mickey mdf Medidas 1.80 de alto x 80 de ancho Pintado $79.000 con los moños de Minnie $69.000 $99.000",
+    "descripcion": "Arcada mickey MDF Medidas 1.80 de alto x 80 de ancho Pintado $79.000 con los moños de Minnie $69.000 $99.000",
     "img": "/productos/arcada-mickey.jpg",
     "destacado": false
   },
   {
     "slug": "arco-pentagono-doble",
-    "nombre": "Arco pentagono doble",
+    "nombre": "Arco pentágono doble",
     "categoria": "hierro",
     "precio": 152000,
-    "descripcion": "Arco de hierro hexagonal doble Medidas: 2m de alto x 2m de ancho",
+    "descripcion": "Arco doble de hierro.",
+    "medidas": "2 m de alto × 2 m de ancho",
     "img": "/productos/arco-pentagono-doble.jpg",
     "destacado": false
   },
   {
     "slug": "panel-arcada-recto-desarmable-2x1",
-    "nombre": "Panel arcada RECTO desarmable 2x1",
+    "nombre": "Panel arcada recto desarmable",
     "categoria": "hierro",
     "precio": 152000,
-    "descripcion": "Panel con malla desarmable Recto o Arcada Medidas: 1.60m x 50cm $113.000 2m x 1m $132.000 2.50m x 1.20m $166.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Panel con malla desarmable, recto o arcada. Medidas y precios publicados: 1,60 m × 50 cm, $113.000 · 2 × 1 m, $132.000 · 2,50 × 1,20 m, $166.000.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/panel-arcada-recto-desarmable-2x1.jpg",
     "destacado": false
   },
@@ -1497,34 +2263,58 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa copa",
     "categoria": "hierro",
     "precio": 99000,
-    "descripcion": "Mesa Copa base hierro con madera 50x75 $99.000 sin madera $124.000 con madera pintada y barnizada",
+    "descripcion": "Mesa copa con base de hierro. La madera va pintada y barnizada.",
+    "medidas": "50 × 75 cm",
+    "variantes": [
+      {
+        "etiqueta": "Sin madera",
+        "precio": 99000
+      },
+      {
+        "etiqueta": "Con madera",
+        "precio": 124000
+      }
+    ],
     "img": "/productos/mesa-copa.jpg",
     "destacado": false
   },
   {
     "slug": "funda-arcada-recta-hierro",
-    "nombre": "Funda Arcada Recta hierro",
+    "nombre": "Funda para arcada recta de hierro",
     "categoria": "fundas-y-telas",
     "precio": 22000,
-    "descripcion": "Funda con elastico para arcada RECTA de hierro 95x2m CATALOGO DE FUNDAS",
+    "descripcion": "Funda con elástico para arcada recta de hierro.",
+    "medidas": "0,95 × 2 m",
     "img": "/productos/funda-arcada-recta-hierro.jpg",
     "destacado": false
   },
   {
     "slug": "estanteria-sweet",
-    "nombre": "Estanteria Sweet",
+    "nombre": "Estantería Sweet",
     "categoria": "catering",
     "precio": 57000,
-    "descripcion": "Estanteria Sweet Con madera $77.000 Medida 60cm Color a eleccion",
+    "descripcion": "Estantería Sweet de hierro.\nColores: a elección.",
+    "medidas": "60 cm",
+    "variantes": [
+      {
+        "etiqueta": "Sin madera",
+        "precio": 57000
+      },
+      {
+        "etiqueta": "Con madera",
+        "precio": 77000
+      }
+    ],
     "img": "/productos/cat-estanteria-sweet.jpg",
     "destacado": true
   },
   {
     "slug": "combo-x-3-alzadas-hierro",
-    "nombre": "Combo x 3 alzadas hierro",
+    "nombre": "Combo x3 alzadas de hierro",
     "categoria": "hierro",
     "precio": 40000,
-    "descripcion": "Combo x 3 alzadas hierro plato de 27cm de diámetro aprox Alto 16cm, 13cm y 10cm La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Tres alzadas de hierro con plato de 27 cm de diámetro aprox.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "16, 13 y 10 cm de alto",
     "img": "/productos/combo-x-3-alzadas-hierro.jpg",
     "destacado": true
   },
@@ -1533,34 +2323,57 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Luna de hierro",
     "categoria": "hierro",
     "precio": 99000,
-    "descripcion": "Luna de hierro desarmable 2m de alto La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Luna de hierro desarmable.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "2 m de alto",
     "img": "/productos/luna-de-hierro.jpg",
     "destacado": false
   },
   {
     "slug": "arcada-recta-de-hierro-95x2",
-    "nombre": "Arcada recta de hierro 95x2",
+    "nombre": "Arcada recta de hierro 95 × 2",
     "categoria": "hierro",
     "precio": 95000,
-    "descripcion": "Arcada recta 95x2 Combo x3 $256.000 (cualquier formato) La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Arcada recta de hierro. En combo x3 la combinás con arcadas y semiarcadas, en el formato que quieras.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "0,95 × 2 m",
+    "variantes": [
+      {
+        "etiqueta": "Unidad",
+        "precio": 95000
+      },
+      {
+        "etiqueta": "Combo x3",
+        "precio": 256000
+      }
+    ],
     "img": "/productos/arcada-recta-de-hierro-95x2.jpg",
     "destacado": true
   },
   {
     "slug": "panel-margarita-3d-mdf-desarmable",
-    "nombre": "Panel margarita 3D mdf desarmable",
+    "nombre": "Panel margarita 3D MDF desarmable",
     "categoria": "mdf",
     "precio": 82000,
-    "descripcion": "Panel mdf margarita 3d Sin pintar $82.000 Pintado $122.000",
+    "descripcion": "Panel MDF margarita 3d Sin pintar $82.000 Pintado $122.000",
     "img": "/productos/panel-margarita-3d-mdf-desarmable.jpg",
     "destacado": false
   },
   {
     "slug": "combo-x-3-cubos-mas-barril",
-    "nombre": "Combo x 3 cubos más barril",
-    "categoria": "madera",
+    "nombre": "Combo x3 cubos más barril",
+    "categoria": "hierro",
     "precio": 248000,
-    "descripcion": "Combo x 3 cubos desarmable más 1 barril 3 cubos 1 barril Medidas 40x40x75 40x40x65 40x40x50 Barril 40x65 Con maderas $328.000 La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Tres cubos desarmables más 1 barril.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "Cubos 40 × 40 × 75, 40 × 40 × 65 y 40 × 40 × 50 · barril 40 × 65 cm",
+    "variantes": [
+      {
+        "etiqueta": "Sin maderas",
+        "precio": 248000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 328000
+      }
+    ],
     "img": "/productos/combo-x-3-cubos-mas-barril.jpg",
     "destacado": false
   },
@@ -1569,7 +2382,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Mesa volados",
     "categoria": "mdf",
     "precio": 60500,
-    "descripcion": "Mesa de mdf ranurada con volados desarmable Medidas: 1x80x40 Pintado $90.500 Tapa cajón $70.500 Pintado $105.500",
+    "descripcion": "Mesa de MDF ranurada con volados desarmable Medidas: 1x80x40 Pintado $90.500 Tapa cajón $70.500 Pintado $105.500",
     "img": "/productos/mesa-volados.jpg",
     "destacado": false
   },
@@ -1578,43 +2391,60 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Panel Organico",
     "categoria": "mdf",
     "precio": 55000,
-    "descripcion": "Panel Organico mdf Medidas: 1.80m de alto x 80cm de ancho Desarmable",
+    "descripcion": "Panel Organico MDF Medidas: 1.80m de alto x 80cm de ancho Desarmable",
     "img": "/productos/panel-organico.jpg",
     "destacado": false
   },
   {
     "slug": "combo-x-3-arcada-semiarcada-arcada-recta",
-    "nombre": "Combo x 3 arcada/semiarcada/arcada recta",
+    "nombre": "Combo x3 arcada, semiarcada y arcada recta",
     "categoria": "hierro",
     "precio": 256000,
-    "descripcion": "Combo x 3 Podes elegir todas iguales 2 iguales y 1 distinta 3 diferentes Como quieras Las pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Elegí las tres iguales, dos iguales y una distinta, o las tres diferentes.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/combo-x-3-arcada-semiarcada-arcada-recta.jpg",
     "destacado": true
   },
   {
     "slug": "mesa-escandinava",
     "nombre": "Mesa escandinava",
-    "categoria": "madera",
+    "categoria": "hierro",
     "precio": 106000,
-    "descripcion": "Mesa escandinava con maderas Precio por unidad Medidas: 50cm diametro x 75cm de alto 40cm diametro x 65cm de alto La pedis en Blanco, Negro, Dorado, Plateado o Rosa Gold",
+    "descripcion": "Mesa escandinava de hierro con maderas. Precio por unidad.\nColores: blanco, negro, dorado, plateado o rosa gold.",
+    "medidas": "50 cm de diámetro × 75 cm de alto, o 40 × 65 cm",
     "img": "/productos/mesa-escandinava.jpg",
     "destacado": false
   },
   {
     "slug": "arco-extensible-esencial",
-    "nombre": "Arco extensible ESENCIAL",
+    "nombre": "Arco extensible Esencial",
     "categoria": "hierro",
     "precio": 99000,
-    "descripcion": "Medidas: Alto 2.10m Ancho 1.50 extensible hasta 3 metros AGREGARLE ALTURA (opcional) Soporte hasta 3m $22.000 Soporte hasta 4m $32.000",
+    "descripcion": "Arco extensible de hierro. Si necesitás más altura, sumale el soporte.",
+    "medidas": "2,10 m de alto · 1,50 m de ancho, extensible hasta 3 m",
+    "variantes": [
+      {
+        "etiqueta": "Sin soporte",
+        "precio": 99000
+      },
+      {
+        "etiqueta": "Con soporte hasta 3 m",
+        "precio": 121000
+      },
+      {
+        "etiqueta": "Con soporte hasta 4 m",
+        "precio": 131000
+      }
+    ],
     "img": "/productos/arco-extensible-esencial.jpg",
     "destacado": true
   },
   {
     "slug": "torre-nativa-60cm",
-    "nombre": "Torre nativa 60cm",
+    "nombre": "Torre Nativa 60 cm",
     "categoria": "catering",
     "precio": 77000,
-    "descripcion": "Exhibidor de hierro con bandejas de madera, ideal para finger food, coffee breaks y estaciones gourmet. Alto 60cm. Precio con maderas.",
+    "descripcion": "Exhibidor de hierro con bandejas de madera, ideal para finger food, coffee breaks y estaciones gourmet. Precio con maderas.",
+    "medidas": "60 cm de alto",
     "img": "/productos/cat-torre-nativa.jpg",
     "destacado": true
   },
@@ -1623,7 +2453,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Prisma x4",
     "categoria": "catering",
     "precio": 98000,
-    "descripcion": "Set de 4 prismas de hierro con tapa de madera. Cada cuadrado mide 25x25cm (ancho y profundidad). Alturas: 1 de 25cm, 2 de 20cm y 1 de 15cm. Precio con maderas.",
+    "descripcion": "Set de 4 prismas de hierro con tapa de madera. Precio con maderas.",
     "medidas": "25x25cm · alturas 25, 20, 20 y 15cm",
     "img": "/productos/cat-prisma-x4.jpg",
     "destacado": true
@@ -1633,70 +2463,96 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Órbita x3",
     "categoria": "catering",
     "precio": 125000,
-    "descripcion": "Combo de 3 alzadas circulares de hierro. Medidas: 30x25, 25x20 y 20x15cm. Sin maderas $125.000 · Con maderas $160.000.",
-    "img": "/productos/cat-exhibidores-gastronomicos.jpg",
-    "destacado": false,
+    "descripcion": "Combo de 3 alzadas circulares de hierro.",
     "medidas": "30x25 · 25x20 · 20x15cm",
     "variantes": [
-      "Sin maderas $125.000",
-      "Con maderas $160.000"
-    ]
+      {
+        "etiqueta": "Sin maderas",
+        "precio": 125000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 160000
+      }
+    ],
+    "img": "/productos/cat-exhibidores-gastronomicos.jpg",
+    "destacado": false
   },
   {
     "slug": "estanteria-capsula-60cm",
-    "nombre": "Estantería cápsula 60cm",
+    "nombre": "Estantería Cápsula 60 cm",
     "categoria": "catering",
     "precio": 57000,
-    "descripcion": "Estantería cápsula de hierro de 60cm. Sin maderas $57.000 · Con maderas $77.000.",
-    "img": "/productos/cat-estanteria-capsula-60.jpg",
-    "destacado": false,
+    "descripcion": "Estantería cápsula de hierro.",
+    "medidas": "60 cm",
     "variantes": [
-      "Sin maderas $57.000",
-      "Con maderas $77.000"
-    ]
+      {
+        "etiqueta": "Sin maderas",
+        "precio": 57000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 77000
+      }
+    ],
+    "img": "/productos/cat-estanteria-capsula-60.jpg",
+    "destacado": false
   },
   {
     "slug": "estanteria-capsula-xl",
-    "nombre": "Estantería cápsula XL",
+    "nombre": "Estantería Cápsula XL",
     "categoria": "catering",
     "precio": 72000,
-    "descripcion": "Estantería cápsula XL de hierro. Sin maderas $72.000 · Con estantes $120.000.",
-    "img": "/productos/cat-estanteria-capsula-60.jpg",
-    "destacado": false,
+    "descripcion": "Estantería cápsula XL de hierro.",
     "variantes": [
-      "Sin maderas $72.000",
-      "Con estantes $120.000"
-    ]
+      {
+        "etiqueta": "Sin maderas",
+        "precio": 72000
+      },
+      {
+        "etiqueta": "Con estantes",
+        "precio": 120000
+      }
+    ],
+    "img": "/productos/cat-estanteria-capsula-60.jpg",
+    "destacado": false
   },
   {
     "slug": "estanteria-s-60cm",
-    "nombre": "Estantería S 60cm",
+    "nombre": "Estantería S 60 cm",
     "categoria": "catering",
     "precio": 57000,
-    "descripcion": "Estantería en S de hierro de 60cm. Sin estantes $57.000 · Con estantes $77.000.",
-    "img": "/productos/cat-estanteria-s.jpg",
-    "destacado": false,
+    "descripcion": "Estantería en S de hierro.",
+    "medidas": "60 cm",
     "variantes": [
-      "Sin estantes $57.000",
-      "Con estantes $77.000"
-    ]
+      {
+        "etiqueta": "Sin estantes",
+        "precio": 57000
+      },
+      {
+        "etiqueta": "Con estantes",
+        "precio": 77000
+      }
+    ],
+    "img": "/productos/cat-estanteria-s.jpg",
+    "destacado": false
   },
   {
     "slug": "arcoiris-4-estantes",
     "nombre": "Arcoíris con 4 estantes",
     "categoria": "catering",
     "precio": null,
-    "descripcion": "Estructura arcoíris de 1,10m x 50cm con 4 estantes. Con o sin maderas.",
+    "descripcion": "Estructura arcoíris con 4 estantes, con o sin maderas.",
     "medidas": "1,10m x 50cm",
     "img": "/productos/cat-arcoiris-4-estantes.jpg",
-    "destacado": false
+    "destacado": true
   },
   {
     "slug": "alzada-separada",
     "nombre": "Alzada separada",
     "categoria": "catering",
     "precio": null,
-    "descripcion": "Alzada de hierro. Precio sin madera. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "descripcion": "Alzada de hierro. Precio sin madera.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/cat-alzada-separada.jpg",
     "destacado": false
   },
@@ -1705,7 +2561,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Alzada triangular",
     "categoria": "catering",
     "precio": null,
-    "descripcion": "Alzada de hierro con tapa de madera. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "descripcion": "Alzada de hierro con tapa de madera.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/cat-alzada-triangular.jpg",
     "destacado": false
   },
@@ -1714,7 +2570,7 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Bandeja circular",
     "categoria": "catering",
     "precio": 19500,
-    "descripcion": "Bandeja circular de hierro. Precio sin maderas. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "descripcion": "Bandeja circular de hierro. Precio sin maderas.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "img": "/productos/cat-bandeja-circular.jpg",
     "destacado": false
   },
@@ -1723,10 +2579,16 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Gota",
     "categoria": "catering",
     "precio": 65000,
-    "descripcion": "Gota de hierro. Solo estructura $65.000 · Con maderas $89.000. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "descripcion": "Gota de hierro.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "variantes": [
-      "Solo estructura $65.000",
-      "Con maderas $89.000"
+      {
+        "etiqueta": "Solo estructura",
+        "precio": 65000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 89000
+      }
     ],
     "img": "/productos/cat-gota-luna-torre.jpg",
     "destacado": false
@@ -1736,10 +2598,16 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Luna Nova",
     "categoria": "catering",
     "precio": 70000,
-    "descripcion": "Luna Nova de hierro. Solo estructura $70.000 · Con maderas $130.000. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "descripcion": "Luna Nova de hierro.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "variantes": [
-      "Solo estructura $70.000",
-      "Con maderas $130.000"
+      {
+        "etiqueta": "Solo estructura",
+        "precio": 70000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 130000
+      }
     ],
     "img": "/productos/cat-gota-luna-torre.jpg",
     "destacado": false
@@ -1749,10 +2617,16 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Torre Verona",
     "categoria": "catering",
     "precio": 65000,
-    "descripcion": "Torre Verona de hierro. Solo estructura $65.000 · Con maderas $120.000. Colores a elección: Blanco, Negro, Dorado, Plateado o Rosa Gold.",
+    "descripcion": "Torre Verona de hierro.\nColores: blanco, negro, dorado, plateado o rosa gold.",
     "variantes": [
-      "Solo estructura $65.000",
-      "Con maderas $120.000"
+      {
+        "etiqueta": "Solo estructura",
+        "precio": 65000
+      },
+      {
+        "etiqueta": "Con maderas",
+        "precio": 120000
+      }
     ],
     "img": "/productos/cat-gota-luna-torre.jpg",
     "destacado": false
@@ -1762,11 +2636,17 @@ export const CATALOGO_WHATSAPP: readonly Producto[] = [
     "nombre": "Estantería S XL",
     "categoria": "catering",
     "precio": 72000,
-    "descripcion": "Estantería en S de hierro, 1m x 40cm. Sin estantes $72.000 · Con estantes $192.000.",
+    "descripcion": "Estantería en S de hierro.",
     "medidas": "1m x 40cm",
     "variantes": [
-      "Sin estantes $72.000",
-      "Con estantes $192.000"
+      {
+        "etiqueta": "Sin estantes",
+        "precio": 72000
+      },
+      {
+        "etiqueta": "Con estantes",
+        "precio": 192000
+      }
     ],
     "img": "/productos/cat-estanteria-s-xl.jpg",
     "destacado": false

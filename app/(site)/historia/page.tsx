@@ -7,17 +7,20 @@ import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
+import { EVENT_WHEN } from "@/content/evento";
 
 export const metadata: Metadata = pageMetadata({
   title: "Historia",
   description:
-    "La historia de Sweet Flowers Deco Party: un emprendimiento familiar argentino que convirtió el oficio de decorar eventos en piezas, formación y comunidad.",
+    "Sweet Flowers Deco Party: emprendimiento familiar de Tortuguitas que fabrica estructuras de hierro, catering, fundas y telas para decoradoras, y organiza el Event Summit.",
   path: "/historia",
 });
 
 // Datos REALES confirmados (docs/CONTENIDO_FLOR.md §1, §7, §8):
 // marca casera/familiar · por encargo (~20 días) · responden Flor y Tobías ·
 // equipo de 4-5 personas. El relato largo lo escribe Flor (⬜ pendiente).
+// Mientras tanto (auditoría E-27, decisión 4): tercera persona, sin firma,
+// solo hechos confirmados. TODO(contenido): historia de Flor en primera persona.
 const COMO_TRABAJAMOS = [
   {
     titulo: "Familiar de verdad",
@@ -47,16 +50,15 @@ export default function HistoriaPage() {
             <Eyebrow className="mb-6">Nuestra historia</Eyebrow>
             <RevealText
               as="h1"
-              className="max-w-[14ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [overflow-wrap:anywhere]"
+              className="max-w-[14ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [overflow-wrap:break-word] [text-wrap:balance]"
             >
               {/* TODO(contenido): titular real */}
-              Detrás de cada evento, Flor
+              Un taller familiar en Tortuguitas
             </RevealText>
             <FadeUp y={40} delay={0.15} className="mt-8 border-t border-line pt-8">
               <p className="max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-ink/70">
-                {/* TODO(contenido): bajada real */}
-                Un emprendimiento familiar argentino que convirtió el oficio de
-                decorar en piezas, formación y comunidad.
+                Estructuras, catering, fundas y telas para decoradoras de todo el
+                país. Y, desde 2024, encuentros para formarse en el rubro.
               </p>
             </FadeUp>
           </div>
@@ -64,13 +66,14 @@ export default function HistoriaPage() {
           {/* Retrato en arco (identidad El Arco) */}
           <FadeUp y={60} className="lg:col-span-5">
             <div className="relative mx-auto aspect-[3/4] w-[min(100%,420px)] overflow-hidden rounded-t-full bg-sand">
-              {/* TODO(contenido): retrato real de Flor en su taller. */}
+              {/* Foto real del equipo en la 1ª edición del Summit (D-14: nada de
+                  stock). TODO(contenido): retrato de Flor en su taller. */}
               <Image
-                src="https://picsum.photos/seed/sfdp-historia-flor/700/1000"
-                alt=""
+                src="/img/summit/lg/sum-01.webp"
+                alt="Remera del equipo Sweet Flowers en la 1ª edición del Event Summit"
                 fill
                 sizes="(max-width: 1024px) 90vw, 420px"
-                className="object-cover"
+                className="object-cover object-[64%_40%]"
               />
               <div className="pointer-events-none absolute inset-0 bg-bordeaux/20 mix-blend-multiply" />
             </div>
@@ -88,27 +91,21 @@ export default function HistoriaPage() {
             y={60}
             className="w-full max-w-[40rem] space-y-6 justify-self-center font-sans text-[length:var(--text-step-1)] leading-relaxed text-ink/80 lg:col-span-7 lg:col-start-4 lg:max-w-none lg:justify-self-stretch"
           >
-            {/* TODO(contenido): la historia REAL la escribe Flor (⬜ pendiente —
-                docs/CONTENIDO_FLOR.md §9). Este relato es placeholder. */}
             <p>
-              Sweet Flowers empezó como un sueño chiquito: una mesa, unas flores
-              y las ganas de que cada celebración se sintiera única. Flor cosía,
-              probaba y desarmaba hasta que cada pieza quedaba impecable, porque
-              lo hecho a mano tiene una calidez que no se improvisa.
+              Sweet Flowers Deco Party es un emprendimiento familiar de
+              Tortuguitas, Buenos Aires. Fabrica estructuras de hierro, piezas
+              para catering, fundas y telas sublimadas para decoradoras y
+              organizadores de eventos de todo el país.
             </p>
             <p>
-              Con los años, ese oficio artesanal se volvió un lenguaje propio:
-              estructuras, telas y terminaciones pensadas al detalle, para que
-              la escena hable sin gritar.
+              Trabaja por encargo: cada pedido se produce cuando se confirma, y
+              del otro lado del WhatsApp responden Flor y Tobías, en persona.
             </p>
             <p>
-              Hoy ese camino creció hasta el Summit y una comunidad de mujeres
-              que se animan a crear en grande. Más que decorar eventos, Sweet
-              Flowers forma, acompaña y deja algo que queda mucho después de que
-              se apagan las luces.
-            </p>
-            <p className="pt-4 font-display text-[length:var(--text-step-2)] font-bold text-ink">
-              {/* TODO(contenido): firma real */}— Flor, fundadora
+              Desde 2024 organiza workshops para el rubro —siete, en CABA,
+              Puerto Madero, La Rioja y Río Cuarto— y en septiembre de 2026 hizo
+              la primera edición del Sweet Flowers Event Summit, en La Rural. La
+              segunda es el {EVENT_WHEN}.
             </p>
           </FadeUp>
         </div>
@@ -153,31 +150,44 @@ export default function HistoriaPage() {
         </div>
       </section>
 
-      {/* 4 · PUENTE AL SUMMIT + CIERRE (bone) */}
+      {/* 4 · PUENTE AL SUMMIT + CIERRE (bone) — a dos columnas desde lg (D-15):
+          título ancho a la izquierda; foto en arco, texto y CTAs a la derecha. */}
       <section
         data-theme="light"
         className="bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
       >
-        <div className="mx-auto max-w-[87.5rem] text-center">
-          <Eyebrow className="mb-6">El siguiente capítulo</Eyebrow>
-          <RevealText
-            as="h2"
-            onScroll
-            className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink"
-          >
-            {/* 7 ediciones reales del Summit (docs/CONTENIDO_FLOR.md §11) */}
-            Siete workshops y un Summit después, seguimos empezando
-          </RevealText>
-          <p className="mx-auto mt-6 max-w-[48ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
-            Lo que arrancó en un taller hoy junta a la industria entera una
-            vez al año. La próxima edición del Summit ya tiene fecha.
-          </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-x-10 gap-y-4">
-            <Button href="/event-summit">Conocer el Summit</Button>
-            <Button href="/contacto" variant="outline">
-              Escribinos
-            </Button>
+        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-end gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-7">
+            <Eyebrow className="mb-6">El siguiente capítulo</Eyebrow>
+            <RevealText
+              as="h2"
+              onScroll
+              className="max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [text-wrap:balance] lg:max-w-[19ch] lg:text-[length:var(--text-step-6)]"
+            >
+              Siete workshops y un Summit después, seguimos empezando
+            </RevealText>
           </div>
+          <FadeUp y={40} className="lg:col-span-5">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[999px] bg-sand lg:aspect-[5/4]">
+              <Image
+                src="/img/summit/lg/sum-26.webp"
+                alt="Asistentes escuchando una charla en la 1ª edición del Event Summit"
+                fill
+                sizes="(max-width: 1024px) 90vw, 36vw"
+                className="object-cover object-[50%_35%]"
+              />
+            </div>
+            <p className="mt-8 max-w-[44ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
+              Siete workshops, una primera edición en La Rural y una segunda que
+              ya tiene fecha: el {EVENT_WHEN}.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
+              <Button href="/event-summit">Conocer el Summit</Button>
+              <Button href="/contacto" variant="outline">
+                Escribinos
+              </Button>
+            </div>
+          </FadeUp>
         </div>
       </section>
     </main>

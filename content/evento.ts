@@ -26,14 +26,30 @@ export const EVENT_SEDE: string | null = "La Rural · Palermo, Buenos Aires"; //
 
 export const EVENT_CUPO = 80; // ✅ "por el momento"
 
-// Inscripción: TODO por WhatsApp (sin pago en el sitio — decisión oct-2026).
-// El formulario de /event-summit#inscripcion cobra el pase con Mercado Pago.
+// Inscripción: el formulario de /event-summit#inscripcion cobra el pase online
+// con Mercado Pago (decisión 23/10/2026). WhatsApp queda para consultas.
 export const EVENT_CTA_HREF = "/event-summit#inscripcion";
-/** Precio de referencia (el más bajo vigente) para resúmenes. */
-export const EVENT_PRECIO: string | null = "Desde $180.000";
+
+/** Cómo llegar: búsqueda de Google Maps (sin escribir una dirección a mano). */
+export const EVENT_MAPA_URL =
+  "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("La Rural Predio Ferial, Palermo, Buenos Aires");
+
+/** Link "Agregar a Google Calendar" del evento (también sirve para el mail de la entrada). */
+export function calendarioGoogleUrl(codigo?: string): string {
+  const utc = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const q = new URLSearchParams({
+    action: "TEMPLATE",
+    text: EVENT_NAME,
+    dates: `${utc(EVENT_DATE_ISO ?? EVENT_END_ISO)}/${utc(EVENT_END_ISO)}`,
+    location: "La Rural, Palermo, Buenos Aires",
+    details: `${EDICION_LABEL} · ${EVENT_HORARIO}${codigo ? ` · Tu código: ${codigo}` : ""}`,
+  });
+  return `https://calendar.google.com/calendar/render?${q.toString()}`;
+}
 
 // PASES y PREVENTAS ✅ (Flor, 20/10/2026 · 23/10/2026: se paga TODO online con
-// Mercado Pago, precio fijo por pase; tarjeta, cuotas, débito o efectivo).
+// Mercado Pago, precio fijo por pase; tarjeta, cuotas, débito o dinero en cuenta; sin efectivo).
+// La preventa Comunidad está abierta a todos (no se pide ningún requisito).
 export type PaseId = "vip" | "general";
 
 export const PASES: readonly { id: PaseId; nombre: string; incluye: readonly string[] }[] = [
@@ -82,7 +98,8 @@ export type Preventa = {
 export const PREVENTAS: readonly Preventa[] = [
   {
     id: "comunidad",
-    nombre: "Preventa Comunidad VIP Sweet Flowers",
+    // Antes "Preventa Comunidad VIP Sweet Flowers": sonaba restringida y es abierta a todos.
+    nombre: "Preventa Comunidad",
     hasta: "2026-11-10",
     hastaLabel: "hasta el 10/11",
     precios: {
@@ -108,9 +125,50 @@ export function preventaVigente(hoy = new Date()): Preventa | null {
   return PREVENTAS.find((p) => d <= p.hasta) ?? null;
 }
 
-/** Tarifa con la que se cobra hoy: la preventa vigente o, si ya pasaron, la última. */
+/**
+ * Tarifa con la que se cobra hoy: la preventa vigente o, si ya pasaron todas,
+ * el último precio rotulado "Precio actual" (sin fecha de vencimiento, para no
+ * decir "Preventa… hasta el 15/12" cuando ya pasó).
+ * TODO(contenido): precio del pase después del 15/12 (Flor) → sumarlo como tarifa.
+ */
 export function tarifaVigente(hoy = new Date()): Preventa {
-  return preventaVigente(hoy) ?? PREVENTAS[PREVENTAS.length - 1];
+  const pv = preventaVigente(hoy);
+  if (pv) return pv;
+  const ultima = PREVENTAS[PREVENTAS.length - 1];
+  return { ...ultima, id: "actual", nombre: "Precio actual", hastaLabel: "" };
+}
+
+/** Momento exacto en que termina una preventa: su último día, 23:59:59 hora AR. */
+export function finDePreventa(p: Preventa): Date {
+  return new Date(`${p.hasta}T23:59:59-03:00`);
+}
+
+/** La tarifa que viene después de la vigente (para "Desde el 11/11: $…"), o null. */
+export function siguientePreventa(hoy = new Date()): Preventa | null {
+  const pv = preventaVigente(hoy);
+  if (!pv) return null;
+  return PREVENTAS[PREVENTAS.indexOf(pv) + 1] ?? null;
+}
+
+/** "11/11": el día siguiente al fin de una preventa (cuando cambia el precio). */
+export function cambioDePrecioLabel(p: Preventa): string {
+  const d = new Date(`${p.hasta}T12:00:00-03:00`);
+  d.setUTCDate(d.getUTCDate() + 1);
+  const [, m, dd] = d.toISOString().slice(0, 10).split("-");
+  return `${dd}/${m}`;
+}
+
+/** "10/11": último día de una preventa. */
+export function hastaCorto(p: Preventa): string {
+  const [, m, d] = p.hasta.split("-");
+  return `${d}/${m}`;
+}
+
+/** "Desde $180.000": el pase más barato con la tarifa de hoy. */
+export function precioDesde(hoy = new Date()): string {
+  const t = tarifaVigente(hoy);
+  const min = Math.min(...PASES.map((p) => t.precios[p.id]));
+  return `Desde $${min.toLocaleString("es-AR")}`;
 }
 
 export const EXTRAS_NOTA = "Actividades extra el 7 y 8 de abril: se abonan aparte.";
@@ -167,41 +225,22 @@ export const TRAYECTORIA: readonly Etapa[] = [
 export const ETAPAS_CON_PAGINA = TRAYECTORIA.filter((t): t is Etapa & { slug: string } => Boolean(t.slug));
 
 
-// Qué incluye — TODOS ✅ (§10).
-export const INCLUYE = [
-  {
-    titulo: "Todas las charlas",
-    desc: "Acceso completo a la jornada de disertaciones.",
-  },
-  {
-    titulo: "Certificado de asistencia",
-    desc: "Tu paso por el summit, documentado.",
-  },
-  { titulo: "Coffee break", desc: "Pausas para conectar y recargar." },
-  {
-    titulo: "Comunidad privada",
-    desc: "Grupo de WhatsApp exclusivo entre asistentes.",
-  },
-  {
-    titulo: "20% de descuento",
-    desc: "En cualquier compra desde que señás tu lugar.",
-  },
-  {
-    titulo: "Proveedores recomendados",
-    desc: "Beneficios con nuestra red de confianza.",
-  },
-  {
-    titulo: "Asesoramiento",
-    desc: "Acompañamiento para tu camino en el rubro.",
-  },
-] as const;
+/**
+ * Asistentes sumando los 7 workshops (participantes de cada uno, arriba): 340.
+ * Sin contar la 1ª edición del Summit.
+ * TODO(contenido): confirmar con Flor que las cifras por workshop son las buenas.
+ */
+export const ASISTENTES_WORKSHOPS = TRAYECTORIA.reduce((n, t) => n + (t.participantes ?? 0), 0);
 
-// Trayectoria (§11) — cifras aproximadas dichas por Flor (de memoria).
+/** Ciudades donde se hicieron workshops (las sedes nombradas; el hotel se omite). */
+export const CIUDADES_WORKSHOPS = ["CABA", "La Rioja", "Río Cuarto"] as const;
+
+// Trayectoria (§11 y datos de cada workshop).
 export const STATS = [
   { valor: WORKSHOPS_REALIZADOS, prefijo: "", sufijo: "", label: "Workshops" },
-  { valor: 180, prefijo: "+", sufijo: "", label: "Asistentes" },
+  { valor: ASISTENTES_WORKSHOPS, prefijo: "+", sufijo: "", label: "Asistentes en workshops" },
+  { valor: CIUDADES_WORKSHOPS.length, prefijo: "", sufijo: "", label: "Ciudades" },
   { valor: 20, prefijo: "+", sufijo: "", label: "Disertantes" },
-  { valor: EVENT_CUPO, prefijo: "", sufijo: "", label: "Cupos 2ª edición" },
 ] as const;
 
 // Escenarios que nos recibieron (§11). La 7ª sede (un hotel) se OMITE a propósito.

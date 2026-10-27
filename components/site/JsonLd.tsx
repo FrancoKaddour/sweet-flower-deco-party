@@ -92,7 +92,7 @@ export function summitEvent(): Json {
   };
 }
 
-/** Grafo del sitio: negocio + web + Summit. Va una vez, en el layout raíz. */
+/** Grafo del sitio: negocio + web (el Summit solo por @id). Va una vez, en el layout raíz. */
 export function JsonLd() {
   const sameAs = [BUSINESS.instagram, NEGOCIO_SEO.facebook, NEGOCIO_SEO.googleMapsUrl, ...NEGOCIO_SEO.otrasRedes].filter(
     (u): u is string => Boolean(u),
@@ -113,6 +113,8 @@ export function JsonLd() {
     areaServed: { "@type": "Country", name: "Argentina" },
     telephone: BUSINESS.phoneVentas,
     currenciesAccepted: "ARS",
+    // TODO(contenido): rango real cuando Flor lo confirme; "$$" = precio medio.
+    priceRange: "$$",
     paymentAccepted: "Transferencia bancaria, Mercado Pago",
     contactPoint: [
       {
@@ -181,7 +183,8 @@ export function JsonLd() {
         inLanguage: "es-AR",
         publisher: { "@id": ORG_ID },
       },
-      summitEvent(),
+      // T-19: el Event completo del Summit va SOLO en /event-summit
+      // (<SummitJsonLd />); acá queda la referencia org.event → @id.
     ],
   };
   return <JsonLdScript data={data} />;

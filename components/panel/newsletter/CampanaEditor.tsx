@@ -1,12 +1,13 @@
 "use client";
 
-import { useActionState, useMemo, useRef, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { upload } from "@vercel/blob/client";
 import { guardarCampana, type EstadoCampanaForm } from "@/modules/newsletter/actions";
 import { correoCampana } from "@/lib/email/plantillas";
 import { PLANTILLAS, SEGMENTOS, type DatosCampana, type Segmento } from "@/content/newsletter";
 import { inputCls } from "@/components/panel/catalogo/campos";
 import { PanelButton } from "@/components/panel/PanelButton";
+import { AccionesCampana } from "./AccionesCampana";
 
 const label = "text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-muted";
 
@@ -20,15 +21,34 @@ export function CampanaEditor({
   base,
   conteos,
   bloqueada = false,
+  acciones,
 }: {
   id: string | null;
   inicial: DatosCampana;
   base: string;
   conteos: Record<string, number>;
   bloqueada?: boolean;
+  /** Probar/Enviar/Duplicar/Borrar (solo campañas ya creadas). */
+  acciones?: { esAdmin: boolean };
 }) {
   const [d, setD] = useState<DatosCampana>(inicial);
   const [estado, accion, pendiente] = useActionState<EstadoCampanaForm, FormData>(guardarCampana.bind(null, id), null);
+  // P-02: se compara lo que se ve con lo último guardado.
+  const [guardado, setGuardado] = useState(() => JSON.stringify(inicial));
+  const enviado = useRef(guardado);
+  const cambios = !bloqueada && JSON.stringify(d) !== guardado;
+  useEffect(() => {
+    if (estado?.ok) setGuardado(enviado.current);
+  }, [estado]);
+  useEffect(() => {
+    if (!cambios) return;
+    const avisar = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", avisar);
+    return () => window.removeEventListener("beforeunload", avisar);
+  }, [cambios]);
   const [subiendo, setSubiendo] = useState(false);
   const [errorImg, setErrorImg] = useState<string | null>(null);
   const [vista, setVista] = useState<"escritorio" | "celular">("escritorio");
@@ -65,7 +85,14 @@ export function CampanaEditor({
     // Lado a lado recién en xl (con el sidebar fijo, en lg cada columna quedaría
     // angosta). Debajo se apila: primero el formulario, después la vista previa.
     <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      <form action={accion} className="flex min-w-0 flex-col gap-6">
+      <div className="flex min-w-0 flex-col gap-8">
+      <form
+        action={(fd) => {
+          enviado.current = JSON.stringify(d);
+          accion(fd);
+        }}
+        className="flex min-w-0 flex-col gap-6"
+      >
         {!id && (
           <fieldset className="flex flex-col gap-3">
             <legend className={`${label} mb-3`}>Empezar desde una plantilla</legend>
@@ -74,7 +101,11 @@ export function CampanaEditor({
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => setD(p.datos)}
+                  onClick={() => {
+                    // P-20: no pisar lo ya escrito sin preguntar.
+                    if (JSON.stringify(d) !== JSON.stringify(inicial) && !window.confirm(`¿Reemplazar lo que escribiste por la plantilla “${p.nombre}”?`)) return;
+                    setD(p.datos);
+                  }}
                   className="min-h-11 rounded-[var(--radius-md)] border border-line bg-cloud px-4 py-3 text-left transition-colors hover:border-champagne"
                 >
                   <span className="block font-medium text-ink">{p.nombre}</span>
@@ -164,10 +195,26 @@ export function CampanaEditor({
             <PanelButton type="submit" disabled={pendiente || subiendo} className="max-md:min-h-12 max-md:w-full">
               {pendiente ? "Guardando…" : id ? "Guardar cambios" : "Guardar borrador"}
             </PanelButton>
-            {estado && <p role="status" className={`text-[length:var(--text-step--1)] max-md:w-full max-md:text-center ${estado.ok ? "text-botanical" : "text-bordeaux"}`}>{estado.mensaje}</p>}
+            {cambios ? (
+              <p className="text-[length:var(--text-step--1)] text-muted max-md:w-full max-md:text-center">Cambios sin guardar</p>
+            ) : (
+              estado && <p role={estado.ok ? "status" : "alert"} className={`text-[length:var(--text-step--1)] max-md:w-full max-md:text-center ${estado.ok ? "text-ink" : "text-bordeaux"}`}>{estado.mensaje}</p>
+            )}
           </div>
         )}
       </form>
+      {id && acciones && (
+        <AccionesCampana
+          id={id}
+          borrador={!bloqueada}
+          esAdmin={acciones.esAdmin}
+          datos={d}
+          cambios={cambios}
+          conteos={conteos}
+          onGuardado={() => setGuardado(JSON.stringify(d))}
+        />
+      )}
+      </div>
 
       {/* Vista previa en vivo */}
       {/* xl: sticky debajo de la topbar (que también es sticky, ~4.5rem). */}

@@ -3,13 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/panel/PageHeader";
 import { CampanaEditor } from "@/components/panel/newsletter/CampanaEditor";
-import { AccionesCampana } from "@/components/panel/newsletter/AccionesCampana";
+import { RetomarEnvio } from "@/components/panel/newsletter/AccionesCampana";
+import { puede } from "@/modules/ventas/estados";
 import { AvisoEnvio } from "@/components/panel/newsletter/Comunes";
 import { requireStaff } from "@/lib/dal";
 import { SITE_URL } from "@/lib/site";
 import { fechaLarga } from "@/lib/panel/formato";
-import { conteoSegmentos, obtenerCampana } from "@/modules/newsletter/admin";
-import { SEGMENTOS, type Segmento } from "@/content/newsletter";
+import { campanaTrabada, conteoSegmentos, obtenerCampana } from "@/modules/newsletter/admin";
+import { type Segmento } from "@/content/newsletter";
 
 export const metadata: Metadata = { title: "Campaña" };
 
@@ -25,7 +26,6 @@ export default async function CampanaPage({
   const [c, conteos] = await Promise.all([obtenerCampana(id), conteoSegmentos()]);
   if (!c) notFound();
   const borrador = c.estado === "borrador";
-  const seg = SEGMENTOS.find((s) => s.v === c.segmento);
 
   return (
     <div className="flex flex-col gap-8">
@@ -36,7 +36,7 @@ export default async function CampanaPage({
         descripcion={
           c.enviadaAt
             ? `Enviada el ${fechaLarga(c.enviadaAt)} a ${c.enviados} personas${c.fallidos ? ` (${c.fallidos} fallidos)` : ""}.`
-            : "Revisá la vista previa, mandate una prueba y cuando esté lista, enviala."
+            : "Revisá la vista previa, mandate una prueba y cuando esté lista, enviala (los botones están debajo del texto)."
         }
       />
       {sp.creada && borrador && (
@@ -45,18 +45,13 @@ export default async function CampanaPage({
         </p>
       )}
       {borrador && <AvisoEnvio />}
-      <AccionesCampana
-        id={c.id}
-        borrador={borrador}
-        destinatarios={conteos[c.segmento] ?? 0}
-        segmento={seg?.l ?? c.segmento}
-        esAdmin={user.role === "admin" || user.role === "superadmin"}
-      />
+      {c.estado === "enviando" && puede(user.role, "campanaEnviar") && campanaTrabada(c) && <RetomarEnvio id={c.id} />}
       <CampanaEditor
         id={c.id}
         bloqueada={!borrador}
         base={SITE_URL}
         conteos={conteos}
+        acciones={{ esAdmin: puede(user.role, "campanaEnviar") }}
         inicial={{
           asunto: c.asunto,
           preheader: c.preheader ?? "",

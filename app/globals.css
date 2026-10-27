@@ -11,15 +11,26 @@
   --color-ink: #14110f; /* tinta casi negra cálida — texto principal */
   --color-bone: #f7f3ec; /* base marfil / hueso */
   --color-cloud: #ffffff;
-  --color-botanical: #ED1C23; /* rojo logo — acento principal */
-  --color-bordeaux: #7A1218; /* rojo oscuro contenido — fondos de sección */
-  --color-champagne: #c6a15b; /* acento premium dorado */
+  /* UN SOLO ROJO DE FONDO: el vino. El rojo del logo es solo ACENTO (globos,
+     puntos, hover, chips chicos) — nunca fondo de bloque ni texto largo. */
+  --color-brand-red: #ED1C23; /* rojo del logo — SOLO acento */
+  --color-wine: #7A1218; /* rojo vino — el único rojo de fondo de sección */
+  --color-rose-50: #fde8e9; /* rosado muy claro (superficie) */
+  /* Alias históricos (nombres que mentían: "botanical" era verde y hoy es el
+     rojo del logo; "bordeaux" = vino; "sage" = rosado). Se mantienen porque
+     los usan ~60 archivos de otras zonas; en código nuevo usar los de arriba. */
+  --color-botanical: #ED1C23; /* = --color-brand-red */
+  --color-bordeaux: #7A1218; /* = --color-wine */
+  --color-champagne: #c6a15b; /* dorado: SOLO sobre fondos oscuros (7,7:1 sobre ink) */
+  /* Dorado oscuro para texto sobre fondos claros: 5,4:1 sobre bone, 4,8:1
+     sobre sand (el champagne da 2,2:1 → no pasa AA). */
+  --color-champagne-ink: #7d5f25;
   --color-muted: #736d64; /* texto atenuado (~ink 55%) */
   --color-line: #e4ddd1; /* líneas sutiles */
 
   /* Superficies claras — fondos de sección que se blendean entre sí (ver
      ColorBridge en app/page.tsx, que interpola en oklab entre estos tokens). */
-  --color-sage: #fde8e9; /* rosado rojo muy claro (Principios) */
+  --color-sage: #fde8e9; /* = --color-rose-50 (alias histórico) */
   --color-blush: #f4e9e4; /* rosado marfil (Servicio) */
   --color-sand: #efe7d6; /* arena cálida (Testimonios, placeholders) */
 
@@ -84,22 +95,91 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Utilidades tipográficas de display */
-.font-display {
+/* Utilidades tipográficas de display.
+   Cormorant trae números elzevirianos (oldstyle) por defecto: el "1" parece
+   una "I" ("IO% OFF") y el "0" queda chico. En TODO uso display van
+   lining + tabulares (countdown, precios, medidas, 404). El cuerpo (Hanken)
+   conserva sus números. */
+.font-display,
+.c-loader__name,
+.clip-title {
   font-family: var(--font-display);
+  font-variant-numeric: lining-nums tabular-nums;
 }
-/* Cormorant es una serif fina: los pesos "extrabold/bold" pensados para la
-   grotesca se normalizan a semibold (sin negrita sintética), y el tracking
-   negativo de los titulares grotescos se abre un poco para la serif. */
-.font-display:is(.font-extrabold, .font-black, .font-bold):not([data-area="panel"] *) {
-  font-weight: 600;
+
+/* ---- Las TRES VOCES de título (docs/06_DESIGN_SYSTEM.md §Tipografía) ----
+   1) .t-voz-display — momentos emocionales: Cormorant light en caja mixta,
+      tracking −1 %. Es la voz por defecto de los H2 del sitio.
+   2) .t-voz-nombre — SOLO nombres de categorías y productos: versales 500.
+   3) .t-voz-cita  — citas y bajadas: Cormorant itálica light (la itálica
+      real la carga components/ui/fuentes.ts → clase `italica.className`).
+   Son @utility → aceptan variantes (md:, motion-reduce:). */
+@utility t-voz-display {
+  font-family: var(--font-display);
+  font-weight: 300;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  line-height: 0.98;
+  font-variant-numeric: lining-nums tabular-nums;
 }
-.font-display[class*="tracking-[-"]:not([data-area="panel"] *) {
-  letter-spacing: 0.01em;
+@utility t-voz-nombre {
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
 }
-/* El panel de administración conserva la grotesca original. */
-[data-area="panel"] .font-display {
-  font-family: var(--font-display-grotesk);
+@utility t-voz-cita {
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: -0.005em;
+  font-variant-numeric: lining-nums;
+}
+
+/* ---- Eyebrow y anillo de foco según el fondo (T-05) ----
+   Cada sección declara data-theme; la variable se HEREDA del ancestro más
+   cercano, así una sección oscura dentro de un main claro también acierta. */
+[data-theme="light"] {
+  --eyebrow-color: var(--color-champagne-ink);
+  --focus-ring: var(--color-ink);
+}
+[data-theme="dark"] {
+  --eyebrow-color: var(--color-champagne);
+  --focus-ring: var(--color-champagne);
+}
+.sf-eyebrow {
+  color: var(--eyebrow-color, var(--color-champagne-ink));
+}
+
+/* ---- Contraste mínimo de textos atenuados (T-05) ----
+   ink/40 y ink/50 sobre bone daban 2,6 y 3,5:1. Sin tocar 40 archivos: se
+   suben acá a ink/65 (5,6:1). Fuera de @layer → le gana a la utilidad. El
+   :not(:hover) deja vivos los hover:text-ink. Placeholders: 60 % del color
+   del campo (ink → 4,8:1 sobre bone; bone sobre ink en los campos oscuros). */
+.text-ink\/40:not(:hover, :focus-visible),
+.text-ink\/50:not(:hover, :focus-visible) {
+  color: color-mix(in oklab, var(--color-ink) 65%, transparent);
+}
+.text-bone\/40:not(:hover, :focus-visible),
+.text-bone\/45:not(:hover, :focus-visible) {
+  color: color-mix(in oklab, var(--color-bone) 62%, transparent);
+}
+::placeholder {
+  color: color-mix(in oklab, currentColor 60%, transparent);
+  opacity: 1;
+}
+
+/* ---- Un solo rojo de fondo (D-07) ----
+   El rojo del logo como fondo de bloque (bone encima = 3,96:1, champagne
+   1,8:1) queda prohibido: cualquier bloque bg-botanical pasa al vino. Los
+   tintes chicos (bg-botanical/10) y los textos/acento no cambian. */
+.bg-botanical {
+  background-color: var(--color-wine);
+}
+/* Sobre el vino, el champagne da 4,49:1: un dorado más claro (5,7:1). */
+.bg-botanical,
+.bg-bordeaux {
+  --eyebrow-color: #d8b878;
 }
 
 /* ---- Smooth scroll (Lenis) ---- */
@@ -117,7 +197,13 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* ---- Mask reveal (fallback + wrappers de SplitText) ---- */
+/* ---- Mask reveal (fallback + wrappers de SplitText) ----
+   SplitText con tag:"span" (T-22, HTML válido dentro de h1/h2/p): los
+   <span> son inline y no aceptan transform ni recortan → inline-block. */
+.reveal-word,
+span:has(> .reveal-word) {
+  display: inline-block;
+}
 .reveal-word {
   will-change: transform;
 }
@@ -170,31 +256,27 @@ html.lenis body {
      Safari iOS (recarga de página). GSAP composita solo mientras anima. */
   background: var(--color-line); /* placeholder mientras carga */
 }
-/* Sección clara: el collage se funde hacia el MARFIL en los bordes (arriba/abajo
-   para la transición entre secciones, y a la derecha como scrim para el texto en
-   tinta). Los costados izquierdos quedan cortados a sangre. */
+/* Sección clara: el collage se corta contra el MARFIL arriba/abajo y lleva un
+   scrim de tinta a la derecha para el texto. */
 .wk-fade {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
   background:
-    /* 1) ARRIBA de todo: fundido arriba/abajo hacia el marfil. Va primero (capa
-       superior) para que el scrim oscuro NUNCA tiña las bandas de marfil →
-       sin cortes bruscos contra las secciones vecinas. Banda sólida de 24px en
-       el tope y el pie (la grilla inclinada asoma ~1px en las esquinas). */
+    /* D-16: CORTE casi seco (24px de marfil + 10px de fundido). El fundido
+       largo de marfil sobre fotos oscuras pasaba por un gris barroso. */
     linear-gradient(
       to bottom,
       var(--color-bone) 0,
       var(--color-bone) 24px,
-      transparent 16%,
-      transparent 84%,
+      transparent 34px,
+      transparent calc(100% - 34px),
       var(--color-bone) calc(100% - 24px),
       var(--color-bone) 100%
     ),
-    /* 2) Scrim de tinta detrás del título en blanco: elipse suave anclada a
-       la derecha, que se desvanece en todas direcciones (no una franja recta
-       de arriba a abajo). */
+    /* Scrim de tinta detrás del título en blanco: elipse suave anclada a
+       la derecha, que se desvanece en todas direcciones. */
     radial-gradient(
       ellipse 58% 48% at 100% 52%,
       color-mix(in srgb, var(--color-ink) 72%, transparent) 0%,
@@ -202,9 +284,8 @@ html.lenis body {
       transparent 100%
     );
 }
-/* Mobile y tablet: collage A SANGRE en los costados (sin bandas marfil a los
-   lados). La grilla se centra y es bien ancha para que, inclinada, cubra los
-   bordes laterales sin huecos. Arriba/abajo se mantiene el fundido a marfil. */
+/* Mobile y tablet: collage A SANGRE en los costados. La grilla se centra y es
+   bien ancha para que, inclinada, cubra los bordes laterales sin huecos. */
 @media (max-width: 1023px) {
   .wk-collage {
     justify-content: center;
@@ -214,15 +295,22 @@ html.lenis body {
     margin-right: 0;
   }
   .wk-fade {
-    background: linear-gradient(
-      to bottom,
-      var(--color-bone) 0,
-      var(--color-bone) 22px,
-      transparent 12%,
-      transparent 88%,
-      var(--color-bone) calc(100% - 22px),
-      var(--color-bone) 100%
-    );
+    background:
+      linear-gradient(
+        to bottom,
+        var(--color-bone) 0,
+        var(--color-bone) 22px,
+        transparent 32px,
+        transparent calc(100% - 32px),
+        var(--color-bone) calc(100% - 22px),
+        var(--color-bone) 100%
+      ),
+      /* velo detrás del bloque de texto (izquierda en celular/tablet) */
+      radial-gradient(
+        ellipse 90% 40% at 0% 50%,
+        color-mix(in srgb, var(--color-ink) 55%, transparent) 0%,
+        transparent 100%
+      );
   }
 }
 @media (max-width: 767px) {
@@ -250,9 +338,7 @@ html.lenis body {
   object-fit: cover;
   display: block;
   transform-origin: 50% 0%;
-  /* Hover (después de la caída): zoom suave. SIN will-change permanente: con
-     will-change la imagen se rasterizaba como capa a menor resolución y al
-     terminar "se acomodaba" (se veía más opaca/blanda y después nítida). */
+  /* Hover (después de la caída): zoom suave. SIN will-change permanente. */
   transition: transform 0.7s var(--ease-out-expo);
 }
 /* Estado inicial recortado SOLO cuando JS "arma" la card (.armed). Sin JS, la
@@ -262,8 +348,8 @@ html.lenis body {
   transform: scale(1.12);
 }
 /* La caída: se despliega de ARRIBA hacia ABAJO, y la foto asienta su escala
-   en el mismo tiempo (misma curva) → una sola acción, sin pasos. Duración
-   --clip-fall (también la usa CollectionCard.tsx para encadenar el texto). */
+   en el mismo tiempo (misma curva). Duración --clip-fall (también la usa
+   CollectionCard.tsx para encadenar el texto). */
 .clip-figure.in-view img {
   clip-path: inset(0 0 0 0);
   transform: scale(1);
@@ -284,7 +370,8 @@ html.lenis body {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: rgba(20, 17, 15, 0.34);
+  /* D-02: ≥60 % → el texto marfil pasa AA aun sobre fotos claras. */
+  background: rgba(20, 17, 15, 0.6);
   opacity: 1; /* visible por defecto (legibilidad sin JS) */
   transition: opacity 0.45s var(--ease-out-quart), background 0.6s ease;
 }
@@ -320,6 +407,9 @@ html.lenis body {
   opacity: 1;
   transform: none;
 }
+.clip-index:empty {
+  display: none; /* D-10: sin numerales que no son secuencia */
+}
 .clip-index {
   font-size: var(--text-step--1);
   letter-spacing: 0.16em;
@@ -328,7 +418,7 @@ html.lenis body {
 }
 .clip-title {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 500; /* voz 2: nombre de categoría */
   text-transform: uppercase;
   /* Escala con el ANCHO DE LA CARD (container query), no del viewport: en
      tablet (3 cards angostas) "CATERING" ya no se sale de la tarjeta. */
@@ -363,21 +453,17 @@ html.lenis body {
   .clip-card:hover .clip-figure.is-complete img {
     transform: scale(1.075);
   }
-}
-@media (hover: hover) {
   .clip-card:hover .clip-figure.is-complete .clip-overlay {
-    background: rgba(20, 17, 15, 0.46);
+    background: rgba(20, 17, 15, 0.7);
   }
-}
-@media (hover: hover) {
   .clip-card:hover .clip-cta span {
     transform: translate(2px, -2px);
   }
 }
 
 /* ---- Panel /panel: stagger de entrada sutil (fade + translateY) ----
-   Motion muy restringido (es admin, no storefront). Sólo un fade-in leve al
-   montar el contenido. Con prefers-reduced-motion NO hay desplazamiento. */
+   Motion muy restringido (es admin, no storefront). Con prefers-reduced-motion
+   NO hay desplazamiento. */
 @keyframes panel-enter {
   from {
     opacity: 0;
@@ -397,9 +483,7 @@ html.lenis body {
   }
 }
 
-/* ---- Grano cinematográfico (página /evento) ----
-   Textura de película sobre las fotos: da mood editorial y disimula el gris de
-   los placeholders. Con fotos reales se atenúa (es sutil, mix-blend overlay). */
+/* ---- Grano cinematográfico (página /evento) ---- */
 .evt-grain {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 160px 160px;
@@ -408,25 +492,24 @@ html.lenis body {
 }
 
 /* =====================================================================
-   LOADER + HERO — método Villurcann adaptado a Sweet Flowers.
-   Fuente de verdad: colaboracion/franco/prompt-loader-hero.docx.
+   LOADER + HERO — "el arco" (D-06). El video nace dentro de un ARCO (el
+   producto de la marca) entre SWEET y FLOWERS, los globos del logo suben con
+   él y se escapan cuando el arco se abre a pantalla completa: el mismo gesto
+   de la transición de página (PageTransition) → intro y navegación son una
+   sola pieza. Una vez por sesión; nunca en navegación cliente.
    Estado inicial en CSS (body[data-loader="true"]) → cero flash/hidratación.
-   El nombre son 2 LÍNEAS (SWEET FLOWERS / DECO PARTY) que se separan en
-   vertical; en la franja del medio nace el video, que crece a full-screen.
    ===================================================================== */
 
-/* Easing del loader (= --ease-default del doc). */
 :root {
   --ease-default: cubic-bezier(0.4, 0, 0, 1);
-  /* Caja del video al nacer: RETRATO 3:4 (como De Puydt). Se expande a full.
-     Limitada también por el ALTO (svh) → en celular horizontal o notebooks
-     bajas el video nunca nace más alto que la pantalla. */
+  /* Caja del arco al nacer: RETRATO 3:4. Limitada también por el ALTO (svh)
+     → en celular horizontal o notebooks bajas nunca nace más alto que la
+     pantalla. */
   --media-h: min(12.5rem, 32svh);
   --media-w: calc(var(--media-h) * 0.75);
-  /* Separación de "SWEET"/"FLOWERS": cerrado → abierto. El hueco abierto
-     escala con la caja del video (25rem ↔ 15rem en desktop, como De Puydt). */
+  /* Separación de "SWEET"/"FLOWERS": cerrado → abierto. */
   --loader-gap-closed: 0.3em;
-  --loader-gap-open: calc(var(--media-w) * 1.67);
+  --loader-gap-open: calc(var(--media-w) * 1.5);
 }
 @media (min-width: 48rem) {
   :root {
@@ -434,10 +517,9 @@ html.lenis body {
   }
 }
 
-/* ---- Loader: "SWEET FLOWERS" que se separa (método De Puydt) ----
-   Horizontal (tablet/desktop y celular apaisado): SWEET ← [video] → FLOWERS.
-   Vertical (celular/tablet parados): SWEET arriba / FLOWERS abajo y el video nace en la
-   franja del medio → la tipo puede ser grande y nada se sale de la pantalla. */
+/* Horizontal (tablet/desktop y celular apaisado): SWEET ⌒ FLOWERS.
+   Vertical (celular/tablet parados): SWEET arriba / FLOWERS abajo y el arco
+   nace en la franja del medio. */
 .c-loader {
   position: fixed;
   inset: 0;
@@ -469,14 +551,30 @@ html.lenis body {
     column-gap 0.75s var(--ease-default),
     row-gap 0.75s var(--ease-default);
 }
-/* Las dos palabras se separan y en el medio aparece el video. */
+/* Las dos palabras se separan y en el medio aparece el arco. */
 .c-loader__name[data-expanded="true"] {
   column-gap: var(--loader-gap-open);
 }
 .c-loader__name span:first-child { margin-right: -0.08em; /* compensa el tracking final */ }
+/* "SWEET FLOWERS" aparece por CSS (T-03): es el LCP y no espera a JS. */
 .c-loader__name span {
-  opacity: 0; /* GSAP las revela (autoAlpha) */
-  visibility: hidden;
+  animation: sf-loader-in 0.6s var(--ease-default) 0.15s both;
+}
+@keyframes sf-loader-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.18em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Globos del logo que acompañan al arco (los mueve la timeline del Loader). */
+.c-loader__balloon {
+  position: absolute;
+  opacity: 0;
+  will-change: transform;
 }
 @media (max-width: 63.99rem) and (orientation: portrait) {
   .c-loader__name {
@@ -487,8 +585,8 @@ html.lenis body {
   }
   .c-loader__name[data-expanded="true"] {
     column-gap: 0;
-    /* Franja del video: alto de la caja + aire para la inclinación de 7.5°. */
-    row-gap: calc(var(--media-h) * 1.3);
+    /* Franja del arco: alto del arco + aire. */
+    row-gap: calc(var(--media-h) * 1.12);
   }
   /* Cada línea centrada ópticamente (el tracking deja aire a la derecha). */
   .c-loader__name span,
@@ -498,6 +596,51 @@ html.lenis body {
 }
 body[data-loader="false"] .c-loader {
   display: none;
+}
+/* Watchdog sin JS (T-03): si a los 10 s el loader sigue "puesto" (JS caído,
+   bloqueado o colgado), el sitio se libera solo: scroll, hero y header. */
+html:has(body[data-loader="true"]),
+body[data-loader="true"] {
+  animation: sf-unlock 0s linear 10s forwards;
+}
+@keyframes sf-unlock {
+  to {
+    overflow: visible;
+    touch-action: auto;
+  }
+}
+body[data-loader="true"] .c-loader {
+  animation: sf-gone 0s linear 10s forwards;
+}
+@keyframes sf-gone {
+  to {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+body[data-loader="true"] .c-hero__content,
+body[data-loader="true"] .c-site-header,
+body[data-loader="true"] .c-hero__media-overlay {
+  animation: sf-shown 0.4s linear 10s forwards;
+}
+@keyframes sf-shown {
+  to {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+body[data-loader="true"] .c-hero__media {
+  animation: sf-media-full 0s linear 10s forwards;
+}
+@keyframes sf-media-full {
+  to {
+    visibility: visible;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    clip-path: none;
+  }
 }
 /* Mientras corre el loader: scroll bloqueado (red de seguridad además de Lenis)
    y anclado al top, para que ninguna sección de abajo asome tras el loader. */
@@ -528,34 +671,38 @@ body[data-loader="true"] {
   object-fit: cover;
   display: block;
 }
-/* Placeholder cálido (hasta que llegue el video real). Gradiente de marca. */
+/* Placeholder cálido (hasta que llegue el video real). */
 .c-hero__media-placeholder {
   background: radial-gradient(
     120% 120% at 50% 35%,
     var(--color-blush) 0%,
     var(--color-sand) 55%,
-    var(--color-bordeaux) 140%
+    var(--color-wine) 140%
   );
 }
 .c-hero__media-overlay {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(
-    rgba(20, 17, 15, 0.45) 0%,
-    rgba(20, 17, 15, 0.2) 100%
-  );
+  /* Velo: arriba para el header (D-03) y abajo-izquierda, donde va el texto
+     del hero — el contraste no depende del frame del video. */
+  background:
+    linear-gradient(to bottom, rgba(20, 17, 15, 0.5) 0%, rgba(20, 17, 15, 0) 22%),
+    linear-gradient(to top, rgba(20, 17, 15, 0.78) 0%, rgba(20, 17, 15, 0.35) 55%, rgba(20, 17, 15, 0.2) 100%),
+    linear-gradient(to right, rgba(20, 17, 15, 0.45) 0%, rgba(20, 17, 15, 0) 60%);
 }
 
-/* Estado INICIAL durante el loader: la caja del video es chica y está en el
-   hueco central (entre las dos líneas), invisible; el video interno a scale 1.5.
-   La timeline la agranda a 100%×100% y baja el video a scale 1. */
+/* Estado INICIAL durante el loader: la caja del video es el ARCO chico en el
+   hueco central, invisible; el video interno a scale 1.5. La timeline lo arma
+   (clip de abajo hacia arriba) y lo abre a 100%×100%. */
 body[data-loader="true"] .c-hero__media {
   opacity: 0;
   visibility: hidden;
   width: var(--media-w);
   height: var(--media-h);
   transform: translate(-50%, -50%);
+  /* El ARCO: medio punto arriba, recto abajo (el perfil de una arcada). */
+  border-radius: calc(var(--media-w) / 2) calc(var(--media-w) / 2) 0 0;
 }
 body[data-loader="true"] .c-hero__media video,
 body[data-loader="true"] .c-hero__media-placeholder {
@@ -565,9 +712,8 @@ body[data-loader="true"] .c-hero__media-overlay {
   opacity: 0;
   visibility: hidden;
 }
-/* El contenido editorial del hero Y el header arrancan invisibles durante el
-   loader; la timeline del Loader los revela al final (como en De Puydt: el
-   header entra junto con el contenido, no antes). */
+/* El contenido del hero Y el header arrancan invisibles durante el loader; la
+   timeline los revela al final. */
 body[data-loader="true"] .c-hero__content,
 body[data-loader="true"] .c-site-header {
   opacity: 0;
@@ -575,9 +721,7 @@ body[data-loader="true"] .c-site-header {
 }
 
 /* ---- Hero: border-radius en las esquinas inferiores al scrollear ----
-   Al bajar la página, las esquinas inferiores del hero se redondean formando
-   un "encuadre" que sube y baja con el scroll (animation-timeline: scroll()).
-   El efecto revierte cuando el usuario vuelve arriba. Solo en desktop. */
+   (animation-timeline: scroll()). Solo en desktop. */
 @supports (animation-timeline: scroll()) {
   @media (min-width: 48rem) and (prefers-reduced-motion: no-preference) {
     .c-hero {
@@ -592,11 +736,37 @@ body[data-loader="true"] .c-site-header {
   to   { border-bottom-left-radius: clamp(0.75rem, 2vw, 1.5rem); border-bottom-right-radius: clamp(0.75rem, 2vw, 1.5rem); }
 }
 
-/* ---- Accesibilidad: foco visible por teclado ---- */
+/* ---- Accesibilidad: foco visible por teclado ----
+   Tinta en secciones claras (champagne daba 2,2:1), champagne en oscuras
+   (--focus-ring, ver arriba). */
 :focus-visible {
-  outline: 2px solid var(--color-champagne);
+  outline: 2px solid var(--focus-ring, var(--color-ink));
   outline-offset: 3px;
   border-radius: 3px;
+}
+
+/* ---- 404: un globo se suelta de la casita y se va (D-17) ---- */
+.sf-404__globo {
+  transform-origin: 50% 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sf-404__globo--quieto {
+    animation: sf-mecer 4.5s ease-in-out infinite alternate;
+  }
+  .sf-404__globo--suelto {
+    animation:
+      sf-mecer 1.6s ease-in-out 0s 2 alternate,
+      sf-soltar 3.2s cubic-bezier(0.55, 0, 0.75, 0.4) 2.6s forwards;
+  }
+}
+@keyframes sf-mecer {
+  from { rotate: -4deg; }
+  to { rotate: 4deg; }
+}
+@keyframes sf-soltar {
+  0% { translate: 0 0; rotate: 0deg; }
+  20% { translate: -6px 4px; rotate: -6deg; }
+  100% { translate: -60px -140vh; rotate: -18deg; }
 }
 
 /* ---- Accesibilidad: respetar prefers-reduced-motion ---- */

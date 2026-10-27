@@ -10,13 +10,15 @@ import { Paginacion } from "@/components/ui/Paginacion";
 import { hasDb } from "@/db";
 import { requireStaff } from "@/lib/dal";
 import { fechaCorta } from "@/lib/panel/formato";
-import { listarSuscriptores, type FiltroSuscriptores } from "@/modules/newsletter/admin";
+import { paginarSuscriptores, type FiltroSuscriptores } from "@/modules/newsletter/admin";
 import { INTERESES } from "@/content/newsletter";
+import { puede } from "@/modules/ventas/estados";
 
 export const metadata: Metadata = { title: "Suscriptores" };
 
 const FILTROS: { v: NonNullable<FiltroSuscriptores["estado"]>; l: string }[] = [
-  { v: "activo", l: "Activos" },
+  { v: "activo", l: "Activos (confirmaron)" },
+  { v: "sin-confirmar", l: "Sin confirmar el mail" },
   { v: "sin-usar", l: "No usaron su código" },
   { v: "usados", l: "Usaron su código" },
   { v: "baja", l: "Bajas" },
@@ -37,7 +39,7 @@ export default async function SuscriptoresPage({
     <PageHeader
       seccion="Newsletter"
       titulo="Suscriptores"
-      descripcion="Cuando alguien te pase su código por WhatsApp, buscalo acá y marcalo como usado: así sabés quién compró gracias al club."
+      descripcion="Cuando alguien te pase su código por WhatsApp, buscalo acá y marcalo como usado: así sabés quién compró gracias al club. Quien no confirmó desde el mail no recibe campañas."
       accion={
         // eslint-disable-next-line @next/next/no-html-link-for-pages -- descarga de archivo
         <a
@@ -53,10 +55,7 @@ export default async function SuscriptoresPage({
 
   const estado = FILTROS.find((f) => f.v === sp.estado)?.v;
   const q = sp.q?.slice(0, 80);
-  const todos = await listarSuscriptores({ q, estado });
-  const totalPaginas = Math.max(1, Math.ceil(todos.length / POR_PAGINA));
-  const pagina = Math.min(Math.max(1, Number(sp.pagina) || 1), totalPaginas);
-  const filas = todos.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
+  const { filas, total, pagina, paginas: totalPaginas } = await paginarSuscriptores({ q, estado, pagina: Number(sp.pagina) || 1, porPagina: POR_PAGINA });
   const hrefPagina = (n: number) => {
     const p = new URLSearchParams();
     if (q) p.set("q", q);
@@ -65,7 +64,7 @@ export default async function SuscriptoresPage({
     const s = p.toString();
     return `/panel/newsletter/suscriptores${s ? `?${s}` : ""}`;
   };
-  const esAdmin = user.role === "admin" || user.role === "superadmin";
+  const esAdmin = puede(user.role, "suscriptorBaja");
 
   return (
     <div className="flex flex-col gap-8">
@@ -85,7 +84,7 @@ export default async function SuscriptoresPage({
       </form>
 
       <p className="text-[length:var(--text-step--1)] text-muted">
-        {todos.length} persona{todos.length === 1 ? "" : "s"}
+        {total} persona{total === 1 ? "" : "s"}
         {totalPaginas > 1 && ` · página ${pagina} de ${totalPaginas}`}
       </p>
 
@@ -118,9 +117,10 @@ export default async function SuscriptoresPage({
                       {s.intereses.map((i) => INTERESES.find((x) => x.v === i)?.l ?? i).join(", ")}
                     </span>
                   )}
-                  {(s.estado === "baja" || s.userId) && (
+                  {(s.estado === "baja" || s.userId || !s.confirmadoAt) && (
                     <span className="mt-1.5 flex flex-wrap gap-1.5">
                       {s.estado === "baja" && <Badge variant="danger">Baja</Badge>}
+                      {s.estado !== "baja" && !s.confirmadoAt && <Badge variant="warning">Sin confirmar</Badge>}
                       {s.userId && <Badge variant="info">Tiene cuenta</Badge>}
                     </span>
                   )}

@@ -15,7 +15,7 @@ Los definitivos vienen del **manual de marca** (pendiente de entrega por Flor) y
 Qué se reemplaza cuando llegue el manual:
 
 - **Colores:** los `HEX/rgba` de las custom properties. Los **nombres semánticos** de los tokens (`--color-ink`, `--color-blush`, etc.) se mantienen; solo cambian los valores.
-- **Tipografía:** hoy usamos fuentes **gratuitas que imitan** el registro editorial premium (Fraunces + Geist). Si el manual define fuentes propias/licenciadas, se cambian **las familias** en `next/font` y en el token `--font-display` / `--font-body`; el resto del sistema (escala, tracking, line-heights) no se toca.
+- **Tipografía:** hoy usamos fuentes **gratuitas** (Cormorant Garamond + Hanken Grotesk; ver §3). Si el manual define fuentes propias/licenciadas, se cambian **las familias** en `next/font` y en el token `--font-display` / `--font-body`; el resto del sistema (escala, tracking, line-heights) no se toca.
 - **Todo lo demás** (espaciado, radios, grid, contenedor, sombras, escala fluida) es **decisión de ingeniería de diseño** y **no depende** del manual: se mantiene salvo conflicto explícito.
 
 > **Regla clave:** consumí siempre los tokens por su **nombre semántico** (variable CSS o clase Tailwind mapeada). **Nunca** escribas un `HEX` o un `px` suelto en un componente. Así, cuando llegue el manual, se cambia el valor en **un** lugar.
@@ -38,184 +38,66 @@ El sistema traduce el mood de marca a reglas mecánicas:
 
 ## 2. Color
 
-### 2.1 Tokens canónicos (CSS custom properties)
+> Actualizado 27/10/2026 (auditoría D-07 / T-05). Fuente de verdad: `app/globals.css` (`@theme`).
 
-Se definen en `:root` en el CSS global. **Provisional** hasta el manual de marca.
+### 2.1 Tokens reales
 
-```css
-:root {
-  /* — Neutros cálidos — */
-  --color-ink:    #14110F; /* tinta casi negra cálida · texto principal, titulares */
-  --color-bone:   #F7F3EC; /* marfil/hueso · fondo base editorial */
-  --color-cloud:  #FFFFFF; /* blanco puro · superficies elevadas, tarjetas */
+| Token | HEX | Uso |
+|---|---|---|
+| `--color-ink` | `#14110f` | Texto principal, fondos oscuros (hero, footer, Summit) |
+| `--color-bone` | `#f7f3ec` | Base clara del sitio |
+| `--color-wine` | `#7A1218` | **El único rojo de fondo** (newsletter, bloques destacados, /historia "Cómo trabajamos") |
+| `--color-brand-red` | `#ED1C23` | Rojo del logo: **solo acento** (globos, puntos, hover, chips chicos). Nunca fondo de bloque ni texto largo (bone encima = 3,96:1) |
+| `--color-champagne` | `#c6a15b` | Dorado: **solo sobre fondos oscuros** (7,75:1 sobre ink) |
+| `--color-champagne-ink` | `#7d5f25` | Dorado para texto sobre claros (5,4:1 sobre bone, 4,8:1 sobre sand) |
+| `--color-rose-50` | `#fde8e9` | Superficie rosada muy clara |
+| `--color-blush` / `--color-sand` | `#f4e9e4` / `#efe7d6` | Superficies claras que se funden con `ColorBridge` |
+| `--color-muted` | `#736d64` | Texto atenuado (4,63:1 sobre bone) |
+| `--color-line` | `#e4ddd1` | Filetes |
 
-  /* — Acentos — */
-  --color-blush:      #E8C7C8; /* rosa floral romántico · acento cálido, fondos suaves */
-  --color-botanical:  #2C3B32; /* verde profundo · acento opcional, detalles orgánicos */
-  --color-bordeaux:   #5B2A3A; /* burdeos profundo · base de momentos oscuros */
-  --color-champagne:  #C6A15B; /* dorado champagne · acento premium, hairlines, micro-detalles */
+**Alias históricos** (se mantienen porque los usan ~60 archivos; en código nuevo usá los nombres de arriba): `--color-botanical` = brand-red, `--color-bordeaux` = wine, `--color-sage` = rose-50. Además, `globals.css` fuerza que cualquier bloque `bg-botanical` se pinte de vino.
 
-  /* — Derivados / utilitarios — */
-  --color-muted: rgba(20, 17, 15, 0.55); /* texto secundario sobre fondo claro */
-  --color-line:  rgba(20, 17, 15, 0.12); /* bordes finos, hairlines, divisores */
-  --overlay:     rgba(0, 0, 0, 0.5);     /* velo sobre imágenes para legibilidad */
-}
-```
+### 2.2 Reglas de contraste ya resueltas en CSS global
 
-> Los derivados (`--color-muted`, `--color-line`) se construyen a partir de `--color-ink`. Si el manual cambia la tinta, **recalculá** estos rgba con la misma tinta para mantener la coherencia cálida.
-
-### 2.2 Muestras y uso semántico
-
-| Token | Muestra | Rol semántico | Reglas de uso |
-|---|---|---|---|
-| `--color-ink` | `#14110F` ⬛ | Texto principal, titulares, iconos sobre claro | Nunca uses `#000` puro. Esta tinta cálida es el "negro" de la marca. |
-| `--color-bone` | `#F7F3EC` ⬜ | **Fondo base** de todo el sitio | El lienzo por defecto. Editorial, cálido, descansa la vista. |
-| `--color-cloud` | `#FFFFFF` ⬜ | Superficies elevadas (tarjetas, inputs, menú overlay) | Crea jerarquía por contraste sutil contra `--color-bone`. |
-| `--color-blush` | `#E8C7C8` 🌸 | Acento romántico, fondos de sección suaves, badges | Con moderación. En bloques grandes, texto siempre en `--color-ink`. |
-| `--color-botanical` | `#2C3B32` 🌿 | Acento opcional, detalles orgánicos, fondos oscuros alternativos | Sobre él, texto en `--color-bone`. |
-| `--color-bordeaux` | `#5B2A3A` 🍷 | Fondo de **momentos oscuros** puntuales (una sección, no todo) | Base para el "modo cinematográfico" cálido. Texto en `--color-bone`. |
-| `--color-champagne` | `#C6A15B` ✨ | Acento premium: hairlines, subrayados, micro-detalles, badges "formación" | Es un **detalle**, no un fondo grande. Cuidado con contraste sobre claro (ver §7). |
-| `--color-muted` | `rgba(...,.55)` | Texto secundario, captions, metadatos | Solo sobre `--color-bone`/`--color-cloud`. |
-| `--color-line` | `rgba(...,.12)` | Bordes finos, divisores, tablas | Casi invisible. Estructura sin ruido. |
-| `--overlay` | `rgba(0,0,0,.5)` | Velo sobre imágenes con texto encima | Ajustá opacidad si el texto no llega a AA. |
-
-### 2.3 Pares de superficie (surface → contenido)
-
-Combinaciones **validadas**. No inventes pares nuevos sin chequear contraste (§7).
-
-| Superficie | Texto | Acento | Uso |
-|---|---|---|---|
-| `--color-bone` | `--color-ink` | `--color-champagne` / `--color-blush` | **Default** del sitio. |
-| `--color-cloud` | `--color-ink` | `--color-botanical` | Tarjetas, formularios, overlay de menú. |
-| `--color-bordeaux` | `--color-bone` | `--color-champagne` | Momento oscuro cálido (hero alterno, cierre). |
-| `--color-botanical` | `--color-bone` | `--color-champagne` | Momento oscuro orgánico. |
-| Imagen + `--overlay` | `--color-bone` | — | Hero con foto, texto encima. |
+- **Eyebrow** (`components/ui/Eyebrow.tsx`, clase `.sf-eyebrow`): toma `--eyebrow-color`, que cada sección define según su `data-theme` (light → champagne-ink, dark → champagne, sobre vino → `#d8b878`). Prop `tono` para forzarlo.
+- **Foco**: `--focus-ring` = ink en claro, champagne en oscuro.
+- **Atenuados**: `text-ink/40` y `text-ink/50` se suben a ink 65 % (5,6:1); `text-bone/40-45` a bone 62 %. Placeholders: 60 % del color del campo.
+- **Header sobre foto/video**: tono determinista en el Header (zona E) + velo del hero (`.c-hero__media-overlay`) con refuerzo arriba y abajo-izquierda.
 
 ---
 
 ## 3. Tipografía
 
-### 3.1 Familias (provisional — pairing vigente)
+### 3.1 Familias
 
-> **Decisión vigente (confirmada por Franco):** el pairing es **grotesco/moderno**, no serif.
-> Equivalentes libres al pairing de snask.com. Esto reemplaza el pairing serif
-> (Fraunces + Geist) que figuraba antes en este doc y que **nunca llegó al código**.
-> Sigue **provisional** hasta el manual de marca de Flor; se consume por token.
+- **Display**: Cormorant Garamond (variable 300–700, `--font-logo` / `--font-display`). La itálica real se carga aparte en `components/ui/fuentes.ts` (`italica.className`).
+- **Cuerpo**: Hanken Grotesk (`--font-sans`).
+- **Panel**: Bricolage Grotesque (`[data-area="panel"] .font-display`).
+- **Números**: todo uso display lleva `lining-nums tabular-nums` (Cormorant trae elzevirianos: "IO% OFF"). Ya está en `.font-display`, `.clip-title`, el loader y las tres voces.
 
-- **Display / titulares → "Bricolage Grotesque"**: grotesca display con carácter (≈ "Snaskface" de snask.com). Se usa en pesos altos (extrabold) en MAYÚSCULAS para titulares con punch. Token `--font-display`.
-- **Body / UI → "Hanken Grotesk"**: grotesca limpia y legible (≈ "Apercu"). Pesos **400 / 500**. Token `--font-sans`.
+### 3.2 Las tres voces de título (utilidades en `globals.css`, aceptan variantes)
 
-Filosofía: **titulares grandes con mucho espacio negativo.** El contraste de pesos y escala (no serif/sans) hace el trabajo editorial; la grotesca da el registro moderno del rubro.
-
-### 3.2 Carga con `next/font`
-
-Se cargan directamente en `app/layout.tsx` (no hay `app/fonts.ts`):
-
-```tsx
-import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
-
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const hanken = Hanken_Grotesk({
-  variable: "--font-hanken",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// <html className={`${bricolage.variable} ${hanken.variable} antialiased`}>
-```
-
-Y en `@theme` (globals.css) se exponen los tokens semánticos apuntando a las variables de `next/font`:
-
-```css
-@theme {
-  --font-display: var(--font-bricolage), "Arial Black", sans-serif;
-  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
-}
-```
-
-> `next/font` hostea las fuentes localmente (sin request a Google en runtime), evita layout shift con `size-adjust` y respeta el objetivo de CWV verde del proyecto. **No** cargues las fuentes por `<link>` ni por `@import`.
-
-### 3.3 Escala tipográfica fluida (`clamp`)
-
-Escala mobile → desktop, sin breakpoints, con `clamp(min, preferido-vw, max)`. Ratio ~1.2 en cuerpo, más amplia en display.
-
-```css
-:root {
-  --step--1: clamp(0.83rem, 0.80rem + 0.17vw, 0.94rem); /* captions, legales */
-  --step-0:  clamp(1.00rem, 0.95rem + 0.25vw, 1.13rem); /* cuerpo base */
-  --step-1:  clamp(1.20rem, 1.10rem + 0.50vw, 1.50rem); /* lead / subtítulo */
-  --step-2:  clamp(1.44rem, 1.25rem + 0.95vw, 2.00rem); /* H4 */
-  --step-3:  clamp(1.73rem, 1.40rem + 1.65vw, 2.75rem); /* H3 */
-  --step-4:  clamp(2.07rem, 1.55rem + 2.60vw, 3.75rem); /* H2 */
-  --step-5:  clamp(2.49rem, 1.65rem + 4.20vw, 5.25rem); /* H1 sección */
-  --step-6:  clamp(2.99rem, 1.60rem + 6.95vw, 7.50rem); /* display hero */
-}
-```
-
-Mapa semántico:
-
-| Token | Uso | Familia | Peso |
+| Voz | Clase | Receta | Cuándo |
 |---|---|---|---|
-| `--step-6` | Display hero (una vez por página) | Display | 300–400 |
-| `--step-5` | H1 de sección | Display | 300–400 |
-| `--step-4` | H2 | Display | 400 |
-| `--step-3` | H3 | Display | 400–500 |
-| `--step-2` | H4 / destacados | Display o Body | 500 |
-| `--step-1` | Lead / bajada | Body | 400 |
-| `--step-0` | Cuerpo | Body | 400 |
-| `--step--1` | Caption, legal, metadatos | Body | 400–500 |
+| 1 · Display | `t-voz-display` | Cormorant **300**, caja mixta, tracking −1 %, lh 0,98 | Títulos de sección y momentos emocionales. Es la voz por defecto de los H2 |
+| 2 · Nombre | `t-voz-nombre` | Cormorant **500**, versales, tracking +2 % | **Solo** nombres de categorías, productos y del evento |
+| 3 · Cita | `t-voz-cita` + `italica.className` | Cormorant itálica **300** | Citas, bajadas, testimonios |
 
-### 3.4 Line-height y tracking
+Reglas:
+- Nada de "eyebrow + H2 centrado en mayúsculas" en cada sección. El eyebrow va solo si agrega un dato que el título no dice (ej. "2ª edición, 9 de abril de 2027").
+- Al menos la mitad de los bloques de la home van alineados a la izquierda (hoy: todos menos el cierre de Contacto; el Summit va a la derecha).
+- Numerales (01, 02…) solo donde hay secuencia real (trayectoria de workshops).
+- Copy concreto y rioplatense (registro del Summit: "Entrás por la decoración. Te quedás por la gente."). Sin "más que decoración", "momentos inolvidables", "llave en mano".
 
-Regla editorial: **cuanto más grande el texto, más apretado el line-height y más negativo el tracking.**
+### 3.3 Escala fluida
 
-```css
-:root {
-  --leading-display: 0.95; /* titulares grandes: casi tocándose */
-  --leading-tight:   1.10;
-  --leading-snug:    1.25;
-  --leading-normal:  1.55; /* cuerpo: cómodo para lectura larga */
+`--text-step--1` … `--text-step-7` en `:root` (clamp mobile → desktop). En ≥1920 px el `html` escala (`font-size: 100vw/120`).
 
-  --tracking-display: -0.02em; /* -2%: aire justo en serif grande */
-  --tracking-tight:   -0.01em;
-  --tracking-normal:   0em;
-  --tracking-wide:     0.14em; /* MAYÚSCULAS de labels/badges */
-}
-```
+### 3.4 Firma de marca en movimiento
 
-| Contexto | Line-height | Tracking |
-|---|---|---|
-| Display hero (`--step-5/6`) | `--leading-display` | `--tracking-display` |
-| Títulos (`--step-2/4`) | `--leading-tight` | `--tracking-tight` |
-| Lead (`--step-1`) | `--leading-snug` | `--tracking-normal` |
-| Cuerpo (`--step-0`) | `--leading-normal` | `--tracking-normal` |
-| Labels/eyebrows en MAYÚSCULA | `--leading-snug` | `--tracking-wide` |
-
-Ejemplo de clase utilitaria (globals.css con `@layer`):
-
-```css
-@layer components {
-  .u-display {
-    font-family: var(--font-display);
-    font-size: var(--step-6);
-    line-height: var(--leading-display);
-    letter-spacing: var(--tracking-display);
-    font-weight: 300;
-  }
-  .u-eyebrow {
-    font-family: var(--font-body);
-    font-size: var(--step--1);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-muted);
-  }
-}
-```
+- **Intro** (`components/intro/`): SWEET FLOWERS por CSS → el video nace dentro de un **arco** que se arma de abajo hacia arriba → los globos del logo suben y se escapan cuando el arco se abre a pantalla completa (mismo gesto que `PageTransition`). Una vez por sesión, salteable con cualquier input.
+- **Footer**: la casita con tres globos atados que siguen el cursor con un resorte (`FooterGlobos`).
+- **404**: la casita con un globo que se suelta (CSS puro).
 
 ---
 

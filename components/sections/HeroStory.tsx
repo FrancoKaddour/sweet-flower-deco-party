@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, SplitText, useGSAP } from "@/lib/gsap";
+import { gsap, SplitText, useGSAP, conFuentes } from "@/lib/gsap";
 import { heroEnModoLiviano } from "@/components/sections/HeroMedia";
 
 /**
@@ -19,14 +19,15 @@ import { heroEnModoLiviano } from "@/components/sections/HeroMedia";
 // [frase, entra (s), termina de salir (s)] — alineado a las tomas del video.
 // El video arranca cuando nace en el loader; la 1ª frase espera a que el hero
 // termine de expandirse (~2.3s después).
+// Le hablan a la decoradora (E-22): solo datos confirmados (CONTENIDO_FLOR).
 const PHRASES: [string, number, number][] = [
-  ["Creamos la escenografía", 2.5, 5.8],
-  ["de tus mejores momentos", 6.5, 10.1],
-  ["Hierro, MDF, madera y telas", 10.9, 14.8],
-  ["para transformar", 15.5, 17.8],
-  ["cualquier evento", 18.5, 21.5],
-  ["en una experiencia", 22.2, 24.9],
-  ["memorable.", 25.6, 29.1],
+  ["Las estructuras", 2.5, 5.8],
+  ["que arman tus eventos", 6.5, 10.1],
+  ["Hierro, catering, fundas y telas", 10.9, 14.8],
+  ["hechas en Tortuguitas", 15.5, 17.8],
+  ["por encargo,", 18.5, 21.5],
+  ["con envío", 22.2, 24.9],
+  ["a todo el país.", 25.6, 29.1],
 ];
 const DURATION = 30;
 const IN_DUR = 0.9;
@@ -34,14 +35,13 @@ const IN_STAGGER = 0.06;
 const OUT_DUR = 0.55;
 const OUT_STAGGER = 0.04;
 
-const FULL_TEXT =
-  "Creamos la escenografía de tus mejores momentos. Piezas en hierro, MDF, madera y telas para transformar cualquier evento en una experiencia memorable.";
+const FULL_TEXT = "Las estructuras que arman tus eventos";
 
 export function HeroStory() {
   const root = useRef<HTMLDivElement>(null);
 
   useGSAP(
-    () => {
+    (_ctx, contextSafe) => {
       const el = root.current;
       const video = document.querySelector<HTMLVideoElement>(".c-hero__media video");
       if (!el || !video) return;
@@ -49,25 +49,31 @@ export function HeroStory() {
 
       const phraseEls = el.querySelectorAll<HTMLElement>(".hero-phrase");
       const tl = gsap.timeline({ paused: true });
-
-      phraseEls.forEach((p, i) => {
-        const [, tIn, tOut] = PHRASES[i];
-        const split = SplitText.create(p, { type: "words", mask: "words" });
-        gsap.set(p, { autoAlpha: 1 });
-        gsap.set(split.words, { yPercent: 110 });
-        const outLen = OUT_DUR + OUT_STAGGER * (split.words.length - 1);
-        tl.fromTo(
-          split.words,
-          { yPercent: 110 },
-          { yPercent: 0, duration: IN_DUR, ease: "expo.out", stagger: IN_STAGGER },
-          tIn,
-        ).to(
-          split.words,
-          { yPercent: -110, duration: OUT_DUR, ease: "power3.in", stagger: OUT_STAGGER },
-          tOut - outLen,
-        );
-      });
       tl.set({}, {}, DURATION); // largo exacto = video
+
+      // El split espera a las fuentes (sin reflow) y queda dentro del contexto
+      // de useGSAP (contextSafe) → se revierte en el cleanup.
+      const armar = () => {
+        phraseEls.forEach((p, i) => {
+          const [, tIn, tOut] = PHRASES[i];
+          const split = SplitText.create(p, { type: "words", mask: "words", tag: "span", wordsClass: "reveal-word" });
+          gsap.set(p, { autoAlpha: 1 });
+          gsap.set(split.words, { yPercent: 110 });
+          const outLen = OUT_DUR + OUT_STAGGER * (split.words.length - 1);
+          tl.fromTo(
+            split.words,
+            { yPercent: 110 },
+            { yPercent: 0, duration: IN_DUR, ease: "expo.out", stagger: IN_STAGGER },
+            tIn,
+          ).to(
+            split.words,
+            { yPercent: -110, duration: OUT_DUR, ease: "power3.in", stagger: OUT_STAGGER },
+            tOut - outLen,
+          );
+        });
+        tl.time(tl.time()); // re-render en la posición actual
+      };
+      const cancelarFuentes = conFuentes(contextSafe ? contextSafe(armar) : armar);
 
       // Reloj propio (mismo guion de 30s, en loop) cuando NO hay video que mire:
       // modo liviano (ahorro de datos / red lenta → solo póster) o iOS en modo
@@ -91,6 +97,7 @@ export function HeroStory() {
       // iOS: muted/playsInline como PROPIEDADES justo antes de play() (el
       // atributo de React no alcanza en todas las versiones de Safari).
       const reproducir = () => {
+        if (video.dataset.pausa) return; // el usuario lo pausó (HeroPausa)
         video.muted = true;
         video.defaultMuted = true;
         video.playsInline = true;
@@ -111,13 +118,23 @@ export function HeroStory() {
       // Si la intro ya terminó antes de montar (F5 sin intro), arrancar directo.
       if (document.body.getAttribute("data-loader") === "false") start();
 
+      // Botón de pausa (T-08): congela también el reloj propio.
+      const onPausa = (e: Event) => {
+        const pausar = (e as CustomEvent<boolean>).detail;
+        if (relojPropio) {
+          if (pausar) tl.pause();
+          else tl.play();
+        }
+      };
+      window.addEventListener("sf:hero-pausa", onPausa);
+
       // Performance: fuera de pantalla, el video (o el reloj propio) se pausa.
       const onPlay = () => (started = true);
       video.addEventListener("play", onPlay);
       const io = new IntersectionObserver(([entry]) => {
         if (!started) return;
         if (relojPropio) {
-          if (entry.isIntersecting) tl.play();
+          if (entry.isIntersecting && !video.dataset.pausa) tl.play();
           else tl.pause();
         } else if (entry.isIntersecting) reproducir();
         else video.pause();
@@ -125,8 +142,10 @@ export function HeroStory() {
       io.observe(video);
 
       return () => {
+        cancelarFuentes();
         gsap.ticker.remove(sync);
         window.removeEventListener("sf:hero-start", start);
+        window.removeEventListener("sf:hero-pausa", onPausa);
         video.removeEventListener("play", onPlay);
         io.disconnect();
         tl.kill();
@@ -138,16 +157,16 @@ export function HeroStory() {
   return (
     <div ref={root} className="relative w-full">
       {/* Texto completo para SEO y lectores; visible solo con reduced-motion. */}
-      <h1 className="sr-only motion-reduce:not-sr-only motion-reduce:mx-auto motion-reduce:block motion-reduce:max-w-[22ch] motion-reduce:font-display motion-reduce:text-(length:--text-step-4) [@media(max-height:500px)_and_(orientation:landscape)]:motion-reduce:text-(length:--text-step-3) motion-reduce:font-extrabold motion-reduce:uppercase motion-reduce:leading-[0.95] motion-reduce:text-bone">
+      <h1 className="sr-only motion-reduce:not-sr-only motion-reduce:block motion-reduce:max-w-[14ch] motion-reduce:t-voz-display motion-reduce:text-[length:clamp(2.75rem,1.6rem+4.6vw,6.5rem)] [@media(max-height:500px)_and_(orientation:landscape)]:motion-reduce:text-(length:--text-step-4) motion-reduce:text-bone">
         {FULL_TEXT}
       </h1>
 
       {/* Frases cinéticas: todas apiladas en la misma celda. */}
-      <div aria-hidden="true" className="grid motion-reduce:hidden">
+      <div aria-hidden="true" className="grid justify-items-start motion-reduce:hidden">
         {PHRASES.map(([text]) => (
           <p
             key={text}
-            className="hero-phrase invisible text-balance col-start-1 row-start-1 mx-auto max-w-[16ch] self-center font-display text-[length:min(var(--text-step-5),calc((100vw-3rem)/7.8))] font-extrabold uppercase leading-[0.92] tracking-[-0.02em] text-bone md:max-w-[18ch] md:text-[clamp(2.6rem,1.6rem+3.4vw,4.2rem)] [@media(max-height:500px)_and_(orientation:landscape)]:max-w-[22ch] [@media(max-height:500px)_and_(orientation:landscape)]:text-[clamp(1.75rem,9svh,2.5rem)]"
+            className="hero-phrase t-voz-display invisible col-start-1 row-start-1 max-w-[13ch] self-end text-balance text-[length:min(var(--text-step-6),calc((100vw-3rem)/6.4))] leading-[0.95] text-bone md:max-w-[16ch] md:text-[length:clamp(3rem,1.4rem+4.6vw,7rem)] [@media(max-height:500px)_and_(orientation:landscape)]:max-w-[24ch] [@media(max-height:500px)_and_(orientation:landscape)]:text-[clamp(1.75rem,9svh,2.5rem)]"
           >
             {text}
           </p>

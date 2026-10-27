@@ -3,6 +3,22 @@
 // server para enviar y el panel para la vista previa en vivo.
 
 import { CLUB, DESCUENTO_BIENVENIDA } from "@/content/newsletter";
+import { EVENT_MAPA_URL, EVENT_WHATSAPP, calendarioGoogleUrl } from "@/content/evento";
+
+/** WhatsApp de ventas (pie de todos los mails salvo los del Summit). */
+const WA_VENTAS = "5491151064010";
+
+/**
+ * Links de los mails del Club: llevan `?codigo=CLUB-XXXX` para que el carrito
+ * lo cargue solo (components/cart/CartDrawer.tsx lo lee de la URL y lo guarda).
+ * Solo en links al propio sitio.
+ */
+export function conCodigoClub(url: string, base: string, codigo?: string | null): string {
+  if (!codigo || !url.startsWith(base)) return url;
+  const [sinHash, hash] = url.split("#");
+  const sep = sinHash.includes("?") ? "&" : "?";
+  return `${sinHash}${sep}codigo=${encodeURIComponent(codigo)}${hash ? `#${hash}` : ""}`;
+}
 
 const C = {
   ink: "#14110f",
@@ -68,11 +84,14 @@ export function layout({
   contenido,
   bajaUrl,
   motivo,
+  whatsapp = WA_VENTAS,
 }: {
   base: string;
   preheader?: string;
   contenido: string;
   bajaUrl?: string;
+  /** Número del pie (el Summit usa su propia línea). */
+  whatsapp?: string;
   /** Por qué recibe el mail (obligatorio en marketing). */
   motivo: string;
 }) {
@@ -95,7 +114,7 @@ ${contenido}
 <tr><td align="center" style="padding:28px 12px 0;font-family:${SANS};font-size:12px;line-height:1.7;color:${C.muted};">
 <a href="https://www.instagram.com/sweetflowersdecoparty/" style="color:${C.ink};text-decoration:none;font-weight:600;">Instagram</a>
 &nbsp;·&nbsp;<a href="${base}/productos" style="color:${C.ink};text-decoration:none;font-weight:600;">Catálogo</a>
-&nbsp;·&nbsp;<a href="https://wa.me/5491151064010" style="color:${C.ink};text-decoration:none;font-weight:600;">WhatsApp</a><br>
+&nbsp;·&nbsp;<a href="https://wa.me/${whatsapp}" style="color:${C.ink};text-decoration:none;font-weight:600;">WhatsApp</a><br>
 Sweet Flowers Deco Party · Tortuguitas, Buenos Aires · Envíos a todo el país<br>
 ${esc(motivo)}${bajaUrl ? `<br><a href="${esc(bajaUrl)}" style="color:${C.muted};">Darme de baja</a>` : ""}
 </td></tr>
@@ -124,12 +143,30 @@ ${h1(nombre ? `¡Bienvenida, ${nombre}!` : "¡Bienvenida al club!")}
 <li style="margin:0 0 6px;">Mandá el pedido por WhatsApp desde el sitio.</li>
 <li>Mencioná tu código y te aplicamos el descuento.</li>
 </ol>
-${boton("Ver el catálogo", `${v.base}/productos`)}
+${boton("Ver el catálogo", conCodigoClub(`${v.base}/productos`, v.base, v.codigo))}
 <p style="margin:28px 0 0;font-family:${SANS};font-size:14px;line-height:1.6;color:${C.muted};">Además vas a enterarte primero de lanzamientos y de las preventas del Event Summit. Un mail cada tanto, prometido.<br><br>Flor y el equipo de Sweet Flowers</p>`;
   return {
     asunto: `Tu ${DESCUENTO_BIENVENIDA}% de bienvenida: ${v.codigo}`,
     html: layout({ base: v.base, preheader: `Tu código de ${DESCUENTO_BIENVENIDA}% para el primer pedido está adentro.`, contenido, bajaUrl: v.bajaUrl, motivo: "Recibís este mail porque te sumaste al Club Sweet Flowers." }),
-    texto: `¡Bienvenida al ${CLUB.nombre}!\n\nTu código de ${DESCUENTO_BIENVENIDA}% para el primer pedido: ${v.codigo}\n\n1. Elegí tus piezas en ${v.base}/productos\n2. Mandá el pedido por WhatsApp desde el sitio\n3. Mencioná tu código\n\nDarte de baja: ${v.bajaUrl}`,
+    texto: `¡Bienvenida al ${CLUB.nombre}!\n\nTu código de ${DESCUENTO_BIENVENIDA}% para el primer pedido: ${v.codigo}\n\n1. Elegí tus piezas en ${conCodigoClub(`${v.base}/productos`, v.base, v.codigo)}\n2. Mandá el pedido por WhatsApp desde el sitio\n3. Mencioná tu código\n\nDarte de baja: ${v.bajaUrl}`,
+  };
+}
+
+/**
+ * Doble opt-in (S-13): mail para confirmar la suscripción. Va a una dirección
+ * NO confirmada, así que no lleva nada que haya escrito quien completó el
+ * formulario (ni el nombre en el asunto ni en el título).
+ */
+export function correoConfirmarClub(v: { base: string; confirmarUrl: string }): Correo {
+  const contenido = `${eyebrow(CLUB.nombre)}
+${h1("Confirmá tu suscripción")}
+<p style="margin:0 0 24px;font-family:${SANS};font-size:16px;line-height:1.65;color:${C.ink};">Alguien (seguramente vos) pidió sumar este email al ${esc(CLUB.nombre)}. Tocá el botón para confirmarlo y te mandamos tu código de ${DESCUENTO_BIENVENIDA}% para el primer pedido.</p>
+${boton("Confirmar y recibir mi código", v.confirmarUrl)}
+<p style="margin:28px 0 0;font-family:${SANS};font-size:14px;line-height:1.6;color:${C.muted};">Si no fuiste vos, ignorá este mail: sin confirmar no te vamos a escribir.</p>`;
+  return {
+    asunto: `Confirmá tu suscripción al ${CLUB.nombre}`,
+    html: layout({ base: v.base, preheader: `Un clic y te mandamos tu código de ${DESCUENTO_BIENVENIDA}%.`, contenido, motivo: "Recibís este mail porque alguien pidió sumar esta dirección al Club Sweet Flowers." }),
+    texto: `Confirmá tu suscripción al ${CLUB.nombre}\n\nAbrí este link para confirmar y recibir tu código de ${DESCUENTO_BIENVENIDA}%:\n${v.confirmarUrl}\n\nSi no fuiste vos, ignorá este mail.`,
   };
 }
 
@@ -138,11 +175,11 @@ export function correoRecordatorioCodigo(v: { base: string; nombre?: string | nu
   const contenido = `${eyebrow("Tu descuento sigue activo")}
 ${h1(nombre ? `${nombre}, ¿armamos tu primer pedido?` : "¿Armamos tu primer pedido?")}
 ${cuerpoHtml(`Todavía tenés tu código de ${DESCUENTO_BIENVENIDA}% sin usar: **${v.codigo}**\n\nSi tenés dudas de medidas, combinaciones o envíos, escribinos y te asesoramos: muchas decoradoras arrancan con un arco o una estantería y van sumando.`)}
-${boton("Elegir mis piezas", `${v.base}/productos`)}`;
+${boton("Elegir mis piezas", conCodigoClub(`${v.base}/productos`, v.base, v.codigo))}`;
   return {
     asunto: `${nombre ? `${nombre}, tu` : "Tu"} ${DESCUENTO_BIENVENIDA}% sigue esperándote`,
     html: layout({ base: v.base, preheader: `Tu código ${v.codigo} todavía está activo.`, contenido, bajaUrl: v.bajaUrl, motivo: "Recibís este mail porque sos parte del Club Sweet Flowers." }),
-    texto: `Tu código de ${DESCUENTO_BIENVENIDA}% sigue activo: ${v.codigo}\n\nCatálogo: ${v.base}/productos\n\nDarte de baja: ${v.bajaUrl}`,
+    texto: `Tu código de ${DESCUENTO_BIENVENIDA}% sigue activo: ${v.codigo}\n\nCatálogo: ${conCodigoClub(`${v.base}/productos`, v.base, v.codigo)}\n\nDarte de baja: ${v.bajaUrl}`,
   };
 }
 
@@ -178,12 +215,13 @@ export function correoCampana(v: {
   const img = v.imagen
     ? `<img src="${esc(abs(v.base, v.imagen))}" width="528" alt="" style="display:block;width:100%;max-width:528px;height:auto;border:0;border-radius:14px;margin:0 0 28px;">`
     : "";
-  const cta = v.ctaTexto && v.ctaUrl ? boton(per(v.ctaTexto), abs(v.base, v.ctaUrl)) : "";
+  const ctaUrl = v.ctaUrl ? conCodigoClub(abs(v.base, v.ctaUrl), v.base, v.codigo) : "";
+  const cta = v.ctaTexto && ctaUrl ? boton(per(v.ctaTexto), ctaUrl) : "";
   const contenido = `${img}${eyebrow("Club Sweet Flowers")}${h1(per(v.titulo))}${cuerpoHtml(per(v.cuerpo))}${cta}`;
   return {
     asunto: per(v.asunto),
     html: layout({ base: v.base, preheader: v.preheader ? per(v.preheader) : undefined, contenido, bajaUrl: v.bajaUrl, motivo: "Recibís este mail porque sos parte del Club Sweet Flowers." }),
-    texto: `${per(v.titulo)}\n\n${per(v.cuerpo).replace(/\*\*/g, "")}${cta ? `\n\n${per(v.ctaTexto ?? "")}: ${abs(v.base, v.ctaUrl ?? "/")}` : ""}\n\nDarte de baja: ${v.bajaUrl}`,
+    texto: `${per(v.titulo)}\n\n${per(v.cuerpo).replace(/\*\*/g, "")}${cta ? `\n\n${per(v.ctaTexto ?? "")}: ${ctaUrl}` : ""}\n\nDarte de baja: ${v.bajaUrl}`,
   };
 }
 
@@ -205,6 +243,12 @@ export function correoEntradaSummit(v: {
   const fila = (k: string, val: string) =>
     `<tr><td style="padding:10px 0;border-bottom:1px solid ${C.line};font-family:${SANS};font-size:13px;letter-spacing:1px;text-transform:uppercase;color:${C.muted};">${esc(k)}</td><td align="right" style="padding:10px 0;border-bottom:1px solid ${C.line};font-family:${SANS};font-size:15px;color:${C.ink};font-weight:600;">${esc(val)}</td></tr>`;
   const monto = `$ ${v.monto.toLocaleString("es-AR")}`;
+  const links: [string, string][] = [
+    ["Agregar a Google Calendar", calendarioGoogleUrl(v.codigo)],
+    ["Calendario (.ics)", `${v.base}/event-summit/summit.ics`],
+    ["Cómo llegar", EVENT_MAPA_URL],
+    ...(/vip/i.test(v.pase) ? ([["Ver mi beneficio VIP", `${v.base}/productos`]] as [string, string][]) : []),
+  ];
   const contenido = `${eyebrow(`${v.evento} · ${v.edicion}`)}
 ${h1(`¡${nombre}, tu lugar está confirmado!`)}
 <p style="margin:0 0 24px;font-family:${SANS};font-size:16px;line-height:1.65;color:${C.ink};">Recibimos tu pago. Guardá este mail: es tu comprobante de inscripción.</p>
@@ -216,10 +260,13 @@ ${h1(`¡${nombre}, tu lugar está confirmado!`)}
 ${fila("Fecha", v.fecha)}${fila("Horario", v.horario)}${v.sede ? fila("Lugar", v.sede) : ""}${fila("Pagaste", monto)}
 </table>
 ${cuerpoHtml("Unos días antes del evento te escribimos por WhatsApp con todos los detalles. Si tenés alguna duda, respondé este mail o escribinos.")}
+<p style="margin:0 0 28px;font-family:${SANS};font-size:14px;line-height:2;color:${C.ink};">${links
+    .map(([t, u]) => `<a href="${esc(u)}" style="color:${C.bordeaux};font-weight:600;text-decoration:underline;">${esc(t)}</a>`)
+    .join("&nbsp;&nbsp;·&nbsp;&nbsp;")}</p>
 ${boton("Ver el Event Summit", `${v.base}/event-summit`)}`;
   return {
     asunto: `Tu lugar en el ${v.evento} está confirmado (${v.codigo})`,
-    html: layout({ base: v.base, preheader: `${v.pase} · ${v.fecha} · código ${v.codigo}`, contenido, motivo: "Recibís este mail porque te inscribiste al Sweet Flowers Event Summit." }),
-    texto: `¡Tu lugar está confirmado!\n\n${v.pase} · Código ${v.codigo}\n${v.fecha} · ${v.horario}${v.sede ? `\n${v.sede}` : ""}\nPagaste ${monto}\n\n${v.base}/event-summit`,
+    html: layout({ base: v.base, preheader: `${v.pase} · ${v.fecha} · código ${v.codigo}`, contenido, whatsapp: EVENT_WHATSAPP, motivo: "Recibís este mail porque te inscribiste al Sweet Flowers Event Summit." }),
+    texto: `¡Tu lugar está confirmado!\n\n${v.pase} · Código ${v.codigo}\n${v.fecha} · ${v.horario}${v.sede ? `\n${v.sede}` : ""}\nPagaste ${monto}\n\n${links.map(([t, u]) => `${t}: ${u}`).join("\n")}\n\nEvent Summit: ${v.base}/event-summit\nWhatsApp: https://wa.me/${EVENT_WHATSAPP}`,
   };
 }

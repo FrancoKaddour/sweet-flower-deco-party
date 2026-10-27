@@ -4,67 +4,62 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { FadeUp } from "@/components/motion/FadeUp";
 import { SwipeDots } from "@/components/ui/SwipeDots";
+import { italica } from "@/components/ui/fuentes";
 
-// TODO(contenido): copy, títulos y fotos reales (ver docs/16_DECISIONS.md → 03_SERVICIO).
-// Adaptación del bloque "Savoir-faire" de momoamo.com → mood premium editorial cálido.
-
-// Slides del carrusel (scroll horizontal nativo + scroll-snap).
+// D-08: montajes TERMINADOS y piezas en uso (fotos propias: Summit 2026,
+// workshop de Río Cuarto y catálogo). Cada pie dice qué es la foto, sin
+// inventar cifras. E-23: nada de "montaje llave en mano" (no confirmado).
 const SLIDES = [
   {
-    seed: "sfdp-serv-1",
-    img: "/img/summit/lg/sum-08.webp",
-    titulo: "De 15 a 300 invitados",
-    sub: "Un evento, una escenografía.",
-  },
-  {
-    seed: "sfdp-serv-2",
     img: "/img/summit/lg/sum-06.webp",
-    titulo: "Montaje a medida",
-    sub: "Nos adaptamos a tu espacio.",
+    titulo: "Event Summit 2026",
+    sub: "La escena de la primera edición, en La Rural.",
   },
   {
-    seed: "sfdp-serv-3",
-    img: "/img/rio-cuarto/rc-05.webp",
-    titulo: "En todo el país",
-    sub: "Llevamos la decoración a donde sea.",
+    img: "/productos/cat-eclipse-1m-comida.jpg",
+    titulo: "Estantería Eclipse",
+    sub: "De las piezas de catering que más salen.",
   },
   {
-    seed: "sfdp-serv-4",
-    img: "/img/summit/lg/sum-04.webp",
-    titulo: "Diseño & singularidad",
-    sub: "Piezas que no se repiten.",
+    img: "/img/rio-cuarto/rc-09.webp",
+    titulo: "Mesa dulce en Río Cuarto",
+    sub: "Workshop 04, julio de 2025.",
   },
   {
-    seed: "sfdp-serv-5",
-    img: "/productos/estanteria-eclipse.jpg",
-    titulo: "Producto propio",
-    sub: "Hierro, madera y textil.",
+    img: "/productos/arco-con-rombo.jpg",
+    titulo: "Arco con rombo",
+    sub: "Hierro pintado, listo para vestir.",
   },
   {
-    seed: "sfdp-serv-6",
-    img: "/img/summit/lg/sum-28.webp",
-    titulo: "Llave en mano",
-    sub: "Del boceto al montaje.",
+    img: "/img/summit/lg/sum-16.webp",
+    titulo: "Escenario del Summit",
+    sub: "Globos, telón y pista para la pasarela.",
+  },
+  {
+    img: "/img/rio-cuarto/rc-01.webp",
+    titulo: "Armado en vivo",
+    sub: "El salón del workshop de Río Cuarto.",
   },
 ] as const;
 
-// Features de la grilla (4 columnas en desktop, 1 en mobile).
+// Cómo trabajamos — SOLO datos confirmados (docs/CONTENIDO_FLOR.md §1, §5, §7).
+// Sin numerales: no es una secuencia (D-10).
 const FEATURES = [
   {
-    titulo: "Selección de piezas",
-    desc: "Curaduría de piezas únicas para cada estética.",
+    titulo: "Fabricación propia",
+    desc: "Hierro, catering, fundas y telas sublimadas, hechos en nuestro taller de Tortuguitas.",
   },
   {
-    titulo: "Escenografía a medida",
-    desc: "Diseñamos la escena según tu espacio y tu historia.",
+    titulo: "Por encargo",
+    desc: "Contá unos 20 días desde que confirmás. Cerramos la producción por semana.",
   },
   {
-    titulo: "Montaje llave en mano",
-    desc: "Del boceto al armado, nos ocupamos de todo.",
+    titulo: "Envíos a todo el país",
+    desc: "Por Vía Cargo, con 50 % de descuento en el envío. Donde no llega, Buspack, MD o FlechaBus.",
   },
   {
-    titulo: "Producción propia",
-    desc: "Fabricamos en hierro, MDF, madera y textil.",
+    titulo: "Asesoramiento por WhatsApp",
+    desc: "Te responden Flor o Tobías, sin bots: colores, medidas y envío.",
   },
 ] as const;
 
@@ -142,26 +137,23 @@ export function Servicio() {
       data-theme="light"
       className="relative w-full overflow-hidden bg-blush py-[4rem] text-ink md:py-[7.5rem]"
     >
-      {/* 1) Encabezado centrado (dos líneas: quiebre antes de la marca) + flechas */}
-      <div className="mx-auto max-w-[87.5rem] px-6 md:px-10">
-        <FadeUp y={100}>
-          <h2 className="mx-auto text-center font-display text-[length:var(--text-step-4)] font-bold uppercase leading-[0.92] text-ink sm:text-[length:var(--text-step-5)] md:text-[length:var(--text-step-6)]">
-            {/* TODO(contenido): titular real */}
-            Una fiesta
-            <br />
-            Sweet Flowers es…
+      {/* 1) Encabezado a la izquierda + flechas a la derecha */}
+      <div className="mx-auto flex max-w-[87.5rem] items-end justify-between gap-8 px-6 md:px-10">
+        <FadeUp y={60}>
+          <h2 className="t-voz-display max-w-[14ch] text-[length:var(--text-step-5)] text-ink md:text-[length:var(--text-step-6)]">
+            Así se ven las piezas armadas
           </h2>
         </FadeUp>
 
         <nav
-          className="mt-8 hidden justify-center gap-3 md:flex"
+          className="hidden shrink-0 gap-3 md:flex"
           aria-label="Navegación del carrusel"
         >
           <button
             type="button"
             aria-label="Anterior"
             onClick={() => scrollByStep(-1)}
-            className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-champagne transition-colors duration-300 ease-[var(--ease-out-expo)] hover:bg-champagne/10"
+            className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-ink/25 transition-colors duration-300 ease-[var(--ease-out-expo)] hover:border-ink"
           >
             <svg
               width="32"
@@ -169,7 +161,7 @@ export function Servicio() {
               viewBox="0 0 32 32"
               fill="none"
               aria-hidden="true"
-              className="text-champagne"
+              className="text-ink"
             >
               <path
                 d="M20 6 10 16l10 10"
@@ -184,7 +176,7 @@ export function Servicio() {
             type="button"
             aria-label="Siguiente"
             onClick={() => scrollByStep(1)}
-            className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-champagne transition-colors duration-300 ease-[var(--ease-out-expo)] hover:bg-champagne/10"
+            className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-ink/25 transition-colors duration-300 ease-[var(--ease-out-expo)] hover:border-ink"
           >
             <svg
               width="32"
@@ -192,7 +184,7 @@ export function Servicio() {
               viewBox="0 0 32 32"
               fill="none"
               aria-hidden="true"
-              className="text-champagne"
+              className="text-ink"
             >
               <path
                 d="M12 6l10 10-10 10"
@@ -222,21 +214,21 @@ export function Servicio() {
         >
           {SLIDES.map((slide) => (
           <article
-            key={slide.seed}
+            key={slide.img}
             className="group relative w-[78vw] max-w-[24rem] shrink-0 snap-center overflow-hidden rounded-[var(--radius-md)] sm:w-[calc((100%-1rem)/2)] sm:max-w-none sm:snap-start md:w-[calc((100%-2rem)/3)]"
           >
             <Image
               src={slide.img}
-              alt=""
+              alt={`${slide.titulo}. ${slide.sub}`}
               width={600}
               height={800}
               draggable={false}
               sizes="(max-width: 639px) 78vw, (max-width: 767px) 48vw, 33vw"
               className="pointer-events-none aspect-[3/4] h-auto max-h-[70svh] w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110 md:aspect-auto md:h-[20rem] lg:h-[25rem]"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent from-40% to-ink/80" />
             <header className="absolute bottom-4 left-4 max-w-[15.625rem] md:bottom-6 md:left-6 md:max-w-[21.9375rem]">
-              <h3 className="font-display text-[length:var(--text-step-1)] font-bold uppercase leading-[0.9] text-bone">
+              <h3 className="t-voz-display text-[length:var(--text-step-2)] text-bone">
                 {slide.titulo}
               </h3>
               <p className="font-sans text-[length:var(--text-step--1)] leading-snug text-bone">
@@ -249,35 +241,28 @@ export function Servicio() {
         <SwipeDots forId="servicio-track" count={SLIDES.length} label="Servicios" />
       </div>
 
-      {/* 3) Bloque grande centrado */}
-      <div className="mx-auto mt-12 max-w-[87.5rem] px-6 md:my-[4.75rem] md:px-10">
-        <FadeUp y={100} className="mx-auto max-w-[56.25rem] text-center">
-          <h3 className="mb-6 font-display text-[length:var(--text-step-5)] font-bold uppercase leading-[0.9] text-ink md:text-[length:var(--text-step-6)]">
-            {/* TODO(contenido): titular real */}
-            El verdadero oficio de Sweet Flowers
+      {/* 3) Cómo trabajamos — a la izquierda, voz display + bajada itálica */}
+      <div className="mx-auto mt-16 max-w-[87.5rem] px-6 md:mt-[6rem] md:px-10">
+        <FadeUp y={60} className="grid gap-6 md:grid-cols-12 md:items-end">
+          <h3 className="t-voz-display max-w-[15ch] text-[length:var(--text-step-5)] text-ink md:col-span-7 md:text-[length:var(--text-step-6)]">
+            Del taller a tu evento, sin intermediarios
           </h3>
-          <p className="mx-auto max-w-[45rem] font-display text-[length:var(--text-step-2)] font-normal leading-[1.05] text-ink md:text-[length:var(--text-step-3)]">
-            {/* TODO(contenido): copy real */}
-            No decoramos: creamos experiencias a medida. Escuchamos tu historia,
-            imaginamos la escena y la construimos pieza por pieza, para que cada
-            fiesta sea irrepetible.
+          <p className={`${italica.className} t-voz-cita max-w-[30ch] text-[length:var(--text-step-2)] leading-[1.2] text-ink/80 md:col-span-5`}>
+            Lo que pedís lo fabricamos nosotros, lo despachamos nosotros y, si
+            tenés dudas, te contestamos nosotros.
           </p>
         </FadeUp>
       </div>
 
-      {/* 4) Grilla de features */}
-      <div className="mx-auto mt-8 grid max-w-[87.5rem] grid-cols-1 gap-12 px-6 sm:grid-cols-2 md:mt-[4.75rem] md:px-10 lg:grid-cols-4">
-        {FEATURES.map((feature, i) => (
-          <FadeUp key={feature.titulo} y={50}>
-            <div className="flex flex-col items-center gap-4 text-center md:items-start md:text-left">
-              {/* Ícono: círculo con el número del feature */}
-              <div className="grid h-10 w-10 place-items-center rounded-full border border-champagne text-[length:var(--text-step--1)] font-bold text-champagne">
-                {String(i + 1).padStart(2, "0")}
-              </div>
-              <h4 className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-[0.9] text-ink [overflow-wrap:break-word] [hyphens:auto]">
+      {/* 4) Cómo trabajamos — 4 datos confirmados, con filete arriba */}
+      <div className="mx-auto mt-12 grid max-w-[87.5rem] grid-cols-1 gap-10 px-6 sm:grid-cols-2 md:mt-16 md:px-10 lg:grid-cols-4">
+        {FEATURES.map((feature) => (
+          <FadeUp key={feature.titulo} y={40}>
+            <div className="border-t border-ink/20 pt-5">
+              <h4 className="t-voz-display text-[length:var(--text-step-2)] text-ink">
                 {feature.titulo}
               </h4>
-              <p className="mt-1 font-sans text-[length:var(--text-step-0)] leading-snug text-ink">
+              <p className="mt-3 max-w-[34ch] text-[length:var(--text-step-0)] leading-snug text-ink/80">
                 {feature.desc}
               </p>
             </div>

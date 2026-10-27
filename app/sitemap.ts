@@ -40,5 +40,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...ETAPAS_CON_PAGINA.map((e) => page(`/event-summit/trayectoria/${e.slug}`, 0.6, "monthly")),
     page("/contacto", 0.7, "monthly"),
     page("/historia", 0.5, "yearly"),
+    // Legales (provisorias, indexables).
+    page("/privacidad", 0.2, "yearly"),
+    page("/terminos", 0.2, "yearly"),
+    page("/cambios", 0.3, "yearly"),
   ];
 }

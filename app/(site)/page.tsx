@@ -9,7 +9,6 @@ import { Destacados } from "@/components/sections/Destacados";
 import { Servicio } from "@/components/sections/Servicio";
 import { SummitHome } from "@/components/sections/SummitHome";
 import { Workshops } from "@/components/sections/Workshops";
-import { Testimonios } from "@/components/sections/Testimonios";
 import { Contacto } from "@/components/sections/Contacto";
 
 // Fondos de las secciones claras (para blendear esas transiciones). Referencian
@@ -20,7 +19,6 @@ import { Contacto } from "@/components/sections/Contacto";
 // El Header y el Footer los aporta app/(site)/layout.tsx (chrome compartido).
 const BONE = "var(--color-bone)";
 const BLUSH = "var(--color-blush)";
-const SAND = "var(--color-sand)";
 
 // La home usa título/OG del layout; solo fija su canonical.
 export const metadata: Metadata = {
@@ -45,9 +43,7 @@ export default async function Home() {
       <Servicio />
       <ColorBridge from={BLUSH} to={BONE} />
       <Workshops />
-      <ColorBridge from={BONE} to={SAND} />
-      <Testimonios />
-      <ColorBridge from={SAND} to={BONE} />
+      {/* Testimonios: oculto hasta tener los REALES (ver el componente). */}
       <Contacto />
     </main>
   );

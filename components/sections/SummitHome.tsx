@@ -164,13 +164,12 @@ export function SummitHome() {
           <RevealText
             as="h2"
             onScroll
-            className="max-w-[14ch] font-display text-[length:var(--text-step-6)] [@media(max-height:500px)_and_(orientation:landscape)]:max-w-[22ch] [@media(max-height:500px)_and_(orientation:landscape)]:text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone"
+            className="t-voz-nombre max-w-[14ch] text-[length:var(--text-step-6)] leading-[0.9] text-bone [@media(max-height:500px)_and_(orientation:landscape)]:max-w-[22ch] [@media(max-height:500px)_and_(orientation:landscape)]:text-[length:var(--text-step-4)]"
           >
             {EVENT_NAME}
           </RevealText>
           <p className="mt-6 max-w-[38ch] text-[length:var(--text-step-0)] leading-snug text-bone/85 [@media(max-height:500px)_and_(orientation:landscape)]:mt-3 [@media(max-height:500px)_and_(orientation:landscape)]:max-w-[52ch]">
-            {/* TODO(contenido): bajada real del Summit */}
-            El encuentro del año de la decoración de eventos. Después de {WORKSHOPS_REALIZADOS} workshops y una primera edición, vamos por la segunda. Preventa abierta: La Rural, Palermo.
+            Entrás por la decoración. Te quedás por la gente. Después de {WORKSHOPS_REALIZADOS} workshops y una primera edición, vamos por la segunda: La Rural, Palermo. Preventa abierta.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-start gap-x-10 gap-y-3 md:justify-end [@media(max-height:500px)_and_(orientation:landscape)]:mt-4">
             <Button href={EVENT_CTA_HREF} tone="light">

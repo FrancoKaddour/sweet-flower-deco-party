@@ -20,7 +20,7 @@ export default async function PanelAppLayout({
   };
   const c = hasDb() ? await conteosSeguros() : null;
   const pendientes = c
-    ? { pedidos: c.pedidos.nuevo ?? 0, consultas: c.consultas.nueva ?? 0, inscripciones: c.inscripciones.consulto ?? 0 }
+    ? { pedidos: c.pedidos.nuevo ?? 0, consultas: c.consultas.nueva ?? 0, inscripciones: c.inscripcionesAtender }
     : {};
   return (
     <PanelShell sesion={sesion} pendientes={pendientes}>

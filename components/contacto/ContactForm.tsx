@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { registrarConsulta } from "@/modules/ventas/registro";
 import { ButtonInner, buttonClasses } from "@/components/ui/Button";
 import { WHATSAPP_NUMBER } from "@/content/site";
 import { EVENT_WHATSAPP } from "@/content/evento";
+import { Turnstile } from "@/components/captcha/Turnstile";
 
 // Tipos de consulta → ayudan a rutear el lead (producto / a medida / evento).
 const TIPOS = [
@@ -59,6 +61,7 @@ export function ContactForm() {
       telefono,
       mensaje,
       web: String(data.get("web") ?? ""),
+      captcha: String(data.get("cf-turnstile-response") ?? "") || undefined,
     }).catch(() => {});
     const msg = [
       `¡Hola! Te escribo desde la web — ${tipo}.`,
@@ -97,7 +100,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-8">
+    <form onSubmit={onSubmit} noValidate data-oculta-flotantes className="flex flex-col gap-8">
         {/* Honeypot anti-spam: invisible para personas. */}
         <input type="text" name="web" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       {/* Tipo de consulta */}
@@ -202,11 +205,21 @@ export function ContactForm() {
         )}
       </div>
 
+      <Turnstile accion="contacto" />
       <button type="submit" className={buttonClasses("dark", "w-max cursor-pointer")}>
         <ButtonInner primary tone="dark">
           Enviar por WhatsApp
         </ButtonInner>
       </button>
+      {/* Aviso de privacidad corto (Ley 25.326, S-23). */}
+      <p className="-mt-3 max-w-[56ch] text-[length:var(--text-step--1)] leading-relaxed text-ink/55">
+        Usamos tus datos solo para responder tu consulta. Responsable: Sweet Flowers Deco Party. Podés pedir
+        acceso, corrección o baja por WhatsApp. Más info en{" "}
+        <Link href="/privacidad" className="underline underline-offset-4 hover:text-ink">
+          Privacidad
+        </Link>
+        .
+      </p>
     </form>
   );
 }

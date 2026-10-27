@@ -30,7 +30,7 @@ export function AvisoEnvio() {
   return (
     <p className="rounded-[var(--radius-md)] border border-champagne/50 bg-champagne/10 px-4 py-3 text-[length:var(--text-step--1)] leading-relaxed text-ink">
       <strong>Modo prueba:</strong> la gente ya se puede suscribir y ve su código en pantalla, y podés armar campañas, pero los
-      mails todavía no salen. Se activan cuando esté conectado el dominio de envío (ver docs/NEWSLETTER.md).
+      mails todavía no salen. Se activan cuando esté conectado el dominio de envío: falta un paso técnico, avisale a Franco.
     </p>
   );
 }

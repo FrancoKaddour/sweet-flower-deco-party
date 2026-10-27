@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
+import { subirFoto } from "@/components/panel/subirImagen";
 import { guardarCategoria } from "@/modules/catalog/actions";
 import type { EstadoForm } from "@/modules/catalog/schemas";
 import { Campo, Interruptor, inputCls } from "./campos";
@@ -26,7 +27,7 @@ export function CategoriaForm({ id, valores }: { id: string | null; valores?: Va
         <Campo id={`${k}-nombre`} label="Nombre" error={e.nombre}>
           <input id={`${k}-nombre`} name="nombre" defaultValue={valores?.nombre} className={inputCls} />
         </Campo>
-        <Campo id={`${k}-slug`} label="Enlace (slug)" ayuda="Cambiarlo rompe los links ya compartidos." error={e.slug}>
+        <Campo id={`${k}-slug`} label="Dirección en el sitio" ayuda="Cambiarla rompe los links ya compartidos." error={e.slug}>
           <input id={`${k}-slug`} name="slug" defaultValue={valores?.slug} className={inputCls} />
         </Campo>
         <Campo id={`${k}-linea`} label="Línea">
@@ -46,9 +47,7 @@ export function CategoriaForm({ id, valores }: { id: string | null; valores?: Va
         <Campo id={`${k}-incluye`} label="Qué vas a encontrar" ayuda="Separado por coma (máx. 8).">
           <input id={`${k}-incluye`} name="incluye" defaultValue={valores?.incluye.join(", ")} className={inputCls} />
         </Campo>
-        <Campo id={`${k}-imagen`} label="Foto de portada (URL)" ayuda="Pegá la URL de una foto de un producto.">
-          <input id={`${k}-imagen`} name="imagen" defaultValue={valores?.imagen ?? ""} className={inputCls} />
-        </Campo>
+        <PortadaCategoria k={k} inicial={valores?.imagen ?? ""} />
       </div>
       <Interruptor name="visible" label="Visible en el sitio" defaultChecked={valores?.visible ?? true} />
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -60,11 +59,52 @@ export function CategoriaForm({ id, valores }: { id: string | null; valores?: Va
           {pendiente ? "Guardando…" : id ? "Guardar" : "Crear categoría"}
         </button>
         {estado.mensaje && (
-          <p role="status" className={estado.ok ? "text-botanical" : "text-bordeaux"}>
+          <p role={estado.ok ? "status" : "alert"} className={estado.ok ? "text-ink" : "text-bordeaux"}>
             {estado.mensaje}
           </p>
         )}
       </div>
     </form>
+  );
+}
+
+/** Portada de la categoría (P-12): subir una foto (mismo upload que productos) o pegar una URL. */
+function PortadaCategoria({ k, inicial }: { k: string; inicial: string }) {
+  const [url, setUrl] = useState(inicial);
+  const [pct, setPct] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const subir = async (f?: File) => {
+    if (!f) return;
+    setError(null);
+    setPct(0);
+    try {
+      setUrl(await subirFoto(`contenido/categorias/${k}`, f, setPct));
+    } catch (e) {
+      setError((e as Error).message || "No se pudo subir la foto.");
+    } finally {
+      setPct(null);
+    }
+  };
+  return (
+    <div className="flex flex-col gap-2">
+      <label htmlFor={`${k}-imagen`} className="text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-muted">
+        Foto de portada
+      </label>
+      <div className="flex items-start gap-3">
+        <span className="relative h-20 w-16 shrink-0 overflow-hidden rounded-[var(--radius-sm)] bg-sand">
+          {/* <img> y no next/image: la URL pegada puede ser de cualquier dominio. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {url && /^(https:\/\/|\/)/.test(url) && <img src={url} alt="" className="absolute inset-0 size-full object-cover" />}
+        </span>
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <label className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[var(--radius-pill)] border border-ink/20 px-5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.08em] text-ink focus-within:outline-2 focus-within:outline-ink hover:border-ink/40">
+            {pct != null ? `Subiendo… ${pct}%` : url ? "Cambiar foto" : "Subir foto"}
+            <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={pct != null} onChange={(e) => subir(e.target.files?.[0])} />
+          </label>
+          <input id={`${k}-imagen`} name="imagen" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="…o pegá la URL de una foto" className={inputCls} />
+        </div>
+      </div>
+      {error && <p role="alert" className="text-[length:var(--text-step--1)] text-bordeaux">{error}</p>}
+    </div>
   );
 }

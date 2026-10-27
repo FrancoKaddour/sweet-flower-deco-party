@@ -10,8 +10,9 @@ import { assertStaff } from "@/lib/dal";
 export const runtime = "nodejs";
 
 export async function POST(request: Request): Promise<NextResponse> {
-  const body = (await request.json()) as HandleUploadBody;
   try {
+    // S-15: un cuerpo inválido devuelve 400 (antes tiraba fuera del try → 500).
+    const body = (await request.json()) as HandleUploadBody;
     const json = await handleUpload({
       body,
       request,

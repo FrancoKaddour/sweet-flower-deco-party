@@ -20,23 +20,26 @@ import { TRAYECTORIA, WORKSHOPS_REALIZADOS, EDICION_LABEL } from "@/content/even
  */
 const AMPLIO = "(min-width: 768px) and (min-height: 521px) and (prefers-reduced-motion: no-preference)";
 
+// T-23: UN solo Intro (antes iba duplicado: arriba para el carrusel y dentro
+// del track para el modo pineado). Pineado: el Intro va absoluto a la izquierda
+// del panel y se desplaza junto con el track. Carrusel: queda arriba de las
+// tarjetas, fijo (sticky left) mientras el carrusel se desliza.
 const CSS = `
-.edc-head{display:none}
-.edc-panel{height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-.edc-track{display:flex;align-items:center;gap:2rem;padding-inline:2.5rem}
-.edc-intro{flex:none;width:40vw}
+.edc-panel{position:relative;height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.edc-track{--iw:40vw;display:flex;align-items:center;gap:2rem;padding-inline:calc(2.5rem + var(--iw) + 2rem) 2.5rem}
+.edc-intro{position:absolute;top:0;bottom:0;left:2.5rem;z-index:1;width:var(--iw);display:flex;flex-direction:column;justify-content:center}
 .edc-card{--w:44vw;flex:none;width:var(--w);height:min(68svh,calc(var(--w)*1.55))}
-@media (min-width:1024px){.edc-intro{width:34vw}.edc-card{--w:26vw}}
+@media (min-width:1024px){.edc-track{--iw:34vw}.edc-intro{width:34vw}.edc-card{--w:26vw}}
 @media (max-width:767px),(max-height:520px),(prefers-reduced-motion:reduce){
   .edc{padding-block:6rem 5rem}
-  .edc-head{display:block;margin-bottom:2.5rem}
-  .edc-intro{display:none}
+  .edc-intro{position:sticky;left:0;top:auto;bottom:auto;width:auto;max-width:100vw;display:block;padding-inline:1.5rem;margin-bottom:2.5rem}
   .edc-panel{height:auto;display:block;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:1.5rem;overscroll-behavior-x:contain;scrollbar-width:none}
   .edc-panel::-webkit-scrollbar{display:none}
   .edc-track{width:max-content;align-items:stretch;gap:1rem;padding:0.5rem 1.5rem}
   .edc-card{width:min(76vw,max(20rem,26vw));height:auto;aspect-ratio:3/4;max-height:80svh;scroll-snap-align:start}
 }
-@media (max-height:520px){.edc{padding-block:5rem 3.5rem}.edc-head{margin-bottom:1.75rem}}
+@media (min-width:768px) and ((max-height:520px) or (prefers-reduced-motion:reduce)){.edc-intro{padding-inline:2.5rem}}
+@media (max-height:520px){.edc{padding-block:5rem 3.5rem}.edc-intro{margin-bottom:1.75rem}}
 `;
 
 function Intro({ titleId }: { titleId?: string }) {
@@ -72,7 +75,8 @@ export function EdicionesScroll() {
       const mm = gsap.matchMedia();
       mm.add(AMPLIO, () => {
         const distance = () => Math.max(0, trackEl.scrollWidth - window.innerWidth);
-        const tween = gsap.to(trackEl, {
+        const introEl = panelEl.querySelector<HTMLElement>(".edc-intro");
+        const tween = gsap.to(introEl ? [trackEl, introEl] : trackEl, {
           x: () => -distance(),
           ease: "none",
           scrollTrigger: {
@@ -112,16 +116,11 @@ export function EdicionesScroll() {
       className="edc scroll-mt-24 bg-ink text-bone"
     >
       <style>{CSS}</style>
-      {/* Intro arriba (solo modo carrusel) */}
-      <div className="edc-head px-6 md:px-10">
-        <Intro titleId="trayectoria-h" />
-      </div>
       <div ref={panel} className="edc-panel" data-theme="dark">
+        <div className="edc-intro">
+          <Intro titleId="trayectoria-h" />
+        </div>
         <div ref={track} className="edc-track">
-          {/* Intro como primer panel (solo modo pineado) */}
-          <div className="edc-intro flex flex-col justify-center">
-            <Intro />
-          </div>
 
           {/* Etapas: workshops → 1ª edición → próxima */}
           {TRAYECTORIA.map((t, i) =>

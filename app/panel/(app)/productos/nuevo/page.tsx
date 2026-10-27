@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Nuevo producto" };
 
 export default async function NuevoProductoPage() {
   await requireStaff();
-  const header = <PageHeader seccion="Catálogo" titulo="Nuevo producto" descripcion="Después de crearlo vas a poder subirle fotos." />;
+  const header = <PageHeader seccion="Catálogo" titulo="Nuevo producto" descripcion="Se crea oculto. Después de crearlo le subís las fotos y lo publicás." />;
   if (!hasDb()) return <div className="flex flex-col gap-8">{header}<SinBase /></div>;
   const categorias = await listarCategoriasPanel();
   return (

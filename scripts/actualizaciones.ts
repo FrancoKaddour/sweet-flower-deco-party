@@ -7,8 +7,9 @@
  */
 import { neon } from "@neondatabase/serverless";
 import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import * as schema from "../db/schema";
+import { LIMPIEZA_CATALOGO } from "./catalogo-limpieza-2026-10-27";
 
 type Db = NeonHttpDatabase<typeof schema>;
 const { auditLog, categories, productImages, products } = schema;
@@ -73,6 +74,82 @@ async function precioSiFalta(db: Db, slug: string, precio: number, descripcion: 
   if (r.length) console.log(`  ✓ ${slug}: precio ${precio}`);
 }
 
+/**
+ * Limpieza editorial + variantes con precio (E-01/E-03/E-04, 27/10/2026).
+ * Cada campo se pisa SOLO si en la base sigue igual al valor original del seed
+ * (`antes`): lo que Flor ya editó en el panel queda intacto.
+ * - precio + variantes van juntos: solo si el precio sigue siendo el original y
+ *   el producto no tiene variantes cargadas.
+ * - categoría: solo se mueve si hoy está en MDF/madera (piezas de hierro mal
+ *   clasificadas) y nadie la cambió.
+ */
+async function limpiarCatalogo(db: Db) {
+  const cats = await db.select({ id: categories.id, slug: categories.slug }).from(categories);
+  const idDe = new Map(cats.map((c) => [c.slug, c.id]));
+  const slugDe = new Map(cats.map((c) => [c.id, c.slug]));
+  let tocados = 0;
+  for (const fila of LIMPIEZA_CATALOGO) {
+    const [p] = await db
+      .select({
+        id: products.id,
+        nombre: products.nombre,
+        precio: products.precio,
+        descripcion: products.descripcion,
+        medidas: products.medidas,
+        variantes: products.variantes,
+        categoryId: products.categoryId,
+      })
+      .from(products)
+      .where(eq(products.slug, fila.slug));
+    if (!p) continue;
+    const { antes, despues } = fila;
+    const set: Partial<typeof products.$inferInsert> = {};
+    if (p.nombre === antes.nombre && despues.nombre !== p.nombre) set.nombre = despues.nombre;
+    if (p.descripcion === antes.descripcion && despues.descripcion !== p.descripcion) set.descripcion = despues.descripcion;
+    if ((p.medidas ?? null) === antes.medidas && despues.medidas && despues.medidas !== p.medidas) set.medidas = despues.medidas;
+    const sinVariantes = !Array.isArray(p.variantes) || p.variantes.length === 0;
+    if (p.precio === antes.precio && sinVariantes) {
+      if (despues.variantes.length) set.variantes = despues.variantes as never;
+      if (despues.precio !== p.precio) set.precio = despues.precio;
+    }
+    const catActual = slugDe.get(p.categoryId);
+    const catNueva = idDe.get(despues.categoria);
+    if (catNueva && catActual !== despues.categoria && (catActual === "mdf" || catActual === "madera")) {
+      set.categoryId = catNueva;
+    }
+    if (Object.keys(set).length === 0) continue;
+    await db.update(products).set(set).where(eq(products.id, p.id));
+    tocados++;
+  }
+  console.log(`  ✓ catálogo limpio: ${tocados} producto(s) actualizados`);
+}
+
+/** Oculta (NO borra) categorías y sus productos. Para volver a mostrarlas: content/catalogo.ts. */
+async function ocultarCategorias(db: Db, slugs: string[]) {
+  const cats = await db
+    .update(categories)
+    .set({ visible: false })
+    .where(inArray(categories.slug, slugs))
+    .returning({ id: categories.id });
+  if (!cats.length) return;
+  const r = await db
+    .update(products)
+    .set({ visible: false })
+    .where(and(inArray(products.categoryId, cats.map((c) => c.id)), eq(products.visible, true)))
+    .returning({ id: products.id });
+  console.log(`  ✓ ocultas: ${slugs.join(", ")} (${r.length} productos)`);
+}
+
+/** Marca como destacados (para "Lo más pedido" de la home). No desmarca nada. */
+async function destacar(db: Db, slugs: string[]) {
+  const r = await db
+    .update(products)
+    .set({ destacado: true })
+    .where(and(inArray(products.slug, slugs), eq(products.destacado, false)))
+    .returning({ id: products.id });
+  console.log(`  ✓ ${r.length} destacado(s) nuevo(s)`);
+}
+
 const f = (n: string) => `/productos/${n}.jpg`;
 
 const ACTUALIZACIONES: { id: string; correr: (db: Db) => Promise<void> }[] = [
@@ -127,6 +204,36 @@ const ACTUALIZACIONES: { id: string; correr: (db: Db) => Promise<void> }[] = [
       await archivar(db, "bandeja-hierro-doble-circulo");
     },
   },
+  {
+    // E-01/E-03/E-04 (frente C1): variantes con precio, precios cargados en los
+    // "a consultar" que tenían precio escrito, descripciones sin precios/recargos
+    // y con ortografía corregida, nombres prolijos. Datos: catalogo-limpieza-2026-10-27.ts.
+    id: "2026-10-27-catalogo-limpio",
+    correr: limpiarCatalogo,
+  },
+  {
+    // E-09: Flor pidió no publicar MDF ni madera (CONTENIDO_FLOR §3). Se ocultan,
+    // no se borran. Corre DESPUÉS de la limpieza, que pasó a "hierro" las piezas
+    // de hierro que estaban mal clasificadas como madera/MDF.
+    id: "2026-10-27-ocultar-mdf-madera",
+    correr: (db) => ocultarCategorias(db, ["mdf", "madera"]),
+  },
+  {
+    // "Lo más pedido" (home) con lo que Flor dice que más se vende (CONTENIDO_FLOR §3):
+    // Eclipse, Arcoíris, Telonera, arcos extensibles, arcada de hierro común.
+    id: "2026-10-27-destacados-mas-vendidos",
+    correr: (db) =>
+      destacar(db, [
+        "estanteria-eclipse",
+        "eclipse-xl",
+        "arcoiris-4-estantes",
+        "estructura-telonera",
+        "arco-extensible-esencial",
+        "arco-extensible-3x4-con-soporte",
+        "arco-extensible-doble-barral",
+        "arcada-de-hierro-95x2",
+      ]),
+  },
 ];
 
 async function main() {
@@ -135,14 +242,21 @@ async function main() {
   const db = drizzle(neon(url), { schema });
   for (const a of ACTUALIZACIONES) {
     const accion = `data.${a.id}`;
-    const [hecha] = await db
-      .select({ id: auditLog.id })
-      .from(auditLog)
-      .where(and(eq(auditLog.accion, accion), eq(auditLog.entidad, "datos")));
-    if (hecha) continue;
+    // Se reclama el marcador ANTES de correr (índice único en audit_log): si dos
+    // deploys corren a la vez, solo uno la aplica. Si falla, se libera.
+    const r = await db
+      .insert(auditLog)
+      .values({ accion, entidad: "datos", entidadId: a.id })
+      .onConflictDoNothing()
+      .returning({ id: auditLog.id });
+    if (!r.length) continue;
     console.log(`[actualizaciones] ${a.id}`);
-    await a.correr(db);
-    await db.insert(auditLog).values({ accion, entidad: "datos", entidadId: a.id });
+    try {
+      await a.correr(db);
+    } catch (e) {
+      await db.delete(auditLog).where(eq(auditLog.id, r[0].id));
+      throw e;
+    }
   }
 }
 

@@ -6,12 +6,13 @@
 //   categoria  → "catering" | "hierro" | "mdf" | "madera" | "fundas-y-telas"
 //   precio     → precio de catálogo en pesos, SIN recargo (número, sin puntos). null = "Consultar"
 //   medidas    → texto libre ("2 m alto × 1,5 m ancho")
-//   variantes  → opcional (["Pintado", "Sin pintar"], colores, combos…)
+//   variantes  → opcional: [{ "etiqueta": "Pintado", "precio": 420000 }, …] (precio = el mínimo)
 //   img        → foto en /public/productos/<archivo>.jpg (o null mientras no haya)
 //
 // No hay pago en el sitio: el carrito arma el pedido y se envía por WhatsApp.
 
 import { CATALOGO_WHATSAPP } from "./catalogo-whatsapp";
+import type { VarianteProducto } from "@/modules/catalog/types";
 
 export type CategoriaSlug = "catering" | "hierro" | "mdf" | "madera" | "fundas-y-telas";
 
@@ -23,7 +24,8 @@ export type Producto = {
   /** Texto del catálogo (medidas, variantes, precios de combos/pintado…). */
   descripcion?: string;
   medidas?: string;
-  variantes?: readonly string[];
+  /** Opciones con precio (formato en modules/catalog/types.ts → VarianteProducto). */
+  variantes?: readonly VarianteProducto[];
   img: string | null;
   /** Estaba en una colección destacada del catálogo de WhatsApp. */
   destacado?: boolean;

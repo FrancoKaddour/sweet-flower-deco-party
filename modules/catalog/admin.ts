@@ -1,20 +1,26 @@
 import "server-only";
-import { and, asc, count, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import { requireDb } from "@/db";
 import { categories, productImages, products } from "@/db/schema";
+import { coincide } from "@/modules/ventas/admin";
+import { normalizarVariantes } from "./types";
 
 /** Consultas del PANEL (incluye ocultos; nunca los borrados). Solo staff las llama. */
 
 export type FiltroProductos = {
   q?: string;
   categoria?: string;
-  estado?: "visibles" | "ocultos" | "sin-foto" | "sin-precio" | "destacados";
+  estado?: "visibles" | "ocultos" | "sin-foto" | "sin-precio" | "destacados" | "papelera";
+  /** Paginación en SQL (P-30). */
+  pagina?: number;
+  porPagina?: number;
 };
 
 export async function listarProductosPanel(f: FiltroProductos) {
   const db = requireDb();
-  const conds = [isNull(products.deletedAt)];
-  if (f.q) conds.push(or(ilike(products.nombre, `%${f.q}%`), ilike(products.descripcion, `%${f.q}%`))!);
+  const conds = [f.estado === "papelera" ? isNotNull(products.deletedAt) : isNull(products.deletedAt)];
+  const b = coincide(f.q, products.nombre, products.descripcion);
+  if (b) conds.push(b);
   if (f.categoria) conds.push(eq(products.categoryId, f.categoria));
   if (f.estado === "visibles") conds.push(eq(products.visible, true));
   if (f.estado === "ocultos") conds.push(eq(products.visible, false));
@@ -23,22 +29,36 @@ export async function listarProductosPanel(f: FiltroProductos) {
   if (f.estado === "sin-foto")
     conds.push(sql`not exists (select 1 from ${productImages} where ${productImages.productId} = ${products.id})`);
 
+  const porPagina = f.porPagina ?? 25;
+  const [tot] = await db
+    .select({ n: count() })
+    .from(products)
+    .innerJoin(categories, eq(categories.id, products.categoryId))
+    .where(and(...conds));
+  const total = tot?.n ?? 0;
+  const paginas = Math.max(1, Math.ceil(total / porPagina));
+  const pagina = Math.min(Math.max(1, f.pagina ?? 1), paginas);
+
   const rows = await db
     .select({
       id: products.id,
       slug: products.slug,
       nombre: products.nombre,
       precio: products.precio,
+      variantes: products.variantes,
       visible: products.visible,
       destacado: products.destacado,
       updatedAt: products.updatedAt,
+      deletedAt: products.deletedAt,
       categoria: categories.nombre,
       categoriaSlug: categories.slug,
     })
     .from(products)
     .innerJoin(categories, eq(categories.id, products.categoryId))
     .where(and(...conds))
-    .orderBy(asc(categories.orden), asc(products.orden), asc(products.nombre));
+    .orderBy(...(f.estado === "papelera" ? [desc(products.deletedAt)] : [asc(categories.orden), asc(products.orden), asc(products.nombre)]))
+    .limit(porPagina)
+    .offset((pagina - 1) * porPagina);
 
   const ids = rows.map((r) => r.id);
   const portadas = ids.length
@@ -50,7 +70,12 @@ export async function listarProductosPanel(f: FiltroProductos) {
     : [];
   const portada = new Map<string, string>();
   for (const p of portadas) if (!portada.has(p.productId)) portada.set(p.productId, p.url);
-  return rows.map((r) => ({ ...r, img: portada.get(r.id) ?? null }));
+  const filas = rows.map((r) => ({
+    ...r,
+    img: portada.get(r.id) ?? null,
+    conVariantesConPrecio: normalizarVariantes(r.variantes).some((v) => v.precio != null),
+  }));
+  return { filas, total, pagina, paginas };
 }
 
 export async function obtenerProductoPanel(id: string) {

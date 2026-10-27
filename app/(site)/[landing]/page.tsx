@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { pageMetadata, BUSINESS } from "@/lib/site";
+import { pageMetadata, BUSINESS, RECARGO_MP_TEXTO } from "@/lib/site";
 import { LANDINGS, landingDe, type Landing } from "@/content/seo/landings";
 import { WHATSAPP_NUMBER } from "@/content/site";
 import {
@@ -79,7 +79,7 @@ function datosClave(l: Landing, desde: number | null): { k: string; v: string }[
     desde != null ? { k: "Precio", v: `Desde ${formatARS(desde)} (transferencia)` } : { k: "Precio", v: "A cotizar" },
     { k: "Entrega", v: "Por encargo, alrededor de 20 días" },
     { k: "Envíos", v: "A todo el país" },
-    { k: "Pago", v: "Transferencia o Mercado Pago" },
+    { k: "Pago", v: `Transferencia, o Mercado Pago con ${RECARGO_MP_TEXTO} de recargo` },
   ];
 }
 
@@ -299,7 +299,7 @@ function BloquePases() {
       <div className="mx-auto max-w-[87.5rem]">
         <h2 className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.92]">Pases y precios</h2>
         <p className="mt-4 text-[length:var(--text-step-0)] text-bone/60">
-          {t.nombre} · {t.hastaLabel}. Pago online con Mercado Pago.
+          {t.hastaLabel ? `${t.nombre} · ${t.hastaLabel}` : t.nombre}. Pago online con Mercado Pago.
         </p>
         <div className="mt-10 grid grid-cols-1 gap-x-10 gap-y-12 border-t border-bone/15 pt-10 md:grid-cols-2">
           {PASES.map((p) => (

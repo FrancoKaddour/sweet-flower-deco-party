@@ -111,7 +111,7 @@ export default function ResenasPage() {
               encontrarnos.
             </p>
             <p className="max-w-[62ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/75 md:text-[length:var(--text-step-1)] md:leading-snug">
-              ¿Algo no salió como esperabas? Antes de reseñar, escribinos por WhatsApp al 11 5106-4010 y lo resolvemos.
+              Si algo no salió como esperabas, también queremos saberlo: contalo en tu reseña o escribinos por WhatsApp al 11 5106-4010 y lo resolvemos.
             </p>
           </div>
         </div>

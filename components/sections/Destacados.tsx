@@ -3,9 +3,8 @@
 import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { gsap, ScrollTrigger, CustomEase, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { FadeUp } from "@/components/motion/FadeUp";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import type { DestacadoItem } from "@/modules/catalog/destacados";
 import { SwipeDots } from "@/components/ui/SwipeDots";
 
@@ -43,9 +42,6 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduce) return; // todo visible por defecto
 
-      if (!gsap.parseEase("sfInOutHard")) {
-        CustomEase.create("sfInOutHard", "0.77, 0, 0.175, 1"); // = --ease-in-out-hard
-      }
 
       cards.forEach((card) => {
         const frame = card.querySelector<HTMLElement>(".dest-frame");
@@ -71,8 +67,8 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
             const frame = card.querySelector(".dest-frame");
             const media = card.querySelector(".dest-media");
             const info = card.querySelector(".dest-info");
-            gsap.to(frame, { clipPath: "inset(0% 0% 0% 0%)", duration: dur, ease: "sfInOutHard", delay });
-            gsap.to(media, { scale: 1, duration: dur, ease: "sfInOutHard", delay });
+            gsap.to(frame, { clipPath: "inset(0% 0% 0% 0%)", duration: dur, ease: "power3.inOut", delay });
+            gsap.to(media, { scale: 1, duration: dur, ease: "power3.inOut", delay });
             gsap.to(info, {
               autoAlpha: 1,
               y: 0,
@@ -93,14 +89,12 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
         {/* Encabezado: título a la izquierda + CTA a la derecha */}
         <FadeUp
           y={80}
-          className="mb-10 flex flex-col items-center gap-4 border-t border-ink/10 pt-10 text-center md:mb-14 md:flex-row md:items-end md:justify-between md:pt-14 md:text-left"
+          className="mb-10 flex flex-col items-start gap-4 border-t border-ink/10 pt-10 text-left md:mb-14 md:flex-row md:items-end md:justify-between md:pt-14"
         >
           <div>
-            {/* Continuación de "El catálogo" (Productos): misma sección visual,
-                encabezado chico para no competir con el título de arriba. */}
-            <Eyebrow className="mb-3">La tienda</Eyebrow>
-            <h3 className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-[0.95] text-ink">
-              {/* TODO(contenido): titular real */}
+            {/* Continuación de "Lo que sale del taller" (Productos): encabezado
+                chico, misma voz display, para no competir con el de arriba. */}
+            <h3 className="t-voz-display text-[length:var(--text-step-4)] text-ink">
               Lo más pedido
             </h3>
           </div>
@@ -155,14 +149,14 @@ export function Destacados({ items }: { items: DestacadoItem[] }) {
     
                   <div className="dest-info mt-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-2">
                     <div className="min-w-0">
-                      <p className="text-[0.7rem] uppercase tracking-[0.12em] text-champagne">
+                      <p className="text-[0.7rem] uppercase tracking-[0.12em] text-champagne-ink">
                         {p.material}
                       </p>
-                      <h3 className="font-display text-[length:var(--text-step-0)] font-bold uppercase leading-tight text-ink [overflow-wrap:anywhere]">
+                      <h3 className="t-voz-nombre text-[length:var(--text-step-0)] leading-tight text-ink [overflow-wrap:anywhere]">
                         {p.nombre}
                       </h3>
                     </div>
-                    <p className="shrink-0 font-sans text-[length:var(--text-step--1)] text-ink">
+                    <p className="shrink-0 font-sans text-[length:var(--text-step--1)] tabular-nums text-ink">
                       {p.precio}
                     </p>
                   </div>

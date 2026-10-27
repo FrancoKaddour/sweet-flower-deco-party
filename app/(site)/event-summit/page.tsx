@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/site";
 import { SummitInscripcion } from "@/components/evento/SummitInscripcion";
 import { Pases } from "@/components/evento/Pases";
-import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
+import { BreadcrumbJsonLd, SummitJsonLd } from "@/components/site/JsonLd";
 
 import { FadeUp } from "@/components/motion/FadeUp";
 import { RevealText } from "@/components/motion/RevealText";
@@ -13,6 +13,11 @@ import { SummitEscenas } from "@/components/evento/SummitEscenas";
 import { EventoStats } from "@/components/evento/EventoStats";
 import { EdicionesScroll } from "@/components/evento/EdicionesScroll";
 import { Duotone } from "@/components/evento/Duotone";
+import { BarraCompraMovil } from "@/components/evento/BarraCompraMovil";
+import { QuedanLugares, type Cupo } from "@/components/evento/QuedanLugares";
+import { FaqLista } from "@/components/seo/FaqLista";
+import { FAQ_SUMMIT } from "@/content/seo/faqs";
+import { quedanLugares, reservasEnCurso } from "@/modules/summit/core";
 import {
   EVENT_NAME,
   EVENT_WHEN,
@@ -23,20 +28,38 @@ import {
   EDICION_LABEL,
   EVENT_SEDE,
   EVENT_HORARIO,
-  EVENT_PRECIO,
+  precioDesde,
+  preventaVigente,
 } from "@/content/evento";
 
-export const metadata: Metadata = pageMetadata({
-  title: `${EVENT_NAME} ${EVENT_YEAR}`,
-  description: `${EVENT_NAME}: la cumbre argentina de la decoración y la organización de eventos. ${EDICION_NUMERO}ª edición: ${EVENT_WHEN}. Charlas, certificado y comunidad. Cupo de ${EVENT_CUPO} lugares. Pre-preventa abierta.`,
-  path: "/event-summit",
-  ogTitle: `${EVENT_NAME} · ${EVENT_WHEN}`,
-});
+// Precios, preventa y lugares cambian con el tiempo: se regenera cada 5 min.
+export const revalidate = 300;
 
-export default function EventoPage() {
+export function generateMetadata(): Metadata {
+  return pageMetadata({
+    title: `${EVENT_NAME} ${EVENT_YEAR}`,
+    description: `${EVENT_NAME}: la cumbre argentina de la decoración y la organización de eventos. ${EDICION_NUMERO}ª edición: ${EVENT_WHEN}. Charlas, certificado y comunidad. Cupo de ${EVENT_CUPO} lugares. ${preventaVigente() ? "Preventa abierta" : "Inscripción abierta"}.`,
+    path: "/event-summit",
+    ogTitle: `${EVENT_NAME} · ${EVENT_WHEN}`,
+  });
+}
+
+/** Lugares que quedan y pagos en curso (null si la base no responde: no se muestra nada). */
+async function lugares(): Promise<Cupo> {
+  try {
+    const [quedan, pagando] = await Promise.all([quedanLugares(), reservasEnCurso()]);
+    return { quedan, pagando };
+  } catch {
+    return null;
+  }
+}
+
+export default async function EventoPage() {
+  const cupo = await lugares();
   return (
     <main id="main">
       <BreadcrumbJsonLd items={[{ name: "Event Summit", path: "/event-summit" }]} />
+      <SummitJsonLd />
       {/* 1 · HERO cinematográfico (dark) */}
       <EventoHero />
 
@@ -99,8 +122,8 @@ export default function EventoPage() {
       {/* 3 · TRAYECTORIA con count-up (dark) */}
       <EventoStats />
 
-      {/* 4 · PASES (VIP / General) con precios de preventa → WhatsApp */}
-      <Pases />
+      {/* 4 · PASES (VIP / General): precio de hoy → formulario con pago online */}
+      <Pases cupo={cupo} />
 
       {/* 5 · EDICIONES · scroll horizontal pineado (dark) */}
       <EdicionesScroll />
@@ -148,6 +171,25 @@ export default function EventoPage() {
         </div>
       </section>
 
+      {/* 6b · PREGUNTAS antes de pagar (light) + FAQPage JSON-LD */}
+      <section
+        id="preguntas"
+        data-theme="light"
+        className="scroll-mt-24 bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
+      >
+        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-4">
+            <Eyebrow className="mb-6">Antes de inscribirte</Eyebrow>
+            <h2 className="max-w-[12ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [text-wrap:balance]">
+              Lo que más nos preguntan
+            </h2>
+          </div>
+          <div className="lg:col-span-8">
+            <FaqLista faqs={FAQ_SUMMIT} nombre="faq-summit" />
+          </div>
+        </div>
+      </section>
+
       {/* 7 · INSCRIPCIÓN — cierre cinematográfico full-bleed (dark) */}
       <section
         id="inscripcion"
@@ -175,6 +217,7 @@ export default function EventoPage() {
                 {/* TODO(contenido): titular real */}
                 {`Son ${EVENT_CUPO} lugares. Nada más.`}
               </RevealText>
+              <QuedanLugares cupo={cupo} className="mt-6 text-champagne" />
               <p className="mt-8 max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/80">
                 {EDICION_LABEL} · {EVENT_WHEN} · {EVENT_HORARIO}
                 {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}. Elegí tu pase, pagá
@@ -197,7 +240,7 @@ export default function EventoPage() {
                     Valor
                   </dt>
                   <dd className="font-display text-[length:var(--text-step-3)] font-extrabold text-bone">
-                    {EVENT_PRECIO ?? "Preventa"}
+                    {precioDesde()}
                   </dd>
                 </div>
               </dl>
@@ -209,6 +252,8 @@ export default function EventoPage() {
           </div>
         </div>
       </section>
+
+      <BarraCompraMovil />
     </main>
   );
 }

@@ -30,7 +30,9 @@ export function PageHeader({
     <header className="flex flex-col gap-6 border-b border-line pb-8 md:flex-row md:items-end md:justify-between">
       <div className="min-w-0 max-w-2xl">
         <Eyebrow className="mb-4">✧ {rotulo}</Eyebrow>
-        <h1 className="font-display text-[length:var(--text-step-3)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink [overflow-wrap:anywhere] [text-wrap:balance] md:text-[length:var(--text-step-4)]">
+        {/* D-21: el H1 del panel usa Cormorant, la voz del sitio (el resto del panel
+            conserva la grotesca). Sin mayúsculas: la serif se lee mejor en caja baja. */}
+        <h1 className="text-[length:var(--text-step-4)] font-semibold leading-[0.95] tracking-[-0.005em] text-ink [font-family:var(--font-logo)] [font-variant-numeric:lining-nums] [overflow-wrap:anywhere] [text-wrap:balance] md:text-[length:var(--text-step-5)]">
           {titulo}
         </h1>
         <p className="mt-4 text-[length:var(--text-step-0)] leading-relaxed text-muted">

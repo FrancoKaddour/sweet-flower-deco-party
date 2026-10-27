@@ -15,9 +15,11 @@
  * Fase 3: newsletter (suscriptos con consentimiento + campañas).
  */
 import { sql } from "drizzle-orm";
+import type { VarianteProducto } from "@/modules/catalog/types";
 import {
   boolean,
   check,
+  date,
   index,
   integer,
   jsonb,
@@ -59,10 +61,60 @@ export const users = pgTable(
     // Perfil del cliente (para que el pedido por WhatsApp salga completo).
     phone: text("phone"),
     city: text("city"),
+    /** Baja de la cuenta pedida por la persona: email/nombre anonimizados (Ley 25.326). */
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [uniqueIndex("users_email_idx").on(t.email), index("users_role_idx").on(t.role)],
+);
+
+/* ──────────────────────────── Perfil del cliente ──────────────────────────── */
+
+export const tipoClienteEnum = pgEnum("tipo_cliente", ["decoradora", "organizadora", "particular", "empresa"]);
+export type TipoCliente = (typeof tipoClienteEnum.enumValues)[number];
+
+export const transporteEnum = pgEnum("transporte", ["via_cargo", "buspack", "md", "flechabus", "retiro"]);
+export type Transporte = (typeof transporteEnum.enumValues)[number];
+
+/**
+ * Perfil de compra (1 a 1 con `users`): lo que la persona carga en /cuenta para
+ * que el pedido por WhatsApp y la inscripción al Summit salgan precargados.
+ * Tabla aparte (y no columnas en `users`) para no mezclar datos personales con
+ * la tabla que maneja Auth.js; se borra junto con la cuenta.
+ */
+export const customerProfiles = pgTable(
+  "customer_profiles",
+  {
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => users.id, { onDelete: "cascade" }),
+    nombre: text("nombre"),
+    apellido: text("apellido"),
+    /** Celular con WhatsApp (como lo escribió la persona). */
+    telefono: text("telefono"),
+    /** Solo dígitos (7-8). Opcional: se usa para la entrada del Summit y envíos. */
+    dni: text("dni"),
+    tipoCliente: tipoClienteEnum("tipo_cliente"),
+    emprendimiento: text("emprendimiento"),
+    /** Usuario de Instagram sin "@". */
+    instagram: text("instagram"),
+    calle: text("calle"),
+    numero: text("numero"),
+    pisoDepto: text("piso_depto"),
+    localidad: text("localidad"),
+    provincia: text("provincia"),
+    /** CP de 4 dígitos o CPA de 8 caracteres (C1425ABC). */
+    codigoPostal: text("codigo_postal"),
+    transporte: transporteEnum("transporte"),
+    contactoWhatsapp: boolean("contacto_whatsapp").default(true).notNull(),
+    contactoEmail: boolean("contacto_email").default(true).notNull(),
+    /** Aceptó el aviso de privacidad al guardar el perfil (Ley 25.326). */
+    privacidadAt: timestamp("privacidad_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [check("customer_profiles_dni_check", sql`${t.dni} is null or ${t.dni} ~ '^[0-9]{7,8}$'`)],
 );
 
 export const accounts = pgTable(
@@ -140,7 +192,7 @@ export const products = pgTable(
     precio: integer("precio"),
     descripcion: text("descripcion").notNull().default(""),
     medidas: text("medidas"),
-    variantes: jsonb("variantes").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
+    variantes: jsonb("variantes").$type<VarianteProducto[]>().notNull().default(sql`'[]'::jsonb`),
     destacado: boolean("destacado").notNull().default(false),
     visible: boolean("visible").notNull().default(true),
     orden: integer("orden").notNull().default(0),
@@ -186,15 +238,33 @@ export const auditLog = pgTable(
     datos: jsonb("datos").$type<Record<string, unknown>>(),
     createdAt: createdAt(),
   },
-  (t) => [index("audit_log_entidad_idx").on(t.entidad, t.entidadId), index("audit_log_created_idx").on(t.createdAt)],
+  (t) => [
+    index("audit_log_entidad_idx").on(t.entidad, t.entidadId),
+    index("audit_log_created_idx").on(t.createdAt),
+    // Marcador de las actualizaciones de datos de una sola vez (scripts/actualizaciones.ts):
+    // único, así dos deploys simultáneos no pueden correr la misma dos veces.
+    uniqueIndex("audit_log_datos_accion_idx").on(t.accion).where(sql`${t.entidad} = 'datos'`),
+  ],
 );
 
 /* ───────────────────── Pedidos, consultas y Summit ───────────────────── */
 
 /** Línea de pedido: snapshot del producto al momento de pedir. */
-export type ItemPedido = { slug: string; nombre: string; precio: number | null; qty: number };
+export type ItemPedido = {
+  slug: string;
+  nombre: string;
+  precio: number | null;
+  qty: number;
+  /** Etiqueta de la variante elegida ("Pintado", "2,40 × 1,80 m"…). Pedidos viejos: sin dato. */
+  variante?: string | null;
+};
 
+/**
+ * "iniciado" = la persona tocó "Enviar por WhatsApp" (no sabemos si lo mandó, E-21).
+ * El equipo lo pasa a "nuevo"/"confirmado" cuando le llega el mensaje.
+ */
 export const orderStatusEnum = pgEnum("order_status", [
+  "iniciado",
   "nuevo",
   "confirmado",
   "en_produccion",
@@ -219,6 +289,14 @@ export const orders = pgTable(
     hayConsultar: boolean("hay_consultar").default(false).notNull(),
     estado: orderStatusEnum("estado").default("nuevo").notNull(),
     telefono: text("telefono"),
+    /** Para cuándo lo necesita (fecha del evento). */
+    fechaEvento: date("fecha_evento", { mode: "string" }),
+    /** Cómo dijo que va a pagar. */
+    pago: text("pago").$type<"transferencia" | "mercadopago">(),
+    /** Código del Club que escribió en el carrito (se valida a mano). */
+    codigoClub: text("codigo_club"),
+    /** De dónde llegó (utm/referrer, lib/analytics.ts → leerOrigen). */
+    origen: text("origen"),
     notaInterna: text("nota_interna"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -228,7 +306,9 @@ export const orders = pgTable(
     uniqueIndex("orders_codigo_idx").on(t.codigo),
     index("orders_estado_idx").on(t.estado),
     index("orders_created_idx").on(t.createdAt),
+    index("orders_user_idx").on(t.userId),
     check("orders_total_check", sql`${t.total} >= 0`),
+    check("orders_pago_check", sql`${t.pago} is null or ${t.pago} in ('transferencia', 'mercadopago')`),
   ],
 );
 
@@ -269,6 +349,8 @@ export const summitRegistrations = pgTable(
   {
     id: id(),
     codigo: text("codigo").notNull(),
+    /** Cuenta de quien se inscribió (si estaba logueada o se vinculó por email verificado). */
+    userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
     edicion: text("edicion").notNull(),
     pase: text("pase").notNull(), // "vip" | "general"
     nombre: text("nombre").notNull(),
@@ -279,11 +361,21 @@ export const summitRegistrations = pgTable(
     precioReferencia: integer("precio_referencia"),
     email: text("email"),
     dni: text("dni"),
-    /** Estado del pago en Mercado Pago: pendiente | aprobado | en_proceso | rechazado | devuelto. */
+    /**
+     * Estado del pago en Mercado Pago: pendiente | aprobado | en_proceso | rechazado | devuelto
+     * | sobrecupo (pagó con el cupo ya lleno: devolver o aceptar a mano)
+     * | monto_invalido (el monto o la moneda no coinciden: revisar a mano).
+     */
     pagoEstado: text("pago_estado"),
     mpPreferenceId: text("mp_preference_id"),
     mpPaymentId: text("mp_payment_id"),
     pagadoAt: timestamp("pagado_at", { withTimezone: true }),
+    /** Lugar reservado mientras paga (≈30 min). Vencida, el lugar se libera solo. */
+    reservaHasta: timestamp("reserva_hasta", { withTimezone: true }),
+    /** Cuándo salió el mail con la entrada (null = hay que mandarlo o reintentarlo). */
+    entradaEnviadaAt: timestamp("entrada_enviada_at", { withTimezone: true }),
+    /** Aceptó el aviso de privacidad (Ley 25.326) al inscribirse. */
+    consentAt: timestamp("consent_at", { withTimezone: true }),
     estado: registrationStatusEnum("estado").default("consulto").notNull(),
     telefono: text("telefono"),
     notaInterna: text("nota_interna"),
@@ -296,6 +388,7 @@ export const summitRegistrations = pgTable(
     index("summit_registrations_estado_idx").on(t.estado),
     index("summit_registrations_edicion_idx").on(t.edicion),
     index("summit_registrations_pago_idx").on(t.pagoEstado),
+    index("summit_registrations_user_idx").on(t.userId),
   ],
 );
 
@@ -327,6 +420,12 @@ export const subscribers = pgTable(
     /** Último recordatorio automático del código sin usar. */
     recordatorioAt: timestamp("recordatorio_at", { withTimezone: true }),
     consentAt: timestamp("consent_at", { withTimezone: true }).defaultNow().notNull(),
+    /**
+     * Doble opt-in: null = todavía no confirmó desde el mail (no recibe campañas
+     * ni código). `tokenConfirmacion` firma el link de confirmación.
+     */
+    confirmadoAt: timestamp("confirmado_at", { withTimezone: true }),
+    tokenConfirmacion: text("token_confirmacion"),
     bajaAt: timestamp("baja_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -335,6 +434,7 @@ export const subscribers = pgTable(
     uniqueIndex("subscribers_email_idx").on(t.email),
     uniqueIndex("subscribers_token_idx").on(t.token),
     uniqueIndex("subscribers_codigo_idx").on(t.codigo),
+    uniqueIndex("subscribers_token_confirmacion_idx").on(t.tokenConfirmacion),
     index("subscribers_estado_idx").on(t.estado),
   ],
 );
@@ -366,10 +466,20 @@ export const campaigns = pgTable(
   (t) => [index("campaigns_estado_idx").on(t.estado), index("campaigns_created_idx").on(t.createdAt)],
 );
 
+/* ───────────────────────────── Rate limit ───────────────────────────── */
+
+/** Ventana fija por clave ("nl:ip:1.2.3.4"). Ver lib/rate-limit.ts. */
+export const rateLimits = pgTable("rate_limits", {
+  clave: text("clave").primaryKey(),
+  inicio: timestamp("inicio", { withTimezone: true }).defaultNow().notNull(),
+  conteo: integer("conteo").default(1).notNull(),
+});
+
 export type DbCategory = typeof categories.$inferSelect;
 export type DbProduct = typeof products.$inferSelect;
 export type DbProductImage = typeof productImages.$inferSelect;
 export type DbUser = typeof users.$inferSelect;
+export type DbCustomerProfile = typeof customerProfiles.$inferSelect;
 export type DbOrder = typeof orders.$inferSelect;
 export type DbInquiry = typeof inquiries.$inferSelect;
 export type DbSummitRegistration = typeof summitRegistrations.$inferSelect;

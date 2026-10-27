@@ -5,26 +5,37 @@ import { db } from "@/db";
 import { categories, productImages, products } from "@/db/schema";
 import { CATEGORIAS } from "@/content/catalogo";
 import { CATALOGO_WHATSAPP } from "@/content/catalogo-whatsapp";
-import type { Categoria, Producto } from "./types";
+import { SE_ARMA_CON } from "./combinaciones";
+import { normalizarVariantes, type Categoria, type Producto } from "./types";
 
 /**
  * Repositorio del catálogo (patrón adapter — skill architecture-review).
  * Fuente: Postgres si hay DATABASE_URL; si no, el catálogo estático importado
  * de WhatsApp. La UI no sabe cuál está detrás → el sitio nunca se cae.
+ *
+ * REGLA (P-01): el respaldo estático se usa SOLO si no hay base o si la base
+ * FALLA (excepción). Si la base responde y no encuentra algo (producto oculto,
+ * borrado o con otro slug), la respuesta es "no existe" → 404. Nunca se
+ * "resucita" desde el estático lo que el equipo ocultó en el panel.
  */
 
 /* ── Respaldo estático ── */
 const estaticoCategorias = (): Categoria[] =>
   CATEGORIAS.map((c) => ({ ...c, id: c.slug, incluye: [...c.incluye] }));
 
+const SLUGS_VISIBLES = new Set(CATEGORIAS.map((c) => c.slug));
+
+/** Solo productos de categorías visibles (MDF y madera están en CATEGORIAS_OCULTAS). */
 const estaticoProductos = (): Producto[] =>
-  CATALOGO_WHATSAPP.map((p) => ({
+  CATALOGO_WHATSAPP.filter((p) => SLUGS_VISIBLES.has(p.categoria)).map((p) => ({
     id: p.slug,
     slug: p.slug,
     nombre: p.nombre,
     categoria: p.categoria,
     precio: p.precio,
     descripcion: p.descripcion,
+    medidas: p.medidas ?? null,
+    variantes: normalizarVariantes(p.variantes),
     img: p.img,
     imagenes: p.img ? [{ url: p.img, alt: p.nombre }] : [],
     destacado: p.destacado,
@@ -37,7 +48,9 @@ async function productosDeBase(filtro: { categoriaId?: string; destacados?: bool
   if (!db) return [];
   const cats = await db.select().from(categories);
   const slugDeCat = new Map(cats.map((c) => [c.id, c.slug]));
-  const rows = await db
+  // Un producto visible dentro de una categoría oculta tampoco se publica.
+  const catVisible = new Set(cats.filter((c) => c.visible).map((c) => c.id));
+  const todas = await db
     .select()
     .from(products)
     .where(
@@ -50,6 +63,7 @@ async function productosDeBase(filtro: { categoriaId?: string; destacados?: bool
       ),
     )
     .orderBy(asc(products.orden), asc(products.nombre));
+  const rows = todas.filter((r) => catVisible.has(r.categoryId));
   if (rows.length === 0) return [];
   const imgs = await db
     .select()
@@ -72,7 +86,7 @@ async function productosDeBase(filtro: { categoriaId?: string; destacados?: bool
       precio: r.precio,
       descripcion: r.descripcion,
       medidas: r.medidas,
-      variantes: r.variantes,
+      variantes: normalizarVariantes(r.variantes),
       img: imagenes[0]?.url ?? null,
       imagenes,
       destacado: r.destacado,
@@ -139,23 +153,35 @@ export const getProductosDeCategoria = cache(async (slug: string): Promise<Produ
 
 export const getProducto = cache(async (categoria: string, slug: string): Promise<Producto | null> => {
   const estatico = () => estaticoProductos().find((p) => p.slug === slug && p.categoria === categoria) ?? null;
+  // Con base: lo que diga la base (oculto/borrado/otro slug → null → 404).
+  // El estático solo entra si no hay base o si la consulta falla.
   return seguro(async () => {
     const [p] = await productosDeBase({ slug });
-    if (p) return p.categoria === categoria ? p : null;
-    return estatico();
+    return p && p.categoria === categoria ? p : null;
   }, estatico);
 });
 
 export const getDestacados = cache(async (limite = 18): Promise<Producto[]> => {
-  const desdeBase = await seguro(() => productosDeBase({ destacados: true }), () => []);
-  const lista = desdeBase.length ? desdeBase : estaticoProductos().filter((p) => p.destacado);
+  // Con base: sus destacados aunque sean 0 (P-01). Sin base o si falla: los del estático.
+  const lista = await seguro(
+    () => productosDeBase({ destacados: true }),
+    () => estaticoProductos().filter((p) => p.destacado),
+  );
   return lista.filter((p) => p.img).slice(0, limite * 3);
 });
 
 /** Todos los productos visibles (sitemap, estáticos). */
 export const getTodosLosProductos = cache(async (): Promise<Producto[]> => {
-  const desdeBase = await seguro(() => productosDeBase({}), () => []);
-  return desdeBase.length ? desdeBase : estaticoProductos();
+  return seguro(() => productosDeBase({}), estaticoProductos);
+});
+
+/** "Se arma con": combinaciones curadas (modules/catalog/combinaciones.ts), solo visibles. */
+export const getSeArmaCon = cache(async (p: Producto): Promise<Producto[]> => {
+  const slugs = SE_ARMA_CON[p.slug];
+  if (!slugs?.length) return [];
+  const todos = await getTodosLosProductos();
+  const porSlug = new Map(todos.map((x) => [x.slug, x]));
+  return slugs.map((s) => porSlug.get(s)).filter((x): x is Producto => Boolean(x));
 });
 
 export const getRelacionados = cache(async (p: Producto, limite = 4) =>

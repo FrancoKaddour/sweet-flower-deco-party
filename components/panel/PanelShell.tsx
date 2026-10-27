@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/panel/Sidebar";
 import { Topbar } from "@/components/panel/Topbar";
+import { ToastProvider } from "@/components/panel/Toast";
 import type { Pendientes, UsuarioSesion } from "@/lib/panel/types";
 
 // Shell del panel: arma sidebar + topbar + área de contenido y coordina el estado
@@ -69,6 +70,7 @@ export function PanelShell({
   }, [open]);
 
   return (
+    <ToastProvider>
     <div data-area="panel" className="min-h-dvh bg-bone lg:grid lg:grid-cols-[18rem_minmax(0,1fr)]">
       <Sidebar open={open} onClose={() => setOpen(false)} sesion={sesion} pendientes={pendientes} />
       <div className="flex min-w-0 flex-col" inert={open}>
@@ -86,5 +88,6 @@ export function PanelShell({
         </main>
       </div>
     </div>
+    </ToastProvider>
   );
 }

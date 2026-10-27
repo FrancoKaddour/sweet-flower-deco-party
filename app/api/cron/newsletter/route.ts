@@ -1,25 +1,50 @@
 import { NextResponse } from "next/server";
-import { and, eq, inArray, isNull, lt } from "drizzle-orm";
+import { timingSafeEqual } from "node:crypto";
+import { and, eq, inArray, isNotNull, isNull, lt } from "drizzle-orm";
 import { db } from "@/db";
 import { subscribers } from "@/db/schema";
 import { BASE_URL, enviarLote, envioHabilitado } from "@/lib/email/enviar";
 import { correoRecordatorioCodigo } from "@/lib/email/plantillas";
+import { limpiarRateLimits } from "@/lib/rate-limit";
 import { bajaUrl, bajaUrlUnClic } from "@/modules/newsletter/core";
+import { reintentarEntradasPendientes } from "@/modules/summit/core";
 
 /**
- * Automatización diaria (Vercel Cron, ver vercel.json): a quien se sumó hace
- * 7+ días y todavía no usó su código, le llega UN recordatorio. Protegido con
- * CRON_SECRET (Vercel lo manda solo en el header Authorization).
+ * Tareas diarias (Vercel Cron, ver vercel.json). Protegido con CRON_SECRET
+ * (Vercel lo manda solo en el header Authorization).
+ * 1. Reintenta las entradas del Summit pagadas cuyo mail no salió (S-24).
+ * 2. Limpia ventanas viejas del rate limit.
+ * 3. Newsletter: a quien confirmó hace 7+ días y no usó su código, UN
+ *    recordatorio (se marcan solo los que salieron bien).
  */
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
-export async function GET(request: Request) {
+function autorizado(request: Request): boolean {
   const secret = process.env.CRON_SECRET;
-  if (!secret || request.headers.get("authorization") !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  if (!secret) return false;
+  const a = Buffer.from(request.headers.get("authorization") ?? "");
+  const b = Buffer.from(`Bearer ${secret}`);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
+export async function GET(request: Request) {
+  if (!autorizado(request)) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  if (!db) return NextResponse.json({ omitido: "sin base" });
+
+  const resultado: Record<string, unknown> = {};
+  try {
+    await limpiarRateLimits();
+  } catch (e) {
+    console.error("[cron] rate limits", e instanceof Error ? e.message : e);
   }
-  if (!db || !envioHabilitado()) return NextResponse.json({ omitido: "sin base o sin envío configurado" });
+  if (!envioHabilitado()) return NextResponse.json({ ...resultado, omitido: "sin envío configurado" });
+
+  try {
+    resultado.entradas = await reintentarEntradasPendientes();
+  } catch (e) {
+    console.error("[cron] entradas", e instanceof Error ? e.message : e);
+  }
 
   const pendientes = await db
     .select()
@@ -27,13 +52,14 @@ export async function GET(request: Request) {
     .where(
       and(
         eq(subscribers.estado, "activo"),
+        isNotNull(subscribers.confirmadoAt),
         isNull(subscribers.codigoUsadoAt),
         isNull(subscribers.recordatorioAt),
-        lt(subscribers.createdAt, new Date(Date.now() - 7 * 864e5)),
+        lt(subscribers.confirmadoAt, new Date(Date.now() - 7 * 864e5)),
       ),
     )
     .limit(500);
-  if (!pendientes.length) return NextResponse.json({ enviados: 0 });
+  if (!pendientes.length) return NextResponse.json({ ...resultado, recordatorios: 0 });
 
   const r = await enviarLote(
     pendientes.map((s) => {
@@ -41,11 +67,9 @@ export async function GET(request: Request) {
       return { to: s.email, subject: c.asunto, html: c.html, text: c.texto, bajaUrl: bajaUrlUnClic(s.token) };
     }),
   );
-  if (r.enviados > 0) {
-    await db
-      .update(subscribers)
-      .set({ recordatorioAt: new Date() })
-      .where(inArray(subscribers.id, pendientes.map((s) => s.id)));
+  const ok = r.okIdx.map((i) => pendientes[i].id);
+  if (ok.length) {
+    await db.update(subscribers).set({ recordatorioAt: new Date() }).where(inArray(subscribers.id, ok));
   }
-  return NextResponse.json(r);
+  return NextResponse.json({ ...resultado, recordatorios: { enviados: r.enviados, fallidos: r.fallidos } });
 }

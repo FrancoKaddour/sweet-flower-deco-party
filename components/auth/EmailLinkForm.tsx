@@ -1,4 +1,5 @@
 import { ingresarConEmail } from "@/lib/auth/actions";
+import { Turnstile } from "@/components/captcha/Turnstile";
 
 /** Ingreso sin contraseña: llega un link al email (requiere Resend + dominio). */
 export function EmailLinkForm({ volver }: { volver: string }) {
@@ -16,6 +17,7 @@ export function EmailLinkForm({ volver }: { volver: string }) {
         placeholder="tu@email.com"
         className="w-full border-b border-ink/25 bg-transparent py-3 text-[length:var(--text-step-0)] text-ink placeholder:text-ink/40 focus:border-ink focus:outline-none"
       />
+      <Turnstile accion="login" />
       <button
         type="submit"
         className="mt-2 flex min-h-13 w-full items-center justify-center rounded-full bg-ink px-6 text-[0.8rem] font-medium uppercase tracking-[0.12em] text-bone transition-colors hover:bg-bordeaux"

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, eq } from "drizzle-orm";
+import { and, eq, lt, or } from "drizzle-orm";
 import { z } from "zod";
 import { requireDb } from "@/db";
 import { auditLog, campaigns, subscribers } from "@/db/schema";
@@ -12,10 +12,10 @@ import { correoCampana } from "@/lib/email/plantillas";
 import { SEGMENTOS } from "@/content/newsletter";
 import { bajaUrl, bajaUrlUnClic, suscribir } from "./core";
 import { destinatarios } from "./admin";
+import { PERMISOS } from "@/modules/ventas/estados";
 
 /** Acciones del panel: campañas y suscriptores. Enviar = solo admin. */
 
-const SOLO_ADMIN = ["superadmin", "admin"] as const;
 
 async function auditar(userId: string, accion: string, entidadId: string, datos?: object) {
   await requireDb()
@@ -80,16 +80,20 @@ export async function enviarPrueba(id: string): Promise<{ ok: boolean; mensaje: 
 }
 
 export async function enviarCampana(id: string): Promise<{ ok: boolean; mensaje: string }> {
-  const user = await assertStaff(SOLO_ADMIN);
+  const user = await assertStaff(PERMISOS.campanaEnviar.roles);
   if (!envioHabilitado()) return { ok: false, mensaje: "El envío todavía no está activado (falta el dominio en Resend)." };
   const db = requireDb();
-  // Bloqueo: solo pasa de borrador a enviando una vez (evita doble envío).
+  // Bloqueo: solo pasa de borrador a enviando una vez (evita doble envío). S-27:
+  // si quedó trabada en "enviando" más de 10 min (la función se cortó), se puede retomar.
+  const trabada = and(eq(campaigns.estado, "enviando"), lt(campaigns.updatedAt, new Date(Date.now() - 10 * 60_000)));
+  const [previa] = await db.select({ estado: campaigns.estado }).from(campaigns).where(eq(campaigns.id, id));
   const [c] = await db
     .update(campaigns)
     .set({ estado: "enviando" })
-    .where(and(eq(campaigns.id, id), eq(campaigns.estado, "borrador")))
+    .where(and(eq(campaigns.id, id), or(eq(campaigns.estado, "borrador"), trabada)))
     .returning();
-  if (!c) return { ok: false, mensaje: "Esta campaña ya se envió o se está enviando." };
+  if (!c) return { ok: false, mensaje: "Esta campaña ya se envió o se está enviando (si quedó trabada, se puede retomar a los 10 minutos)." };
+  const retomada = previa?.estado === "enviando";
 
   const lista = await destinatarios(c.segmento);
   const mensajes = lista.map((d) => {
@@ -97,15 +101,25 @@ export async function enviarCampana(id: string): Promise<{ ok: boolean; mensaje:
     return { to: d.email, subject: m.asunto, html: m.html, text: m.texto, bajaUrl: bajaUrlUnClic(d.token) };
   });
   const r = await enviarLote(mensajes);
+  // Se cuentan como enviados SOLO los que Resend aceptó (okIdx); el resto, fallidos.
+  const ok = new Set(r.okIdx);
+  const fallaron = lista.filter((_, i) => !ok.has(i)).map((d) => d.email);
   await db
     .update(campaigns)
-    .set({ estado: "enviada", enviados: r.enviados, fallidos: r.fallidos, enviadaAt: new Date() })
+    .set({ estado: "enviada", enviados: ok.size, fallidos: fallaron.length, enviadaAt: new Date() })
     .where(eq(campaigns.id, id));
-  await auditar(user.id, "campana.enviar", id, { destinatarios: lista.length, ...r });
+  await auditar(user.id, retomada ? "campana.enviar.retomada" : "campana.enviar", id, {
+    destinatarios: lista.length,
+    enviados: ok.size,
+    fallidos: fallaron.length,
+    emailsFallidos: fallaron.slice(0, 500),
+  });
   refrescar();
   return {
-    ok: r.fallidos === 0,
-    mensaje: r.fallidos ? `Enviada a ${r.enviados}; fallaron ${r.fallidos}.` : `¡Listo! Enviada a ${r.enviados} personas.`,
+    ok: fallaron.length === 0,
+    mensaje: fallaron.length
+      ? `Enviada a ${ok.size}; fallaron ${fallaron.length} (quedan anotados en Actividad).`
+      : `¡Listo! Enviada a ${ok.size} personas.`,
   };
 }
 
@@ -133,7 +147,7 @@ export async function duplicarCampana(id: string) {
 }
 
 export async function borrarCampana(id: string) {
-  const user = await assertStaff(SOLO_ADMIN);
+  const user = await assertStaff(PERMISOS.campanaEnviar.roles);
   await requireDb().delete(campaigns).where(and(eq(campaigns.id, id), eq(campaigns.estado, "borrador")));
   await auditar(user.id, "campana.borrar", id);
   refrescar();
@@ -142,24 +156,27 @@ export async function borrarCampana(id: string) {
 
 /* ─────────────── Suscriptores ─────────────── */
 
-export async function marcarCodigo(id: string, usado: boolean) {
-  const user = await assertStaff();
+export async function marcarCodigo(id: string, usado: boolean): Promise<{ ok: boolean; mensaje: string }> {
+  const user = await assertStaff(PERMISOS.suscriptores.roles);
   await requireDb()
     .update(subscribers)
     .set({ codigoUsadoAt: usado ? new Date() : null })
     .where(eq(subscribers.id, id));
   await auditar(user.id, usado ? "codigo.usado" : "codigo.desmarcar", id);
   refrescar();
+  return { ok: true, mensaje: usado ? "Código marcado como usado." : "Código desmarcado." };
 }
 
-export async function cambiarEstadoSuscriptor(id: string, estado: "activo" | "baja") {
-  const user = await assertStaff(SOLO_ADMIN);
+export async function cambiarEstadoSuscriptor(id: string, estado: "activo" | "baja"): Promise<{ ok: boolean; mensaje: string }> {
+  const user = await assertStaff(PERMISOS.suscriptorBaja.roles);
+  z.enum(["activo", "baja"]).parse(estado);
   await requireDb()
     .update(subscribers)
     .set({ estado, bajaAt: estado === "baja" ? new Date() : null })
     .where(eq(subscribers.id, id));
   await auditar(user.id, `suscriptor.${estado}`, id);
   refrescar();
+  return { ok: true, mensaje: estado === "baja" ? "Dada de baja." : "Reactivada." };
 }
 
 const altaSchema = z.object({

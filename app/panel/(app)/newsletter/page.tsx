@@ -39,10 +39,10 @@ export default async function NewsletterPage() {
 
       <dl className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {[
-          { l: "En el club", v: r.activos, a: "Suscriptos activos" },
+          { l: "En el club", v: r.activos, a: "Confirmaron su mail" },
           { l: "Nuevos", v: r.nuevos30, a: "Últimos 30 días" },
           { l: "Compraron", v: r.usados, a: `${r.conversion}% usó su código` },
-          { l: "Bajas", v: r.bajas, a: "Se dieron de baja" },
+          { l: "Sin confirmar", v: r.sinConfirmar, a: `Falta que confirmen el mail · ${r.bajas} bajas` },
         ].map((k, i) => (
           <div key={k.l} className={`rounded-[var(--radius-md)] border border-line p-5 ${["bg-sage", "bg-blush", "bg-sand", "bg-cloud"][i]}`}>
             <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-muted">{k.l}</dt>

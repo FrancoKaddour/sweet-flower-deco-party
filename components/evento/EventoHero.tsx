@@ -8,6 +8,10 @@ import { Countdown } from "@/components/evento/Countdown";
 import {
   EVENT_NAME,
   EVENT_DATE_ISO,
+  finDePreventa,
+  preventaVigente,
+  siguientePreventa,
+  cambioDePrecioLabel,
   EVENT_WHEN,
   EVENT_CTA_HREF,
   EDICION_LABEL,
@@ -21,8 +25,14 @@ import {
  * reglas finas), título gigante con mask-reveal (SplitText) y entrada escalonada.
  * Parallax scrubbed en el fondo. Respeta prefers-reduced-motion.
  */
+const ars = (n: number) => `$${n.toLocaleString("es-AR")}`;
+
 export function EventoHero() {
   const root = useRef<HTMLElement>(null);
+  // Urgencia real (E-11): cuenta hasta el fin de la preventa vigente; cuando
+  // no queda ninguna, vuelve a contar hasta el evento.
+  const pv = preventaVigente();
+  const sig = siguientePreventa();
   const bg = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
 
@@ -86,6 +96,7 @@ export function EventoHero() {
   return (
     <section
       ref={root}
+      id="summit-hero"
       data-theme="dark"
       className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ink px-6 pb-20 pt-32 text-bone md:px-10 md:pb-24 [@media(max-height:520px)]:pb-12 [@media(max-height:520px)]:pt-28"
     >
@@ -125,15 +136,37 @@ export function EventoHero() {
           {EVENT_DATE_ISO ? (
             <>
               <p className="mb-3 text-[0.7rem] uppercase tracking-[0.2em] text-bone/50">
-                {EDICION_LABEL} · Preventa abierta
+                {EDICION_LABEL}
               </p>
               <p className="font-display text-[length:var(--text-step-2)] font-extrabold uppercase leading-none text-champagne md:text-[length:var(--text-step-3)]">
                 {EVENT_WHEN}
               </p>
-              <p className="mb-6 mt-2.5 text-[0.7rem] uppercase tracking-[0.16em] text-bone/60">
+              <p className="mb-7 mt-2.5 text-[0.7rem] uppercase tracking-[0.16em] text-bone/60">
                 {EVENT_HORARIO} · {EVENT_SEDE}
               </p>
-              <Countdown />
+              {pv ? (
+                <>
+                  <p className="mb-4 font-display text-[length:var(--text-step-1)] font-semibold italic leading-none text-bone/85">
+                    La {pv.nombre.charAt(0).toLowerCase() + pv.nombre.slice(1)} termina en
+                  </p>
+                  <Countdown
+                    target={finDePreventa(pv).toISOString()}
+                    label={`Tiempo que falta para que termine la ${pv.nombre.toLowerCase()}`}
+                  />
+                  <p className="mt-6 text-[length:var(--text-step--1)] leading-relaxed text-bone/70">
+                    <span className="block text-[length:var(--text-step-0)] text-bone">
+                      Pase General {ars(pv.precios.general)} · Pase VIP {ars(pv.precios.vip)}
+                    </span>
+                    {sig && (
+                      <span className="block">
+                        Desde el {cambioDePrecioLabel(pv)}: {ars(sig.precios.general)} y {ars(sig.precios.vip)}
+                      </span>
+                    )}
+                  </p>
+                </>
+              ) : (
+                <Countdown />
+              )}
             </>
           ) : (
             <>

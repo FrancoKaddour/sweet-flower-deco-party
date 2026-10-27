@@ -1,245 +1,111 @@
-"use client";
-
-import { useRef } from "react";
 import Link from "next/link";
-import { gsap, useGSAP } from "@/lib/gsap";
-import { MAIN_NAV, CONTACTO_LINKS, INFO_LINKS } from "@/content/site";
-import { LinksSeo } from "@/components/seo/LinksSeo";
+import { MAIN_NAV, CONTACTO_LINKS, INFO_LINKS, CONTACTO_LINK } from "@/content/site";
+import { GRUPOS, LANDINGS } from "@/content/seo/landings";
+import { FooterGlobos } from "@/components/site/FooterGlobos";
 
-// TODO(contenido): datos reales de contacto, redes y legales (ver docs).
-// Footer oscuro premium — mood editorial cálido para Sweet Flowers Deco Party.
-// Navegación y enlaces se centralizan en @/content/site.
+/**
+ * Footer del sitio — Server Component (T-12): todo es HTML estático salvo la
+ * casita con globos (FooterGlobos, isla client chica).
+ *
+ * D-20: cierre de marca grande (SWEET FLOWERS a todo el ancho, la casita con
+ * sus globos) y TODOS los links en columnas verticales, un link por línea
+ * (navegación, contacto, info y las landings SEO por grupo). T-13: los títulos
+ * de columna son h2 (antes h4 después de un h2).
+ */
+const linkCls =
+  "inline-flex min-h-10 items-center py-0.5 text-bone/80 transition-colors hover:text-bone md:min-h-8";
+const tituloCls = "mb-3 text-[length:var(--text-step--1)] text-champagne";
 
-// Segmento del marquee: se renderiza 2 veces dentro del track para el loop infinito.
-function MarqueeSegment() {
-  // El texto se repite 3 veces por copia para asegurar ancho > viewport.
+function Columna({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
-    <span className="inline-flex shrink-0 items-center" aria-hidden="true">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <span key={i} className="inline-flex items-center">
-          SWEET FLOWERS DECO PARTY&nbsp;
-          <span className="footer-star inline-block text-champagne">✳</span>&nbsp;DECORACIÓN DE
-          EVENTOS&nbsp;
-          <span className="footer-star inline-block text-champagne">✳</span>&nbsp;
-        </span>
-      ))}
-    </span>
+    <div>
+      <h2 className={tituloCls}>{titulo}</h2>
+      <ul>{children}</ul>
+    </div>
   );
 }
 
-/**
- * Footer del sitio — marquee animado con GSAP, grilla de columnas y barra inferior.
- * Respeta prefers-reduced-motion (no anima el marquee si el usuario lo prefiere).
- */
 export function Footer() {
-  const rootRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const track = trackRef.current;
-      if (!track) return;
-      // Si el usuario prefiere menos movimiento, no animamos el marquee.
-      const reduce = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      if (reduce) return;
-      // Desplaza el track un 50% (una copia completa) en loop continuo — bien lento.
-      gsap.to(track, { xPercent: -50, ease: "none", duration: 70, repeat: -1 });
-      // Los ✳ giran a la derecha (clockwise) en su lugar, de forma continua.
-      gsap.to(".footer-star", {
-        rotation: 360,
-        ease: "none",
-        duration: 6,
-        repeat: -1,
-      });
-    },
-    { scope: rootRef },
-  );
-
+  const year = new Date().getFullYear();
   return (
-    <footer
-      ref={rootRef}
-      data-theme="dark"
-      className="w-full bg-ink text-bone"
-    >
-      {/* 1) Marquee gigante — dos copias en fila para el loop infinito */}
-      <div className="overflow-hidden border-b border-bone/10 py-16 md:py-24">
-        <div
-          ref={trackRef}
-          className="flex w-max whitespace-nowrap font-display text-[length:var(--text-step-6)] font-bold uppercase text-bone/90 md:text-[length:var(--text-step-7)]"
-        >
-          <MarqueeSegment />
-          <MarqueeSegment />
-        </div>
-      </div>
-
-      {/* 2) Grilla de columnas */}
-      <div className="mx-auto grid max-w-[87.5rem] grid-cols-2 gap-x-6 gap-y-10 px-6 py-16 min-[480px]:grid-cols-3 md:gap-x-10 md:px-10 lg:grid-cols-5 lg:py-24">
-        {/* Marca: isotipo blanco + logotipo Cormorant (como el header) */}
-        <div className="col-span-full flex flex-col gap-4 md:gap-6 lg:col-span-2">
-          <div className="flex items-center gap-4 md:gap-6">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/brand/logo-mark-520.webp"
-              alt="Sweet Flowers Deco Party"
-              width={520}
-              height={511}
-              className="h-[clamp(3.5rem,8vw,7.5rem)] w-auto brightness-0 invert"
-            />
-            <div className="flex flex-col leading-none">
-              <span
-                className="whitespace-nowrap font-(family-name:--font-logo) text-[clamp(1.35rem,2.6vw,2.4rem)] font-medium uppercase tracking-[0.12em] text-bone"
-                style={{ wordSpacing: "0.15em" }}
-              >
-                Sweet Flowers
-              </span>
-              <span className="mt-2 text-[clamp(0.72rem,0.9vw,0.85rem)] font-medium uppercase tracking-[0.2em] text-bone/70">
-                Deco Party
-              </span>
-            </div>
-          </div>
-          <p className="max-w-[32ch] text-[length:var(--text-step--1)] leading-relaxed text-bone/50 md:text-[length:var(--text-step-0)]">
-            {/* TODO(contenido): bajada de marca */}
-            Decoración de eventos · Argentina
+    <footer data-theme="dark" className="w-full overflow-hidden bg-ink text-bone">
+      {/* 1) Cierre de marca */}
+      <div className="mx-auto max-w-[120rem] px-6 pt-20 md:px-10 md:pt-28">
+        <div className="flex items-end justify-between gap-6">
+          <p className="t-voz-display max-w-[18ch] text-[length:var(--text-step-4)] text-bone/90 md:text-[length:var(--text-step-5)]">
+            Estructuras para eventos, hechas en Tortuguitas.
           </p>
+          <div className="h-[clamp(9rem,22vw,17rem)] shrink-0">
+            <FooterGlobos />
+          </div>
         </div>
-
-        {/* Navegación */}
-        <nav aria-label="Navegación del footer">
-          <h4 className="mb-4 text-[length:var(--text-step--1)] uppercase tracking-wide text-champagne">
-            Navegación
-          </h4>
-          <ul className="md:space-y-2">
-            {MAIN_NAV.map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  className="inline-flex min-h-10 items-center text-bone/80 transition-colors hover:text-bone md:min-h-0 md:py-0.5"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Contacto */}
-        <div>
-          <h4 className="mb-4 text-[length:var(--text-step--1)] uppercase tracking-wide text-champagne">
-            Contacto
-          </h4>
-          <ul className="md:space-y-2">
-            {CONTACTO_LINKS.map((item) => (
-              <li key={item.label}>
-                {/* TODO(contenido): href real de contacto */}
-                <a
-                  href={item.href}
-                  className="inline-flex min-h-10 items-center text-bone/80 transition-colors hover:text-bone md:min-h-0 md:py-0.5"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Info / Legal */}
-        <div>
-          <h4 className="mb-4 text-[length:var(--text-step--1)] uppercase tracking-wide text-champagne">
-            Info
-          </h4>
-          <ul className="md:space-y-2">
-            {INFO_LINKS.map((item) => (
-              <li key={item.label}>
-                {/* TODO(contenido): páginas legales reales */}
-                <a
-                  href={item.href}
-                  className="inline-flex min-h-10 items-center text-bone/80 transition-colors hover:text-bone md:min-h-0 md:py-0.5"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <p
+          aria-hidden="true"
+          className="mt-6 whitespace-nowrap font-(family-name:--font-logo) text-[length:min(calc((100vw-4rem)/8.15),14rem)] font-light uppercase leading-[0.8] tracking-[0.02em] md:text-[length:min(calc((100vw-6rem)/8.15),14rem)] text-bone"
+        >
+          Sweet Flowers
+        </p>
       </div>
 
-      {/* 2b) Links SEO (landings por intención y zona) — components/seo/LinksSeo */}
-      <LinksSeo />
+      {/* 2) Links — columnas verticales */}
+      <nav
+        aria-label="Mapa del sitio"
+        className="mx-auto grid max-w-[87.5rem] grid-cols-2 gap-x-6 gap-y-10 border-t border-bone/10 px-6 py-16 min-[560px]:grid-cols-3 md:mt-16 md:px-10 lg:grid-cols-7 lg:py-20"
+      >
+        <Columna titulo="Sitio">
+          {[...MAIN_NAV, CONTACTO_LINK].map((item) => (
+            <li key={item.href}>
+              <Link href={item.href} className={linkCls}>{item.label}</Link>
+            </li>
+          ))}
+        </Columna>
+        {GRUPOS.map((g) => {
+          const items = LANDINGS.filter((l) => l.grupo === g.id);
+          if (!items.length) return null;
+          return (
+            <div key={g.id} className={g.id === "zonas" ? "lg:col-span-2" : ""}>
+              <h2 className={tituloCls}>{g.titulo}</h2>
+              <ul className={g.id === "zonas" ? "lg:columns-2 lg:gap-x-6" : ""}>
+                {items.map((l) => (
+                  <li key={l.slug} className="break-inside-avoid">
+                    <Link href={`/${l.slug}`} className={`${linkCls} text-[length:var(--text-step--1)]`}>
+                      {l.link}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+        <Columna titulo="Info">
+          {INFO_LINKS.map((item) => (
+            <li key={item.href}>
+              <Link href={item.href} className={`${linkCls} text-[length:var(--text-step--1)]`}>{item.label}</Link>
+            </li>
+          ))}
+          <li>
+            <Link href="/resenas" className={`${linkCls} text-[length:var(--text-step--1)]`}>Dejanos tu reseña</Link>
+          </li>
+        </Columna>
+      </nav>
 
       {/* 3) Barra inferior */}
-      <div className="mx-auto flex max-w-[87.5rem] flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-8 text-[length:var(--text-step--1)] text-muted md:px-10 md:pb-28">
-        <p>© 2026 Sweet Flowers Deco Party</p>
-
-        <nav
-          aria-label="Redes sociales"
-          className="-mr-2.5 flex items-center gap-1 text-bone/70"
-        >
-          {/* Instagram */}
-          <a
-            href="https://www.instagram.com/sweetflowersdecoparty/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            className="inline-flex h-11 w-11 items-center justify-center transition-colors hover:text-bone"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <rect
-                x="3"
-                y="3"
-                width="18"
-                height="18"
-                rx="5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <circle
-                cx="12"
-                cy="12"
-                r="4"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
-            </svg>
-          </a>
-
-          {/* WhatsApp */}
-          <a
-            href="https://wa.me/5491151064010"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="WhatsApp"
-            className="inline-flex h-11 w-11 items-center justify-center transition-colors hover:text-bone"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M8.7 8.5c-.2 0-.5 0-.7.4-.2.4-.9 1-.9 2.1s.9 2.4 1 2.6c.2.2 1.8 2.9 4.5 3.9 2 .8 2.4.7 2.9.6.5-.1 1.4-.6 1.6-1.2.2-.6.2-1 .1-1.2-.1-.1-.3-.2-.6-.4-.3-.2-1.4-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.7 1-.1.1-.3.2-.5.1-.3-.2-1.1-.4-2-1.3-.8-.7-1.3-1.5-1.4-1.8-.1-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5-.1-.2-.6-1.4-.8-1.8-.2-.4-.4-.4-.6-.4h-.2Z"
-                fill="currentColor"
-              />
-            </svg>
-          </a>
-
-        </nav>
+      <div className="mx-auto flex max-w-[87.5rem] flex-wrap items-center justify-between gap-4 border-t border-bone/10 px-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-6 text-[length:var(--text-step--1)] text-bone/65 md:px-10 md:pb-10">
+        <p>© {year} Sweet Flowers Deco Party, Tortuguitas (Buenos Aires)</p>
+        <ul aria-label="Contacto directo" className="-mr-2.5 flex items-center gap-1">
+          {CONTACTO_LINKS.map((item) => (
+            <li key={item.href}>
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center px-2.5 text-bone/80 transition-colors hover:text-bone"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </footer>
   );

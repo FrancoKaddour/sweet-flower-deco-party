@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import { EmailLinkForm } from "@/components/auth/EmailLinkForm";
 import { getSession } from "@/lib/dal";
+import { rutaSegura } from "@/lib/reglas";
 
 export const metadata: Metadata = {
   title: "Ingresar",
@@ -10,14 +11,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const seguro = (v?: string) => (v && v.startsWith("/") && !v.startsWith("//") ? v : "/cuenta");
+// S-10: solo rutas internas (rechaza "//evil.com", "/\\evil.com", esquemas…).
+const seguro = (v?: string) => rutaSegura(v, "/cuenta");
 
 export default async function IngresarPage({
   searchParams,
 }: {
-  searchParams: Promise<{ volver?: string; enviado?: string; error?: string }>;
+  searchParams: Promise<{ volver?: string; enviado?: string; error?: string; baja?: string }>;
 }) {
-  const { volver, enviado, error } = await searchParams;
+  const { volver, enviado, error, baja } = await searchParams;
   const destino = seguro(volver);
   const s = await getSession();
   if (s?.user) redirect(destino);
@@ -40,9 +42,16 @@ export default async function IngresarPage({
           </p>
         ) : (
           <div className="mt-10 flex flex-col gap-8 text-left">
+            {baja && (
+              <p role="status" className="rounded-[var(--radius-md)] border border-line bg-cloud px-4 py-3 text-[length:var(--text-step--1)] text-ink/80">
+                Listo: borramos tu cuenta y tus datos personales. Si volvés a ingresar, se crea una cuenta nueva, vacía.
+              </p>
+            )}
             {error && (
               <p role="alert" className="rounded-[var(--radius-md)] border border-bordeaux/25 bg-bordeaux/10 px-4 py-3 text-[length:var(--text-step--1)] text-bordeaux">
-                No pudimos completar el ingreso. Probá de nuevo.
+                {error === "captcha"
+                  ? "No pudimos comprobar que no seas un robot. Esperá unos segundos y probá de nuevo."
+                  : "No pudimos completar el ingreso. Probá de nuevo."}
               </p>
             )}
             <GoogleButton volver={destino} />

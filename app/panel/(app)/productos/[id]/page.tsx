@@ -6,6 +6,9 @@ import { SinBase } from "@/components/panel/SinBase";
 import { ProductoForm } from "@/components/panel/catalogo/ProductoForm";
 import { ImagenesProducto } from "@/components/panel/catalogo/ImagenesProducto";
 import { AccionesProducto } from "@/components/panel/catalogo/AccionesProducto";
+import { PublicarProducto } from "@/components/panel/catalogo/ProductoAcciones";
+import { normalizarVariantes } from "@/modules/catalog/types";
+import { puede } from "@/modules/ventas/estados";
 import { hasDb } from "@/db";
 import { requireStaff } from "@/lib/dal";
 import { listarCategoriasPanel, obtenerProductoPanel } from "@/modules/catalog/admin";
@@ -44,10 +47,19 @@ export default async function EditarProductoPage({
           )
         }
       />
-      {creado && (
+      {creado && p.imagenes.length === 0 && (
         <p role="status" className="rounded-[var(--radius-md)] border border-line bg-cloud px-4 py-3 text-ink">
-          Producto creado. Ahora subile las fotos.
+          Producto creado (oculto). Subile al menos una foto y después tocá “Publicar”.
         </p>
+      )}
+      {/* P-16: oculto + con foto → invitar a publicarlo. */}
+      {!p.visible && p.imagenes.length > 0 && (
+        <div className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-champagne/60 bg-champagne/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-ink">
+            <strong className="font-medium">Está oculto.</strong> Ya tiene {p.imagenes.length === 1 ? "foto" : `${p.imagenes.length} fotos`}: cuando lo revises, publicalo.
+          </p>
+          <PublicarProducto id={p.id} nombre={p.nombre} />
+        </div>
       )}
 
       <section aria-labelledby="fotos" className="flex flex-col gap-4">
@@ -74,7 +86,7 @@ export default async function EditarProductoPage({
             precio: p.precio,
             descripcion: p.descripcion,
             medidas: p.medidas,
-            variantes: p.variantes,
+            variantes: normalizarVariantes(p.variantes),
             destacado: p.destacado,
             visible: p.visible,
           }}
@@ -83,7 +95,7 @@ export default async function EditarProductoPage({
       </section>
 
       <section className="border-t border-line pt-8">
-        <AccionesProducto id={p.id} nombre={p.nombre} puedeBorrar={user.role !== "editor"} />
+        <AccionesProducto id={p.id} nombre={p.nombre} puedeBorrar={puede(user.role, "productoBorrar")} />
       </section>
     </div>
   );

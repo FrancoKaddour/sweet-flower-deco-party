@@ -4,8 +4,20 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { summitRegistrations } from "@/db/schema";
 import { sincronizarPago } from "@/modules/summit/core";
-import { EDICION_LABEL, EVENT_HORARIO, EVENT_NAME, EVENT_SEDE, EVENT_WHATSAPP, EVENT_WHEN, PASES } from "@/content/evento";
+import {
+  EDICION_LABEL,
+  EVENT_HORARIO,
+  EVENT_MAPA_URL,
+  EVENT_NAME,
+  EVENT_SEDE,
+  EVENT_WHATSAPP,
+  EVENT_WHEN,
+  PASES,
+  calendarioGoogleUrl,
+} from "@/content/evento";
 import { formatARS } from "@/modules/catalog/types";
+import { SITE_URL } from "@/lib/site";
+import { CompartirSummit, TrackVuelta } from "@/components/evento/VueltaPago";
 
 export const metadata: Metadata = { title: "Tu inscripción", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -26,14 +38,25 @@ export default async function InscripcionPage({
   const paymentId = sp.payment_id ?? sp.collection_id;
   if (r && paymentId && paymentId !== "null" && r.pagoEstado !== "aprobado") {
     try {
-      const act = await sincronizarPago(paymentId);
+      const act = await sincronizarPago(paymentId, r.id);
       if (act && act.id === r.id) r = act;
     } catch (e) {
       console.error("[summit] vuelta", e);
     }
   }
 
-  const estado = r?.pagoEstado === "aprobado" || r?.estado === "pago" ? "ok" : r?.pagoEstado === "rechazado" ? "error" : r ? "pendiente" : "nada";
+  // "revisar": el pago llegó pero hay que mirarlo a mano (cupo lleno o monto/moneda
+  // que no coinciden). Va antes que "ok" para no confirmar un lugar que no hay.
+  const estado =
+    r?.pagoEstado === "sobrecupo" || r?.pagoEstado === "monto_invalido"
+      ? "revisar"
+      : r?.pagoEstado === "aprobado" || r?.estado === "pago"
+        ? "ok"
+        : r?.pagoEstado === "rechazado"
+          ? "error"
+          : r
+            ? "pendiente"
+            : "nada";
   const pase = r ? PASES.find((p) => p.id === r.pase)?.nombre ?? r.pase : "";
   const nombre = r?.nombre.split(" ")[0] ?? "";
   const wa = `https://wa.me/${EVENT_WHATSAPP}?text=${encodeURIComponent(
@@ -43,13 +66,16 @@ export default async function InscripcionPage({
   const titulos = {
     ok: `¡${nombre}, estás adentro!`,
     pendiente: "Tu pago se está procesando",
+    revisar: "Recibimos tu pago",
     error: "El pago no se completó",
     nada: "No encontramos tu inscripción",
   } as const;
   const textos = {
     ok: "Tu lugar está confirmado. Te mandamos el comprobante por mail y unos días antes del evento te escribimos por WhatsApp con todos los detalles.",
     pendiente:
-      "Mercado Pago todavía no confirmó el pago (pasa con pagos en efectivo o en revisión). Apenas se acredite, tu lugar queda confirmado y te llega el mail.",
+      "Mercado Pago todavía no confirmó el pago (pasa cuando queda en revisión). Apenas se apruebe, tu lugar queda confirmado y te llega el mail.",
+    revisar:
+      "Recibimos tu pago, pero hay que revisarlo antes de confirmar tu lugar. Te escribimos por WhatsApp a la brevedad; si querés, escribinos vos con tu código.",
     error: "No te cobramos nada. Podés volver a intentarlo con otro medio de pago, o escribirnos y te ayudamos.",
     nada: "Si pagaste y ves este mensaje, escribinos por WhatsApp y lo revisamos.",
   } as const;
@@ -62,7 +88,12 @@ export default async function InscripcionPage({
         <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">
           ✧ {EVENT_NAME} · {EDICION_LABEL}
         </p>
-        <h1 className="mt-6 max-w-[16ch] font-display text-[length:min(var(--text-step-6),calc((100vw-3rem)/8))] font-extrabold uppercase leading-[0.86] tracking-[-0.02em] [overflow-wrap:anywhere] [text-wrap:balance]">
+        {r && estado !== "nada" && (
+          <TrackVuelta estado={estado === "revisar" ? "pendiente" : estado} codigo={r.codigo} pase={r.pase} monto={r.precioReferencia ?? null} />
+        )}
+        {/* Sin cortar palabras (E-17): break-word solo parte si la palabra no entra
+            sola en la línea, y el tamaño está calculado para que entre. */}
+        <h1 className="mt-6 max-w-[20ch] font-display text-[length:min(var(--text-step-6),calc((100vw-3rem)/9))] font-extrabold uppercase leading-[0.86] tracking-[-0.02em] [overflow-wrap:break-word] [text-wrap:balance]">
           {titulos[estado]}
         </h1>
         <p className="mt-8 max-w-[52ch] text-[length:var(--text-step-1)] leading-snug text-bone/80">{textos[estado]}</p>
@@ -89,16 +120,53 @@ export default async function InscripcionPage({
           </p>
         )}
 
+        {estado === "ok" && r && (
+          <ul className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-[var(--radius-md)] border border-bone/15 bg-bone/15 sm:grid-cols-3">
+            {[
+              { href: calendarioGoogleUrl(r.codigo), texto: "Agregar a Google Calendar", externo: true },
+              { href: "/event-summit/summit.ics", texto: "Descargar para Apple o Outlook (.ics)", externo: false },
+              { href: EVENT_MAPA_URL, texto: "Cómo llegar a La Rural", externo: true },
+            ].map((l) => (
+              <li key={l.texto} className="bg-ink">
+                <a
+                  href={l.href}
+                  {...(l.externo ? { target: "_blank", rel: "noopener noreferrer" } : { download: true })}
+                  className="flex min-h-16 items-center px-5 py-4 text-[length:var(--text-step--1)] text-bone/85 transition-colors hover:bg-bone/5 hover:text-bone"
+                >
+                  {l.texto}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {estado === "ok" && r?.pase === "vip" && (
+          <p className="mt-8 max-w-[52ch] border-l-2 border-champagne pl-5 text-[length:var(--text-step-0)] leading-relaxed text-bone/85">
+            Ya sos Cliente VIP: tenés 15% de descuento en cualquier compra de Sweet Flowers.{" "}
+            <Link href="/productos" className="underline underline-offset-4 hover:text-champagne">
+              Mirá el catálogo
+            </Link>
+            .
+          </p>
+        )}
+
         <div className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-5">
           {estado === "error" && (
             <Link href="/event-summit#inscripcion" className="inline-flex min-h-14 items-center gap-3 rounded-full bg-bone px-8 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink hover:bg-champagne">
               Intentar de nuevo <span aria-hidden="true">→</span>
             </Link>
           )}
-          {estado === "ok" && (
+          {estado !== "error" && (
             <Link href="/event-summit" className="inline-flex min-h-14 items-center gap-3 rounded-full bg-bone px-8 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-ink hover:bg-champagne">
               Volver al Summit <span aria-hidden="true">→</span>
             </Link>
+          )}
+          {estado === "ok" && (
+            <CompartirSummit
+              url={`${SITE_URL}/event-summit`}
+              texto={`Voy al ${EVENT_NAME} (${EVENT_WHEN}). ¿Venís?`}
+              className="inline-flex min-h-11 items-center border-b border-bone pb-1 text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone"
+            />
           )}
           <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center">
             <span className="border-b border-bone pb-1 text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone">
