@@ -6,7 +6,6 @@ import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { Button } from "@/components/ui/Button";
 import { Countdown } from "@/components/evento/Countdown";
 import {
-  EVENT_NAME,
   EVENT_DATE_ISO,
   finDePreventa,
   preventaVigente,
@@ -98,7 +97,7 @@ export function EventoHero() {
       ref={root}
       id="summit-hero"
       data-theme="dark"
-      className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ink px-6 pb-20 pt-32 text-bone md:px-10 md:pb-24 [@media(max-height:520px)]:pb-12 [@media(max-height:520px)]:pt-28"
+      className="relative isolate flex h-svh min-h-[30rem] flex-col justify-end overflow-hidden bg-ink px-6 pb-[clamp(1.25rem,5svh,5rem)] pt-[max(4.75rem,11svh)] md:pt-[max(8.75rem,14svh)] [@media(max-height:520px)]:pt-[5rem] text-bone md:px-10 [@media(max-height:520px)]:min-h-0"
     >
       {/* Fondo full-bleed con duotono + grano + parallax */}
       <div ref={bg} className="absolute inset-0 -z-10">
@@ -127,38 +126,41 @@ export function EventoHero() {
       <div className="mx-auto w-full max-w-[87.5rem]">
         <h1
           ref={title}
-          className="mx-auto text-center font-display text-[length:min(var(--text-step-7),18svh)] font-extrabold uppercase leading-[0.82] tracking-[-0.03em] text-bone [overflow-wrap:anywhere] [text-wrap:balance]"
+          className="mx-auto text-center font-display text-[length:min(var(--text-step-7),7.4svh,calc((100vw-3rem)/5.6)) [@media(max-height:600px)]:text-[length:min(6.2svh,calc((100vw-3rem)/5.6))]] font-extrabold uppercase leading-[0.84] sm:text-[length:min(var(--text-step-7),10svh,calc((100vw-4rem)/7))] lg:text-[length:min(var(--text-step-7),12svh)] tracking-[-0.03em] text-bone [overflow-wrap:anywhere] [text-wrap:balance]"
         >
-          {EVENT_NAME}
+          {/* Siempre "Sweet Flowers" arriba y "Event Summit" abajo (en celular
+              cada renglón puede partirse en dos). */}
+          <span className="block">Sweet Flowers</span>
+          <span className="block">Event Summit</span>
         </h1>
 
-        <div data-hero-reveal className="mx-auto mt-12 flex flex-col items-center text-center [@media(max-height:520px)]:mt-7">
+        <div data-hero-reveal className="mx-auto mt-[clamp(0.75rem,3.5svh,3rem)] flex flex-col items-center text-center">
           {EVENT_DATE_ISO ? (
             <>
-              <p className="mb-3 text-[0.7rem] uppercase tracking-[0.2em] text-bone/50">
+              <p className="mb-[clamp(0.25rem,1svh,0.75rem)] text-[0.7rem] uppercase tracking-[0.2em] text-bone/50 [@media(max-height:700px)]:hidden">
                 {EDICION_LABEL}
               </p>
-              <p className="font-display text-[length:var(--text-step-2)] font-extrabold uppercase leading-none text-champagne md:text-[length:var(--text-step-3)]">
+              <p className="font-display text-[length:min(var(--text-step-2),4.2svh)] font-extrabold uppercase leading-none text-champagne md:text-[length:min(var(--text-step-3),5svh)]">
                 {EVENT_WHEN}
               </p>
-              <p className="mb-7 mt-2.5 text-[0.7rem] uppercase tracking-[0.16em] text-bone/60">
+              <p className="mb-[clamp(0.6rem,3svh,1.75rem)] mt-[clamp(0.25rem,1svh,0.625rem)] [@media(max-height:520px)]:hidden text-[0.7rem] uppercase tracking-[0.16em] text-bone/60">
                 {EVENT_HORARIO} · {EVENT_SEDE}
               </p>
               {pv ? (
                 <>
-                  <p className="mb-4 font-display text-[length:var(--text-step-1)] font-semibold italic leading-none text-bone/85">
+                  <p className="mb-[clamp(0.4rem,1.6svh,1rem)] font-display text-[length:min(var(--text-step-1),3.4svh)] font-semibold italic leading-none text-bone/85">
                     La {pv.nombre.charAt(0).toLowerCase() + pv.nombre.slice(1)} termina en
                   </p>
                   <Countdown
                     target={finDePreventa(pv).toISOString()}
                     label={`Tiempo que falta para que termine la ${pv.nombre.toLowerCase()}`}
                   />
-                  <p className="mt-6 text-[length:var(--text-step--1)] leading-relaxed text-bone/70">
+                  <p className="mt-[clamp(0.5rem,2.4svh,1.5rem)] text-[length:var(--text-step--1)] leading-snug text-bone/70">
                     <span className="block text-[length:var(--text-step-0)] text-bone">
                       Pase General {ars(pv.precios.general)} · Pase VIP {ars(pv.precios.vip)}
                     </span>
                     {sig && (
-                      <span className="block">
+                      <span className="block [@media(max-height:600px)]:hidden">
                         Desde el {cambioDePrecioLabel(pv)}: {ars(sig.precios.general)} y {ars(sig.precios.vip)}
                       </span>
                     )}
@@ -181,7 +183,7 @@ export function EventoHero() {
               </p>
             </>
           )}
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+          <div className="mt-[clamp(0.75rem,3.5svh,2.25rem)] flex flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:gap-x-10">
             <Button href={EVENT_CTA_HREF} variant="inverse">
               Quiero mi lugar
             </Button>
