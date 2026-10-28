@@ -2,7 +2,7 @@
 
 import { startTransition, useActionState } from "react";
 import Link from "next/link";
-import { CLUB, DESCUENTO_BIENVENIDA, INTERESES, type Interes } from "@/content/newsletter";
+import { CLUB, DESCUENTO_BIENVENIDA, type Interes } from "@/content/newsletter";
 import { suscribirNewsletter, type EstadoSuscripcion } from "@/modules/newsletter/publico";
 import { Turnstile } from "@/components/captcha/Turnstile";
 
@@ -65,21 +65,9 @@ export function NewsletterForm({ interes, cta }: { interes?: Interes; cta?: stri
         />
       </label>
 
-      <fieldset>
-        <legend className="mb-3 text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/60">
-          Me interesa <span className="normal-case tracking-normal text-bone/40">(opcional)</span>
-        </legend>
-        <div className="flex flex-wrap gap-2">
-          {INTERESES.map((i) => (
-            <label key={i.v} className="cursor-pointer">
-              <input type="checkbox" name="intereses" value={i.v} defaultChecked={i.v === interes} className="peer sr-only" />
-              <span className="inline-flex min-h-11 items-center rounded-full border border-bone/30 px-4 text-[length:var(--text-step--1)] text-bone/80 transition-colors peer-checked:border-champagne peer-checked:bg-champagne peer-checked:text-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-champagne">
-                {i.l}
-              </span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      {/* Intereses: sin selector visible (pedido de Fran). En el Summit se
+          manda "summit" igual, para segmentar. */}
+      {interes && <input type="hidden" name="intereses" value={interes} />}
 
       {/* Consentimiento (Ley 25.326): obligatorio y registrado al confirmar. */}
       <label className="flex cursor-pointer items-start gap-3 text-[length:var(--text-step--1)] leading-relaxed text-bone/75">

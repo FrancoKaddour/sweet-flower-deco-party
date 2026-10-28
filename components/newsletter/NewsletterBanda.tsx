@@ -42,9 +42,9 @@ export function NewsletterBanda({ total, variante }: { total: number; variante?:
         <div className="mt-10 grid items-center gap-10 md:mt-14 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-6 lg:pl-[4%]">
           <p className="max-w-[44ch] text-[length:var(--text-step--1)] leading-relaxed text-bone/80 md:text-[length:var(--text-step-0)]">{copy.bajada}</p>
-          <ul className="mt-5 flex flex-col gap-2">
+          <ul className="mt-4 flex flex-col gap-1.5">
             {copy.beneficios.map((b) => (
-              <li key={b} className="flex items-center gap-3 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-bone/90">
+              <li key={b} className="flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.12em] text-bone/85">
                 <span aria-hidden="true" className="text-champagne">✧</span>
                 {b}
               </li>
