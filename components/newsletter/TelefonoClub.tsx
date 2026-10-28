@@ -81,7 +81,7 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
       `}</style>
 
       {/* El teléfono */}
-      <div className="tc-tel absolute left-1/2 top-[2%] h-[96%] w-[50%] -translate-x-1/2 -rotate-[5deg] rounded-[calc(var(--u)*6.5)] border-[length:calc(var(--u)*1.4)] border-ink bg-ink p-[calc(var(--u)*0.6)] shadow-[0_calc(var(--u)*4)_calc(var(--u)*8)_calc(var(--u)*-3)_rgb(0_0_0/0.6)]">
+      <div className="tc-tel absolute left-1/2 top-[2%] h-[96%] w-[50%] -translate-x-1/2 rotate-[5deg] rounded-[calc(var(--u)*6.5)] border-[length:calc(var(--u)*1.4)] border-ink bg-ink p-[calc(var(--u)*0.6)] shadow-[0_calc(var(--u)*4)_calc(var(--u)*8)_calc(var(--u)*-3)_rgb(0_0_0/0.6)]">
         <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--u)*5.2)] bg-bone text-ink">
           {/* Barra de estado + notch */}
           <div className="flex items-center justify-between px-[calc(var(--u)*4.5)] pt-[calc(var(--u)*2.6)] font-sans text-[length:calc(var(--u)*2.1)] font-semibold">
