@@ -14,7 +14,7 @@ export function NewsletterBanda({ total, variante }: { total: number; variante?:
     <section
       aria-labelledby="club-titulo"
       data-theme="dark"
-      className="relative overflow-hidden bg-bordeaux px-6 py-16 text-bone sm:py-20 md:px-10 md:py-28"
+      className="relative overflow-hidden bg-bordeaux px-6 py-14 text-bone sm:py-16 md:px-10 md:py-20"
     >
       {/* Arco decorativo (identidad El Arco) */}
       <div
@@ -27,17 +27,17 @@ export function NewsletterBanda({ total, variante }: { total: number; variante?:
       />
 
       <div className="relative mx-auto grid max-w-[87.5rem] items-center gap-10 md:gap-12 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-6">
+        <div className="lg:col-span-5">
           {/* Texto + formulario a la izquierda; el celular que explica el club, a la derecha */}
-          <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ {CLUB.nombre}</p>
+          <p className="mb-4 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ {CLUB.nombre}</p>
           <h2
             id="club-titulo"
-            className="max-w-[14ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone md:text-[length:var(--text-step-6)]"
+            className="max-w-[16ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.92] tracking-[-0.01em] text-bone xl:text-[length:var(--text-step-5)]"
           >
             {copy.titulo}
           </h2>
-          <p className="mt-6 max-w-[44ch] text-[length:var(--text-step-0)] leading-relaxed text-bone/80">{copy.bajada}</p>
-          <ul className="mt-8 flex flex-col gap-3">
+          <p className="mt-4 max-w-[44ch] text-[length:var(--text-step--1)] leading-relaxed text-bone/80 md:text-[length:var(--text-step-0)]">{copy.bajada}</p>
+          <ul className="mt-5 flex flex-col gap-2">
             {copy.beneficios.map((b) => (
               <li key={b} className="flex items-center gap-3 text-[length:var(--text-step--1)] uppercase tracking-[0.12em] text-bone/90">
                 <span aria-hidden="true" className="text-champagne">✧</span>
@@ -50,12 +50,12 @@ export function NewsletterBanda({ total, variante }: { total: number; variante?:
               Ya somos <span className="font-semibold text-champagne">+{Math.floor(total / 10) * 10}</span> en el club.
             </p>
           )}
-          <div className="mt-10 w-full max-w-xl">
+          <div className="mt-8 w-full max-w-xl">
             {summit ? <NewsletterForm key="summit" interes="summit" cta="Avisame" /> : <NewsletterForm key="general" />}
           </div>
         </div>
 
-        <div className="lg:col-span-6">
+        <div className="lg:col-span-7">
           <TelefonoClub variante={summit ? "summit" : "perfil"} />
         </div>
       </div>

@@ -58,101 +58,90 @@ function QrFalso() {
 }
 
 const flotante =
-  "absolute rounded-[1.1cqw] bg-bone text-ink shadow-[0_2.4cqw_5cqw_-1.6cqw_rgb(0_0_0/0.55)] tc-flota";
+  "absolute rounded-[calc(var(--u)*1.1)] bg-bone text-ink shadow-[0_calc(var(--u)*2.4)_calc(var(--u)*5)_calc(var(--u)*-1.6)_rgb(0_0_0/0.55)] tc-flota";
 
 export function TelefonoClub({ variante }: { variante: Variante }) {
   const pv = preventaVigente();
   const sig = siguientePreventa();
 
   return (
-    <div aria-hidden="true" className="tc relative mx-auto aspect-[1/1.02] w-full max-w-[34rem] [container-type:inline-size] select-none">
+    <div aria-hidden="true" className="mx-auto w-full max-w-[44rem] select-none [container-name:tc] [container-type:inline-size]">
+    <div className="tc relative aspect-[1/0.98] w-full">
       <style>{`
+        .tc{--u:1cqw}
+        @container tc (max-width:32rem){
+          .tc{--u:1.45cqw}
+          .tc-tel{width:76%!important}
+          .tc-ancha{width:52%!important}
+        }
         .tc-flota{animation:tc-flota 6s ease-in-out infinite}
         .tc-flota.tc-b{animation-delay:-2s}.tc-flota.tc-c{animation-delay:-4s}
-        @keyframes tc-flota{0%,100%{translate:0 0}50%{translate:0 -1.4cqw}}
+        @keyframes tc-flota{0%,100%{translate:0 0}50%{translate:0 calc(var(--u)*-1.4)}}
         @media (prefers-reduced-motion:reduce){.tc-flota{animation:none}}
       `}</style>
 
-      {/* Fondo: "pista" en damero vino/tinta (la pista de baile del evento) */}
-      <div
-        className="absolute inset-y-[3%] right-0 left-[16%] rounded-[3cqw] opacity-90"
-        style={{
-          backgroundImage:
-            "conic-gradient(var(--color-wine,#7A1218) 25%, color-mix(in oklab, var(--color-ink) 70%, var(--color-wine,#7A1218)) 0 50%, var(--color-wine,#7A1218) 0 75%, color-mix(in oklab, var(--color-ink) 70%, var(--color-wine,#7A1218)) 0)",
-          backgroundSize: "9cqw 9cqw",
-        }}
-      />
-
-      {/* Carta inclinada detrás del teléfono (arco / ticket) */}
-      <div className="absolute left-[18%] top-[22%] h-[60%] w-[26%] -rotate-[14deg] overflow-hidden rounded-t-full rounded-b-[2cqw] border-[0.5cqw] border-ink bg-champagne">
-        <div
-          className="absolute inset-[10%] rounded-t-full"
-          style={{ backgroundImage: "repeating-linear-gradient(180deg, var(--color-ink) 0 3cqw, transparent 3cqw 6cqw)", opacity: 0.85 }}
-        />
-      </div>
-
       {/* El teléfono */}
-      <div className="absolute left-1/2 top-[6%] h-[88%] w-[47%] -translate-x-1/2 rounded-[6.5cqw] border-[1.4cqw] border-ink bg-ink p-[0.6cqw] shadow-[0_4cqw_8cqw_-3cqw_rgb(0_0_0/0.6)]">
-        <div className="relative flex h-full flex-col overflow-hidden rounded-[5.2cqw] bg-bone text-ink">
+      <div className="tc-tel absolute left-1/2 top-[2%] h-[96%] w-[52%] -translate-x-1/2 rounded-[calc(var(--u)*6.5)] border-[length:calc(var(--u)*1.4)] border-ink bg-ink p-[calc(var(--u)*0.6)] shadow-[0_calc(var(--u)*4)_calc(var(--u)*8)_calc(var(--u)*-3)_rgb(0_0_0/0.6)]">
+        <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--u)*5.2)] bg-bone text-ink">
           {/* Barra de estado + notch */}
-          <div className="flex items-center justify-between px-[4.5cqw] pt-[2.6cqw] font-sans text-[2.1cqw] font-semibold">
+          <div className="flex items-center justify-between px-[calc(var(--u)*4.5)] pt-[calc(var(--u)*2.6)] font-sans text-[length:calc(var(--u)*2.1)] font-semibold">
             <span>10:42</span>
-            <span className="absolute left-1/2 top-[1.4cqw] h-[4.2cqw] w-[17cqw] -translate-x-1/2 rounded-full bg-ink" />
+            <span className="absolute left-1/2 top-[calc(var(--u)*1.4)] h-[calc(var(--u)*4.2)] w-[calc(var(--u)*17)] -translate-x-1/2 rounded-full bg-ink" />
             <span className="tracking-[0.2em]">•••</span>
           </div>
 
           {variante === "perfil" ? (
-            <div className="flex flex-1 flex-col gap-[2.4cqw] px-[3.6cqw] pb-[3.6cqw] pt-[4cqw]">
+            <div className="flex flex-1 flex-col gap-[calc(var(--u)*2.4)] px-[calc(var(--u)*3.6)] pb-[calc(var(--u)*3.6)] pt-[calc(var(--u)*4)]">
               <div className="flex items-center justify-between">
-                <p className="font-display text-[3.8cqw] font-bold leading-none">Mi cuenta</p>
-                <span className="rounded-full bg-champagne px-[1.8cqw] py-[0.7cqw] text-[1.6cqw] font-semibold uppercase tracking-[0.14em]">Club</span>
+                <p className="font-display text-[length:calc(var(--u)*3.8)] font-bold leading-none">Mi cuenta</p>
+                <span className="rounded-full bg-champagne px-[calc(var(--u)*1.8)] py-[calc(var(--u)*0.7)] text-[length:calc(var(--u)*1.6)] font-semibold uppercase tracking-[0.14em]">Club</span>
               </div>
               {/* Tarjeta del Club */}
-              <div className="rounded-[2.4cqw] bg-bordeaux p-[3cqw] text-bone">
-                <p className="text-[1.6cqw] uppercase tracking-[0.18em] text-champagne">Tu código</p>
-                <p className="mt-[0.8cqw] font-mono text-[3.6cqw] font-bold tracking-[0.08em]">CLUB-XXXXX</p>
-                <p className="mt-[0.6cqw] text-[1.8cqw] text-bone/80">{DESCUENTO_BIENVENIDA}% off en tu primer pedido</p>
+              <div className="rounded-[calc(var(--u)*2.4)] bg-bordeaux p-[calc(var(--u)*3)] text-bone">
+                <p className="text-[length:calc(var(--u)*1.6)] uppercase tracking-[0.18em] text-champagne">Tu código</p>
+                <p className="mt-[calc(var(--u)*0.8)] font-mono text-[length:calc(var(--u)*3.6)] font-bold tracking-[0.08em]">CLUB-XXXXX</p>
+                <p className="mt-[calc(var(--u)*0.6)] text-[length:calc(var(--u)*1.8)] text-bone/80">{DESCUENTO_BIENVENIDA}% off en tu primer pedido</p>
               </div>
-              <p className="text-[1.7cqw] font-semibold uppercase tracking-[0.16em] text-ink/60">Mis pedidos</p>
-              <ul className="flex flex-col gap-[1.4cqw] text-[1.9cqw]">
+              <p className="text-[length:calc(var(--u)*1.7)] font-semibold uppercase tracking-[0.16em] text-ink/60">Mis pedidos</p>
+              <ul className="flex flex-col gap-[calc(var(--u)*1.4)] text-[length:calc(var(--u)*1.9)]">
                 {[
                   ["Estantería Eclipse", "Confirmado"],
                   ["Arco extensible", "En producción"],
                   ["Funda para aro", "Enviado"],
                 ].map(([p, e]) => (
-                  <li key={p} className="flex items-center justify-between rounded-[1.6cqw] bg-white px-[2.2cqw] py-[1.8cqw] shadow-[0_0.4cqw_1.2cqw_rgb(0_0_0/0.06)]">
+                  <li key={p} className="flex items-center justify-between rounded-[calc(var(--u)*1.6)] bg-white px-[calc(var(--u)*2.2)] py-[calc(var(--u)*1.8)] shadow-[0_calc(var(--u)*0.4)_calc(var(--u)*1.2)_rgb(0_0_0/0.06)]">
                     <span>
                       <span className="block font-semibold leading-tight">{p}</span>
-                      <span className="text-[1.6cqw] text-ink/55">SF-XXXXX</span>
+                      <span className="text-[length:calc(var(--u)*1.6)] text-ink/55">SF-XXXXX</span>
                     </span>
-                    <span className="rounded-full bg-sand px-[1.4cqw] py-[0.5cqw] text-[1.5cqw] font-semibold">{e}</span>
+                    <span className="rounded-full bg-sand px-[calc(var(--u)*1.4)] py-[calc(var(--u)*0.5)] text-[length:calc(var(--u)*1.5)] font-semibold">{e}</span>
                   </li>
                 ))}
               </ul>
-              <span className="mt-auto rounded-full bg-ink py-[2cqw] text-center text-[1.8cqw] font-semibold uppercase tracking-[0.14em] text-bone">
+              <span className="mt-auto rounded-full bg-ink py-[calc(var(--u)*2)] text-center text-[length:calc(var(--u)*1.8)] font-semibold uppercase tracking-[0.14em] text-bone">
                 Repetir pedido
               </span>
             </div>
           ) : (
-            <div className="flex flex-1 flex-col gap-[2.4cqw] px-[3.6cqw] pb-[3.6cqw] pt-[4cqw]">
+            <div className="flex flex-1 flex-col gap-[calc(var(--u)*2.4)] px-[calc(var(--u)*3.6)] pb-[calc(var(--u)*3.6)] pt-[calc(var(--u)*4)]">
               <div className="flex items-center justify-between">
-                <p className="font-display text-[3.8cqw] font-bold leading-none">Tu entrada</p>
-                <span className="rounded-full bg-champagne px-[1.8cqw] py-[0.7cqw] text-[1.6cqw] font-semibold uppercase tracking-[0.14em]">Pase VIP</span>
+                <p className="font-display text-[length:calc(var(--u)*3.8)] font-bold leading-none">Tu entrada</p>
+                <span className="rounded-full bg-champagne px-[calc(var(--u)*1.8)] py-[calc(var(--u)*0.7)] text-[length:calc(var(--u)*1.6)] font-semibold uppercase tracking-[0.14em]">Pase VIP</span>
               </div>
               {/* Ticket */}
-              <div className="relative flex-1 overflow-hidden rounded-[2.4cqw] bg-ink p-[3cqw] text-bone">
-                <p className="text-[1.5cqw] uppercase tracking-[0.2em] text-champagne">Sweet Flowers</p>
-                <p className="font-display text-[3.6cqw] font-extrabold uppercase leading-[0.95]">Event Summit</p>
-                <p className="mt-[1cqw] text-[1.8cqw] text-bone/80">9 de abril de 2027 · 12:30 h</p>
-                <p className="text-[1.8cqw] text-bone/60">La Rural · Palermo</p>
-                <div className="mx-auto mt-[2.2cqw] aspect-square w-[62%] rounded-[1.2cqw] bg-bone p-[1.6cqw] text-ink">
+              <div className="relative flex-1 overflow-hidden rounded-[calc(var(--u)*2.4)] bg-ink p-[calc(var(--u)*3)] text-bone">
+                <p className="text-[length:calc(var(--u)*1.5)] uppercase tracking-[0.2em] text-champagne">Sweet Flowers</p>
+                <p className="font-display text-[length:calc(var(--u)*3.6)] font-extrabold uppercase leading-[0.95]">Event Summit</p>
+                <p className="mt-[calc(var(--u)*1)] text-[length:calc(var(--u)*1.8)] text-bone/80">9 de abril de 2027 · 12:30 h</p>
+                <p className="text-[length:calc(var(--u)*1.8)] text-bone/60">La Rural · Palermo</p>
+                <div className="mx-auto mt-[calc(var(--u)*2.2)] aspect-square w-[62%] rounded-[calc(var(--u)*1.2)] bg-bone p-[calc(var(--u)*1.6)] text-ink">
                   <QrFalso />
                 </div>
-                <p className="mt-[1.4cqw] text-center font-mono text-[2cqw] tracking-[0.14em] text-bone/80">SUM-XXXXX</p>
+                <p className="mt-[calc(var(--u)*1.4)] text-center font-mono text-[length:calc(var(--u)*2)] tracking-[0.14em] text-bone/80">SUM-XXXXX</p>
               </div>
-              <div className="grid grid-cols-2 gap-[1.4cqw] text-[1.6cqw] font-semibold uppercase tracking-[0.1em]">
-                <span className="rounded-full border border-ink/25 py-[1.6cqw] text-center">Calendario</span>
-                <span className="rounded-full bg-ink py-[1.6cqw] text-center text-bone">Cómo llegar</span>
+              <div className="grid grid-cols-2 gap-[calc(var(--u)*1.4)] text-[length:calc(var(--u)*1.6)] font-semibold uppercase tracking-[0.1em]">
+                <span className="rounded-full border border-ink/25 py-[calc(var(--u)*1.6)] text-center">Calendario</span>
+                <span className="rounded-full bg-ink py-[calc(var(--u)*1.6)] text-center text-bone">Cómo llegar</span>
               </div>
             </div>
           )}
@@ -162,65 +151,66 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
       {/* Tarjetas flotantes que explican cómo funciona */}
       {variante === "perfil" ? (
         <>
-          <div className={`${flotante} left-0 top-[14%] w-[38%] p-[2.6cqw]`}>
-            <p className="font-mono text-[1.6cqw] uppercase tracking-[0.14em] text-ink/55">Al sumarte · por mail</p>
-            <p className="font-display text-[6cqw] font-extrabold leading-none">{DESCUENTO_BIENVENIDA}% OFF</p>
-            <p className="mt-[1cqw] flex flex-wrap items-center gap-[1cqw] text-[1.9cqw]">
-              <span className="rounded-full bg-champagne px-[1.4cqw] py-[0.4cqw] font-mono text-[1.6cqw] font-semibold">1er pedido</span>
+          <div className={`${flotante} tc-ancha left-0 top-[14%] w-[38%] p-[calc(var(--u)*2.6)]`}>
+            <p className="font-mono text-[length:calc(var(--u)*1.6)] uppercase tracking-[0.14em] text-ink/55">Al sumarte · por mail</p>
+            <p className="font-display text-[length:calc(var(--u)*6)] font-extrabold leading-none">{DESCUENTO_BIENVENIDA}% OFF</p>
+            <p className="mt-[calc(var(--u)*1)] flex flex-wrap items-center gap-[calc(var(--u)*1)] text-[length:calc(var(--u)*1.9)]">
+              <span className="rounded-full bg-champagne px-[calc(var(--u)*1.4)] py-[calc(var(--u)*0.4)] font-mono text-[length:calc(var(--u)*1.6)] font-semibold">1er pedido</span>
               con tu código
             </p>
           </div>
-          <div className={`${flotante} tc-b right-[2%] top-[6%] bg-ink p-[2.2cqw] text-bone`}>
-            <p className="text-[1.6cqw] uppercase tracking-[0.14em] text-champagne">Pedido por WhatsApp</p>
-            <p className="font-display text-[3cqw] font-bold leading-tight">Te responde Flor</p>
-            <p className="text-[1.7cqw] text-bone/65">sin bots, en persona</p>
+          <div className={`${flotante} tc-b right-[2%] top-[6%] bg-ink p-[calc(var(--u)*2.2)] text-bone`}>
+            <p className="text-[length:calc(var(--u)*1.6)] uppercase tracking-[0.14em] text-champagne">Pedido por WhatsApp</p>
+            <p className="font-display text-[length:calc(var(--u)*3)] font-bold leading-tight">Te responde Flor</p>
+            <p className="text-[length:calc(var(--u)*1.7)] text-bone/65">sin bots, en persona</p>
           </div>
-          <div className={`${flotante} tc-c bottom-[12%] right-0 flex items-center gap-[2cqw] p-[2.2cqw]`}>
-            <span className="grid h-[8cqw] w-[8cqw] place-items-center rounded-[1.6cqw] bg-ink text-bone">
-              <Casita className="h-[5.6cqw] w-auto" />
+          <div className={`${flotante} tc-c bottom-[12%] right-0 flex items-center gap-[calc(var(--u)*2)] p-[calc(var(--u)*2.2)]`}>
+            <span className="grid h-[calc(var(--u)*8)] w-[calc(var(--u)*8)] place-items-center rounded-[calc(var(--u)*1.6)] bg-ink text-bone">
+              <Casita className="h-[calc(var(--u)*5.6)] w-auto" />
             </span>
             <span>
-              <span className="block font-semibold text-[2.3cqw] leading-tight">Tus pedidos, guardados</span>
-              <span className="text-[1.7cqw] text-ink/60">estado y repetir en un toque</span>
+              <span className="block font-semibold text-[length:calc(var(--u)*2.3)] leading-tight">Tus pedidos, guardados</span>
+              <span className="text-[length:calc(var(--u)*1.7)] text-ink/60">estado y repetir en un toque</span>
             </span>
           </div>
-          <div className={`${flotante} tc-b bottom-[20%] left-[6%] grid h-[11cqw] w-[11cqw] place-items-center rounded-[2cqw] bg-champagne`}>
-            <Casita className="h-[7.4cqw] w-auto text-ink" />
+          <div className={`${flotante} tc-b bottom-[20%] left-[6%] grid h-[calc(var(--u)*11)] w-[calc(var(--u)*11)] place-items-center rounded-[calc(var(--u)*2)] bg-bone`}>
+            <Casita className="h-[calc(var(--u)*7.4)] w-auto text-ink" />
           </div>
         </>
       ) : (
         <>
-          <div className={`${flotante} left-0 top-[14%] w-[40%] p-[2.6cqw]`}>
-            <p className="font-mono text-[1.6cqw] uppercase tracking-[0.14em] text-ink/55">
+          <div className={`${flotante} tc-ancha left-0 top-[14%] w-[40%] p-[calc(var(--u)*2.6)]`}>
+            <p className="font-mono text-[length:calc(var(--u)*1.6)] uppercase tracking-[0.14em] text-ink/55">
               {pv ? `${pv.nombre} · hasta ${hastaCorto(pv)}` : "Pase General"}
             </p>
-            <p className="font-display text-[5.6cqw] font-extrabold leading-none">{pv ? ars(pv.precios.general) : "Inscripción"}</p>
+            <p className="font-display text-[length:calc(var(--u)*5.6)] font-extrabold leading-none">{pv ? ars(pv.precios.general) : "Inscripción"}</p>
             {sig && (
-              <p className="mt-[1cqw] flex flex-wrap items-center gap-[1cqw] text-[1.8cqw]">
-                <span className="rounded-full bg-champagne px-[1.4cqw] py-[0.4cqw] font-mono text-[1.6cqw] font-semibold">Después {ars(sig.precios.general)}</span>
+              <p className="mt-[calc(var(--u)*1)] flex flex-wrap items-center gap-[calc(var(--u)*1)] text-[length:calc(var(--u)*1.8)]">
+                <span className="rounded-full bg-champagne px-[calc(var(--u)*1.4)] py-[calc(var(--u)*0.4)] font-mono text-[length:calc(var(--u)*1.6)] font-semibold">Después {ars(sig.precios.general)}</span>
                 pase general
               </p>
             )}
           </div>
-          <div className={`${flotante} tc-b right-[2%] top-[6%] bg-ink p-[2.2cqw] text-bone`}>
-            <p className="text-[1.6cqw] uppercase tracking-[0.14em] text-champagne">Cupo limitado</p>
-            <p className="font-display text-[4.4cqw] font-extrabold leading-none">{EVENT_CUPO} lugares</p>
-            <p className="text-[1.7cqw] text-bone/65">te avisamos antes de que suba</p>
+          <div className={`${flotante} tc-b right-[2%] top-[6%] bg-ink p-[calc(var(--u)*2.2)] text-bone`}>
+            <p className="text-[length:calc(var(--u)*1.6)] uppercase tracking-[0.14em] text-champagne">Cupo limitado</p>
+            <p className="font-display text-[length:calc(var(--u)*4.4)] font-extrabold leading-none">{EVENT_CUPO} lugares</p>
+            <p className="text-[length:calc(var(--u)*1.7)] text-bone/65">te avisamos antes de que suba</p>
           </div>
-          <div className={`${flotante} tc-c bottom-[12%] right-0 flex items-center gap-[2cqw] p-[2.2cqw]`}>
-            <span className="grid h-[8cqw] w-[8cqw] place-items-center rounded-[1.6cqw] bg-ink p-[1.4cqw] text-bone">
+          <div className={`${flotante} tc-c bottom-[12%] right-0 flex items-center gap-[calc(var(--u)*2)] p-[calc(var(--u)*2.2)]`}>
+            <span className="grid h-[calc(var(--u)*8)] w-[calc(var(--u)*8)] place-items-center rounded-[calc(var(--u)*1.6)] bg-ink p-[calc(var(--u)*1.4)] text-bone">
               <QrFalso />
             </span>
             <span>
-              <span className="block font-semibold text-[2.3cqw] leading-tight">Entrada con QR</span>
-              <span className="text-[1.7cqw] text-ink/60">te llega por mail al pagar</span>
+              <span className="block font-semibold text-[length:calc(var(--u)*2.3)] leading-tight">Entrada con QR</span>
+              <span className="text-[length:calc(var(--u)*1.7)] text-ink/60">te llega por mail al pagar</span>
             </span>
           </div>
-          <div className={`${flotante} tc-b bottom-[20%] left-[6%] grid h-[11cqw] w-[11cqw] place-items-center rounded-[2cqw] bg-champagne`}>
-            <Casita className="h-[7.4cqw] w-auto text-ink" />
+          <div className={`${flotante} tc-b bottom-[20%] left-[6%] grid h-[calc(var(--u)*11)] w-[calc(var(--u)*11)] place-items-center rounded-[calc(var(--u)*2)] bg-bone`}>
+            <Casita className="h-[calc(var(--u)*7.4)] w-auto text-ink" />
           </div>
         </>
       )}
+    </div>
     </div>
   );
 }
