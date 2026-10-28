@@ -40,7 +40,7 @@ export function NewsletterBanda({ total, variante }: { total: number; variante?:
 
         {/* Debajo: texto + formulario a la izquierda, el teléfono a la derecha */}
         <div className="mt-10 grid items-center gap-10 md:mt-14 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-6 lg:pl-[4%]">
           <p className="max-w-[44ch] text-[length:var(--text-step--1)] leading-relaxed text-bone/80 md:text-[length:var(--text-step-0)]">{copy.bajada}</p>
           <ul className="mt-5 flex flex-col gap-2">
             {copy.beneficios.map((b) => (
@@ -55,11 +55,11 @@ export function NewsletterBanda({ total, variante }: { total: number; variante?:
               Ya somos <span className="font-semibold text-champagne">+{Math.floor(total / 10) * 10}</span> en el club.
             </p>
           )}
-          <div className="mt-8 w-full max-w-xl">
+          <div className="mt-8 w-full max-w-md">
             {summit ? <NewsletterForm key="summit" interes="summit" cta="Avisame" /> : <NewsletterForm key="general" />}
           </div>
           </div>
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-6">
             <TelefonoClub variante={summit ? "summit" : "perfil"} />
           </div>
         </div>
