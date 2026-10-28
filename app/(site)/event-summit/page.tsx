@@ -194,21 +194,21 @@ export default async function EventoPage() {
       {/* 7 · INSCRIPCIÓN — cierre cinematográfico full-bleed (dark) */}
       <section
         id="inscripcion"
-        data-theme="dark"
-        className="relative isolate scroll-mt-24 overflow-hidden bg-ink px-6 py-20 text-bone md:px-10 md:py-24"
+        data-theme="light"
+        className="relative isolate scroll-mt-24 overflow-hidden bg-bone px-6 py-20 text-ink md:px-10 md:py-24"
       >
-        {/* Fondo full-bleed con duotono */}
+        {/* Fondo CLARO: foto luminosa del Summit con velo marfil */}
         <Duotone
-          src="/img/summit/lg/sum-16.webp"
+          src="/img/summit/lg/sum-09.webp"
           sizes="100vw"
-          scrim="full"
           className="absolute inset-0"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/40" />
+        <div className="absolute inset-0 bg-bone/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bone via-bone/40 to-bone/70" />
 
         <div className="relative mx-auto max-w-[87.5rem]">
           {/* Arriba y centrado: el mensaje */}
-          <div className="mx-auto flex max-w-[52rem] flex-col items-center text-center">
+          <div className="tema-invertido mx-auto flex max-w-[52rem] flex-col items-center text-center">
             <Eyebrow className="mb-4">Reservá tu lugar</Eyebrow>
             <RevealText
               as="h2"
@@ -228,7 +228,7 @@ export default async function EventoPage() {
 
           {/* Debajo: formulario a la izquierda, el teléfono a la derecha */}
           <div className="mt-10 grid grid-cols-1 items-center gap-12 md:mt-12 lg:grid-cols-12 lg:gap-10">
-            <div className="w-full max-w-[34rem] lg:col-span-6 lg:pl-[4%]">
+            <div className="tema-invertido w-full max-w-[34rem] lg:col-span-6 lg:pl-[4%]">
               <SummitInscripcion />
             </div>
             <div className="lg:col-span-6">

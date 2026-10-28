@@ -997,3 +997,13 @@ body:has(form[data-oculta-flotantes]:focus-within) .c-wa {
   padding: 0.1em 0.08em 0.16em;
   margin: -0.1em -0.08em -0.16em;
 }
+
+/* Bloques pensados para fondo oscuro puestos sobre fondo CLARO (p. ej. la
+   inscripción del Summit): se intercambian tinta y marfil y todo el bloque
+   (texto, bordes, botón) se invierte sin reescribir sus clases. */
+.tema-invertido {
+  --color-bone: #14110f;
+  --color-ink: #f7f3ec;
+  /* el dorado sobre marfil no se lee: versión oscura (AA) */
+  --color-champagne: #7d5f25;
+}
