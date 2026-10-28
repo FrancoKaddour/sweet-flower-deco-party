@@ -65,7 +65,7 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
   const sig = siguientePreventa();
 
   return (
-    <div aria-hidden="true" className="mx-auto w-full max-w-[44rem] select-none [container-name:tc] [container-type:inline-size]">
+    <div aria-hidden="true" className="mx-auto w-full max-w-[48rem] select-none [container-name:tc] [container-type:inline-size]">
     <div className="tc relative aspect-[1/0.98] w-full">
       <style>{`
         .tc{--u:1cqw}
@@ -81,7 +81,7 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
       `}</style>
 
       {/* El teléfono */}
-      <div className="tc-tel absolute left-1/2 top-[2%] h-[96%] w-[52%] -translate-x-1/2 rounded-[calc(var(--u)*6.5)] border-[length:calc(var(--u)*1.4)] border-ink bg-ink p-[calc(var(--u)*0.6)] shadow-[0_calc(var(--u)*4)_calc(var(--u)*8)_calc(var(--u)*-3)_rgb(0_0_0/0.6)]">
+      <div className="tc-tel absolute left-1/2 top-[2%] h-[96%] w-[56%] -translate-x-1/2 -rotate-[5deg] rounded-[calc(var(--u)*6.5)] border-[length:calc(var(--u)*1.4)] border-ink bg-ink p-[calc(var(--u)*0.6)] shadow-[0_calc(var(--u)*4)_calc(var(--u)*8)_calc(var(--u)*-3)_rgb(0_0_0/0.6)]">
         <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--u)*5.2)] bg-bone text-ink">
           {/* Barra de estado + notch */}
           <div className="flex items-center justify-between px-[calc(var(--u)*4.5)] pt-[calc(var(--u)*2.6)] font-sans text-[length:calc(var(--u)*2.1)] font-semibold">
@@ -151,7 +151,7 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
       {/* Tarjetas flotantes que explican cómo funciona */}
       {variante === "perfil" ? (
         <>
-          <div className={`${flotante} tc-ancha left-0 top-[14%] w-[38%] p-[calc(var(--u)*2.6)]`}>
+          <div className={`${flotante} tc-ancha -left-[5%] top-[14%] w-[38%] p-[calc(var(--u)*2.6)]`}>
             <p className="font-mono text-[length:calc(var(--u)*1.6)] uppercase tracking-[0.14em] text-ink/55">Al sumarte · por mail</p>
             <p className="font-display text-[length:calc(var(--u)*6)] font-extrabold leading-none">{DESCUENTO_BIENVENIDA}% OFF</p>
             <p className="mt-[calc(var(--u)*1)] flex flex-wrap items-center gap-[calc(var(--u)*1)] text-[length:calc(var(--u)*1.9)]">
@@ -164,7 +164,7 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
             <p className="font-display text-[length:calc(var(--u)*3)] font-bold leading-tight">Te responde Flor</p>
             <p className="text-[length:calc(var(--u)*1.7)] text-bone/65">sin bots, en persona</p>
           </div>
-          <div className={`${flotante} tc-c bottom-[12%] right-0 flex items-center gap-[calc(var(--u)*2)] p-[calc(var(--u)*2.2)]`}>
+          <div className={`${flotante} tc-c bottom-[12%] -right-[7%] flex items-center gap-[calc(var(--u)*2)] p-[calc(var(--u)*2.2)]`}>
             <span className="grid h-[calc(var(--u)*8)] w-[calc(var(--u)*8)] place-items-center rounded-[calc(var(--u)*1.6)] bg-ink text-bone">
               <Casita className="h-[calc(var(--u)*5.6)] w-auto" />
             </span>
@@ -179,7 +179,7 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
         </>
       ) : (
         <>
-          <div className={`${flotante} tc-ancha left-0 top-[14%] w-[40%] p-[calc(var(--u)*2.6)]`}>
+          <div className={`${flotante} tc-ancha -left-[5%] top-[14%] w-[40%] p-[calc(var(--u)*2.6)]`}>
             <p className="font-mono text-[length:calc(var(--u)*1.6)] uppercase tracking-[0.14em] text-ink/55">
               {pv ? `${pv.nombre} · hasta ${hastaCorto(pv)}` : "Pase General"}
             </p>
@@ -196,7 +196,7 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
             <p className="font-display text-[length:calc(var(--u)*4.4)] font-extrabold leading-none">{EVENT_CUPO} lugares</p>
             <p className="text-[length:calc(var(--u)*1.7)] text-bone/65">te avisamos antes de que suba</p>
           </div>
-          <div className={`${flotante} tc-c bottom-[12%] right-0 flex items-center gap-[calc(var(--u)*2)] p-[calc(var(--u)*2.2)]`}>
+          <div className={`${flotante} tc-c bottom-[12%] -right-[7%] flex items-center gap-[calc(var(--u)*2)] p-[calc(var(--u)*2.2)]`}>
             <span className="grid h-[calc(var(--u)*8)] w-[calc(var(--u)*8)] place-items-center rounded-[calc(var(--u)*1.6)] bg-ink p-[calc(var(--u)*1.4)] text-bone">
               <QrFalso />
             </span>
