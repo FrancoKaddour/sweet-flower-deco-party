@@ -178,7 +178,8 @@ export default async function EventoPage() {
         className="scroll-mt-24 bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
       >
         <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-4">
+          {/* Desktop/notebook: el título acompaña el scroll mientras se leen las preguntas */}
+          <div className="lg:sticky lg:top-32 lg:col-span-4 lg:self-start">
             <Eyebrow className="mb-6">Antes de inscribirte</Eyebrow>
             <h2 className="max-w-[12ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [text-wrap:balance]">
               Lo que más nos preguntan
