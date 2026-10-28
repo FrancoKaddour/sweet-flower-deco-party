@@ -181,7 +181,7 @@ export default async function EventoPage() {
           {/* Desktop/notebook: el título acompaña el scroll mientras se leen las preguntas */}
           <div className="lg:sticky lg:top-32 lg:col-span-4 lg:self-start">
             <Eyebrow className="mb-6">Antes de inscribirte</Eyebrow>
-            <h2 className="max-w-[12ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [text-wrap:balance]">
+            <h2 className="max-w-[12ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] lg:text-[length:min(var(--text-step-5),3.3vw)] tracking-[-0.02em] text-ink [text-wrap:balance]">
               Lo que más nos preguntan
             </h2>
           </div>

@@ -126,7 +126,7 @@ export default function ContactoPage() {
         <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-4">
             <Eyebrow className="mb-5">Preguntas frecuentes</Eyebrow>
-            <h2 className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)]">
+            <h2 className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)] lg:text-[length:min(var(--text-step-5),3.3vw)]">
               {/* TODO(contenido): titular real */}
               Lo que más nos preguntan
             </h2>
