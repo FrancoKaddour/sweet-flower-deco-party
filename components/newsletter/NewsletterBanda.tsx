@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { CLUB, CLUB_SUMMIT } from "@/content/newsletter";
 import { NewsletterForm } from "./NewsletterForm";
+import { TelefonoClub } from "./TelefonoClub";
 
 /** Banda del Club (markup). Elige el mensaje según la página (E-20). */
 export function NewsletterBanda({ total, variante }: { total: number; variante?: "general" | "summit" }) {
@@ -27,6 +28,7 @@ export function NewsletterBanda({ total, variante }: { total: number; variante?:
 
       <div className="relative mx-auto grid max-w-[87.5rem] items-center gap-10 md:gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-6">
+          {/* Texto + formulario a la izquierda; el celular que explica el club, a la derecha */}
           <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ {CLUB.nombre}</p>
           <h2
             id="club-titulo"
@@ -48,10 +50,13 @@ export function NewsletterBanda({ total, variante }: { total: number; variante?:
               Ya somos <span className="font-semibold text-champagne">+{Math.floor(total / 10) * 10}</span> en el club.
             </p>
           )}
+          <div className="mt-10 w-full max-w-xl">
+            {summit ? <NewsletterForm key="summit" interes="summit" cta="Avisame" /> : <NewsletterForm key="general" />}
+          </div>
         </div>
 
-        <div className="w-full max-w-xl lg:col-span-5 lg:col-start-8 lg:max-w-none">
-          {summit ? <NewsletterForm key="summit" interes="summit" cta="Avisame" /> : <NewsletterForm key="general" />}
+        <div className="lg:col-span-6">
+          <TelefonoClub variante={summit ? "summit" : "perfil"} />
         </div>
       </div>
     </section>
