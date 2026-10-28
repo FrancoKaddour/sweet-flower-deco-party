@@ -13,7 +13,7 @@ import { DESCUENTO_BIENVENIDA } from "@/content/newsletter";
  * tales; los precios y fechas reales salen del contenido del sitio.
  * Escala con el contenedor (container queries, unidades cqw).
  */
-type Variante = "perfil" | "summit";
+type Variante = "perfil" | "summit" | "inscripcion";
 
 const ars = (n: number) => `$${n.toLocaleString("es-AR")}`;
 
@@ -122,6 +122,40 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
                 Repetir pedido
               </span>
             </div>
+          ) : variante === "inscripcion" ? (
+            <div className="flex flex-1 flex-col gap-[calc(var(--u)*2.2)] px-[calc(var(--u)*3.6)] pb-[calc(var(--u)*3.6)] pt-[calc(var(--u)*4)]">
+              <div className="flex items-center justify-between">
+                <p className="font-display text-[length:calc(var(--u)*3.8)] font-bold leading-none">Tu lugar</p>
+                <span className="rounded-full bg-champagne px-[calc(var(--u)*1.8)] py-[calc(var(--u)*0.7)] text-[length:calc(var(--u)*1.6)] font-semibold uppercase tracking-[0.14em]">{pv ? "Preventa" : "Inscripción"}</span>
+              </div>
+              <p className="text-[length:calc(var(--u)*1.7)] font-semibold uppercase tracking-[0.16em] text-ink/60">En 3 pasos</p>
+              <ol className="flex flex-col gap-[calc(var(--u)*1.6)] text-[length:calc(var(--u)*1.9)]">
+                <li className="rounded-[calc(var(--u)*1.6)] bg-white p-[calc(var(--u)*2.2)] shadow-[0_calc(var(--u)*0.4)_calc(var(--u)*1.2)_rgb(0_0_0/0.06)]">
+                  <span className="font-semibold">1 · Elegí tu pase</span>
+                  <span className="mt-[calc(var(--u)*1.2)] grid grid-cols-2 gap-[calc(var(--u)*1)] text-[length:calc(var(--u)*1.6)] font-semibold uppercase tracking-[0.1em]">
+                    <span className="rounded-full bg-ink py-[calc(var(--u)*1.1)] text-center text-bone">VIP</span>
+                    <span className="rounded-full border border-ink/25 py-[calc(var(--u)*1.1)] text-center">General</span>
+                  </span>
+                </li>
+                <li className="flex items-center justify-between rounded-[calc(var(--u)*1.6)] bg-white p-[calc(var(--u)*2.2)] shadow-[0_calc(var(--u)*0.4)_calc(var(--u)*1.2)_rgb(0_0_0/0.06)]">
+                  <span>
+                    <span className="block font-semibold">2 · Pagá online</span>
+                    <span className="text-[length:calc(var(--u)*1.6)] text-ink/55">Mercado Pago · cuotas</span>
+                  </span>
+                  <span className="font-display text-[length:calc(var(--u)*2.6)] font-extrabold">{pv ? ars(pv.precios.general) : ""}</span>
+                </li>
+                <li className="flex items-center gap-[calc(var(--u)*2)] rounded-[calc(var(--u)*1.6)] bg-white p-[calc(var(--u)*2.2)] shadow-[0_calc(var(--u)*0.4)_calc(var(--u)*1.2)_rgb(0_0_0/0.06)]">
+                  <span className="h-[calc(var(--u)*7)] w-[calc(var(--u)*7)] shrink-0 text-ink"><QrFalso /></span>
+                  <span>
+                    <span className="block font-semibold">3 · Te llega la entrada</span>
+                    <span className="text-[length:calc(var(--u)*1.6)] text-ink/55">con QR, por mail</span>
+                  </span>
+                </li>
+              </ol>
+              <span className="mt-auto rounded-full bg-bordeaux py-[calc(var(--u)*2)] text-center text-[length:calc(var(--u)*1.8)] font-semibold uppercase tracking-[0.14em] text-bone">
+                Quiero mi lugar
+              </span>
+            </div>
           ) : (
             <div className="flex flex-1 flex-col gap-[calc(var(--u)*2.4)] px-[calc(var(--u)*3.6)] pb-[calc(var(--u)*3.6)] pt-[calc(var(--u)*4)]">
               <div className="flex items-center justify-between">
@@ -171,6 +205,34 @@ export function TelefonoClub({ variante }: { variante: Variante }) {
             <span>
               <span className="block font-semibold text-[length:calc(var(--u)*2.3)] leading-tight">Tus pedidos, guardados</span>
               <span className="text-[length:calc(var(--u)*1.7)] text-ink/60">estado y repetir en un toque</span>
+            </span>
+          </div>
+          <div className={`${flotante} tc-b bottom-[20%] left-[6%] grid h-[calc(var(--u)*11)] w-[calc(var(--u)*11)] place-items-center rounded-[calc(var(--u)*2)] bg-bone`}>
+            <Casita className="h-[calc(var(--u)*7.4)] w-auto text-ink" />
+          </div>
+        </>
+      ) : variante === "inscripcion" ? (
+        <>
+          <div className={`${flotante} tc-ancha -left-[5%] top-[14%] w-[40%] p-[calc(var(--u)*2.6)]`}>
+            <p className="font-mono text-[length:calc(var(--u)*1.6)] uppercase tracking-[0.14em] text-ink/55">Cupo limitado</p>
+            <p className="font-display text-[length:calc(var(--u)*4.6)] font-extrabold leading-none">No te quedes afuera</p>
+            <p className="mt-[calc(var(--u)*1)] flex flex-wrap items-center gap-[calc(var(--u)*1)] text-[length:calc(var(--u)*1.8)]">
+              <span className="rounded-full bg-champagne px-[calc(var(--u)*1.4)] py-[calc(var(--u)*0.4)] font-mono text-[length:calc(var(--u)*1.6)] font-semibold">{EVENT_CUPO} lugares</span>
+              y nada más
+            </p>
+          </div>
+          <div className={`${flotante} tc-b right-[2%] top-[6%] bg-ink p-[calc(var(--u)*2.2)] text-bone`}>
+            <p className="text-[length:calc(var(--u)*1.6)] uppercase tracking-[0.14em] text-champagne">Pago seguro</p>
+            <p className="font-display text-[length:calc(var(--u)*3)] font-bold leading-tight">Mercado Pago</p>
+            <p className="text-[length:calc(var(--u)*1.7)] text-bone/65">tarjeta en cuotas o débito</p>
+          </div>
+          <div className={`${flotante} tc-c bottom-[12%] -right-[7%] flex items-center gap-[calc(var(--u)*2)] p-[calc(var(--u)*2.2)]`}>
+            <span className="grid h-[calc(var(--u)*8)] w-[calc(var(--u)*8)] place-items-center rounded-[calc(var(--u)*1.6)] bg-ink p-[calc(var(--u)*1.4)] text-bone">
+              <QrFalso />
+            </span>
+            <span>
+              <span className="block font-semibold text-[length:calc(var(--u)*2.3)] leading-tight">Confirmado al instante</span>
+              <span className="text-[length:calc(var(--u)*1.7)] text-ink/60">tu entrada llega por mail</span>
             </span>
           </div>
           <div className={`${flotante} tc-b bottom-[20%] left-[6%] grid h-[calc(var(--u)*11)] w-[calc(var(--u)*11)] place-items-center rounded-[calc(var(--u)*2)] bg-bone`}>

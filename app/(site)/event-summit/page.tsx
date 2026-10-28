@@ -13,6 +13,7 @@ import { SummitEscenas } from "@/components/evento/SummitEscenas";
 import { EventoStats } from "@/components/evento/EventoStats";
 import { EdicionesScroll } from "@/components/evento/EdicionesScroll";
 import { Duotone } from "@/components/evento/Duotone";
+import { TelefonoClub } from "@/components/newsletter/TelefonoClub";
 import { BarraCompraMovil } from "@/components/evento/BarraCompraMovil";
 import { QuedanLugares, type Cupo } from "@/components/evento/QuedanLugares";
 import { FaqLista } from "@/components/seo/FaqLista";
@@ -28,7 +29,6 @@ import {
   EDICION_LABEL,
   EVENT_SEDE,
   EVENT_HORARIO,
-  precioDesde,
   preventaVigente,
 } from "@/content/evento";
 
@@ -195,7 +195,7 @@ export default async function EventoPage() {
       <section
         id="inscripcion"
         data-theme="dark"
-        className="relative isolate scroll-mt-24 overflow-hidden bg-ink px-6 py-28 text-bone md:px-10 md:py-40"
+        className="relative isolate scroll-mt-24 overflow-hidden bg-ink px-6 py-20 text-bone md:px-10 md:py-24"
       >
         {/* Fondo full-bleed con duotono */}
         <Duotone
@@ -207,48 +207,32 @@ export default async function EventoPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/40" />
 
         <div className="relative mx-auto max-w-[87.5rem]">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end lg:gap-16">
-            <div className="lg:col-span-7">
-              <Eyebrow className="mb-6">Reservá tu lugar</Eyebrow>
-              <RevealText
-                as="h2"
-                onScroll
-                className="max-w-[14ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.85] tracking-[-0.03em] text-bone [overflow-wrap:anywhere]"
-              >
-                {/* TODO(contenido): titular real */}
-                {`Son ${EVENT_CUPO} lugares. Nada más.`}
-              </RevealText>
-              <QuedanLugares cupo={cupo} className="mt-6 text-champagne" />
-              <p className="mt-8 max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/80">
-                {EDICION_LABEL} · {EVENT_WHEN} · {EVENT_HORARIO}
-                {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}. Elegí tu pase, pagá
-                online con Mercado Pago y tu lugar queda confirmado al instante.
-              </p>
+          {/* Arriba y centrado: el mensaje */}
+          <div className="mx-auto flex max-w-[52rem] flex-col items-center text-center">
+            <Eyebrow className="mb-4">Reservá tu lugar</Eyebrow>
+            <RevealText
+              as="h2"
+              onScroll
+              className="font-display text-[length:min(var(--text-step-5),7svh)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-bone [text-wrap:balance]"
+            >
+              {/* TODO(contenido): titular real */}
+              {`Son ${EVENT_CUPO} lugares. Nada más.`}
+            </RevealText>
+            <QuedanLugares cupo={cupo} className="mt-3 text-champagne" />
+            <p className="mt-4 max-w-[60ch] font-sans text-[length:var(--text-step--1)] leading-relaxed text-bone/80 md:text-[length:var(--text-step-0)]">
+              {EDICION_LABEL} · {EVENT_WHEN} · {EVENT_HORARIO}
+              {EVENT_SEDE ? ` · ${EVENT_SEDE}` : ""}. Elegí tu pase, pagá
+              online con Mercado Pago y tu lugar queda confirmado al instante.
+            </p>
+          </div>
+
+          {/* Debajo: formulario a la izquierda, el teléfono a la derecha */}
+          <div className="mt-10 grid grid-cols-1 items-center gap-12 md:mt-12 lg:grid-cols-12 lg:gap-10">
+            <div className="w-full max-w-[34rem] lg:col-span-6 lg:pl-[4%]">
+              <SummitInscripcion />
             </div>
-
-            <div className="w-full max-w-[40rem] lg:col-span-5 lg:max-w-none lg:justify-self-end">
-              <dl className="flex flex-col gap-6 border-t border-bone/20 pt-8">
-                <div className="flex items-baseline justify-between gap-6">
-                  <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">
-                    Cupos
-                  </dt>
-                  <dd className="font-display text-[length:var(--text-step-4)] font-extrabold text-bone">
-                    {EVENT_CUPO}
-                  </dd>
-                </div>
-                <div className="flex items-baseline justify-between gap-6 border-t border-bone/20 pt-6">
-                  <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/55">
-                    Valor
-                  </dt>
-                  <dd className="font-display text-[length:var(--text-step-3)] font-extrabold text-bone">
-                    {precioDesde()}
-                  </dd>
-                </div>
-              </dl>
-
-              <div className="mt-10">
-                <SummitInscripcion />
-              </div>
+            <div className="lg:col-span-6">
+              <TelefonoClub variante="inscripcion" />
             </div>
           </div>
         </div>
