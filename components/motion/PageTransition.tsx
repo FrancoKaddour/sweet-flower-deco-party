@@ -53,11 +53,6 @@ const BALLOONS: { shape: BrandShape; color: string }[] = [
   { shape: balloonRed2, color: ROJO },
 ];
 
-/** Punto de giro de un globo: la punta de su hilo (abajo al centro de su caja). */
-function balloonOrigin(el: Element): string {
-  const [x, y, w, h] = (el.getAttribute("data-vb") ?? "0 0 0 0").split(" ").map(Number);
-  return `${x + w / 2} ${y + h}`;
-}
 
 /** Sección de una ruta: entre secciones va la transición completa (globos). */
 function seccion(path: string): string {
@@ -190,7 +185,7 @@ export function PageTransition() {
         // Globos: arrancan bien abajo (unidades del viewBox del logo) y suben
         // hasta su lugar exacto en el isotipo.
         balloons.forEach((b, i) =>
-          gsap.set(b, { y: 520 + i * 40, rotate: i % 2 ? 6 : -6, svgOrigin: balloonOrigin(b), autoAlpha: corta ? 0 : 1 }),
+          gsap.set(b, { y: 520 + i * 40, rotate: 0, transformOrigin: "50% 100%", autoAlpha: corta ? 0 : 1 }),
         );
 
         const tCover = performance.now();
@@ -261,7 +256,7 @@ export function PageTransition() {
             balloons,
             {
               y: -900,
-              rotate: (i) => (i % 2 ? 8 : -8),
+              rotate: (i) => (i % 2 ? 3 : -3),
               duration: 0.8,
               ease: "power2.in",
               stagger: { each: 0.04, from: "random" },
@@ -308,6 +303,10 @@ export function PageTransition() {
             </g>
           ))}
           <g className="c-pt__mark">
+            {/* Relleno tinta detrás de la casita: tapa las ventanas y el hueco
+                de la puerta, así los globos que suben por detrás no se ven a
+                través de la casa. */}
+            <polygon points="261.5,347.3 361.7,334 338.1,479.6 279.7,479.9" fill="var(--color-ink)" />
             <path d={house.d} fill="var(--color-bone)" fillRule="evenodd" />
           </g>
         </svg>

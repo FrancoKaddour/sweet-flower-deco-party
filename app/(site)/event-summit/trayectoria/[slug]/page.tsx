@@ -121,7 +121,8 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       {e.temas?.length ? (
         <section data-theme="dark" aria-labelledby="temas-h" className="px-6 pb-24 md:px-10 md:pb-36">
           <div className="mx-auto grid max-w-[87.5rem] gap-12 lg:grid-cols-12 lg:gap-10">
-            <div className="lg:col-span-4">
+            {/* Desktop: el título acompaña el scroll mientras se recorren los temas */}
+            <div className="lg:sticky lg:top-32 lg:col-span-4 lg:self-start">
               <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ Programa</p>
               <h2 id="temas-h" className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] text-bone">
                 Lo que vimos
