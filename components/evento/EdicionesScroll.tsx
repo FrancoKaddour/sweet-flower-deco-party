@@ -41,7 +41,7 @@ const ESTADOS = N + 1; // intro + 9
 const GIROS = [-6, 4, -8, 6, -4, 8, -5, 5, 0] as const;
 
 /** Pausa entre gestos (Cynar: 800ms). */
-const LOCK_MS = 600;
+const LOCK_MS = 300;
 
 /**
  * Un gesto = una carta. Los trackpads y las ruedas "con inercia" siguen
