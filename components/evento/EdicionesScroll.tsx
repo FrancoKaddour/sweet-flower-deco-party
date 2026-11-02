@@ -41,7 +41,7 @@ const ESTADOS = N + 1; // intro + 9
 const GIROS = [-6, 4, -8, 6, -4, 8, -5, 5, 0] as const;
 
 /** Pausa entre gestos (Cynar: 800ms). */
-const LOCK_MS = 1000;
+const LOCK_MS = 600;
 
 /**
  * Un gesto = una carta. Los trackpads y las ruedas "con inercia" siguen
@@ -49,7 +49,7 @@ const LOCK_MS = 1000;
  * un solo scroll pasara varias cartas. Después de cada paso, el próximo solo
  * cuenta si hubo una PAUSA en los eventos (gesto nuevo) de al menos CALMA_MS.
  */
-const CALMA_MS = 180;
+const CALMA_MS = 120;
 
 /**
  * Ventana tras soltar el scroll en la que se ignoran re-activaciones EN LA
@@ -80,7 +80,7 @@ export function EdicionesScroll() {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const pintar = (idx: number, dur: number) => {
-        if (intro) gsap.to(intro, { autoAlpha: idx === 0 ? 1 : 0, duration: dur, ease: "power2.inOut", overwrite: true });
+        if (intro) gsap.to(intro, { autoAlpha: idx === 0 ? 1 : 0, duration: dur, ease: "power3.out", overwrite: true });
         cards.forEach((c, i) => {
           const visible = i < idx;
           gsap.to(c, {
@@ -88,7 +88,7 @@ export function EdicionesScroll() {
             scale: visible ? 1 : 1.2,
             autoAlpha: visible ? 1 : 0,
             duration: dur,
-            ease: "power2.inOut",
+            ease: "power3.out",
             overwrite: true,
           });
         });
@@ -190,7 +190,7 @@ export function EdicionesScroll() {
       function ejecutar(dir: 1 | -1) {
         state.busy = true;
         state.index += dir;
-        pintar(state.index, 1);
+        pintar(state.index, 0.65);
         window.setTimeout(() => {
           state.busy = false;
           if (!activo) {
