@@ -277,10 +277,8 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       </section>
 
       {/* CTA — 2ª edición */}
-      <section data-theme="dark" className="relative overflow-hidden [background:linear-gradient(to_bottom,var(--color-ink),var(--color-bordeaux)_28%)] px-6 pb-24 pt-36 md:px-10 md:pb-32 md:pt-48">
-        {/* Degradé tinta → bordó: entra suave desde arriba y abajo queda bordó,
-            el mismo de la banda del Club que sigue → sin corte */}
-        <div className="evt-grain pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_28%)]" />
+      <section data-theme="dark" className="relative overflow-hidden bg-bordeaux px-6 py-24 md:px-10 md:py-32">
+        {/* Mismo bordó liso que la banda del Club que sigue → se leen como un solo bloque */}
         <div className="relative mx-auto flex max-w-[87.5rem] flex-col items-center gap-10 text-center">
           <div className="flex flex-col items-center">
             <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">
