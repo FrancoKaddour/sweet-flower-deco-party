@@ -120,7 +120,7 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
 
       {/* LO QUE VIMOS — temas del encuentro */}
       {e.temas?.length ? (
-        <section data-theme="dark" aria-labelledby="temas-h" className="px-6 pb-24 md:px-10 md:pb-36">
+        <section data-theme="dark" aria-labelledby="temas-h" className="px-6 pb-24 pt-20 md:px-10 md:pb-36 md:pt-28 lg:pt-36">
           <div className="mx-auto grid max-w-[87.5rem] gap-12 lg:grid-cols-12 lg:gap-10">
             {/* Desktop: el título acompaña el scroll mientras se recorren los temas */}
             <div className="lg:sticky lg:top-32 lg:col-span-4 lg:self-start">
