@@ -80,20 +80,20 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       {/* INTRO — declaración + ficha. Fondo CLARO (marfil) para cortar el negro
           de la página: tema-invertido da vuelta tinta/marfil sin tocar las clases. */}
       <section data-theme="light" className="tema-invertido bg-ink text-bone px-6 py-24 md:px-10 md:py-36">
-        <div className="mx-auto grid max-w-[87.5rem] gap-14 md:grid-cols-12 md:gap-10">
-          <div className="md:col-span-6 lg:col-span-7">
+        <div className="mx-auto flex max-w-[60rem] flex-col items-center gap-12 text-center md:gap-14">
+          <div className="flex flex-col items-center">
             <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ El encuentro</p>
             <RevealText
               as="h2"
               onScroll
-              className="max-w-[18ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone [text-wrap:balance]"
+              className="mx-auto max-w-[18ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone [text-wrap:balance]"
             >
               {slug === "primera-edicion" ? "El día que el rubro se juntó" : "Aprender haciendo, juntas"}
             </RevealText>
           </div>
-          <FadeUp y={50} className="flex flex-col justify-end gap-10 md:col-span-6 lg:col-span-4 lg:col-start-9">
-            <p className="text-[length:var(--text-step-1)] leading-snug text-bone/80">{resumenDe(e)}</p>
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-6 border-t border-bone/15 pt-8">
+          <FadeUp y={50} className="flex w-full flex-col items-center gap-10">
+            <p className="mx-auto max-w-[52ch] text-[length:var(--text-step-1)] leading-snug text-bone/80">{resumenDe(e)}</p>
+            <dl className="grid w-full grid-cols-2 gap-x-6 gap-y-6 border-t border-bone/15 pt-8 md:grid-cols-4">
               {(e.fecha
                 ? [
                     ["Fecha", e.fecha],
