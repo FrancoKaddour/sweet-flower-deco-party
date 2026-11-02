@@ -278,17 +278,17 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       {/* CTA — 2ª edición */}
       <section data-theme="dark" className="relative overflow-hidden bg-bordeaux px-6 py-24 md:px-10 md:py-32">
         <div className="evt-grain pointer-events-none absolute inset-0" />
-        <div className="relative mx-auto flex max-w-[87.5rem] flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+        <div className="relative mx-auto flex max-w-[87.5rem] flex-col items-center gap-10 text-center">
+          <div className="flex flex-col items-center">
             <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">
               ✧ {EVENT_NAME} · {EDICION_LABEL}
             </p>
-            <h2 className="max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] text-bone [text-wrap:balance]">
+            <h2 className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] text-bone [text-wrap:balance]">
               La próxima la vivís vos
             </h2>
             <p className="mt-5 text-[length:var(--text-step-1)] text-bone/80">{EVENT_WHEN} · Preventa abierta</p>
           </div>
-          <div className="flex shrink-0 flex-wrap gap-x-10 gap-y-4">
+          <div className="flex shrink-0 flex-wrap justify-center gap-x-10 gap-y-4">
             <Button href="/event-summit#inscripcion" variant="inverse">
               Quiero mi lugar
             </Button>
