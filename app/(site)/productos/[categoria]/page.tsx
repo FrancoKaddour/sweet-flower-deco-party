@@ -11,6 +11,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { getCategoria, getCategorias, getProductosDeCategoria } from "@/modules/catalog/repository";
 import { GrillaPaginada } from "@/components/productos/GrillaPaginada";
+import { Giro360 } from "@/components/productos/Giro360";
+import { GIROS } from "@/content/exhibidores360";
 
 // Listado de categoría: productos desde la base (con respaldo estático),
 // paginados de a 24, destacados primero.
@@ -105,6 +107,9 @@ export default async function CategoriaPage({ params }: Props) {
           </FadeUp>
         </div>
       </section>
+
+      {/* Catering: los exhibidores con giro 360° al scrollear (renders de Tobías) */}
+      {cat.slug === "catering" && GIROS.length > 0 && <Giro360 items={GIROS} id="exhibidores" />}
 
       {productos.length > 0 ? (
         /* Grilla de productos (modules/catalog) */

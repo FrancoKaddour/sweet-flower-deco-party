@@ -6,6 +6,8 @@ import { BreadcrumbJsonLd, JsonLdScript } from "@/components/site/JsonLd";
 import { Galeria } from "@/components/productos/Galeria";
 import { ProductCard } from "@/components/productos/ProductCard";
 import { FichaCompra } from "@/components/productos/FichaCompra";
+import { Giro360 } from "@/components/productos/Giro360";
+import { giroDe } from "@/content/exhibidores360";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { WHATSAPP_NUMBER } from "@/content/site";
 import {
@@ -227,6 +229,11 @@ export default async function ProductoPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {/* Vista 360° con scroll, si hay renders de esta pieza (content/exhibidores360) */}
+      {giroDe(p.slug) && (
+        <Giro360 items={[giroDe(p.slug)!]} eyebrow="Vista 360°" titulo={`${p.nombre} de todos lados`} conCta={false} />
+      )}
 
       {seArmaCon.length > 0 && (
         <section data-theme="light" aria-labelledby="se-arma-con" className="border-t border-line px-6 py-20 md:px-10 md:py-28">
