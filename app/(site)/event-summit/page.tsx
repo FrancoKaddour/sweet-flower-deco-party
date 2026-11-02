@@ -125,7 +125,7 @@ export default async function EventoPage() {
       {/* 4 · PASES (VIP / General): precio de hoy → formulario con pago online */}
       <Pases cupo={cupo} />
 
-      {/* 5 · EDICIONES · scroll horizontal pineado (dark) */}
+      {/* 5 · TRAYECTORIA · scrollytelling pineado: la historia se apila (estilo Cynar) */}
       <EdicionesScroll />
 
       {/* 6 · DISERTANTES — intriga (dark), sin caras grises */}
@@ -197,13 +197,13 @@ export default async function EventoPage() {
         data-theme="light"
         className="relative isolate scroll-mt-24 overflow-hidden bg-bone px-6 py-20 text-ink md:px-10 md:py-24"
       >
-        {/* Fondo CLARO: foto luminosa del Summit con velo marfil */}
+        {/* Fondo claro: foto del Summit (globos y cartel de Sweet Flowers) con velo marfil */}
         <Duotone
-          src="/img/summit/lg/sum-09.webp"
+          src="/img/summit/lg/sum-04.webp"
           sizes="100vw"
           className="absolute inset-0"
         />
-        <div className="absolute inset-0 bg-bone/80" />
+        <div className="absolute inset-0 bg-bone/70" />
         <div className="absolute inset-0 bg-gradient-to-t from-bone via-bone/40 to-bone/70" />
 
         <div className="relative mx-auto max-w-[87.5rem]">

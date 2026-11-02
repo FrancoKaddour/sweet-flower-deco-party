@@ -138,8 +138,9 @@ export function SummitInscripcion() {
         </div>
       </fieldset>
 
-      {/* Precio vigente, bien grande */}
-      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2 border-y border-bone/15 py-3">
+      {/* Precio vigente, bien grande (sin filetes: las únicas líneas del
+          formulario son las de los campos que se completan) */}
+      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2 py-3">
         <div>
           <p className="text-[0.7rem] uppercase tracking-[0.16em] text-champagne">{tarifa.nombre}</p>
           {tarifa.hastaLabel && <p className="text-[length:var(--text-step--1)] text-bone/55">{tarifa.hastaLabel}</p>}

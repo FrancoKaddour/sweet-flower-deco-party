@@ -24,6 +24,18 @@ export function scrollToTopNow() {
   window.scrollTo(0, 0);
 }
 
+/**
+ * Salta a una posición Y al instante, sincronizando Lenis (si existe) con el
+ * scroll nativo. Lo usa la Trayectoria del Summit para soltar el scroll-lock
+ * en el borde exacto de su sección sin que Lenis "vuelva" al punto anterior.
+ */
+export function saltarA(y: number) {
+  // Los DOS: con Lenis frenado, su scrollTo no mueve el scroll nativo; con
+  // Lenis corriendo, el scrollTo nativo solo sería pisado por su lerp.
+  lenisInstance?.scrollTo(y, { immediate: true, force: true });
+  window.scrollTo(0, y);
+}
+
 /** Reanuda el scroll suave (no-op si Lenis no está activo). */
 export function startLenis() {
   lenisInstance?.start();

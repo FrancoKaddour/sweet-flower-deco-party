@@ -5,10 +5,11 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { CustomEase } from "gsap/CustomEase";
+import { Observer } from "gsap/Observer";
 import { useGSAP } from "@gsap/react";
 
 // Registrar una sola vez (idempotente).
-gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
+gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, Observer, useGSAP);
 
 // iOS Safari: la URL bar se retrae durante el scroll y dispara un "resize" que
 // recalcula todos los pins a mitad del gesto (saltos). Lo ignoramos en mobile.
@@ -50,4 +51,4 @@ export function conFuentes(fn: () => void): () => void {
   };
 }
 
-export { gsap, ScrollTrigger, SplitText, CustomEase, useGSAP };
+export { gsap, ScrollTrigger, SplitText, CustomEase, Observer, useGSAP };
