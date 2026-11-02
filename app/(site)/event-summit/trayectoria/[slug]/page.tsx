@@ -233,17 +233,17 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       {/* SIGUIENTE PARADA */}
       <section data-theme="dark" aria-label="Siguiente etapa" className="border-t border-bone/10">
         <Link href={sigHref} className="group relative block overflow-hidden px-6 py-24 md:px-10 md:py-36">
-          {/* Mouse: la foto aparece al pasar. Táctil (sin hover): visible siempre,
-              más tenue, para que la tarjeta no quede vacía. */}
-          <div className="absolute inset-0 -z-0 scale-110 opacity-0 transition-all duration-[1200ms] ease-[var(--ease-out-expo)] group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100 [@media(hover:none)]:scale-100 [@media(hover:none)]:opacity-60">
+          {/* La foto está SIEMPRE visible, a color; al pasar el mouse hace un zoom suave. */}
+          <div className="absolute inset-0 -z-0 scale-105 transition-transform duration-[1200ms] ease-[var(--ease-out-expo)] group-hover:scale-100 group-focus-visible:scale-100">
             <Image
               src={sigFoto.src}
               alt=""
               fill
               sizes="100vw"
-              className={`object-cover ${sigFoto.placeholder ? "grayscale" : ""}`}
+              className="object-cover saturate-[1.15]"
             />
-            <div className="absolute inset-0 bg-ink/65" />
+            {/* Velo más liviano y en degradé: deja ver el color y el texto sigue legible */}
+            <div className="absolute inset-0 bg-linear-to-t from-ink/80 via-ink/35 to-ink/20" />
             <div className="evt-grain absolute inset-0" />
           </div>
           <div className="relative mx-auto flex max-w-[87.5rem] flex-col gap-6 md:flex-row md:items-end md:justify-between">
