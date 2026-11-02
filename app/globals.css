@@ -1007,3 +1007,8 @@ body:has(form[data-oculta-flotantes]:focus-within) .c-wa {
   /* el dorado sobre marfil no se lee: versión oscura (AA) */
   --color-champagne: #7d5f25;
 }
+
+/* El foco programático al título tras navegar (T-15) es para lectores de
+   pantalla: no debe dibujar un recuadro dorado alrededor del H1. */
+main h1[tabindex="-1"]:focus,
+main h1[tabindex="-1"]:focus-visible { outline: none; box-shadow: none; }
