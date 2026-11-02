@@ -226,12 +226,12 @@ export default async function EventoPage() {
             </p>
           </div>
 
-          {/* Debajo: formulario a la izquierda, el teléfono a la derecha */}
+          {/* Debajo: el teléfono a la izquierda y el formulario a la derecha (en celular, el formulario primero) */}
           <div className="mt-10 grid grid-cols-1 items-center gap-12 md:mt-12 lg:grid-cols-12 lg:gap-10">
-            <div className="tema-invertido w-full max-w-[34rem] lg:col-span-6 lg:pl-[4%]">
+            <div className="tema-invertido w-full max-w-[34rem] lg:order-2 lg:col-span-6 lg:justify-self-start lg:pl-[4%]">
               <SummitInscripcion />
             </div>
-            <div className="lg:col-span-6">
+            <div className="lg:order-1 lg:col-span-6">
               <TelefonoClub variante="inscripcion" />
             </div>
           </div>
