@@ -30,8 +30,8 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { gsap } from "@/lib/gsap";
-import { scrollToTopNow, stopLenis, startLenis } from "@/components/motion/SmoothScroll";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { scrollToTopNow, stopLenis, startLenis, saltarA } from "@/components/motion/SmoothScroll";
 import {
   balloonRed,
   balloonRed2,
@@ -150,7 +150,13 @@ export function PageTransition() {
       gsap.set(el, { autoAlpha: 0 });
       busy.current = false;
       // El loader del inicio maneja su propio scroll lock.
-      if (document.body.getAttribute("data-loader") !== "true") startLenis();
+      // Ni una sección con scroll trabado a propósito (la Trayectoria del Summit
+      // marca data-scroll-trabado mientras pasa sus cartas de a una).
+      if (
+        document.body.getAttribute("data-loader") !== "true" &&
+        !document.documentElement.hasAttribute("data-scroll-trabado")
+      )
+        startLenis();
       if (conFoco) enfocarTitulo();
     };
 
@@ -223,7 +229,23 @@ export function PageTransition() {
         }
         // Un frame para que la página nueva pinte debajo de la cortina.
         await frame();
-        if (!url.hash) scrollToTopNow();
+        if (!url.hash) {
+          scrollToTopNow();
+        } else {
+          // Link con ancla (p. ej. /event-summit#trayectoria): router.push con
+          // scroll:false NO baja al ancla, y la página nueva quedaba en el
+          // scroll de la anterior (en medio de cualquier sección pineada, que
+          // se activaba sola y desarmaba el reveal). Bajo la cortina: arriba de
+          // todo, recalcular pins y saltar exacto al ancla.
+          scrollToTopNow();
+          ScrollTrigger.refresh();
+          const destino = document.getElementById(decodeURIComponent(url.hash.slice(1)));
+          if (destino) {
+            const mt = parseFloat(getComputedStyle(destino).scrollMarginTop) || 0;
+            saltarA(Math.max(0, destino.getBoundingClientRect().top + window.scrollY - mt));
+          }
+          await frame();
+        }
 
         // --- 3) Revelar ---------------------------------------------------------
         const conFoco = !url.hash;

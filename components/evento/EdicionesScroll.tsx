@@ -229,6 +229,7 @@ export function EdicionesScroll() {
         esperarGestoNuevo = true;
         ultimoEvento = performance.now();
         stopLenis();
+        document.documentElement.setAttribute("data-scroll-trabado", "");
         obs.enable();
         window.addEventListener("keydown", onKey);
       }
@@ -236,6 +237,7 @@ export function EdicionesScroll() {
       function desactivar() {
         if (!activo || normalizando) return;
         activo = false;
+        document.documentElement.removeAttribute("data-scroll-trabado");
         obs.disable();
         window.removeEventListener("keydown", onKey);
         startLenis();
