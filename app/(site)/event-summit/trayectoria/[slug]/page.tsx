@@ -276,8 +276,9 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       </section>
 
       {/* CTA — 2ª edición */}
-      <section data-theme="dark" className="relative overflow-hidden bg-bordeaux px-6 py-24 md:px-10 md:py-32">
-        <div className="evt-grain pointer-events-none absolute inset-0" />
+      <section data-theme="dark" className="relative overflow-hidden bg-linear-to-b from-bordeaux from-30% to-ink px-6 pb-36 pt-24 md:px-10 md:pb-48 md:pt-32">
+        {/* Degradé bordó → tinta: se funde con el footer (bg-ink) sin corte */}
+        <div className="evt-grain pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black_40%,transparent)]" />
         <div className="relative mx-auto flex max-w-[87.5rem] flex-col items-center gap-10 text-center">
           <div className="flex flex-col items-center">
             <p className="mb-5 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">
