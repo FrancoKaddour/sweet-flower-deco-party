@@ -77,8 +77,9 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
         placeholder={portada.placeholder}
       />
 
-      {/* INTRO — declaración + ficha */}
-      <section data-theme="dark" className="px-6 py-24 md:px-10 md:py-36">
+      {/* INTRO — declaración + ficha. Fondo CLARO (marfil) para cortar el negro
+          de la página: tema-invertido da vuelta tinta/marfil sin tocar las clases. */}
+      <section data-theme="light" className="tema-invertido bg-ink text-bone px-6 py-24 md:px-10 md:py-36">
         <div className="mx-auto grid max-w-[87.5rem] gap-14 md:grid-cols-12 md:gap-10">
           <div className="md:col-span-6 lg:col-span-7">
             <p className="mb-6 text-[length:var(--text-step--1)] uppercase tracking-[0.2em] text-champagne">✧ El encuentro</p>
@@ -201,7 +202,7 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
           {[0, 1].map((k) => (
             <span
               key={k}
-              className="shrink-0 whitespace-nowrap pr-8 font-display text-[clamp(3rem,9vw,8.5rem)] font-extrabold uppercase leading-none text-transparent [-webkit-text-stroke:1px_rgb(247_243_236/0.35)]"
+              className="shrink-0 whitespace-nowrap pr-8 font-display text-[clamp(3rem,9vw,8.5rem)] font-extrabold uppercase leading-none text-bone"
             >
               {cinta.repeat(3)}
             </span>
@@ -213,14 +214,14 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
       {/* GALERÍA */}
       <section data-theme="dark" aria-labelledby="galeria-h" className="px-6 py-24 md:px-10 md:py-32">
         <div className="mx-auto max-w-[87.5rem]">
-          <div className="mb-14 flex flex-wrap items-end justify-between gap-6 md:mb-20">
+          <div className="mb-14 flex flex-col items-center gap-4 text-center md:mb-20">
             <h2
               id="galeria-h"
-              className="max-w-[14ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] text-bone [text-wrap:balance]"
+              className="mx-auto max-w-[20ch] font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] text-bone [text-wrap:balance]"
             >
               El encuentro en imágenes
             </h2>
-            <p className="max-w-[34ch] text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/50">
+            <p className="mx-auto max-w-[40ch] text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/50">
               {esReal ? `${fotos.length} fotos · tocá una para verla en grande` : "Fotos de muestra · pronto las reales"}
             </p>
           </div>
