@@ -1,10 +1,11 @@
 /**
  * Exhibidores con giro 360° (renders de Tobías). Cada uno es una secuencia de
- * cuadros en /public/360/<slug>/000.webp … (una vuelta completa) que el
+ * cuadros en /public/360/<slug>/000.webp … (una vuelta completa; en /m/ la
+ * versión chica para celular) que el
  * componente Giro360 dibuja según el scroll.
  *
- * Para sumar uno nuevo: exportar la vuelta como cuadros (fondo #f4f2f0,
- * 800 px de ancho, mismo encuadre), copiarlos a /public/360/<slug>/ y
+ * Para sumar uno nuevo: exportar la vuelta como cuadros (fondo #f5f3f1,
+ * 1160 px de ancho + copia de 640 px en /m/, encuadre con las sombras enteras), copiarlos a /public/360/<slug>/ y
  * agregar la entrada acá. Si en el panel existe un producto de Catering con
  * el mismo slug, su ficha muestra el giro automáticamente.
  */
@@ -19,7 +20,7 @@ export type Giro = {
 };
 
 /** Color de fondo de los renders: la sección usa el mismo para que no se note el recorte. */
-export const FONDO_RENDER = "#f4f2f0";
+export const FONDO_RENDER = "#f5f3f1";
 
 export const GIROS: Giro[] = [
   {
@@ -53,4 +54,6 @@ export const GIROS: Giro[] = [
 
 export const giroDe = (slug: string) => GIROS.find((g) => g.slug === slug);
 
-export const cuadroSrc = (slug: string, i: number) => `/360/${slug}/${String(i).padStart(3, "0")}.webp`;
+/** Cuadro i de la vuelta. `chico`: versión de 640 px (celulares); si no, la de 1160 px (resolución nativa del render). */
+export const cuadroSrc = (slug: string, i: number, chico = false) =>
+  `/360/${slug}/${chico ? "m/" : ""}${String(i).padStart(3, "0")}.webp`;

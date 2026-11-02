@@ -58,6 +58,8 @@ export function Giro360({ items, eyebrow = "Exhibidores a medida", titulo = "Mir
     const s = Math.min(c.width / img.naturalWidth, c.height / img.naturalHeight);
     const w = img.naturalWidth * s;
     const h = img.naturalHeight * s;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     ctx.fillStyle = FONDO_RENDER;
     ctx.fillRect(0, 0, c.width, c.height);
     ctx.drawImage(img, (c.width - w) / 2, (c.height - h) / 2, w, h);
@@ -83,6 +85,8 @@ export function Giro360({ items, eyebrow = "Exhibidores a medida", titulo = "Mir
     const cargar = () => {
       if (cargado) return;
       cargado = true;
+      // Celular / pantallas chicas: la versión de 640 px alcanza y pesa un tercio.
+      const chico = window.innerWidth * Math.min(2, window.devicePixelRatio || 1) < 1100;
       items.forEach((g, k) => {
         imgs.current[k] = Array.from({ length: g.cuadros }, (_, i) => {
           const img = new Image();
@@ -91,7 +95,7 @@ export function Giro360({ items, eyebrow = "Exhibidores a medida", titulo = "Mir
           img.onload = () => {
             if (Math.abs(i - actual.current[k]) < 3) dibujar(k, actual.current[k]);
           };
-          img.src = cuadroSrc(g.slug, i);
+          img.src = cuadroSrc(g.slug, i, chico);
           return img;
         });
       });
@@ -239,17 +243,15 @@ export function Giro360({ items, eyebrow = "Exhibidores a medida", titulo = "Mir
             className={`grid grid-cols-1 items-center gap-6 py-10 lg:grid-cols-12 lg:gap-10 [[data-animado=true]_&]:absolute [[data-animado=true]_&]:inset-0 [[data-animado=true]_&]:grid-rows-[minmax(0,1fr)_auto] [[data-animado=true]_&]:px-6 [[data-animado=true]_&]:py-0 [[data-animado=true]_&]:pb-[max(1.5rem,5svh)] md:[[data-animado=true]_&]:px-10 lg:[[data-animado=true]_&]:grid-rows-1`}
           >
             {/* El exhibidor */}
-            <div className={`${oculto(k)}g3-pieza relative h-[min(70vw,26rem)] w-full lg:order-2 lg:col-span-7 lg:h-[min(66svh,44rem)] [[data-animado=true]_&]:h-full [[data-animado=true]_&]:min-h-0 lg:[[data-animado=true]_&]:h-[min(68svh,46rem)]`}>
+            <div className={`${oculto(k)}g3-pieza relative h-[min(70vw,26rem)] w-full lg:order-2 lg:col-span-7 lg:h-[min(70svh,48rem)] [[data-animado=true]_&]:h-full [[data-animado=true]_&]:min-h-0 lg:[[data-animado=true]_&]:h-[min(72svh,50rem)]`}>
               <canvas
                 ref={(c) => {
                   canvases.current[k] = c;
                 }}
                 role="img"
                 aria-label={`${g.nombre}, exhibidor de hierro y madera, vista 360°`}
-                className="absolute inset-0 h-full w-full [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_78%)]"
+                className="absolute inset-0 h-full w-full [mask-image:radial-gradient(ellipse_at_center,black_72%,transparent_100%)]"
               />
-              {/* Sombra al piso para que "apoye" */}
-              <span aria-hidden="true" className="pointer-events-none absolute inset-x-[22%] bottom-[4%] h-[6%] rounded-[50%] bg-ink/10 blur-2xl" />
             </div>
 
             {/* Nombre + medidas */}
