@@ -139,7 +139,10 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false); // ya no está en el tope → frosted + logo chico
   const [wasScrolled, setWasScrolled] = useState(false); // scrolled en el momento de abrir el menú
   // Tono por zona (izquierda / logo / menú) + global (barra frosted al scrollear).
-  const initialTone: Tone = DARK_HERO_PATHS.includes(pathname) ? "light" : "dark";
+  // Todo /event-summit/* abre con hero oscuro (incluidas las páginas de cada
+  // workshop): arrancar en marfil evita el destello de header negro al recargar.
+  const initialTone: Tone =
+    DARK_HERO_PATHS.includes(pathname) || pathname.startsWith("/event-summit/") ? "light" : "dark";
   const [tones, setTones] = useState<Tones>({
     l: initialTone,
     c: initialTone,
