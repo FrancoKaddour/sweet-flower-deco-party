@@ -184,9 +184,14 @@ export function PageTransition() {
         gsap.set(mark, { autoAlpha: 0, scale: 0.9, y: 20, transformOrigin: "50% 100%" });
         // Globos: arrancan bien abajo (unidades del viewBox del logo) y suben
         // hasta su lugar exacto en el isotipo.
-        balloons.forEach((b, i) =>
-          gsap.set(b, { y: 520 + i * 40, rotate: 0, transformOrigin: "50% 100%", autoAlpha: corta ? 0 : 1 }),
-        );
+        // clearProps primero: borra el transform Y el caché de GSAP (origen,
+        // offsets de smoothOrigin). Sin esto, el giro de la salida anterior
+        // dejaba un corrimiento horizontal acumulado y los globos aparecían
+        // cada vez más lejos de su lugar en el logo.
+        balloons.forEach((b, i) => {
+          gsap.set(b, { clearProps: "transform" });
+          gsap.set(b, { y: 520 + i * 40, autoAlpha: corta ? 0 : 1 });
+        });
 
         const tCover = performance.now();
         await new Promise<void>((resolve) => {
@@ -200,7 +205,6 @@ export function PageTransition() {
                 balloons,
                 {
                   y: 0,
-                  rotate: 0,
                   duration: 0.9,
                   ease: "power3.out",
                   stagger: { each: 0.07, from: "random" },
@@ -255,8 +259,8 @@ export function PageTransition() {
           tl.to(
             balloons,
             {
+              // Salen derechos hacia arriba (sin giro: el giro en SVG corría el origen).
               y: -900,
-              rotate: (i) => (i % 2 ? 3 : -3),
               duration: 0.8,
               ease: "power2.in",
               stagger: { each: 0.04, from: "random" },
@@ -302,11 +306,11 @@ export function PageTransition() {
               <path d={b.shape.d} fill={b.color} fillRule="evenodd" />
             </g>
           ))}
+          {/* Relleno tinta detrás de la casita, FUERA del grupo que hace fade:
+              siempre opaco, así mientras la casita aparece/desaparece los globos
+              que pasan por detrás no se ven por las ventanas ni la puerta. */}
+          <polygon points="261.5,347.3 361.7,334 338.1,479.6 279.7,479.9" fill="var(--color-ink)" />
           <g className="c-pt__mark">
-            {/* Relleno tinta detrás de la casita: tapa las ventanas y el hueco
-                de la puerta, así los globos que suben por detrás no se ven a
-                través de la casa. */}
-            <polygon points="261.5,347.3 361.7,334 338.1,479.6 279.7,479.9" fill="var(--color-ink)" />
             <path d={house.d} fill="var(--color-bone)" fillRule="evenodd" />
           </g>
         </svg>
