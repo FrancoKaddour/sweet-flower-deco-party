@@ -234,6 +234,20 @@ const ACTUALIZACIONES: { id: string; correr: (db: Db) => Promise<void> }[] = [
     },
   },
   {
+    // 03/11/2026: Fran pidió mandar a la PAPELERA (no solo ocultar) las 13 de
+    // Tobías, así no aparecen en la lista del panel. Se restauran desde
+    // Panel → Productos → Papelera.
+    id: "2026-11-03-papelera-catering-infantil",
+    correr: async (db) => {
+      const r = await db
+        .update(products)
+        .set({ deletedAt: new Date(), visible: false })
+        .where(and(inArray(products.slug, [...PRODUCTOS_OCULTOS]), isNull(products.deletedAt)))
+        .returning({ id: products.id });
+      console.log(`  ✓ catering infantil a la papelera: ${r.length} productos`);
+    },
+  },
+  {
     // "Lo más pedido" (home) con lo que Flor dice que más se vende (CONTENIDO_FLOR §3):
     // Eclipse, Arcoíris, Telonera, arcos extensibles, arcada de hierro común.
     id: "2026-10-27-destacados-mas-vendidos",
