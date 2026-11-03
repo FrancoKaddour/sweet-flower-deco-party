@@ -29,7 +29,9 @@ import { preload } from "react-dom";
  */
 
 const MQ_RETRATO = "(max-width: 900px) and (orientation: portrait)";
-const MQ_MEDIANO = "(max-width: 1280px)";
+// Notebooks (hasta 1280 px, muchas con pantalla retina) usan la versión de
+// 1600: la de 960 se veía pixelada. La de 960 queda para tablets chicas.
+const MQ_MEDIANO = "(max-width: 900px)";
 
 type Fuente = { src: string; type: string };
 const MP4 = 'video/mp4; codecs="avc1.640028"';
