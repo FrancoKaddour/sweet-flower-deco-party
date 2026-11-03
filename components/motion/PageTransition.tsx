@@ -153,6 +153,8 @@ export function PageTransition() {
       )
         startLenis();
       if (conFoco) enfocarTitulo();
+      // El header vuelve a medir el fondo con la página nueva ya en su lugar.
+      window.dispatchEvent(new Event("sf:transicion-fin"));
     };
 
     const onClick = async (e: MouseEvent) => {

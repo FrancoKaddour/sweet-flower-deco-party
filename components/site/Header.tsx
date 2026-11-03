@@ -18,6 +18,8 @@ const INSTAGRAM_HREF =
 // Páginas cuyo hero es OSCURO (video/foto): estimación INICIAL del tono (antes
 // de la primera medición, p. ej. en el HTML servido). Después manda el detector.
 const DARK_HERO_PATHS = ["/", "/event-summit"];
+/** Rutas que abren con hero oscuro (incluye cada página de /event-summit/*). */
+const heroOscuro = (path: string) => DARK_HERO_PATHS.includes(path) || path.startsWith("/event-summit/");
 
 /* ---------------------------------------------------------------------------
  * Detector de fondo: el header invierte su color según lo que tiene DEBAJO.
@@ -141,8 +143,7 @@ export function Header() {
   // Tono por zona (izquierda / logo / menú) + global (barra frosted al scrollear).
   // Todo /event-summit/* abre con hero oscuro (incluidas las páginas de cada
   // workshop): arrancar en marfil evita el destello de header negro al recargar.
-  const initialTone: Tone =
-    DARK_HERO_PATHS.includes(pathname) || pathname.startsWith("/event-summit/") ? "light" : "dark";
+  const initialTone: Tone = heroOscuro(pathname) ? "light" : "dark";
   const [tones, setTones] = useState<Tones>({
     l: initialTone,
     c: initialTone,
@@ -280,7 +281,13 @@ export function Header() {
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(measure);
     };
+    // Al cambiar de página (transición con globos) el header NO se remonta y
+    // conservaba el tono de la página anterior: sobre el hero oscuro del
+    // inicio quedaba en tinta hasta el próximo scroll. Se arranca con el tono
+    // del hero de la ruta y se vuelve a medir cuando la cortina termina.
+    if (heroOscuro(pathname)) setAll("light");
     schedule();
+    window.addEventListener("sf:transicion-fin", schedule);
     // La página nueva termina de armarse (pins, imágenes) en el primer segundo.
     const timers = [120, 450, 1000, 1800].map((ms) => window.setTimeout(schedule, ms));
     window.addEventListener("scroll", schedule, { passive: true });
@@ -288,6 +295,7 @@ export function Header() {
     ScrollTrigger.addEventListener("refresh", schedule);
     return () => {
       window.removeEventListener("scroll", schedule);
+      window.removeEventListener("sf:transicion-fin", schedule);
       window.removeEventListener("resize", schedule);
       ScrollTrigger.removeEventListener("refresh", schedule);
       timers.forEach((t) => window.clearTimeout(t));
