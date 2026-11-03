@@ -49,3 +49,6 @@ export const WHATSAPP_NUMBER = "5491151064010";
 export const WHATSAPP_MESSAGE =
   "¡Hola Flor! Vengo de la web de Sweet Flowers y quiero consultar por un evento.";
 export const WHATSAPP_HREF = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+
+/** Catálogo completo de telas (carpeta pública de Google Drive, "Cualquier persona con el enlace"). */
+export const CATALOGO_TELAS_URL = "https://drive.google.com/drive/folders/17crVqEHFm3R_WigSShQ-NqXREZZiSUGp";

@@ -7,6 +7,7 @@ import { Galeria } from "@/components/productos/Galeria";
 import { ProductCard } from "@/components/productos/ProductCard";
 import { FichaCompra } from "@/components/productos/FichaCompra";
 import { Giro360 } from "@/components/productos/Giro360";
+import { CatalogoTelas } from "@/components/productos/CatalogoTelas";
 import { giroDe } from "@/content/exhibidores360";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { WHATSAPP_NUMBER } from "@/content/site";
@@ -194,6 +195,11 @@ export default async function ProductoPage({ params }: Props) {
                 hierro={hierro}
                 whatsapp={WHATSAPP_NUMBER}
               />
+              {cat.slug === "fundas-y-telas" && (
+                <div className="mt-6">
+                  <CatalogoTelas compacta />
+                </div>
+              )}
 
               {/* Pago · Envío · Producción · Colores · Dudas (E-07): fijo en todas las fichas */}
               <dl className="mt-10 divide-y divide-line border-y border-line text-[length:var(--text-step--1)]">

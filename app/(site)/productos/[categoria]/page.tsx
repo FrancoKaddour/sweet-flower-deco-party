@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { getCategoria, getCategorias, getProductosDeCategoria } from "@/modules/catalog/repository";
 import { GrillaPaginada } from "@/components/productos/GrillaPaginada";
 import { Giro360 } from "@/components/productos/Giro360";
+import { CatalogoTelas } from "@/components/productos/CatalogoTelas";
 import { GIROS } from "@/content/exhibidores360";
 
 // Listado de categoría: productos desde la base (con respaldo estático),
@@ -114,6 +115,7 @@ export default async function CategoriaPage({ params }: Props) {
       {productos.length > 0 ? (
         /* Grilla de productos (modules/catalog) */
         <section data-theme="light" className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32">
+          {cat.slug === "fundas-y-telas" && <CatalogoTelas />}
           <div className="mx-auto max-w-[87.5rem]">
             <GrillaPaginada productos={productos} categoria={cat.slug} />
           </div>
