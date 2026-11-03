@@ -38,6 +38,12 @@ export const PANEL_NAV: NavItem[] = [
     descripcion: "Productos, fotos, precios y categorías.",
   },
   {
+    label: "Clientes",
+    href: "/panel/clientes",
+    icon: IconComunidad,
+    descripcion: "Cuentas de clientes, sus datos e historial.",
+  },
+  {
     label: "Consultas",
     href: "/panel/consultas",
     icon: IconConsultas,

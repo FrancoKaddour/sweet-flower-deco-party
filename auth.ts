@@ -52,6 +52,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers,
   pages: { signIn: "/ingresar", verifyRequest: "/ingresar?enviado=1", error: "/ingresar" },
   callbacks: {
+    // Cuenta bloqueada desde el panel (Clientes): no vuelve a entrar.
+    async signIn({ user }) {
+      if (!db || !user.email) return true;
+      try {
+        const [u] = await db
+          .select({ bloqueadoAt: users.bloqueadoAt })
+          .from(users)
+          .where(eq(users.email, user.email.toLowerCase()));
+        if (u?.bloqueadoAt) return "/ingresar?error=bloqueada";
+      } catch (e) {
+        console.error("[auth] chequeo de bloqueo", e instanceof Error ? e.message : e);
+      }
+      return true;
+    },
     async session({ session, user }) {
       if (user && session.user) {
         session.user.id = user.id;

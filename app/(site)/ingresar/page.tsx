@@ -51,7 +51,9 @@ export default async function IngresarPage({
               <p role="alert" className="rounded-[var(--radius-md)] border border-bordeaux/25 bg-bordeaux/10 px-4 py-3 text-[length:var(--text-step--1)] text-bordeaux">
                 {error === "captcha"
                   ? "No pudimos comprobar que no seas un robot. Esperá unos segundos y probá de nuevo."
-                  : "No pudimos completar el ingreso. Probá de nuevo."}
+                  : error === "bloqueada"
+                    ? "Esta cuenta está suspendida. Si creés que es un error, escribinos por WhatsApp."
+                    : "No pudimos completar el ingreso. Probá de nuevo."}
               </p>
             )}
             <GoogleButton volver={destino} />

@@ -70,6 +70,7 @@ export const PERMISOS = {
   campanaEnviar: { l: "Enviar y borrar campañas", roles: ADMINS },
   suscriptores: { l: "Marcar códigos usados y sumar suscriptores a mano", roles: TODOS },
   suscriptorBaja: { l: "Dar de baja o reactivar suscriptores", roles: ADMINS },
+  clientes: { l: "Ver, editar y bloquear clientes (datos personales)", roles: ADMINS },
   actividad: { l: "Ver la actividad del panel y cerrar sesiones", roles: ADMINS },
 } as const satisfies Record<string, { l: string; roles: readonly RolPanel[] }>;
 

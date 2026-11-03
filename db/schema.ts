@@ -63,6 +63,8 @@ export const users = pgTable(
     city: text("city"),
     /** Baja de la cuenta pedida por la persona: email/nombre anonimizados (Ley 25.326). */
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    /** Bloqueada desde el panel (Clientes): no puede volver a ingresar. */
+    bloqueadoAt: timestamp("bloqueado_at", { withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
