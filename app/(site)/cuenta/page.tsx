@@ -310,19 +310,12 @@ export default async function CuentaPage() {
                 Privacidad
               </h2>
               <p className="mt-3 max-w-[56ch] text-ink/70">
-                Tus datos son tuyos. Podés llevarte una copia o pedirnos que borremos tu cuenta cuando quieras (Ley 25.326).{" "}
+                Tus datos son tuyos. Podés borrar tu cuenta cuando quieras (Ley 25.326).{" "}
                 <Link href="/privacidad" className="underline underline-offset-4 hover:text-bordeaux">
                   Política de privacidad
                 </Link>
               </p>
               <div className="mt-8 flex flex-col items-start gap-6">
-                <a
-                  href="/cuenta/mis-datos"
-                  download
-                  className="inline-flex min-h-12 items-center rounded-full border border-ink/25 px-6 text-[0.75rem] font-medium uppercase tracking-[0.12em] hover:border-ink hover:bg-ink hover:text-bone"
-                >
-                  Descargar mis datos (JSON)
-                </a>
                 <BajaCuenta />
               </div>
             </section>
