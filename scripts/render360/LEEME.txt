@@ -1,0 +1,14 @@
+VUELTAS 360 DE LOS EXHIBIDORES
+==============================
+
+1. Instalar Blender (blender.org, version 4.x) si no esta.
+2. Copiar los .blend de Tobias a la carpeta "blend" (al lado de este archivo).
+3. Doble click en "render-todos.bat".
+
+- Usa la placa de video (GTX 1060). Cada exhibidor son 96 imagenes:
+  calcular entre 20 y 60 minutos por exhibidor. Se puede dejar de noche.
+- Si se corta, volver a abrirlo: saltea los que ya estan terminados.
+- No modifica los .blend.
+- Cuando termine, pasarle a Claude la carpeta "salida" (o avisarle) y los
+  sube a la web.
+- Si se ven granulados: en render360.py subir MUESTRAS de 96 a 192.

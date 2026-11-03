@@ -55,3 +55,7 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Renders 360 (archivos de Blender y salidas pesadas)
+/scripts/render360/blend/
+/scripts/render360/salida/
