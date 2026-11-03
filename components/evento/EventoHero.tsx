@@ -183,7 +183,9 @@ export function EventoHero() {
               </p>
             </>
           )}
-          <div className="mt-[clamp(0.75rem,3.5svh,2.25rem)] flex flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:gap-x-10">
+          {/* data-oculta-flotantes: mientras estos botones se ven, el WhatsApp
+              flotante se corre (en celular tapaba "Ver pases"). */}
+          <div data-oculta-flotantes="" className="mt-[clamp(0.75rem,3.5svh,2.25rem)] flex flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:gap-x-10">
             <Button href={EVENT_CTA_HREF} variant="inverse">
               Quiero mi lugar
             </Button>

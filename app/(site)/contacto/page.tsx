@@ -124,7 +124,8 @@ export default function ContactoPage() {
         className="bg-sand px-6 py-24 text-ink md:px-10 md:py-32"
       >
         <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-4">
+          {/* Desktop/notebook: el título acompaña el scroll mientras se leen las preguntas */}
+          <div className="lg:sticky lg:top-32 lg:col-span-4 lg:self-start">
             <Eyebrow className="mb-5">Preguntas frecuentes</Eyebrow>
             <h2 className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)] lg:text-[length:min(var(--text-step-5),3.3vw)]">
               {/* TODO(contenido): titular real */}
