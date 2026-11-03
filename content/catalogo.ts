@@ -96,3 +96,27 @@ export const CATEGORIAS_OCULTAS: readonly Categoria[] = [
     img: "/productos/panel-arcada-140x60.jpg",
   },
 ] as const;
+
+/**
+ * Productos que NO se publican aunque su categoría esté visible (03/11/2026):
+ * alzadas, bandejas y bases de Catering de estilo infantil / muy coloridas
+ * (las que marcó Tobías).
+ * En la base se ocultan con scripts/actualizaciones.ts (bloque
+ * "2026-11-03-ocultar-catering-infantil"); para volver a publicar uno:
+ * Panel → Productos → filtro "Ocultos" → prender "Visible".
+ */
+export const PRODUCTOS_OCULTOS: ReadonlySet<string> = new Set([
+  "base-mariposa",
+  "base-cola-de-sirena-mdf",
+  "torre-cupcakes-o-alzadas-2-en-1",
+  "alzada-cuadrada-20x20",
+  "alzada-mariposa",
+  "bandeja-huesito-mdf",
+  "bases-rectangulares-20x30",
+  "torre-cupcakes-hexagonal-2-x-1",
+  "mesa-mdf",
+  "alzadas-mdf-mas-pino",
+  "alzadas-p-torta-de-mdf",
+  "bases-de-3-o-4-pisos",
+  "bases-mdf-35cm-aprox-color-a-eleccion",
+]);

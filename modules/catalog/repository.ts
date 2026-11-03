@@ -3,7 +3,7 @@ import { cache } from "react";
 import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { categories, productImages, products } from "@/db/schema";
-import { CATEGORIAS } from "@/content/catalogo";
+import { CATEGORIAS, PRODUCTOS_OCULTOS } from "@/content/catalogo";
 import { CATALOGO_WHATSAPP } from "@/content/catalogo-whatsapp";
 import { SE_ARMA_CON } from "./combinaciones";
 import { normalizarVariantes, type Categoria, type Producto } from "./types";
@@ -27,7 +27,7 @@ const SLUGS_VISIBLES = new Set(CATEGORIAS.map((c) => c.slug));
 
 /** Solo productos de categorías visibles (MDF y madera están en CATEGORIAS_OCULTAS). */
 const estaticoProductos = (): Producto[] =>
-  CATALOGO_WHATSAPP.filter((p) => SLUGS_VISIBLES.has(p.categoria)).map((p) => ({
+  CATALOGO_WHATSAPP.filter((p) => SLUGS_VISIBLES.has(p.categoria) && !PRODUCTOS_OCULTOS.has(p.slug)).map((p) => ({
     id: p.slug,
     slug: p.slug,
     nombre: p.nombre,

@@ -10,6 +10,7 @@ import { drizzle, type NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import * as schema from "../db/schema";
 import { LIMPIEZA_CATALOGO } from "./catalogo-limpieza-2026-10-27";
+import { PRODUCTOS_OCULTOS } from "../content/catalogo";
 
 type Db = NeonHttpDatabase<typeof schema>;
 const { auditLog, categories, productImages, products } = schema;
@@ -217,6 +218,20 @@ const ACTUALIZACIONES: { id: string; correr: (db: Db) => Promise<void> }[] = [
     // de hierro que estaban mal clasificadas como madera/MDF.
     id: "2026-10-27-ocultar-mdf-madera",
     correr: (db) => ocultarCategorias(db, ["mdf", "madera"]),
+  },
+  {
+    // 03/11/2026: fuera las alzadas, bandejas y bases de Catering de estilo
+    // infantil / colorinche (lista en content/catalogo.ts → PRODUCTOS_OCULTOS).
+    // Se ocultan, no se borran.
+    id: "2026-11-03-ocultar-catering-infantil",
+    correr: async (db) => {
+      const r = await db
+        .update(products)
+        .set({ visible: false })
+        .where(and(inArray(products.slug, [...PRODUCTOS_OCULTOS]), eq(products.visible, true)))
+        .returning({ id: products.id });
+      console.log(`  ✓ catering infantil oculto: ${r.length} productos`);
+    },
   },
   {
     // "Lo más pedido" (home) con lo que Flor dice que más se vende (CONTENIDO_FLOR §3):
