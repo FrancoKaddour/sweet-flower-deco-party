@@ -85,6 +85,10 @@ const nextConfig: NextConfig = {
     // Anchos generados: sin 3840 (nada del sitio se muestra tan grande) → menos
     // variantes que optimizar. 2048 cubre fotos a pantalla completa en retina.
     deviceSizes: [640, 750, 828, 1080, 1200, 1600, 2048],
+    // Calidad de compresión: 85 en todo el sitio (Next usa 75 por defecto y
+    // en fotos grandes se notaba el pixelado). Next elige el valor permitido
+    // más cercano, así que todas las imágenes salen a 85.
+    qualities: [85],
     // Las versiones optimizadas se cachean 31 días (las fotos nuevas del panel
     // van a Vercel Blob con URL única; las de /public no se pisan por nombre).
     minimumCacheTTL: 2678400,
