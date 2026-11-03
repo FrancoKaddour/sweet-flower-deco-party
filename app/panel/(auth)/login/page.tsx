@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import { getSession } from "@/lib/dal";
@@ -49,6 +50,14 @@ export default async function LoginPage({
 
           <GoogleButton volver="/panel" tone="dark" />
         </div>
+        <p className="mt-6 text-center">
+          <Link
+            href="/"
+            className="inline-flex min-h-11 items-center gap-2 text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-muted underline-offset-4 hover:text-ink hover:underline"
+          >
+            <span aria-hidden="true">←</span> Volver al sitio
+          </Link>
+        </p>
       </div>
     </main>
   );
