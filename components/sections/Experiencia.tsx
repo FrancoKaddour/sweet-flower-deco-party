@@ -155,13 +155,13 @@ export function Experiencia() {
       data-theme="light"
       className="relative bg-bone pb-[4rem] pt-[4rem] text-ink md:pb-[7.5rem] md:pt-[6.125rem]"
     >
-      {/* 1) Bloque superior — a la izquierda (D-04): voz display light */}
-      <div className="mx-auto max-w-[87.5rem] px-6 md:px-10">
-        <FadeUp y={60} className="max-w-[66rem]">
-          <h2 className="t-voz-display text-[length:min(var(--text-step-6),calc((100vw-3rem)/6.2))] text-ink">
+      {/* 1) Bloque superior — centrado (pedido de Fran): voz display light */}
+      <div className="mx-auto max-w-[87.5rem] px-6 text-center md:px-10">
+        <FadeUp y={60} className="mx-auto max-w-[66rem]">
+          <h2 className="mx-auto [text-wrap:balance] t-voz-display text-[length:min(var(--text-step-6),calc((100vw-3rem)/6.2))] text-ink">
             Lo fabricamos en Tortuguitas. Lo armás donde quieras.
           </h2>
-          <p className={`${italica.className} t-voz-cita mt-6 max-w-[34ch] text-[length:var(--text-step-2)] leading-[1.15] text-ink/80 md:text-[length:var(--text-step-3)]`}>
+          <p className={`${italica.className} t-voz-cita mx-auto mt-6 max-w-[34ch] [text-wrap:balance] text-[length:var(--text-step-2)] leading-[1.15] text-ink/80 md:text-[length:var(--text-step-3)]`}>
             Arcos, estanterías y alzadas de hierro, hechos por encargo y
             enviados a todo el país.
           </p>
