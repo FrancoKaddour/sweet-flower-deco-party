@@ -22,20 +22,28 @@ import { heroEnModoLiviano } from "@/components/sections/HeroMedia";
 // Le hablan a la decoradora (E-22): solo datos confirmados (CONTENIDO_FLOR).
 // Siempre DOS líneas cortas por frase (se leen de corrido, como una oración
 // que avanza con el video). Cada frase entra y sale en un corte de toma.
-const PHRASES: [string, string, number, number][] = [
-  ["Las estructuras", "que arman tus eventos", 2.5, 10.1],
-  ["Hierro, catering,", "fundas y telas", 10.9, 14.8],
-  ["Hechas en Tortuguitas,", "por encargo", 15.5, 21.5],
-  ["con envío", "a todo el país.", 22.2, 24.9],
-  ["Vos armás la escena.", "Nosotros, las piezas.", 25.6, 29.1],
+// Pedido de Fran (nov-2026): frase FIJA + una palabra que cambia con cada
+// toma del video ("Estructuras para tus … eventos / mesas dulces / …").
+const FIJA = "Estructuras para tus";
+const PHRASES: [string, number, number][] = [
+  ["eventos.", 2.5, 10.1],
+  ["mesas dulces.", 10.9, 14.8],
+  ["bodas.", 15.5, 21.5],
+  ["15 años.", 22.2, 24.9],
+  ["catering.", 25.6, 29.1],
 ];
+const FIJA_EN = 2.5; // la frase fija entra una sola vez, con la primera palabra
 const DURATION = 30;
 const IN_DUR = 0.9;
 const IN_STAGGER = 0.06;
 const OUT_DUR = 0.55;
 const OUT_STAGGER = 0.04;
 
-const FULL_TEXT = "Las estructuras que arman tus eventos";
+// Tamaño (más chico que antes: deja respirar al video).
+const TAM =
+  "t-voz-display text-[length:min(2.1rem,calc((100vw-3rem)/10.5))] leading-[1.06] text-bone sm:text-[length:min(2.8rem,calc((100vw-4rem)/11))] md:text-[length:clamp(2.4rem,1.3rem+2.5vw,4.2rem)] [@media(max-height:500px)_and_(orientation:landscape)]:text-[clamp(1.4rem,7svh,2rem)]";
+
+const FULL_TEXT = "Estructuras para tus eventos, mesas dulces, bodas, 15 años y catering";
 
 export function HeroStory() {
   const root = useRef<HTMLDivElement>(null);
@@ -47,7 +55,17 @@ export function HeroStory() {
       if (!el || !video) return;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      const phraseEls = el.querySelectorAll<HTMLElement>(".hero-phrase");
+      const phraseEls = el.querySelectorAll<HTMLElement>(".hero-rot");
+      const fijaEl = el.querySelector<HTMLElement>(".hero-fija");
+      let fijaSplit: SplitText | null = null;
+      let fijaMostrada = false;
+      // Declarada como función (hoisting): armar() puede correr en el acto.
+      function mostrarFija() {
+        if (fijaMostrada || !fijaEl || !fijaSplit) return;
+        fijaMostrada = true;
+        gsap.set(fijaEl, { autoAlpha: 1 });
+        gsap.to(fijaSplit.words, { yPercent: 0, duration: IN_DUR, ease: "expo.out", stagger: IN_STAGGER });
+      }
       const tl = gsap.timeline({ paused: true });
       tl.set({}, {}, DURATION); // largo exacto = video
 
@@ -55,7 +73,7 @@ export function HeroStory() {
       // de useGSAP (contextSafe) → se revierte en el cleanup.
       const armar = () => {
         phraseEls.forEach((p, i) => {
-          const [, , tIn, tOut] = PHRASES[i];
+          const [, tIn, tOut] = PHRASES[i];
           const split = SplitText.create(p, { type: "words", mask: "words", tag: "span", wordsClass: "reveal-word" });
           // Fuera de su ventana la frase queda OCULTA (autoAlpha 0): las tildes y
           // ascendentes de Cormorant asomaban por encima/debajo de la máscara
@@ -80,6 +98,13 @@ export function HeroStory() {
             .set(p, { autoAlpha: 0 }, tOut);
         });
         tl.time(tl.time()); // re-render en la posición actual
+        // Frase fija: oculta hasta que arranca el hero; entra UNA vez y queda.
+        if (fijaEl) {
+          fijaSplit = SplitText.create(fijaEl, { type: "words", mask: "words", tag: "span", wordsClass: "reveal-word" });
+          gsap.set(fijaEl, { autoAlpha: 0 });
+          gsap.set(fijaSplit.words, { yPercent: 170 });
+          // (entra cuando el reloj del video llega a FIJA_EN: ver sync)
+        }
       };
       const cancelarFuentes = conFuentes(contextSafe ? contextSafe(armar) : armar);
 
@@ -92,12 +117,18 @@ export function HeroStory() {
       // El video es el reloj. Solo se re-posiciona mientras el video corre
       // (pausado fuera de pantalla → cero trabajo por frame).
       const sync = () => {
-        if (!video.paused) tl.time(video.currentTime % DURATION);
+        if (video.paused) return;
+        tl.time(video.currentTime % DURATION);
+        // La frase fija entra junto con la primera palabra (mismo reloj).
+        if (!fijaMostrada && video.currentTime >= FIJA_EN - 0.15) mostrarFija();
       };
       const usarRelojPropio = () => {
         gsap.ticker.remove(sync);
         relojPropio = true;
         started = true;
+        tl.eventCallback("onUpdate", () => {
+          if (!fijaMostrada && tl.time() >= FIJA_EN - 0.15) mostrarFija();
+        });
         tl.repeat(-1).play();
       };
       if (!relojPropio) gsap.ticker.add(sync);
@@ -169,17 +200,16 @@ export function HeroStory() {
         {FULL_TEXT}
       </h1>
 
-      {/* Frases cinéticas: todas apiladas en la misma celda. */}
-      <div aria-hidden="true" className="grid justify-items-start motion-reduce:hidden">
-        {PHRASES.map(([l1, l2]) => (
-          <p
-            key={l1}
-            className="hero-phrase t-voz-display invisible col-start-1 row-start-1 self-end text-[length:min(2.6rem,calc((100vw-3rem)/9.8))] leading-[1.06] text-bone sm:text-[length:min(3.6rem,calc((100vw-4rem)/10))] md:text-[length:clamp(3rem,1.6rem+3.4vw,5.5rem)] [@media(max-height:500px)_and_(orientation:landscape)]:text-[clamp(1.6rem,8svh,2.3rem)]"
-          >
-            <span className="block whitespace-nowrap">{l1}</span>
-            <span className="block whitespace-nowrap">{l2}</span>
-          </p>
-        ))}
+      {/* Frase fija + palabra que cambia (todas apiladas en la misma celda). */}
+      <div aria-hidden="true" className="motion-reduce:hidden">
+        <p className={`hero-phrase hero-fija invisible ${TAM}`}>{FIJA}</p>
+        <div className="grid justify-items-start">
+          {PHRASES.map(([w]) => (
+            <p key={w} className={`hero-phrase hero-rot invisible col-start-1 row-start-1 self-end ${TAM}`}>
+              <span className="block whitespace-nowrap">{w}</span>
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   );
