@@ -288,6 +288,11 @@ export function Header() {
     if (heroOscuro(pathname)) setAll("light");
     schedule();
     window.addEventListener("sf:transicion-fin", schedule);
+    // Re-medir también cuando arranca el hero (fin del loader), al volver a la
+    // pestaña y al restaurar la página desde el historial (atrás/adelante).
+    window.addEventListener("sf:hero-start", schedule);
+    window.addEventListener("pageshow", schedule);
+    document.addEventListener("visibilitychange", schedule);
     // La página nueva termina de armarse (pins, imágenes) en el primer segundo.
     const timers = [120, 450, 1000, 1800].map((ms) => window.setTimeout(schedule, ms));
     window.addEventListener("scroll", schedule, { passive: true });
@@ -296,6 +301,9 @@ export function Header() {
     return () => {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("sf:transicion-fin", schedule);
+      window.removeEventListener("sf:hero-start", schedule);
+      window.removeEventListener("pageshow", schedule);
+      document.removeEventListener("visibilitychange", schedule);
       window.removeEventListener("resize", schedule);
       ScrollTrigger.removeEventListener("refresh", schedule);
       timers.forEach((t) => window.clearTimeout(t));
