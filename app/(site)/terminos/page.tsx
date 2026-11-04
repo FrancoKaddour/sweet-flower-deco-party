@@ -31,6 +31,12 @@ const localidadLocal = LEGAL.localLocalidad ? (
   <> (<Pendiente>localidad</Pendiente>)</>
 );
 
+const whatsappOficialNode = LEGAL.whatsappOficial ? (
+  <a href={waVentas} target="_blank" rel="noopener noreferrer">{LEGAL.whatsappOficial}</a>
+) : (
+  <Pendiente>WhatsApp</Pendiente>
+);
+
 const SECCIONES: readonly SeccionLegal[] = [
   {
     id: "comercio",
@@ -48,7 +54,7 @@ const SECCIONES: readonly SeccionLegal[] = [
           <li><strong>CUIT:</strong> {LEGAL.cuit}.</li>
           <li><strong>Domicilio fiscal:</strong> {LEGAL.domicilioFiscal}, Argentina.</li>
           <li><strong>Local comercial:</strong> {LEGAL.localCalle}{localidadLocal}.</li>
-          <li><strong>WhatsApp oficial:</strong> <Pendiente>WhatsApp</Pendiente>.</li>
+          <li><strong>WhatsApp oficial:</strong> {whatsappOficialNode}.</li>
           <li><strong>Correo electrónico:</strong> <Pendiente>email</Pendiente>.</li>
         </ul>
         <p>
@@ -359,13 +365,12 @@ const SECCIONES: readonly SeccionLegal[] = [
         </p>
         <ul>
           <li><strong>Local comercial:</strong> {LEGAL.localCalle}{localidadLocal}.</li>
-          <li><strong>WhatsApp oficial:</strong> <Pendiente>WhatsApp</Pendiente>.</li>
+          <li><strong>WhatsApp oficial:</strong> {whatsappOficialNode}.</li>
           <li><strong>Correo electrónico:</strong> <Pendiente>email</Pendiente>.</li>
           <li><strong>Horarios:</strong> {LEGAL.horarios.join(" · ")}.</li>
         </ul>
         <p>
-          Mientras tanto, escribinos por WhatsApp: productos,{" "}
-          <a href={waVentas} target="_blank" rel="noopener noreferrer">11 5106-4010</a>; Event Summit,{" "}
+          Para consultas del Event Summit también podés escribir a la línea de capacitaciones:{" "}
           <a href={waSummit} target="_blank" rel="noopener noreferrer">11 5512-7508</a>.
         </p>
       </>

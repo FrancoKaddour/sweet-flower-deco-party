@@ -60,10 +60,9 @@ export const LEGAL = {
   cuit: "23-22581279-9",
   domicilioFiscal: "Lafinur 3234, Tortuguitas, Provincia de Buenos Aires",
   localCalle: "Formosa 29",
-  /** TODO(Fran): localidad del local comercial de Formosa 29. */
-  localLocalidad: null as string | null,
-  /** TODO(Fran): WhatsApp oficial único para la atención formal. */
-  whatsappOficial: null as string | null,
+  localLocalidad: "Tortuguitas" as string | null,
+  /** WhatsApp oficial de atención (coincide con la línea de ventas). */
+  whatsappOficial: "11 5106-4010" as string | null,
   /** TODO(Fran): correo electrónico oficial de contacto. */
   emailOficial: null as string | null,
   horarios: [
