@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { pageMetadata, SITE_NAME, BUSINESS } from "@/lib/site";
-import { PaginaLegal, type SeccionLegal } from "@/components/legal/PaginaLegal";
+import { pageMetadata, SITE_NAME, LEGAL } from "@/lib/site";
+import { PaginaLegal, Pendiente, type SeccionLegal } from "@/components/legal/PaginaLegal";
 import { WHATSAPP_NUMBER } from "@/content/site";
 import { EVENT_WHATSAPP } from "@/content/evento";
 
-// Política de privacidad PROVISORIA (Ley 25.326 de Protección de Datos
-// Personales; estructura de la AAIP). Solo datos confirmados del negocio.
-// TODO(contenido): CUIT, domicilio legal y email del responsable (Flor);
-// inscripción de la base ante la AAIP; revisión del texto por su contador/abogado.
+// Política de privacidad (Ley 25.326 de Protección de Datos Personales;
+// estructura de la AAIP). Datos fiscales del responsable: LEGAL (lib/site.ts),
+// del documento de T&C revisado por el abogado (04/11/2026).
+// Pendiente (Fran lo pasa): email oficial de contacto.
 
 export const metadata: Metadata = pageMetadata({
   title: "Política de privacidad",
@@ -26,13 +26,14 @@ const SECCIONES: readonly SeccionLegal[] = [
     contenido: (
       <>
         <p>
-          El responsable de la base de datos es <strong>{SITE_NAME}</strong>, emprendimiento familiar con taller en{" "}
-          {BUSINESS.locality}, provincia de {BUSINESS.region}, Argentina.
+          El responsable de la base de datos es <strong>{SITE_NAME}</strong>, a cargo de {LEGAL.razonSocial}
+          {" "}(CUIT {LEGAL.cuit}), con domicilio en {LEGAL.domicilioFiscal}, Argentina.
         </p>
         <p>
           Para cualquier consulta sobre tus datos, escribinos por WhatsApp a la línea de ventas (
           <a href={waVentas} target="_blank" rel="noopener noreferrer">11 5106-4010</a>) o, si es por el Event Summit, a la
-          de capacitaciones (<a href={waSummit} target="_blank" rel="noopener noreferrer">11 5512-7508</a>).
+          de capacitaciones (<a href={waSummit} target="_blank" rel="noopener noreferrer">11 5512-7508</a>). Correo
+          electrónico: <Pendiente>email</Pendiente>.
         </p>
       </>
     ),
@@ -150,7 +151,8 @@ export default function PrivacidadPage() {
     <PaginaLegal
       path="/privacidad"
       titulo="Política de privacidad"
-      actualizado="26/10/2026"
+      actualizado="04/11/2026"
+      nota={<>Última actualización: 4 de noviembre de 2026. Si algo no está claro, escribinos y lo vemos con vos.</>}
       bajada={<p>Qué datos te pedimos, para qué los usamos y cómo podés pedir verlos, corregirlos o borrarlos.</p>}
       secciones={SECCIONES}
     />

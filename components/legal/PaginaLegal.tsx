@@ -4,6 +4,15 @@ import { BreadcrumbJsonLd } from "@/components/site/JsonLd";
 
 export type SeccionLegal = { id: string; titulo: string; contenido: React.ReactNode };
 
+/** Marcador para un dato que todavía falta (WhatsApp, email, localidad del local). */
+export function Pendiente({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-[var(--radius-sm)] bg-bordeaux/10 px-1.5 py-0.5 text-[0.9em] font-medium text-bordeaux">
+      {children} (a confirmar)
+    </span>
+  );
+}
+
 const LEGALES = [
   { href: "/privacidad", label: "Privacidad" },
   { href: "/terminos", label: "Términos" },
@@ -19,12 +28,15 @@ export function PaginaLegal({
   titulo,
   bajada,
   actualizado,
+  nota,
   secciones,
 }: {
   path: string;
   titulo: string;
   bajada: React.ReactNode;
   actualizado: string;
+  /** Texto chico al lado de la bajada. Por defecto avisa que es versión provisoria. */
+  nota?: React.ReactNode;
   secciones: readonly SeccionLegal[];
 }) {
   return (
@@ -41,8 +53,12 @@ export function PaginaLegal({
               {bajada}
             </div>
             <p className="text-[length:var(--text-step--1)] leading-relaxed text-ink/55 md:col-span-4 md:col-start-9 md:self-end">
-              Versión provisoria, actualizada el {actualizado}. Si algo no está claro o tu caso no aparece,
-              escribinos y lo vemos con vos.
+              {nota ?? (
+                <>
+                  Versión provisoria, actualizada el {actualizado}. Si algo no está claro o tu caso no aparece,
+                  escribinos y lo vemos con vos.
+                </>
+              )}
             </p>
           </div>
         </header>

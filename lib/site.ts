@@ -49,6 +49,31 @@ export const BUSINESS = {
 } as const;
 
 /**
+ * Datos legales / fiscales del comercio (Términos y Privacidad). Vienen del
+ * documento de T&C revisado por el abogado (04/11/2026).
+ * Los `null` son los datos que todavía faltan (Fran los pasa): mientras sean
+ * null, la página los muestra como "(a confirmar)".
+ */
+export const LEGAL = {
+  razonSocial: "Carlos Raúl Falco",
+  condicionFiscal: "Monotributista",
+  cuit: "23-22581279-9",
+  domicilioFiscal: "Lafinur 3234, Tortuguitas, Provincia de Buenos Aires",
+  localCalle: "Formosa 29",
+  /** TODO(Fran): localidad del local comercial de Formosa 29. */
+  localLocalidad: null as string | null,
+  /** TODO(Fran): WhatsApp oficial único para la atención formal. */
+  whatsappOficial: null as string | null,
+  /** TODO(Fran): correo electrónico oficial de contacto. */
+  emailOficial: null as string | null,
+  horarios: [
+    "Lunes a viernes, de 9:00 a 17:00 h",
+    "Sábados, de 9:00 a 13:00 h",
+    "Domingos y feriados, cerrado",
+  ],
+} as const;
+
+/**
  * Metadata de una página interna: título, descripción, canonical y OG/Twitter
  * propios. (Next NO mezcla openGraph entre layout y página: si la página no lo
  * define, hereda el de la home y al compartir aparece el título del inicio.)
