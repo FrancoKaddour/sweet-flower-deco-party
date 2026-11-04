@@ -38,15 +38,15 @@ const MP4 = 'video/mp4; codecs="avc1.640028"';
 const WEBM = 'video/webm; codecs="vp9"';
 const FUENTES: Record<"retrato" | "mediano" | "grande", Fuente[]> = {
   retrato: [
-    { src: "/video/hero-m640.mp4", type: MP4 },
+    { src: "/video/hero-m640-v2.mp4", type: MP4 },
     { src: "/video/hero-m640.webm", type: WEBM },
   ],
   mediano: [
-    { src: "/video/hero-960.mp4", type: MP4 },
+    { src: "/video/hero-960-v2.mp4", type: MP4 },
     { src: "/video/hero-960.webm", type: WEBM },
   ],
   grande: [
-    { src: "/video/hero-1600.mp4", type: MP4 },
+    { src: "/video/hero-1600-v2.mp4", type: MP4 },
     { src: "/video/hero-1600.webm", type: WEBM },
   ],
 };
