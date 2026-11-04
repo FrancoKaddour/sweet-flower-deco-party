@@ -72,7 +72,7 @@ export default function HistoriaPage() {
                 src="/img/summit/lg/sum-01.webp"
                 alt="Remera del equipo Sweet Flowers en la 1ª edición del Event Summit"
                 fill
-                sizes="(max-width: 1024px) 90vw, 420px"
+                sizes="(max-width: 1024px) 180vw, 840px"
                 className="object-cover object-[64%_40%]"
               />
               <div className="pointer-events-none absolute inset-0 bg-bordeaux/20 mix-blend-multiply" />

@@ -70,7 +70,7 @@ export default function ResenasPage() {
                 alt="Charla en el escenario del Sweet Flowers Event Summit"
                 fill
                 priority
-                sizes="(max-width: 1024px) 90vw, 30rem"
+                sizes="(max-width: 1024px) 180vw, 60rem"
                 className="object-cover"
               />
             </div>

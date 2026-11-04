@@ -33,8 +33,14 @@ const foto = (n: number) => `/img/rio-cuarto/rc-${String(n).padStart(2, "0")}.we
 // Las fotos originales miden 1500px y se muestran a 240–340px: pasan por el
 // optimizador de next/image (AVIF/WebP al tamaño justo, 1x/2x) pero siguen
 // siendo <img> nativos (GSAP mueve el track, no necesita el wrapper de Image).
-const fotoProps = (n: number, w: number, h: number, sizes?: string) =>
-  getImageProps({ src: foto(n), alt: "", width: w, height: h, sizes, loading: "lazy" }).props;
+// OJO: las fotos son horizontales (3:2) y acá se recortan en vertical. Si se
+// pide el ancho de la caja, el optimizador entrega una foto de ese ANCHO pero
+// petisa, y object-cover la agranda ~2x para llenar el alto → se veía pixelada.
+// Por eso se pide el ancho que hace falta para cubrir el ALTO (h × 1,5).
+const fotoProps = (n: number, w: number, h: number, sizes?: string) => {
+  const ancho = Math.max(w, Math.ceil(h * 1.5));
+  return getImageProps({ src: foto(n), alt: "", width: ancho, height: Math.round(ancho / 1.5), sizes, loading: "lazy" }).props;
+};
 
 // Ancho fijo del grupo (px) = período del loop (coincide con w-[93.75rem] del grupo).
 const GROUP_WIDTH = 1500;
@@ -212,7 +218,7 @@ export function Experiencia() {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={seed}
-              {...fotoProps(seed, 600, 800, "(max-width: 548px) 70vw, 384px")}
+              {...fotoProps(seed, 600, 800, "(max-width: 548px) 140vw, 768px")}
               alt=""
               aria-hidden="true"
               className="aspect-[3/4] w-[min(70vw,24rem)] shrink-0 snap-start rounded-[var(--radius-sm)] object-cover [@media(max-height:500px)_and_(orientation:landscape)]:w-[min(40vw,48svh)]"

@@ -28,7 +28,7 @@ export function Workshops() {
               src="/img/rio-cuarto/rc-12.webp"
               alt="Charla del workshop de Río Cuarto, con el salón lleno"
               fill
-              sizes="(max-width: 768px) 90vw, 440px"
+              sizes="(max-width: 768px) 180vw, 880px" /* caja vertical 3:4 con foto horizontal: hace falta el doble de ancho */
               className="object-cover"
             />
           </div>

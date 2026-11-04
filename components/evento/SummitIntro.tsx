@@ -163,7 +163,7 @@ export function SummitIntro() {
               <div className="col-span-10 col-start-2 md:col-span-6 md:col-start-7 xl:col-span-5 xl:col-start-7">
                 <div data-parallax="-30">
                   <figure data-reveal className="relative aspect-[3/4] overflow-hidden">
-                    <Image src={IMG.big} alt="" fill sizes="(max-width: 768px) 80vw, 40vw" className="object-cover" />
+                    <Image src={IMG.big} alt="" fill sizes="(max-width: 768px) 160vw, 80vw" className="object-cover" />
                   </figure>
                 </div>
               </div>
@@ -175,7 +175,7 @@ export function SummitIntro() {
             <div className="grid grid-cols-12 gap-x-6">
               <div className="col-span-4 md:col-span-3 xl:col-span-2 xl:col-start-2">
                 <figure data-reveal className="relative aspect-[3/4] overflow-hidden">
-                  <Image src={IMG.top} alt="" fill sizes="(max-width: 768px) 33vw, 15vw" className="object-cover" />
+                  <Image src={IMG.top} alt="" fill sizes="(max-width: 768px) 66vw, 30vw" className="object-cover" />
                 </figure>
               </div>
             </div>
@@ -186,7 +186,7 @@ export function SummitIntro() {
             <div className="grid grid-cols-12 gap-x-6">
               <div className="col-span-4 col-start-9 md:col-span-3 md:col-start-3">
                 <figure data-reveal className="relative aspect-[3/4] overflow-hidden">
-                  <Image src={IMG.bottom} alt="" fill sizes="(max-width: 768px) 33vw, 23vw" className="object-cover" />
+                  <Image src={IMG.bottom} alt="" fill sizes="(max-width: 768px) 66vw, 46vw" className="object-cover" />
                 </figure>
               </div>
             </div>

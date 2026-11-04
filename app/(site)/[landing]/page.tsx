@@ -150,7 +150,7 @@ export default async function LandingPage({ params }: Props) {
                 alt={l.imagen.alt}
                 fill
                 priority
-                sizes="(max-width: 1024px) 90vw, 30rem"
+                sizes="(max-width: 1024px) 180vw, 60rem"
                 className="object-cover"
               />
             </div>
