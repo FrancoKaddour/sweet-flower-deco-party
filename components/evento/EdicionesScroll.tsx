@@ -203,7 +203,7 @@ export function EdicionesScroll() {
         }, LOCK_MS);
       }
 
-      function activar(desde: 1 | -1) {
+      function activar(desde: 1 | -1, restaurar = false) {
         if (activo || normalizando) return;
         // Guardia post-liberación: solo bloquea re-activaciones en la MISMA
         // dirección del salto (espurias). El reingreso real por el otro
@@ -214,11 +214,15 @@ export function EdicionesScroll() {
         ) {
           return;
         }
-        // Sincronizar con la posición real (p. ej. refresh a mitad de sección)
-        // y normalizar el scroll al borde: como el stage es sticky, el salto
-        // es invisible. El escudo evita que los callbacks de ScrollTrigger
-        // que dispara el salto nos desactiven a mitad de camino.
-        state.index = indiceDesdeScroll();
+        // Se entra SIEMPRE por un borde: desde arriba = intro (ninguna carta),
+        // desde abajo = pila completa. Antes se tomaba el índice de la
+        // posición del scroll, y con la inercia el scroll ya estaba adentro de
+        // la sección cuando esto corría → varias cartas aparecían de golpe,
+        // adelantándose a la animación. Solo al restaurar una carga a mitad de
+        // sección se respeta la posición. Después se normaliza el scroll al
+        // borde (el stage es sticky: el salto no se ve); el escudo evita que
+        // los callbacks que dispara el salto nos desactiven a mitad de camino.
+        state.index = restaurar ? indiceDesdeScroll() : desde === 1 ? 0 : N;
         pintar(state.index, 0);
         const b = bordes();
         normalizando = true;
@@ -268,7 +272,7 @@ export function EdicionesScroll() {
         onLeaveBack: () => desactivar(),
       });
       // Carga con el scroll restaurado dentro de la sección.
-      if (st.isActive) activar(indiceDesdeScroll() > N / 2 ? -1 : 1);
+      if (st.isActive) activar(indiceDesdeScroll() > N / 2 ? -1 : 1, true);
 
       return () => {
         desactivar();
