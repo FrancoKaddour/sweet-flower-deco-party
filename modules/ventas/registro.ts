@@ -61,7 +61,16 @@ const pedidoSchema = z.object({
     .min(1)
     .max(60),
   web: z.string().max(0).optional(),
+  /** Token de Turnstile (solo se exige si hay NEXT_PUBLIC_TURNSTILE_SITE_KEY). */
+  captcha: z.string().max(2048).optional(),
 });
+
+/**
+ * Pedido cuyo captcha no se pudo verificar: se registra IGUAL (puede ser un
+ * cliente real con bloqueador de anuncios y la venta no se pierde), pero queda
+ * marcado para el equipo. Un bot nunca llega a WhatsApp, así que se descarta solo.
+ */
+const NOTA_SIN_CAPTCHA = "⚠ Captcha no verificado: puede ser un bot (o alguien con bloqueador). Confirmalo cuando llegue el WhatsApp.";
 
 async function userId() {
   try {
@@ -77,7 +86,9 @@ export async function registrarPedido(input: unknown): Promise<void> {
   if (!p.success) return;
   const v = p.data;
   try {
-    if (!(await limitar(`pedido:ip:${await ipCliente()}`, 5, 60))) return;
+    const ip = await ipCliente();
+    if (!(await limitar(`pedido:ip:${ip}`, 5, 60))) return;
+    const humano = await verificarCaptcha(v.captcha, ip);
     const slugs = [...new Set(v.items.map((i) => i.slug))];
     const enDb = await db
       .select({ slug: products.slug, nombre: products.nombre, precio: products.precio, variantes: products.variantes })
@@ -123,6 +134,7 @@ export async function registrarPedido(input: unknown): Promise<void> {
         pago: v.pago,
         codigoClub: v.codigoClub,
         origen: v.origen,
+        notaInterna: humano ? null : NOTA_SIN_CAPTCHA,
       })
       .onConflictDoNothing();
   } catch (e) {

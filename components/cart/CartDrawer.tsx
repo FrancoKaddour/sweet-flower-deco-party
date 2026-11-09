@@ -22,6 +22,7 @@ import { registrarPedido } from "@/modules/ventas/registro";
 import { misDatosParaPrecargar } from "@/modules/cuenta/actions";
 import { startLenis, stopLenis } from "@/components/motion/SmoothScroll";
 import { lockScroll } from "@/lib/scroll-lock";
+import { Turnstile } from "@/components/captcha/Turnstile";
 
 /**
  * Código del Club (newsletter). Clave acordada con el frente A: el formulario
@@ -81,6 +82,9 @@ export function CartDrawer() {
   // null = todavía no sabemos; false = sin sesión; true = con sesión.
   const [conCuenta, setConCuenta] = useState<boolean | null>(null);
   const [enviado, setEnviado] = useState(false);
+  // Captcha invisible (Turnstile): el token queda en un input oculto dentro de esta caja.
+  const captchaRef = useRef<HTMLDivElement>(null);
+  const [envios, setEnvios] = useState(0);
 
   // Con sesión, precarga nombre, localidad y código del Club (solo campos vacíos).
   // Se pide una vez, al abrir el pedido por primera vez.
@@ -232,7 +236,10 @@ export function CartDrawer() {
       codigoClub: codigoClub || undefined,
       origen: origen ?? undefined,
       items: items.map((i) => ({ slug: i.slug, nombre: i.nombre, variante: i.variante ?? null, qty: i.qty })),
+      captcha: captchaRef.current?.querySelector<HTMLInputElement>('input[name="cf-turnstile-response"]')?.value || undefined,
     }).catch(() => {});
+    // Los tokens son de un solo uso: el widget pide uno nuevo para el próximo envío.
+    setEnvios((n) => n + 1);
     if (conCuenta !== true) recordarPedidoSinCuenta(codigo);
     setEnviado(true);
     track("wa_order_click", {
@@ -473,6 +480,9 @@ export function CartDrawer() {
                   Más {productosTexto(aCotizar)} a cotizar. Envío aparte.
                 </p>
               )}
+              <div ref={captchaRef}>
+                <Turnstile accion="pedido" reiniciar={envios} className="mt-4 empty:hidden" />
+              </div>
               <button
                 type="button"
                 onClick={enviar}
