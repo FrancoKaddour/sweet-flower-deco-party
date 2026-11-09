@@ -29,11 +29,11 @@ export default async function ProductosPage() {
           data-theme="light"
           className="bg-bone px-6 pb-16 pt-32 text-ink md:px-10 md:pb-24 md:pt-44"
         >
-          <div className="mx-auto max-w-[87.5rem]">
+          <div className="mx-auto flex max-w-[87.5rem] flex-col items-center text-center">
             <Eyebrow className="mb-6">El catálogo</Eyebrow>
             <RevealText
               as="h1"
-              className="max-w-[18ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink [overflow-wrap:anywhere]"
+              className="mx-auto max-w-[18ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink [overflow-wrap:anywhere]"
             >
               {/* TODO(contenido): titular real del catálogo */}
               La materia de cada fiesta
@@ -42,24 +42,16 @@ export default async function ProductosPage() {
             <FadeUp
               y={40}
               delay={0.15}
-              className="mt-8 flex flex-col gap-8 border-t border-line pt-8 md:mt-12 md:flex-row md:items-end md:justify-between"
+              className="mt-8 flex w-full flex-col items-center gap-8 border-t border-line pt-8 md:mt-12"
             >
-              <p className="max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-ink/70">
+              <p className="mx-auto max-w-[46ch] font-sans text-[length:var(--text-step-1)] leading-snug text-ink/70">
                 {/* TODO(contenido): bajada real */}
                 Ordenamos el catálogo por materialidad, no por moda. Cada pieza
                 está pensada para armarse, transportarse y volver a brillar en el
                 próximo evento.
               </p>
               {/* Dato honesto de operación (docs/CONTENIDO_FLOR.md §1). */}
-              <dl className="flex shrink-0 flex-wrap gap-x-10 gap-y-6">
-                <div>
-                  <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-champagne">
-                    Categorías
-                  </dt>
-                  <dd className="mt-1 font-display text-[length:var(--text-step-3)] font-bold text-ink">
-                    0{CATEGORIAS.length}
-                  </dd>
-                </div>
+              <dl>
                 <div>
                   <dt className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-champagne">
                     Producción
