@@ -40,12 +40,13 @@ type Globo = {
 };
 
 const COMPLETA: Globo[] = [
-  // Derecha arriba / derecha medio / izquierda abajo / derecha abajo.
-  // En celular van pegados a los bordes y más chicos.
-  { shape: balloonRed, color: "rojo", className: "right-[3%] top-[12%] h-[clamp(4.5rem,12vh,8.5rem)] md:right-[14%]" },
-  { shape: balloonBlack, color: "neutro", className: "right-[-2%] top-[40%] h-[clamp(5.5rem,16vh,11rem)] md:right-[4%]" },
-  { shape: balloonRed2, color: "rojo", className: "left-[-1%] top-[72%] h-[clamp(4.5rem,13vh,9rem)] md:left-[0.5%]" },
-  { shape: balloonBlack2, color: "neutro", className: "right-[10%] top-[74%] h-[clamp(3.5rem,9vh,6.5rem)] md:right-[22%]" },
+  // Desktop (lg+): dos a la derecha del título; los de abajo, como en celular, en el margen inferior (la fila de datos ocupa todo el ancho).
+  // Celular y tablet: el texto ocupa todo el ancho → dos franjas libres: arriba del
+  // título (debajo del header) y el margen inferior de la página.
+  { shape: balloonRed, color: "rojo", className: "right-[6%] top-[5.5rem] h-[4.5rem] lg:right-[14%] lg:top-[12%] lg:h-[clamp(4.5rem,12vh,8.5rem)]" },
+  { shape: balloonBlack, color: "neutro", className: "right-[24%] top-[6.5rem] h-[3.75rem] lg:right-[4%] lg:top-[40%] lg:h-[clamp(5.5rem,16vh,11rem)]" },
+  { shape: balloonRed2, color: "rojo", className: "left-[6%] top-[calc(100%-6.5rem)] h-[4.5rem] lg:left-[2%] lg:h-[clamp(4.5rem,9vh,6rem)]" },
+  { shape: balloonBlack2, color: "neutro", className: "right-[10%] top-[calc(100%-6rem)] h-[3.5rem] lg:right-[22%] lg:h-[clamp(3.5rem,7vh,5rem)]" },
 ];
 
 const CORTA: Globo[] = [
