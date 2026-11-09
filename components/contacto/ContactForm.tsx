@@ -83,7 +83,7 @@ export function ContactForm() {
     return (
       <div
         role="status"
-        className="flex flex-col items-start gap-4 rounded-[var(--radius-lg)] border border-line bg-cloud p-10"
+        className="flex flex-col items-center gap-4 rounded-[var(--radius-lg)] border border-line bg-cloud p-10 text-center"
       >
         <span className="grid h-12 w-12 place-items-center rounded-full bg-ink text-[length:var(--text-step-1)] text-bone">
           ✓
@@ -105,8 +105,8 @@ export function ContactForm() {
         <input type="text" name="web" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       {/* Tipo de consulta */}
       <fieldset>
-        <legend className={labelBase}>Tu consulta es sobre</legend>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <legend className={`${labelBase} mx-auto`}>Tu consulta es sobre</legend>
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
           {TIPOS.map((t) => (
             <label key={t} className="cursor-pointer">
               <input
@@ -206,13 +206,13 @@ export function ContactForm() {
       </div>
 
       <Turnstile accion="contacto" />
-      <button type="submit" className={buttonClasses("dark", "w-max cursor-pointer")}>
+      <button type="submit" className={buttonClasses("dark", "w-max cursor-pointer self-center")}>
         <ButtonInner primary tone="dark">
           Enviar por WhatsApp
         </ButtonInner>
       </button>
       {/* Aviso de privacidad corto (Ley 25.326, S-23). */}
-      <p className="-mt-3 max-w-[56ch] text-[length:var(--text-step--1)] leading-relaxed text-ink/55">
+      <p className="-mt-3 mx-auto max-w-[56ch] text-center text-[length:var(--text-step--1)] leading-relaxed text-ink/55">
         Usamos tus datos solo para responder tu consulta. Responsable: Sweet Flowers Deco Party. Podés pedir
         acceso, corrección o baja por WhatsApp. Más info en{" "}
         <Link href="/privacidad" className="underline underline-offset-4 hover:text-ink">

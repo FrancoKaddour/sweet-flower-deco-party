@@ -42,11 +42,11 @@ export default function ContactoPage() {
         data-theme="light"
         className="bg-bone px-6 pb-16 pt-32 text-ink md:px-10 md:pb-20 md:pt-44"
       >
-        <div className="mx-auto max-w-[87.5rem]">
+        <div className="mx-auto flex max-w-[87.5rem] flex-col items-center text-center">
           <Eyebrow className="mb-6">Contacto</Eyebrow>
           <RevealText
             as="h1"
-            className="max-w-[16ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink [overflow-wrap:anywhere]"
+            className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-6)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-ink [overflow-wrap:anywhere]"
           >
             {/* TODO(contenido): titular real */}
             Contanos tu evento
@@ -54,7 +54,7 @@ export default function ContactoPage() {
           <FadeUp
             y={40}
             delay={0.15}
-            className="mt-8 max-w-[52ch] border-t border-line pt-8 font-sans text-[length:var(--text-step-1)] leading-snug text-ink/70"
+            className="mx-auto mt-8 max-w-[52ch] border-t border-line pt-8 font-sans text-[length:var(--text-step-1)] leading-snug text-ink/70"
           >
             <p>
               {/* TODO(contenido) */}
@@ -65,21 +65,21 @@ export default function ContactoPage() {
         </div>
       </section>
 
-      {/* 2 · FORM + ASIDE (light) */}
+      {/* 2 · FORM centrado + canales directos y nota "a medida" debajo (light) */}
       <section
         data-theme="light"
         className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32"
       >
-        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="mx-auto flex max-w-[87.5rem] flex-col items-center gap-16 md:gap-20">
           {/* Formulario */}
-          <FadeUp y={50} className="lg:col-span-7">
+          <FadeUp y={50} className="w-full max-w-[44rem]">
             <ContactForm />
           </FadeUp>
 
-          {/* Aside — canales directos + info */}
-          <FadeUp y={50} className="flex flex-col gap-10 lg:col-span-4 lg:col-start-9">
+          {/* Canales directos + info */}
+          <FadeUp y={50} className="grid w-full max-w-[60rem] grid-cols-1 gap-10 md:grid-cols-2 md:items-start">
             <div>
-              <h2 className="text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-champagne">
+              <h2 className="text-center text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-champagne">
                 Escribinos directo
               </h2>
               <ul className="mt-5 flex flex-col">
@@ -104,11 +104,11 @@ export default function ContactoPage() {
             </div>
 
             {/* Nota "a medida" */}
-            <div className="rounded-[var(--radius-lg)] bg-blush p-6 md:p-8">
+            <div className="rounded-[var(--radius-lg)] bg-blush p-6 text-center md:p-8">
               <h3 className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-[0.95] text-ink">
                 ¿Buscás algo a medida?
               </h3>
-              <p className="mt-3 font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
+              <p className="mx-auto mt-3 max-w-[40ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
                 {/* Copy real (§6): se cotiza; la demora depende de la complejidad. */}
                 Contanos qué pieza imaginás y la cotizamos. Cada estructura se
                 piensa para tu evento; la demora depende de la complejidad.
@@ -123,17 +123,16 @@ export default function ContactoPage() {
         data-theme="light"
         className="bg-sand px-6 py-24 text-ink md:px-10 md:py-32"
       >
-        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
-          {/* Desktop/notebook: el título acompaña el scroll mientras se leen las preguntas */}
-          <div className="lg:sticky lg:top-32 lg:col-span-4 lg:self-start">
+        <div className="mx-auto flex max-w-[87.5rem] flex-col items-center gap-12">
+          <div className="text-center">
             <Eyebrow className="mb-5">Preguntas frecuentes</Eyebrow>
-            <h2 className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)] lg:text-[length:min(var(--text-step-5),3.3vw)]">
+            <h2 className="font-display text-[length:var(--text-step-4)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink md:text-[length:var(--text-step-5)]">
               {/* TODO(contenido): titular real */}
               Lo que más nos preguntan
             </h2>
           </div>
 
-          <div className="lg:col-span-7 lg:col-start-6">
+          <div className="w-full max-w-[48rem]">
             <div className="border-b border-ink/15">
               {FAQS.map((faq) => (
                 <details
