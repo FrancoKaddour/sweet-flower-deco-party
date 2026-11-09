@@ -7,6 +7,7 @@ import { ButtonInner, buttonClasses } from "@/components/ui/Button";
 import { WHATSAPP_NUMBER } from "@/content/site";
 import { EVENT_WHATSAPP } from "@/content/evento";
 import { Turnstile } from "@/components/captcha/Turnstile";
+import { FestejoGlobos } from "@/components/motion/FestejoGlobos";
 
 // Tipos de consulta → ayudan a rutear el lead (producto / a medida / evento).
 const TIPOS = [
@@ -83,15 +84,16 @@ export function ContactForm() {
     return (
       <div
         role="status"
-        className="flex flex-col items-center gap-4 rounded-[var(--radius-lg)] border border-line bg-cloud p-10 text-center"
+        className="relative flex flex-col items-center gap-4 overflow-hidden rounded-[var(--radius-lg)] border border-line bg-cloud p-10 text-center"
       >
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-ink text-[length:var(--text-step-1)] text-bone">
+        <FestejoGlobos variante="corta" tono="claro" />
+        <span className="relative grid h-12 w-12 place-items-center rounded-full bg-ink text-[length:var(--text-step-1)] text-bone">
           ✓
         </span>
-        <h3 className="font-display text-[length:var(--text-step-3)] font-bold uppercase leading-[0.95] text-ink">
+        <h3 className="relative font-display text-[length:var(--text-step-3)] font-bold uppercase leading-[0.95] text-ink">
           ¡Listo! Se abrió WhatsApp
         </h3>
-        <p className="max-w-[42ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
+        <p className="relative max-w-[42ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
           Tu mensaje ya está escrito: solo tenés que enviarlo. Flor o Tobías te
           responden en persona.
         </p>

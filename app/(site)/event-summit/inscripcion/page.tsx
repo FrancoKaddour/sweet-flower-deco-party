@@ -18,6 +18,7 @@ import {
 import { formatARS } from "@/modules/catalog/types";
 import { SITE_URL } from "@/lib/site";
 import { CompartirSummit, TrackVuelta } from "@/components/evento/VueltaPago";
+import { FestejoGlobos } from "@/components/motion/FestejoGlobos";
 
 export const metadata: Metadata = { title: "Tu inscripción", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -82,6 +83,8 @@ export default async function InscripcionPage({
 
   return (
     <main id="main" data-theme="dark" className="relative flex min-h-[90svh] items-center overflow-hidden bg-ink px-6 pb-24 pt-32 text-bone md:px-10 md:pt-36">
+      {/* Festejo: solo con el pago aprobado, una vez por inscripción. */}
+      {estado === "ok" && <FestejoGlobos tono="oscuro" clave={r ? `summit-${r.codigo}` : undefined} />}
       <div aria-hidden="true" className="pointer-events-none absolute -right-32 top-10 h-[min(34rem,90vw)] w-[min(34rem,90vw)] rounded-full border border-champagne/20" />
       <div aria-hidden="true" className="pointer-events-none absolute -right-10 top-32 h-[min(24rem,64vw)] w-[min(24rem,64vw)] rounded-full border border-champagne/10" />
       <div className="relative mx-auto w-full max-w-[60rem]">

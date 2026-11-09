@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FestejoGlobos } from "@/components/motion/FestejoGlobos";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
@@ -41,8 +42,10 @@ export default async function ConfirmarPage({ searchParams }: { searchParams: Pr
     "mt-8 inline-flex min-h-12 items-center rounded-full bg-ink px-8 text-[0.75rem] font-medium uppercase tracking-[0.14em] text-bone hover:bg-bordeaux";
 
   return (
-    <main id="main" data-theme="light" className="flex min-h-[100svh] items-center justify-center bg-bone px-6 pb-20 pt-32 text-ink md:pb-24 md:pt-40">
-      <div className="w-full max-w-[30rem] text-balance text-center">
+    <main id="main" data-theme="light" className="relative flex min-h-[100svh] overflow-hidden items-center justify-center bg-bone px-6 pb-20 pt-32 text-ink md:pb-24 md:pt-40">
+      {/* Festejo: suscripción confirmada, una vez por código. */}
+      {sub && confirmado && <FestejoGlobos tono="claro" clave={`club-${sub.codigo}`} />}
+      <div className="relative w-full max-w-[30rem] text-balance text-center">
         <p className="text-[length:var(--text-step--1)] uppercase tracking-[0.18em] text-champagne">Club Sweet Flowers</p>
         {!sub ? (
           <>
