@@ -18,7 +18,7 @@ const CSP = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com https://challenges.cloudflare.com`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://lh3.googleusercontent.com https://picsum.photos https://fastly.picsum.photos https://*.mercadopago.com https://*.mlstatic.com",
+  "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://lh3.googleusercontent.com https://*.mercadopago.com https://*.mlstatic.com",
   "media-src 'self' blob:",
   "font-src 'self' data:",
   // vercel.com/api/blob + *.blob.vercel-storage.com: subida de fotos del panel
@@ -68,15 +68,8 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    // Placeholders del boceto. TODO(contenido): al pasar a fotos reales,
-    // preferir imports estáticos locales (width/height + blurDataURL automáticos)
-    // y quitar este patrón remoto. Ver docs/11_SEO_STRATEGY.md + TODOs en secciones.
+    // Solo orígenes propios (picsum se sacó en nov-2026: ya no hay placeholders).
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "picsum.photos",
-        pathname: "/**",
-      },
       // Fotos subidas desde el panel (Vercel Blob). TODO(S-20): fijar el hostname
       // EXACTO del store (<id>.public.blob.vercel-storage.com, se ve en Vercel →
       // Storage o en la URL de cualquier foto subida) para que nadie use el

@@ -375,15 +375,28 @@ export function EdicionesScroll() {
                       className="pointer-events-auto block w-[min(86vw,24rem)] rounded-[2px] bg-bone p-3 pb-4 text-ink shadow-[0_24px_60px_rgba(0,0,0,0.5)] outline-none ring-champagne focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-ink md:w-[min(48vw,44rem)] md:p-3.5 md:pb-5 [@media(max-height:540px)]:w-[min(58svh,20rem)]"
                     >
                       {/* Apaisada (4:3, como los assets de Cynar) */}
-                      <span className="relative block aspect-[4/3] w-full">
-                        <Image
-                          src={t.foto ?? portadaDe(t.slug ?? "", t.foto).src}
-                          alt=""
-                          fill
-                          loading="eager"
-                          sizes="(max-width: 767px) 86vw, 48vw"
-                          className="object-cover"
-                        />
+                      <span className="relative block aspect-[4/3] w-full overflow-hidden bg-bordeaux">
+                        {(() => {
+                          const src = t.foto ?? portadaDe(t.slug ?? "")?.src;
+                          return src ? (
+                            <Image
+                              src={src}
+                              alt=""
+                              fill
+                              loading="eager"
+                              sizes="(max-width: 767px) 86vw, 48vw"
+                              className="object-cover"
+                            />
+                          ) : (
+                            // Sin fotos reales todavía: el número del workshop sobre bordó (sin stock).
+                            <span className="absolute inset-0 grid place-items-center">
+                              <span className="evt-grain pointer-events-none absolute inset-0" />
+                              <span className="relative font-display text-[clamp(4rem,12vw,9rem)] font-extrabold leading-none text-transparent [-webkit-text-stroke:1px_rgb(198_161_91/0.7)]">
+                                {t.numero}
+                              </span>
+                            </span>
+                          );
+                        })()}
                       </span>
                       <span className="mt-3 block text-[0.62rem] uppercase tracking-[0.18em] text-champagne-ink md:text-[0.7rem]">
                         {t.etapa}

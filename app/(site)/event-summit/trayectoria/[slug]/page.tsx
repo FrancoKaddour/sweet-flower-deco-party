@@ -56,7 +56,6 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
   const ant = i > 0 ? TRAYECTORIA[i - 1] : undefined;
   const sigHref = sig?.slug ? `/event-summit/trayectoria/${sig.slug}` : "/event-summit#inscripcion";
   const sigFoto = sig?.slug ? portadaDe(sig.slug, sig.foto) : portadaDe("primera-edicion");
-  const esReal = !fotos[0]?.placeholder;
   const cinta = `${e.etapa} — ${e.titulo} — `;
 
   return (
@@ -67,14 +66,13 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
           { name: `${e.etapa} · ${e.titulo}`, path: `/event-summit/trayectoria/${slug}` },
         ]}
       />
-      <WorkshopEventJsonLd etapa={e} imagen={esReal ? portada.src : undefined} />
+      <WorkshopEventJsonLd etapa={e} imagen={portada?.src} />
       <WorkshopHero
         etapa={e.etapa}
         titulo={e.titulo}
         lugar={[e.lugar, e.fecha].filter(Boolean).join(" · ") || undefined}
         numero={e.numero}
-        portada={portada.src}
-        placeholder={portada.placeholder}
+        portada={portada?.src}
       />
 
       {/* INTRO — declaración + ficha. Fondo CLARO (marfil) para cortar el negro
@@ -212,7 +210,8 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
         <style>{`@keyframes sfCinta{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
       </div>
 
-      {/* GALERÍA */}
+      {/* GALERÍA — solo con fotos reales */}
+      {fotos.length > 0 && (
       <section data-theme="dark" aria-labelledby="galeria-h" className="px-6 py-24 md:px-10 md:py-32">
         <div className="mx-auto max-w-[87.5rem]">
           <div className="mb-14 flex flex-col items-center gap-4 text-center md:mb-20">
@@ -223,25 +222,31 @@ export default async function EtapaPage({ params }: { params: Promise<{ slug: st
               El encuentro en imágenes
             </h2>
             <p className="mx-auto max-w-[40ch] text-[length:var(--text-step--1)] uppercase tracking-[0.14em] text-bone/50">
-              {esReal ? `${fotos.length} fotos · tocá una para verla en grande` : "Fotos de muestra · pronto las reales"}
+              {`${fotos.length} fotos · tocá una para verla en grande`}
             </p>
           </div>
           <Galeria fotos={fotos} titulo={`${e.etapa} · ${e.titulo}`} />
         </div>
       </section>
+      )}
 
       {/* SIGUIENTE PARADA */}
       <section data-theme="dark" aria-label="Siguiente etapa" className="border-t border-bone/10">
         <Link href={sigHref} className="group relative block overflow-hidden px-6 py-24 md:px-10 md:py-36">
           {/* La foto está SIEMPRE visible, a color; al pasar el mouse hace un zoom suave. */}
           <div className="absolute inset-0 -z-0 scale-105 transition-transform duration-[1200ms] ease-[var(--ease-out-expo)] group-hover:scale-100 group-focus-visible:scale-100">
-            <Image
-              src={sigFoto.src}
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover saturate-[1.15]"
-            />
+            {sigFoto ? (
+              <Image
+                src={sigFoto.src}
+                alt=""
+                fill
+                sizes="100vw"
+                className="object-cover saturate-[1.15]"
+              />
+            ) : (
+              // Sin fotos reales todavía: fondo de marca (sin stock).
+              <div className="absolute inset-0 bg-bordeaux" />
+            )}
             {/* Velo más liviano y en degradé: deja ver el color y el texto sigue legible */}
             <div className="absolute inset-0 bg-linear-to-t from-ink/80 via-ink/35 to-ink/20" />
             <div className="evt-grain absolute inset-0" />

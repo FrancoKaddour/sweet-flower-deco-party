@@ -1,6 +1,7 @@
 // Galerías de cada workshop / edición (páginas /event-summit/trayectoria/<slug>).
-// Las que todavía no tienen fotos reales usan placeholders (picsum) con
-// proporciones variadas para que la grilla se vea como va a quedar.
+// Solo fotos REALES: un workshop sin fotos no muestra galería (nov-2026: se
+// sacaron los placeholders de picsum; eran fotos de stock en páginas de eventos
+// reales). La portada cae a un fondo de marca (ver WorkshopHero).
 // TODO(contenido): fotos preseleccionadas de cada workshop (las manda Tobi).
 
 export type Foto = { src: string; w: number; h: number; placeholder?: boolean };
@@ -60,26 +61,13 @@ const REALES: Record<string, Foto[]> = {
   ],
 };
 
-// Ritmo editorial: verticales y horizontales alternadas.
-const FORMAS: [number, number][] = [
-  [900, 1200], [1200, 800], [900, 1100], [1200, 900], [900, 1300], [1200, 800],
-  [900, 1200], [1100, 1100], [1200, 800], [900, 1200], [1200, 900], [900, 1100],
-];
-
 export function galeriaDe(slug: string): Foto[] {
-  const reales = REALES[slug];
-  if (reales?.length) return reales;
-  return FORMAS.map(([w, h], i) => ({
-    src: `https://picsum.photos/seed/sfdp-ws-${slug}-${i}/${w}/${h}`,
-    w,
-    h,
-    placeholder: true,
-  }));
+  return REALES[slug] ?? [];
 }
 
-/** Portada de la página: la foto de la tarjeta si es real, o la primera de la galería. */
-export function portadaDe(slug: string, foto?: string): Foto {
+/** Portada: la foto de la tarjeta, o la primera de la galería; null si no hay fotos reales. */
+export function portadaDe(slug: string, foto?: string): Foto | null {
   const g = galeriaDe(slug);
   if (foto) return g.find((f) => f.src === foto) ?? { src: foto, w: 1800, h: 1200 };
-  return g[0];
+  return g[0] ?? null;
 }

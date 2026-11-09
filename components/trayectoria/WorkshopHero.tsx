@@ -10,8 +10,8 @@ type Props = {
   titulo: string;
   lugar?: string;
   numero?: string;
-  portada: string;
-  placeholder?: boolean;
+  /** Sin fotos reales todavía → fondo de marca (bordó con grano), sin stock. */
+  portada?: string;
 };
 
 /**
@@ -19,7 +19,7 @@ type Props = {
  * parallax, número gigante calado (outline) y título con mask-reveal.
  * Mismo lenguaje que EventoHero. Respeta prefers-reduced-motion.
  */
-export function WorkshopHero({ etapa, titulo, lugar, numero, portada, placeholder }: Props) {
+export function WorkshopHero({ etapa, titulo, lugar, numero, portada }: Props) {
   const root = useRef<HTMLElement>(null);
   const bg = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
@@ -72,19 +72,10 @@ export function WorkshopHero({ etapa, titulo, lugar, numero, portada, placeholde
       className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ink px-6 pb-16 pt-32 text-bone md:px-10 md:pb-20 [@media(max-height:520px)]:pb-10 [@media(max-height:520px)]:pt-28"
     >
       <div ref={bg} className="absolute inset-0 -z-10" style={{ transform: "scale(1.15)" }}>
-        <Image
-          src={portada}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className={`object-cover ${placeholder ? "grayscale" : ""}`}
-        />
-        {placeholder && (
-          <>
-            <div className="absolute inset-0 bg-gradient-to-t from-ink via-bordeaux/60 to-bordeaux/30 mix-blend-multiply" />
-            <div className="absolute inset-0 bg-champagne/15 mix-blend-screen" />
-          </>
+        {portada ? (
+          <Image src={portada} alt="" fill priority sizes="100vw" className="object-cover" />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-bordeaux to-bordeaux" />
         )}
         <div className="evt-grain absolute inset-0" />
         <div className="absolute inset-0" style={{ backgroundColor: "color-mix(in srgb, var(--color-ink) 40%, transparent)" }} />
