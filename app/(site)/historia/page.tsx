@@ -93,8 +93,8 @@ export default function HistoriaPage() {
               alt="Flor, fundadora de Sweet Flowers Deco Party"
               width={399}
               height={756}
-              sizes="(min-width: 1024px) 18rem, 0px"
-              className="h-auto w-[min(100%,18rem)] drop-shadow-[0_24px_40px_rgba(20,17,15,0.18)]"
+              sizes="(min-width: 1024px) 13rem, 0px"
+              className="h-auto w-[min(100%,13rem)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)]"
             />
           </FadeUp>
           <FadeUp
