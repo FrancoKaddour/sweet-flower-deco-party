@@ -93,13 +93,15 @@ export default function HistoriaPage() {
               alt="Flor, fundadora de Sweet Flowers Deco Party"
               width={399}
               height={756}
-              sizes="(min-width: 1024px) 13rem, 0px"
+              // Ya es un webp chico (33 KB, 399 px): se sirve tal cual para
+              // que en pantallas retina no se vea borrosa.
+              unoptimized
               className="h-auto w-[min(100%,13rem)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)]"
             />
           </FadeUp>
           <FadeUp
             y={60}
-            className="w-full max-w-[40rem] space-y-6 justify-self-center font-sans text-[length:var(--text-step-1)] leading-relaxed text-ink/80 lg:col-span-7 lg:col-start-6 lg:max-w-none lg:justify-self-stretch"
+            className="w-full max-w-[40rem] space-y-5 justify-self-center font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/80 lg:col-span-7 lg:col-start-6 lg:max-w-[50ch] lg:justify-self-start"
           >
             <p>
               Sweet Flowers Deco Party es un emprendimiento familiar de
@@ -172,7 +174,7 @@ export default function HistoriaPage() {
             <RevealText
               as="h2"
               onScroll
-              className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [text-wrap:balance] lg:max-w-[19ch] lg:text-[length:var(--text-step-6)]"
+              className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [text-wrap:balance] lg:max-w-[22ch]"
             >
               Siete workshops y un Summit después, seguimos empezando
             </RevealText>
