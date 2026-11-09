@@ -65,17 +65,16 @@ export default function HistoriaPage() {
 
           {/* Retrato en arco (identidad El Arco) */}
           <FadeUp y={60} className="lg:col-span-5">
-            <div className="relative mx-auto aspect-[3/4] w-[min(100%,420px)] overflow-hidden rounded-t-full bg-sand">
-              {/* Foto real del equipo en la 1ª edición del Summit (D-14: nada de
-                  stock). TODO(contenido): retrato de Flor en su taller. */}
+            <div className="relative mx-auto aspect-[4/5] w-[min(100%,440px)] overflow-hidden rounded-t-full bg-sand">
+              {/* Foto real del equipo en el Event Summit (D-14: nada de stock). */}
               <Image
-                src="/img/summit/lg/sum-01.webp"
-                alt="Remera del equipo Sweet Flowers en la 1ª edición del Event Summit"
+                src="/img/historia/equipo-summit.webp"
+                alt="Flor junto al equipo de Sweet Flowers frente al cartel de neón en el Event Summit"
                 fill
-                sizes="(max-width: 1024px) 180vw, 840px"
-                className="object-cover object-[64%_40%]"
+                priority
+                sizes="(max-width: 1024px) 150vw, 1000px"
+                className="object-cover object-[53%_35%]"
               />
-              <div className="pointer-events-none absolute inset-0 bg-bordeaux/20 mix-blend-multiply" />
             </div>
           </FadeUp>
         </div>
@@ -86,10 +85,21 @@ export default function HistoriaPage() {
         data-theme="light"
         className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32"
       >
-        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-10 lg:grid-cols-12">
+        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
+          {/* Flor recortada (sin fondo), a la izquierda del relato — solo desktop. */}
+          <FadeUp y={60} className="hidden lg:col-span-4 lg:col-start-1 lg:flex lg:justify-end">
+            <Image
+              src="/img/historia/flor-recorte.webp"
+              alt="Flor, fundadora de Sweet Flowers Deco Party"
+              width={399}
+              height={756}
+              sizes="(min-width: 1024px) 18rem, 0px"
+              className="h-auto w-[min(100%,18rem)] drop-shadow-[0_24px_40px_rgba(20,17,15,0.18)]"
+            />
+          </FadeUp>
           <FadeUp
             y={60}
-            className="w-full max-w-[40rem] space-y-6 justify-self-center font-sans text-[length:var(--text-step-1)] leading-relaxed text-ink/80 lg:col-span-7 lg:col-start-4 lg:max-w-none lg:justify-self-stretch"
+            className="w-full max-w-[40rem] space-y-6 justify-self-center font-sans text-[length:var(--text-step-1)] leading-relaxed text-ink/80 lg:col-span-7 lg:col-start-6 lg:max-w-none lg:justify-self-stretch"
           >
             <p>
               Sweet Flowers Deco Party es un emprendimiento familiar de
