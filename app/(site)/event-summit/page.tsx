@@ -24,7 +24,6 @@ import {
   EVENT_WHEN,
   EDICION_NUMERO,
   EVENT_CUPO,
-  DISERTANTES,
   EVENT_YEAR,
   EDICION_LABEL,
   EVENT_SEDE,
@@ -127,49 +126,6 @@ export default async function EventoPage() {
 
       {/* 5 · TRAYECTORIA · scrollytelling pineado: la historia se apila (estilo Cynar) */}
       <EdicionesScroll />
-
-      {/* 6 · DISERTANTES — intriga (dark), sin caras grises */}
-      <section
-        data-theme="dark"
-        className="bg-ink px-6 py-24 text-bone md:px-10 md:py-32"
-      >
-        <div className="mx-auto max-w-[87.5rem]">
-          <div className="text-center">
-            <Eyebrow className="mb-6">Quiénes enseñan</Eyebrow>
-            <RevealText
-              as="h2"
-              onScroll
-              className="mx-auto max-w-[18ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-bone"
-            >
-              {/* TODO(contenido): titular real */}
-              Más de 20 referentes ya pasaron por acá
-            </RevealText>
-          </div>
-
-          {/* Slots de intriga (no fotos placeholder) */}
-          <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-3 md:mt-20">
-            {DISERTANTES.map((_, i) => (
-              <div
-                key={i}
-                className="relative flex h-[13rem] flex-col justify-between overflow-hidden rounded-[var(--radius-md)] border border-bone/15 bg-gradient-to-b from-bordeaux/25 to-ink p-6 sm:h-[18.75rem] md:h-[23.75rem] md:p-7"
-              >
-                <div className="evt-grain pointer-events-none absolute inset-0" />
-                <span className="relative font-display text-[length:var(--text-step-4)] font-extrabold leading-none text-champagne">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="relative">
-                  <p className="font-display text-[length:var(--text-step-2)] font-bold uppercase leading-[0.95] text-bone/85">
-                    Por anunciar
-                  </p>
-                  <p className="mt-2 text-[length:var(--text-step--1)] uppercase tracking-[0.16em] text-bone/45">
-                    Confirmado · se revela pronto
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* 6b · PREGUNTAS antes de pagar (light) + FAQPage JSON-LD */}
       <section
