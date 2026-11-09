@@ -137,7 +137,12 @@ export function Header() {
   const [open, setOpen] = useState(false);
   // En el inicio, arriba de todo, el header va sobre el video oscuro del hero
   // → tono claro. Al scrollear (fondo frosted claro) o en otras páginas → tinta.
-  const pathname = usePathname();
+  // En producción, cuando Vercel REGENERA el inicio (ISR, revalidate = 300) lo
+  // renderiza con la ruta interna "/index": el HTML salía con el header en
+  // tinta, el cliente hidrataba en marfil y React (en prod) no corrige
+  // atributos distintos en la hidratación → quedaba negro sobre el video.
+  const rawPathname = usePathname();
+  const pathname = rawPathname === "/index" ? "/" : rawPathname;
   const [scrolled, setScrolled] = useState(false); // ya no está en el tope → frosted + logo chico
   const [wasScrolled, setWasScrolled] = useState(false); // scrolled en el momento de abrir el menú
   // Tono por zona (izquierda / logo / menú) + global (barra frosted al scrollear).
@@ -315,6 +320,23 @@ export function Header() {
   const toneL = scrolled ? tones.g : tones.l;
   const toneC = scrolled ? tones.g : tones.c;
   const toneR = scrolled ? tones.g : tones.r;
+
+  // Red de seguridad de hidratación: si el HTML del servidor trajo otro tono
+  // (React en producción no corrige atributos al hidratar y, si el estado no
+  // cambia, nunca vuelve a escribirlos), se alinea el DOM con el estado.
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const fix = (el: Element | null, tone: Tone) => {
+      if (el && el.getAttribute("data-tone") !== tone) el.setAttribute("data-tone", tone);
+    };
+    fix(header, tones.g);
+    fix(zoneLeftRef.current, toneL);
+    fix(logoWrapRef.current, toneC);
+    fix(zoneRightRef.current, toneR);
+    // Solo al montar: después React mantiene los atributos sincronizados.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 2) Overlay: UNA timeline (ver buildMenuTimeline) que va hacia adelante al
   //    abrir y en REVERSA al cerrar. T-11: se arma en idle (después de montar,
