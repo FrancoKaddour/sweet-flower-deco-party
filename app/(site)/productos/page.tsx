@@ -74,88 +74,81 @@ export default async function ProductosPage() {
           </div>
         </section>
 
-        {/* ── CATEGORÍAS · filas editoriales alternadas ──────────────────── */}
+        {/* ── CATEGORÍAS · tres columnas (una por fila en celular) ─────────── */}
         <section
           data-theme="light"
           aria-label="Categorías del catálogo"
           className="bg-bone px-6 pb-24 text-ink md:px-10 md:pb-32"
         >
-          <div className="mx-auto flex max-w-[87.5rem] flex-col gap-20 md:gap-28">
-            {CATEGORIAS.map((cat, i) => {
-              const flip = i % 2 === 1; // alternamos el lado de la imagen
-              return (
-                <FadeUp
-                  key={cat.slug}
-                  y={60}
-                  as="article"
-                  className="group grid grid-cols-1 items-center gap-8 md:grid-cols-12 md:gap-10 lg:gap-12"
+          <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 gap-x-6 gap-y-16 sm:max-w-xl md:max-w-[87.5rem] md:grid-cols-3 md:gap-y-0 lg:gap-x-10">
+            {CATEGORIAS.map((cat, i) => (
+              <FadeUp
+                key={cat.slug}
+                y={50}
+                delay={i * 0.08}
+                as="article"
+                className="group flex flex-col"
+              >
+                {/* Imagen */}
+                <Link
+                  href={`/productos/${cat.slug}`}
+                  aria-label={`Ver categoría ${cat.nombre}`}
+                  className="relative block overflow-hidden rounded-[var(--radius-lg)] bg-sand"
                 >
-                  {/* Imagen */}
+                  <div className="relative aspect-[4/3] w-full md:aspect-[4/5]">
+                    {/* TODO(contenido): foto real representativa de la categoría */}
+                    <Image
+                      src={cat.img}
+                      alt={cat.nombre}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 36rem, 33vw"
+                      className="object-cover transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+                    />
+                  </div>
+                  {/* Índice sobre la foto */}
+                  <span className="absolute left-4 top-3 font-display text-[length:var(--text-step-1)] font-bold text-bone mix-blend-difference">
+                    {cat.index}
+                  </span>
+                </Link>
+
+                {/* Texto */}
+                <div className="flex flex-1 flex-col pt-6">
+                  <h2 className="font-display text-[length:var(--text-step-3)] font-extrabold uppercase leading-[0.95] tracking-[-0.01em] text-ink [overflow-wrap:anywhere]">
+                    {cat.nombre}
+                  </h2>
+                  <p className="mt-3 max-w-[42ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
+                    {cat.desc}
+                  </p>
+
+                  <ul className="mt-5 flex flex-wrap gap-x-2 gap-y-2">
+                    {cat.incluye.map((item) => (
+                      <li
+                        key={item}
+                        className="rounded-[var(--radius-pill)] border border-line px-3 py-1 text-[length:var(--text-step--1)] text-ink/70"
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* mt-auto: los tres links quedan alineados al pie */}
                   <Link
                     href={`/productos/${cat.slug}`}
-                    aria-label={`Ver categoría ${cat.nombre}`}
-                    className={`relative block overflow-hidden rounded-[var(--radius-lg)] bg-sand md:col-span-6 lg:col-span-7 ${
-                      flip ? "md:order-2 md:col-start-7 lg:col-start-6" : ""
-                    }`}
+                    className="group/cta mt-auto inline-flex min-h-11 items-center gap-2 self-start pt-5 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] text-ink"
                   >
-                    <div className="relative aspect-[4/3] w-full md:aspect-[16/11]">
-                      {/* TODO(contenido): foto real representativa de la categoría */}
-                      <Image
-                        src={cat.img}
-                        alt={cat.nombre}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 58vw"
-                        className="object-cover transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
-                      />
-                    </div>
-                    {/* Índice sobre la foto */}
-                    <span className="absolute left-5 top-4 font-display text-[length:var(--text-step-2)] font-bold text-bone mix-blend-difference">
-                      {cat.index}
+                    <span className="border-b border-ink pb-1">
+                      Ver {cat.nombre}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="inline-block transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover/cta:translate-x-1"
+                    >
+                      →
                     </span>
                   </Link>
-
-                  {/* Texto */}
-                  <div
-                    className={`md:col-span-6 lg:col-span-5 ${
-                      flip ? "md:order-1 md:col-start-1" : "md:col-start-7 lg:col-start-8"
-                    }`}
-                  >
-                    <h2 className="font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-ink">
-                      {cat.nombre}
-                    </h2>
-                    <p className="mt-5 max-w-[42ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
-                      {cat.desc}
-                    </p>
-
-                    <ul className="mt-6 flex flex-wrap gap-x-3 gap-y-2">
-                      {cat.incluye.map((item) => (
-                        <li
-                          key={item}
-                          className="rounded-[var(--radius-pill)] border border-line px-4 py-1.5 text-[length:var(--text-step--1)] text-ink/70"
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Link
-                      href={`/productos/${cat.slug}`}
-                      className="group/cta mt-6 inline-flex min-h-11 items-center gap-2 text-[length:var(--text-step--1)] font-medium uppercase tracking-[0.1em] text-ink"
-                    >
-                      <span className="border-b border-ink pb-1">
-                        Ver {cat.nombre}
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        className="inline-block transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover/cta:translate-x-1"
-                      >
-                        →
-                      </span>
-                    </Link>
-                  </div>
-                </FadeUp>
-              );
-            })}
+                </div>
+              </FadeUp>
+            ))}
           </div>
         </section>
 
