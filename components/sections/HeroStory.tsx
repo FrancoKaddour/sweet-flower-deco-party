@@ -25,16 +25,25 @@ import { heroEnModoLiviano } from "@/components/sections/HeroMedia";
 // Pedido de Fran (nov-2026): frase FIJA + una palabra que cambia con cada
 // toma del video ("Estructuras para tus … eventos / mesas dulces / …").
 const FIJA = "Estructuras para tus";
+// Cada palabra termina de salir apenas antes de que entre la siguiente (antes
+// quedaban ~0,7 s sin palabra entre tomas y 3,4 s al reiniciar el loop).
+// "eventos." entra en 0,15 s en cada vuelta del video; en la PRIMERA vuelta
+// espera a que el hero termine de abrirse (FIJA_EN, ver sync).
 const PHRASES: [string, number, number][] = [
-  ["eventos.", 2.5, 10.1],
-  ["mesas dulces.", 10.9, 14.8],
-  ["bodas.", 15.5, 21.5],
-  ["15 años.", 22.2, 24.9],
-  ["catering.", 25.6, 29.1],
+  ["eventos.", 0.15, 10.8],
+  ["mesas dulces.", 10.9, 15.4],
+  ["bodas.", 15.5, 22.1],
+  ["15 años.", 22.2, 25.5],
+  ["catering.", 25.6, 29.95],
 ];
-const FIJA_EN = 2.5; // la frase fija entra una sola vez, con la primera palabra
+const FIJA_EN = 2.5; // 1ª vuelta: la frase fija y "eventos." entran juntas acá
+const PRIMERA_ENTRADA = PHRASES[0][1];
+const DESFASE = FIJA_EN - PRIMERA_ENTRADA; // retraso de la 1ª vuelta
+// Hasta acá la 1ª vuelta corre retrasada; después se engancha al video (en ese
+// momento "eventos." está quieta en pantalla → el salto no se ve).
+const ENGANCHE = 9;
 const DURATION = 30;
-const IN_DUR = 0.9;
+const IN_DUR = 0.75;
 const IN_STAGGER = 0.06;
 const OUT_DUR = 0.55;
 const OUT_STAGGER = 0.04;
@@ -113,23 +122,31 @@ export function HeroStory() {
       // bajo consumo, que rechaza play() aunque el video sea muted.
       let relojPropio = heroEnModoLiviano() || video.dataset.lite === "true";
       let started = false;
+      let arranquePropio: gsap.core.Tween | null = null;
 
       // El video es el reloj. Solo se re-posiciona mientras el video corre
       // (pausado fuera de pantalla → cero trabajo por frame).
+      let enganchado = false;
       const sync = () => {
         if (video.paused) return;
-        tl.time(video.currentTime % DURATION);
+        const t = video.currentTime % DURATION;
+        if (!enganchado && t >= ENGANCHE) enganchado = true;
+        // 1ª vuelta: el guion corre DESFASE s atrasado (el hero todavía se abre).
+        tl.time(enganchado ? t : Math.max(0, t - DESFASE));
         // La frase fija entra junto con la primera palabra (mismo reloj).
-        if (!fijaMostrada && video.currentTime >= FIJA_EN - 0.15) mostrarFija();
+        if (!fijaMostrada && t >= FIJA_EN - 0.15) mostrarFija();
       };
       const usarRelojPropio = () => {
         gsap.ticker.remove(sync);
         relojPropio = true;
         started = true;
         tl.eventCallback("onUpdate", () => {
-          if (!fijaMostrada && tl.time() >= FIJA_EN - 0.15) mostrarFija();
+          if (!fijaMostrada && tl.time() >= PRIMERA_ENTRADA - 0.15) mostrarFija();
         });
-        tl.repeat(-1).play();
+        // Mismo retraso inicial que con video: espera a que el hero se abra.
+        tl.repeat(-1);
+        arranquePropio?.kill();
+        arranquePropio = gsap.delayedCall(DESFASE, () => tl.play());
       };
       if (!relojPropio) gsap.ticker.add(sync);
 
@@ -187,6 +204,7 @@ export function HeroStory() {
         window.removeEventListener("sf:hero-pausa", onPausa);
         video.removeEventListener("play", onPlay);
         io.disconnect();
+        arranquePropio?.kill();
         tl.kill();
       };
     },
