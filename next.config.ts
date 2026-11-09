@@ -6,11 +6,14 @@ import type { NextConfig } from "next";
 const CACHE_INMUTABLE = [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }];
 
 // Headers de seguridad (S-20) en todas las respuestas.
-// CSP en modo REPORT-ONLY: el navegador avisa en consola lo que bloquearía, sin
-// bloquear nada. Cuando la consola quede limpia en producción (sitio, panel,
-// pago de MP, login con Google, reel de Instagram), pasar la clave a
-// "Content-Security-Policy". 'unsafe-inline' en scripts: Next mete scripts
-// inline (datos de RSC) y el layout tiene uno propio; GSAP escribe estilos inline.
+// CSP ACTIVA (nov-2026): se activó después de recorrer producción en modo
+// report-only sin ninguna violación (inicio, productos, ficha, Summit, reel de
+// Instagram, contacto con captcha, historia, ingresar, login del panel, 404).
+// 'unsafe-inline' en scripts: Next mete scripts inline (datos de RSC) y el
+// layout tiene uno propio; sacarlo exige nonce por request = todo dinámico (se
+// pierde ISR/estático). Igual bloquea scripts de otros dominios, envío de datos
+// a hosts ajenos (connect-src), formularios desviados (form-action) y framing.
+// Si algo nuevo de afuera deja de cargar, agregar su dominio ACÁ.
 const CSP = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com https://challenges.cloudflare.com`,
@@ -18,7 +21,9 @@ const CSP = [
   "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://lh3.googleusercontent.com https://picsum.photos https://fastly.picsum.photos https://*.mercadopago.com https://*.mlstatic.com",
   "media-src 'self' blob:",
   "font-src 'self' data:",
-  "connect-src 'self' https://vitals.vercel-insights.com https://*.mercadopago.com https://*.mercadopago.com.ar https://challenges.cloudflare.com",
+  // vercel.com/api/blob + *.blob.vercel-storage.com: subida de fotos del panel
+  // (el navegador sube directo a Vercel Blob, components/panel/subirImagen.ts).
+  "connect-src 'self' https://vitals.vercel-insights.com https://*.mercadopago.com https://*.mercadopago.com.ar https://challenges.cloudflare.com https://vercel.com https://*.blob.vercel-storage.com",
   // challenges.cloudflare.com: captcha Turnstile (lib/captcha.ts).
   "frame-src 'self' https://www.instagram.com https://*.mercadopago.com https://*.mercadopago.com.ar https://challenges.cloudflare.com",
   "form-action 'self' https://accounts.google.com https://*.mercadopago.com https://*.mercadopago.com.ar",
@@ -34,7 +39,7 @@ const SEGURIDAD = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" },
   // Sin "preload": eso compromete el dominio en las listas de los navegadores (decisión aparte).
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
-  { key: "Content-Security-Policy-Report-Only", value: CSP },
+  { key: "Content-Security-Policy", value: CSP },
 ];
 
 const nextConfig: NextConfig = {
