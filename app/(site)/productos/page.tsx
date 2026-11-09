@@ -164,18 +164,18 @@ export default async function ProductosPage() {
           data-theme="dark"
           className="bg-bordeaux px-6 py-24 text-bone md:px-10 md:py-32"
         >
-          <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-end gap-10 md:grid-cols-12">
-            <div className="md:col-span-8">
+          <div className="mx-auto flex max-w-[87.5rem] flex-col items-center gap-10 text-center">
+            <div className="flex flex-col items-center">
               <Eyebrow className="mb-6">A medida</Eyebrow>
               <RevealText
                 as="h2"
                 onScroll
-                className="max-w-[20ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone"
+                className="mx-auto max-w-[20ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.9] tracking-[-0.01em] text-bone"
               >
                 {/* TODO(contenido): titular real de "a medida" */}
                 ¿No lo ves? Lo hacemos para vos
               </RevealText>
-              <p className="mt-6 max-w-[52ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/75">
+              <p className="mx-auto mt-6 max-w-[52ch] font-sans text-[length:var(--text-step-1)] leading-snug text-bone/75">
                 {/* Copy real: se cotiza; la demora depende de la complejidad
                     (docs/CONTENIDO_FLOR.md §6). No prometemos plazos exactos. */}
                 Trabajamos mayormente por encargo. Contanos qué pieza tenés en la
@@ -183,7 +183,7 @@ export default async function ProductosPage() {
                 cada estructura se piensa para tu evento.
               </p>
             </div>
-            <div className="md:col-span-4 md:justify-self-end">
+            <div>
               <Button href="/contacto" variant="inverse">
                 Pedir presupuesto
               </Button>
