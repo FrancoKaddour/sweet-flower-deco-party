@@ -150,38 +150,38 @@ export default function HistoriaPage() {
         </div>
       </section>
 
-      {/* 4 · PUENTE AL SUMMIT + CIERRE (bone) — a dos columnas desde lg (D-15):
-          título ancho a la izquierda; foto en arco, texto y CTAs a la derecha. */}
+      {/* 4 · PUENTE AL SUMMIT + CIERRE (bone) — centrado: título, foto en
+          arco, texto y CTAs en una sola columna. */}
       <section
         data-theme="light"
         className="bg-bone px-6 py-24 text-ink md:px-10 md:py-32"
       >
-        <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-end gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-7">
+        <div className="mx-auto flex max-w-[87.5rem] flex-col items-center gap-12 text-center">
+          <div className="flex flex-col items-center">
             <Eyebrow className="mb-6">El siguiente capítulo</Eyebrow>
             <RevealText
               as="h2"
               onScroll
-              className="max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [text-wrap:balance] lg:max-w-[19ch] lg:text-[length:var(--text-step-6)]"
+              className="mx-auto max-w-[16ch] font-display text-[length:var(--text-step-5)] font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-ink [text-wrap:balance] lg:max-w-[19ch] lg:text-[length:var(--text-step-6)]"
             >
               Siete workshops y un Summit después, seguimos empezando
             </RevealText>
           </div>
-          <FadeUp y={40} className="lg:col-span-5">
+          <FadeUp y={40} className="flex w-full max-w-[36rem] flex-col items-center">
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[999px] bg-sand lg:aspect-[5/4]">
               <Image
                 src="/img/summit/lg/sum-26.webp"
                 alt="Asistentes escuchando una charla en la 1ª edición del Event Summit"
                 fill
-                sizes="(max-width: 1024px) 90vw, 36vw"
+                sizes="(max-width: 640px) 90vw, 36rem"
                 className="object-cover object-[50%_35%]"
               />
             </div>
-            <p className="mt-8 max-w-[44ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
+            <p className="mx-auto mt-8 max-w-[44ch] font-sans text-[length:var(--text-step-0)] leading-relaxed text-ink/70">
               Siete workshops, una primera edición en La Rural y una segunda que
               ya tiene fecha: el {EVENT_WHEN}.
             </p>
-            <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
+            <div className="mt-8 flex flex-wrap justify-center gap-x-10 gap-y-4">
               <Button href="/event-summit">Conocer el Summit</Button>
               <Button href="/contacto" variant="outline">
                 Escribinos
